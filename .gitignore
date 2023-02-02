@@ -1,0 +1,28 @@
+### NetBeans template
+nbproject/private/
+build/
+nbbuild/
+dist/
+nbdist/
+nbactions.xml
+nb-configuration.xml
+.nb-gradle/
+
+assets/*
+!assets/.gitignore
+protected/runtime/*
+protected/runtime/application.log
+!protected/runtime/.gitignore
+protected/data/*.db
+uploads/*
+!uploads/.gitignore
+
+
+
+### JetBrains template
+# Covers JetBrains IDEs: IntelliJ, RubyMine, PhpStorm, AppCode, PyCharm, CLion
+
+*.iml
+
+## Directory-based project format:
+.idea/

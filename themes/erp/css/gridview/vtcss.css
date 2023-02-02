@@ -1,0 +1,197 @@
+.grid-view-loading {
+
+    background: url(loading.gif) no-repeat;
+
+}
+
+#loadingDiv {
+
+    float: left;
+
+    width: 16px;
+
+    height: 16px;
+
+    margin: 4px;
+
+}
+
+.grid-view {
+
+    padding: 15px 0;
+
+}
+
+.grid-view table.items {
+
+    background-color: #fff;
+
+    border-collapse: collapse;
+
+    width: 100%;
+
+    border: 1px #D0E3EF solid;
+
+    border: 1px solid gray !important;
+
+}
+
+.grid-view table.items td, .grid-view table.items th {
+
+    border: 1px solid #FFF;
+
+    font-size: 11px;
+
+    font-weight: 400;
+
+    padding: 2px 4px;
+
+    border: 1px solid gray !important;
+
+    text-align: center;
+
+}
+
+.grid-view table.items th {
+
+    color: #fff;
+
+    font-weight: 700;
+
+    background-color: #0d5018 ;
+
+    text-align: center;
+
+}
+
+.grid-view table.items th a {
+
+    color: #fff;
+
+    font-weight: 700;
+
+    text-decoration: none;
+
+}
+
+.grid-view table.items th a:hover {
+
+    color: #000;
+
+}
+
+.grid-view table.items th a.asc {
+
+    background: url(up.gif) right center no-repeat;
+
+    padding-right: 10px;
+
+}
+
+.grid-view table.items th a.desc {
+
+    background: url(down.gif) right center no-repeat;
+
+    padding-right: 10px;
+
+}
+
+.grid-view table.items tr.even {
+
+    background-color: #f9f9f9;
+
+}
+
+.grid-view table.items tr.odd {
+
+    background-color: #ffffff;
+
+}
+
+.grid-view table.items tr.selected {
+
+    background-color: #BCE774;
+
+}
+
+.grid-view table.items tr:hover {
+
+    background-color: #deedf5;
+
+}
+
+.grid-view .link-column img {
+
+    border: 0;
+
+}
+
+.grid-view .button-column {
+
+    text-align: center;
+
+    width: 60px;
+
+}
+
+.grid-view .button-column img {
+
+    border: 0;
+
+}
+
+.grid-view .checkbox-column {
+
+    width: 15px;
+
+}
+
+.caption{
+
+   color: #FF0000;
+
+   float: left;
+
+   margin: 5px;
+
+}
+
+.grid-view .summary {
+
+    float: right;
+
+    margin: 5px;
+
+    text-align: right;
+
+}
+
+.grid-view .pager {
+
+    float: right;
+
+    margin: 5px;
+
+    text-align: right;
+
+}
+
+.grid-view .empty {
+
+    font-style: italic;
+
+}
+
+.grid-view .filters input, .grid-view .filters select {
+
+    width: 80%;
+
+    border: 1px solid #ccc;
+
+}
+
+.grid-view table.items tr td.merge{
+
+/*    background-color: #DFDFDF;*/
+
+}

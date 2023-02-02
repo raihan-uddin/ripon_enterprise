@@ -1,0 +1,217 @@
+
+/***********CUSTOM STYLE CREATED BY RONY 08-09-2019 10-26-am*************/
+
+.grid-view table.items th{
+    padding: 6px !important;
+}
+ul.dropdown, ul.dropdown li.top, ul.dropdown li{
+    background-color: #013C65 !important;
+}
+/*
+input[type=submit], input[type=button], .custom-btn{
+    background: #3498DB;
+    padding: 3px 10px !important;
+    border: 2px solid #9B59B6;
+    border-radius: 0px;
+    box-shadow: none;
+    text-shadow: none;
+}*/
+input[type=submit], input[type=button], .custom-btn, a.findBtn, input.findBtn, a.additionalBtn, a.customBtn{
+    background: #3498DB;
+    padding: 3px 10px !important;
+    border: 2px solid #9B59B6;
+    border-radius: 0px;
+    box-shadow: none;
+    text-shadow: none;
+    text-align: center;
+    color: #fff;
+    font-weight: unset;
+}
+input[type=submit]:hover, input[type=button]:hover, .custom-btn:hover, a.findBtn:hover, input.findBtn:hover, a.additionalBtn:hover,  a.customBtn:hover{
+    background-color: #2d84bf;
+    /*border: 2px solid #3498DB;*/
+    cursor: pointer;
+}
+.addDown:hover, .dltBtn:hover{
+    background-color: #fff !important;
+}
+.ui-corner-all {
+    -moz-border-radius: 0px !important;
+    -webkit-border-radius: 0px !important;
+    border-radius: 0px !important;
+}
+.grid-view table.items td, .grid-view table.items th{
+    font-size:11px !important;
+    padding: 3px 4px !important;
+}
+.grid-view table.items th{
+    font-size:12px !important;
+    padding: 3px 4px !important;
+}
+fieldset{
+    border-radius: 0px;
+}
+fieldset legend {
+    background-color: #FFFFFF;
+    /*border: 2px solid #5EA5ED;*/
+    border-radius: 0px;
+    box-shadow: none;
+    /*color: #64926B;*/
+    color: #445847;
+    font-size: 13px;
+    /*font-weight:bold;*/
+    padding: 3px 30px;
+    border: 1px solid #b4b7b4;
+    border-left: 3px solid #64926B;
+    /*border-left: 5px solid #b4b7b4;
+    border-right: 5px solid #b4b7b4;*/
+    /*border-left: 20px solid #5EA5ED;*/
+}
+fieldset.tblFooters{
+    border-radius: 0px;
+}
+.ui-widget-header{
+    background: #00C0EF !important;
+    border:none !important;
+    /*border-left: 20px solid #00A65A !important;*/
+}
+.tblFooters{
+    background: #eeeef0;
+}
+.grid-view table.items tr.even {
+    background-color: #f6f5f5 !important;
+}
+.grid-view .filters input, .grid-view .filters select{
+    padding: 3px 0px;
+}
+input[type=password], input[type=text], select{
+    padding: 3px 3px;
+}
+.tblFooters {
+    background: #f6f6f9 !important;
+}
+ul.dropdown ul li.dir div.titleM {
+    background-color: #2c7fdd;
+}
+table.prodAddedTab tr td {
+    border: 1px solid #c1c0c0 !important;
+}
+table.prodAddedTab tr th {
+    border: 1px solid #676666 !important;
+}
+.grid-view table.items td, .grid-view table.items th {
+    border: 1px solid #c1c0c0 !important;
+}
+.receivedByDiv{
+    border-radius: 0px !important;
+    width: 215px;
+}
+.grid-view table.items th {
+    border: 1px solid #229954 !important;
+    padding: 3px 2px !important;
+}
+ul.dropdown li.dir a {
+    border-bottom: 1px solid #02538C;
+}
+.alertify {
+    border-radius: 0px;
+    border: 10px solid #696767;
+}
+.alertify-dialog {
+    background: none repeat scroll 0 0 #e1e1fb;
+}
+select {
+    background-color: #fff;
+    color: #014848 !important;
+}
+/*
+input:read-only, select:read-only {
+    background-color: #fbfbf8;
+}
+input:disabled, select:disabled {
+    background-color: #fbfbf8;
+}*/
+
+/**************Color Revert***************/
+
+ul.dropdown li{
+    line-height: 5px;
+}
+ul.dropdown li.dir a {
+    letter-spacing: 0.3px;
+    line-height: initial;
+}
+ul.dropdown, ul.dropdown li.top, ul.dropdown li {
+    /*background-color: #3498DB !important;*/
+}
+table.prodAddedTab tr th {
+    /*border: 1px solid #229954 !important;*/
+    border: 1px solid #dcdada !important;
+}
+table.prodAddedTab tr th {
+    /*color: #fff;
+    background-color: #229954;*/
+    color: #000;
+    background-color: #dcdada;
+}
+input:focus, input[type=text]:focus {
+    border: 1px solid #468ebf !important;
+    -webkit-box-shadow:  none !important;
+    -moz-box-shadow: none !important;
+    box-shadow: none !important;
+    outline: none;
+}
+/*
+.prodAddedTab input[type=text]{
+    font-style: italic;
+}*/
+ul.dropdown ul li.dir div.titleM {
+    letter-spacing: 0.5px;
+}
+
+ul.dropdown .top {
+    padding-right: 30px !important;
+}
+
+/*
+.items td{
+    line-height: 28px;
+}*/
+
+input[type=submit], input[type=button], .custom-btn, a.findBtn, input.findBtn, a.additionalBtn, a.customBtn, button[type=button]{
+    background: #fff;
+    padding: 4px 10px !important;
+    border: 1px solid #9a53b7;
+    color: #762c94;
+    border-radius:3px;
+}
+input[type=submit]:hover, input[type=button]:hover, .custom-btn:hover, a.findBtn:hover, input.findBtn:hover, a.additionalBtn:hover,  a.customBtn:hover, button[type=button]:hover{
+    background-color: #9a53b7;
+    /*border: 2px solid #3498DB;*/
+    cursor: pointer;
+    color:#fff;
+    font-weight:bold;
+}
+
+/* grid border */
+.grid-view table.items th, .grid-view table.items td {
+    border: 1px solid #dcdada !important;
+    text-align: center;
+}
+/* disable selected for merged cells */
+/*.grid-view td.merge {
+    background: none repeat scroll 0 0 #F8F8F8;
+}*/
+.grid-view table.items th{
+    border: 1px solid #229954 !important;
+}
+input[type=password], input[type=text] {
+    border: 1px solid #b7b4b4;
+    width:170px; /* late imp after biscuit*/
+}
+.final-grid-tr input[type=text]{
+    border: 1px solid #fff;
+    text-align: center;
+    font-weight: bold;
+}
+

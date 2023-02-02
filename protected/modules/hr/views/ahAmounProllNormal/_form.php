@@ -1,0 +1,310 @@
+<?php
+$form = $this->beginWidget('CActiveForm', array(
+    'id' => 'ah-amoun-proll-normal-form',
+    'action' => $this->createUrl('AhAmounProllNormal/create'),
+    'enableAjaxValidation' => false,
+    'enableClientValidation' => true,
+    'clientOptions' => array('validateOnSubmit' => true),
+        ));
+?>
+<style>
+    select{
+        width: 100%;
+    }
+    .totalTextBox{
+        text-align: center;
+        font-weight: bold;
+        font-size: 16px;
+        color: black !important;
+    }
+</style>
+<div class="formDiv">
+    <fieldset>
+        <legend>Configure Salary</legend>
+        <table width="50%" style="margin-top:10px;">
+            <tr>
+				<td>
+                    <?php echo $form->labelEx($model,'branch_name');?>
+                </td>
+                <td>
+                    <?php
+                    echo $form->dropDownList(
+                            $model, 'branch_name', CHtml::listData(Branches::model()->findAll(), "id", "title"), array(
+                        'prompt' => 'Select',
+                    ));
+                    ?>
+                </td>
+                <td><?php echo $form->labelEx($model, 'employee_id'); ?></td>
+                <td>
+                    <input type="text" id="emp_id" style="width: 100%;"/>
+                    <?php echo $form->hiddenField($model, 'employee_id'); ?>
+                    <script>
+                        $(function () {
+                            $("#emp_id").autocomplete({
+                                source: function (request, response) {
+                                    var emp_name = request.term;
+									var branch_id = $('#AhAmounProllNormal_branch_name').val();
+                                    $.post('<?php echo Yii::app()->baseUrl ?>/index.php/hr_payroll/employees/jqueryEmpSearch', {"emp_name": emp_name,"branch_id":branch_id},
+                                            function (data) {
+                                                response(data);
+                                            }, "json");
+                                },
+                                minLength: 2,
+                                select: function (event, ui) {
+                                    $("#emp_id").val(ui.item.label);
+                                    $("#AhAmounProllNormal_employee_id").val(ui.item.value);
+                                    return false;
+                                }
+                            });
+                        });
+                    </script>
+                    <?php echo $form->error($model, 'employee_id'); ?>
+                </td>
+            </tr>
+
+            <tr>
+                <td colspan="4">
+                    <!-- New Code-->
+                    <table id="tbl" class="prodAddedTab countableTable">
+                        <thead>
+                            <tr>
+                                <th style="width: 10px;">Sl</th>
+                                <th style="width: 100px;">Head</th>
+                                <th>Amount</th>
+                                <th>Basis</th>
+                                <th>Active</th>
+                                <th>Effective Month</th>                                
+                                <th width="5%">X</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <tr>
+                                <td></td>
+                                <td>
+                                    <?php
+                                    echo $form->dropDownList(
+                                            $model, 'ah_proll_normal_id', CHtml::listData(AhProllNormal::model()->findAll(), 'id', 'title', 'acTypeWithName'), array(
+                                        'prompt' => 'Select',
+                                    ));
+                                    ?>
+                                </td>
+                                <td><?php echo $form->textField($model, 'amount_adj'); ?></td>
+                                <td><?php echo $form->dropDownList($model, 'earn_deduct_type', Lookup::items('earn_deduct_type'), array('prompt' => 'select')); ?></td>                                
+                                <td><?php echo $form->dropDownList($model, 'is_active', Lookup::items('is_active')); ?></td>  
+                                <td>
+                                    <?php
+                                        $this->widget('ext.EJuiMonthPicker.EJuiMonthPicker', array(
+                                            'model' => $model,
+                                            'attribute' => 'effective_month',
+                                            'options' => array(
+                                                'yearRange' => '-5:+15',
+                                                'dateFormat' => 'M-yy',
+                                            ),
+                                        ));
+                                    ?>
+                                </td>
+                                <td>
+                                    <input style="color: #FFFFFF; padding: 0px 8px;" title="Add" type="button" value="Add" onclick="AddNew()" />
+                                </td>
+                            </tr>
+                        </tbody>
+                    </table>
+                    <table id="tblSCTotal" class="prodAddedTab countableTable" style="border-top:none !important;">
+                        <thead>
+                            <tr style="font-size: 15px;">
+                                <td><b>Total Earning</b></td>
+                                <td><input type="text" id="total_earning" class="totalTextBox"  readonly="readonly" disabled /></td>
+                                <td><b>Total Deduction</b></td>
+                                <td><input type="text" id="total_deduction" class="totalTextBox"  readonly="readonly" disabled /></td>
+                                <td><b>Net Salary</b></td>
+                                <td><input type="text" id="AhAmounProllNormal_total_price" class="totalTextBox"  name="AhAmounProllNormal[total_price][]" readonly="readonly" /></td>
+                            </tr>
+                        </thead>
+                    </table>
+                    <!-- End New Code-->
+                </td>
+            </tr>
+        </table>
+    </fieldset>
+    <fieldset class="tblFooters">
+        <?php
+        echo CHtml::ajaxSubmitButton('Add', CHtml::normalizeUrl(array('AhAmounProllNormal/create', 'render' => true)), array(
+            'dataType' => 'json',
+            'type' => 'post',
+            'success' => 'function(data) {
+                    $("#ajaxLoaderF").hide();  
+                    if(data.status=="success"){
+                        $("#formResult").fadeIn();
+                        $("#formResult").html("Data saved successfully.");
+                        $("#ah-amoun-proll-normal-form")[0].reset();
+                        $("#formResult").animate({opacity:1.0},1000).fadeOut("slow");
+                        $.fn.yiiGridView.update("ah-amoun-proll-normal-grid", {
+                            data: $(this).serialize()
+                        });
+                         $("#tbl tr.cartList").remove();
+                    }else{
+                        $("#formResult").fadeIn();
+                        $("#formResult").html(data.status);
+                        $("#ah-amoun-proll-normal-form")[0].reset();
+                        $("#formResult").animate({opacity:1.0},1000).fadeOut("slow");
+                        $.fn.yiiGridView.update("ah-amoun-proll-normal-grid", {
+                            data: $(this).serialize()
+						});
+                    }       
+                }',
+            'beforeSend' => 'function(){   
+                if($("#emp_id").val() == "" || $("#AhAmounProllNormal_employee_id").val() == "") {
+                    alertify.alert("Please select an employee!");
+                    return false;
+                }
+                var rowCount = document.getElementById("tbl").rows.length;
+                  if(rowCount <=2){
+                      alertify.alert("Sorry Your Grid is Empty!");
+                      return false;
+                  }
+                $("#ajaxLoaderF").show();
+             }'
+        ));
+        ?>
+        <div id="ajaxLoader" style="display: none; float: left;">
+            <img src="<?php echo Yii::app()->theme->baseUrl; ?>/images/ajax-loader-bar.gif" />
+        </div>
+        <div id="formResult" class="ajaxTargetDiv" style="float: right;"></div>
+        <div id="formResultError" class="ajaxTargetDivErr" style="float: right;"></div>
+    </fieldset>
+
+</div>
+
+<script>
+    var newArr = new Array();
+    var sl = 0;
+    function AddNew() {
+        if ($("#employee_id_text").val() == "") {
+            alertify.alert("Please Enter Employee !");
+            return false;
+        }
+        if ($("#AhAmounProllNormal_ah_proll_normal_id").val() == "") {
+            alertify.alert("Please Enter Head !");
+            return false;
+        }
+        if ($("#AhAmounProllNormal_amount_adj").val() == "") {
+            alertify.alert("Please Enter Amount !");
+            return false;
+        }
+        if ($("#AhAmounProllNormal_earn_deduct_type").val() == "") {
+            alertify.alert("Please Enter Basis !");
+            return false;
+        } else {
+            var newcode = $("#AhAmounProllNormal_ah_proll_normal_id").val();
+            var isproductpresent = 'no';
+            var temp_codearray = document.getElementsByName("AhAmounProllNormal[ah_proll_normal_id][]");
+            if (temp_codearray.length > 0) {
+                for (var l = 0; l < temp_codearray.length; l++) {
+                    var code = temp_codearray[l].value;
+                    if (code == newcode) {
+                        isproductpresent = l;
+                    }
+                }
+            }
+            if (isproductpresent != 'no') {
+                alertify.alert("This Item Already Added to Grid!");
+                return false;
+            } else {
+                add();
+                calculatetotal();
+                newArr[sl] = parseFloat(('0' + $("#AhAmounProllNormal_ah_proll_normal_id").val()).replace(/[^0-9-\.]/g, ''), 10);
+            }
+        }
+    }
+    function add() {
+        sl++;
+        var slNumber = ($('#tbl tbody tr').length);
+        var  earnDeduction = getSecondPart($('#AhAmounProllNormal_ah_proll_normal_id').find(':selected').parent('optgroup').attr('label'));
+        var earnDeductionStringClass = earnDeduction == <?= AhProllNormal::EARNING ?> ? "earning" : "deduction";
+
+        var appendTxt = "<tr class='cartList "+earnDeduction+"'>" +
+                "<td class='sno'>" + slNumber +
+                "<input type='hidden' name='AhAmounProllNormal[ah_proll_normal_id][]' value='" + $("#AhAmounProllNormal_ah_proll_normal_id").val() + "'>" +
+                "<input type='hidden' class='amount_adj' name='AhAmounProllNormal[amount_adj][]' value='" + $("#AhAmounProllNormal_amount_adj").val() + "'>" +
+                "<input type='hidden' name='AhAmounProllNormal[earn_deduct_type][]' value='" + $("#AhAmounProllNormal_earn_deduct_type").val() + "'>" +
+                "<input type='hidden' name='AhAmounProllNormal[is_active][]' value='" + $("#AhAmounProllNormal_is_active").val() + "'>" +
+                "<input type='hidden' name='AhAmounProllNormal[effective_month][]' value='" + $("#AhAmounProllNormal_effective_month").val() + "'>" +
+                "</td><td>" + $("#AhAmounProllNormal_ah_proll_normal_id option:selected").text() +
+                "</td><td class=' "+ earnDeductionStringClass + "'>" + $("#AhAmounProllNormal_amount_adj").val() +
+                "</td><td>" + $("#AhAmounProllNormal_earn_deduct_type option:selected").text() +
+                "</td><td>" + $("#AhAmounProllNormal_is_active option:selected").text() +
+                "</td><td>" +
+                "<input title=\"remove\" id='" + sl + "' type=\"button\" class=\"rdelete dltBtn\"  onclick=\"deleteRows($(this))\"/>" +
+                "</td></tr>";
+        $("#tbl tbody tr:last").after(appendTxt);
+    }
+
+    function deleteRows(element) {
+        var result = confirm("Are you sure you want to Delete?");
+        if (result) {
+            var idCounter = element.parents('tr').find('.rdelete').attr('id');
+            //console.log(idCounter);
+            $(element).parents("tr.cartList").remove();
+            $("#tbl tbody tr.cartList td.sno").each(function (index, element) {
+                $(element).text(index + 1);
+            });
+            newArr[idCounter] = 0;
+            //console.log(newArr);
+        }
+        calculatetotal();
+    }
+
+
+    function calculatetotal() {
+        console.log("calculating total!");
+        var earningAmountTotal = deductionAmountTotal = 0;
+        $("#tbl tr.cartList td.sno").each(function (index, element) {
+            var earningAmount = ifNan(parseFloat($(this).closest('tr').find(".earning").text()));
+            var deductionAmount = ifNan(parseFloat($(this).closest('tr').find(".deduction").text()));
+            earningAmountTotal += earningAmount;
+            deductionAmountTotal += deductionAmount;
+        });
+        var grandTotal = earningAmountTotal - deductionAmountTotal;
+        $("#total_earning").val(earningAmountTotal);
+        $("#total_deduction").val(deductionAmountTotal);
+        $("#AhAmounProllNormal_total_price").val(grandTotal);
+        console.log("end of calculating total!");
+    }
+
+    function getSecondPart(str) {
+        return str.split('-')[1];
+    }
+    function ifNan(value) {
+        if (isNaN(value))
+            return 0;
+        else if (value == Number.POSITIVE_INFINITY || value == Number.NEGATIVE_INFINITY)
+            return 0
+        else
+            return value;
+    }
+
+/*
+    $('#AhAmounProllNormal_ah_proll_normal_id').change(function () {
+
+        var opt = $(this).find(':selected');
+        var sel = opt.text();
+        var og = opt.closest('optgroup').attr('label');
+       // alert(sel);
+       // alert(og);
+
+        $(this).blur().find(':selected').text(sel + '-' + og);
+
+    });*/
+
+/*
+    $('#AhAmounProllNormal_ah_proll_normal_id').focus(function () {
+        $(this).find('option').each(function(){
+            console.log($(this).text());
+            t=$(this).text().split('-');
+            $(this).text(t[0]);
+        });
+
+    });*/
+</script>
+
+<?php $this->endWidget(); ?>

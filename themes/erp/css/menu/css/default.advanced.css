@@ -1,0 +1,44 @@
+@charset "UTF-8";
+    @import "default.css";
+    ul.dropdown li a {
+    display: block;
+    padding: 0 10px;
+}
+ul.dropdown li {
+    padding: 0;
+}
+ul.dropdown li.dir {
+    padding: 0 18px 0 10px;
+    margin-right:  5px;
+}
+ul.dropdown ul li.dir {
+    padding: 10px;
+    color: #4682B4;
+    text-shadow: 0 0 0 #FFFFFF;
+    width: 200px;
+}
+ul.dropdown ul li.dir span.titleM {
+    background-color: #FFF5EE;
+    border: 1px solid #AAAAAA;
+    border-left: none;
+    border-bottom: none;
+    color: #4169E1;
+    padding: 5px;
+}
+ul.dropdown ul {
+    padding: 0px 10px 60px;
+    box-shadow:  0 4px 7px #6495ED;
+    border-radius:  0px 0px 6px 6px;
+}
+ul.dropdown ul a {
+    width: 140px;
+    padding: 3px 5px;
+}
+ul.dropdown ul a:hover {
+    background-color: orange;
+    color: #fff;
+    text-shadow: 0 0 0 #fff;
+}
+ul.dropdown ul ul {
+    padding: 0;
+}

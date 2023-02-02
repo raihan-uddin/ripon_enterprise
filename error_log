@@ -1,0 +1,7 @@
+[13-Nov-2013 02:53:39] PHP Parse error:  syntax error, unexpected T_PAAMAYIM_NEKUDOTAYIM in /home/aerologi/public_html/inventory/inv/protected/controllers/PurchaseItemsController.php on line 341
+[13-Nov-2013 02:55:22] PHP Parse error:  syntax error, unexpected T_PAAMAYIM_NEKUDOTAYIM in /home/aerologi/public_html/inventory/inv/protected/controllers/PurchaseItemsController.php on line 341
+[13-Nov-2013 02:55:59] PHP Parse error:  syntax error, unexpected T_PAAMAYIM_NEKUDOTAYIM in /home/aerologi/public_html/inventory/inv/protected/controllers/PurchaseItemsController.php on line 341
+[13-Nov-2013 02:58:59] PHP Parse error:  syntax error, unexpected T_PAAMAYIM_NEKUDOTAYIM in /home/aerologi/public_html/inventory/inv/protected/controllers/PurchaseItemsController.php on line 396
+[13-Nov-2013 03:01:01] PHP Parse error:  syntax error, unexpected T_PAAMAYIM_NEKUDOTAYIM in /home/aerologi/public_html/inventory/inv/themes/inv/views/purchaseItems/_form.php on line 31
+[13-Nov-2013 05:53:56] PHP Parse error:  syntax error, unexpected T_PAAMAYIM_NEKUDOTAYIM in /home/aerologi/public_html/inventory/inv/themes/inv/views/purchaseItems/_form.php on line 31
+[23-Nov-2013 07:27:38] PHP Parse error:  syntax error, unexpected T_PAAMAYIM_NEKUDOTAYIM in /home/aerologi/public_html/inventory/inv/themes/inv/views/units/_form5.php on line 15

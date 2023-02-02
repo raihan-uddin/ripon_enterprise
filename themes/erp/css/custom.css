@@ -1,0 +1,122 @@
+span .required{
+    color: red;
+}
+.spinftw {
+    height: 0;
+    width: 0;
+    padding: 15px;
+    border: 6px solid #ccc;
+    border-right-color: #888;
+    border-radius: 22px;
+    -webkit-animation: rotate 1s infinite linear;
+    /* left, top and position just for the demo! */
+    position: absolute;
+    left: 50%;
+    top: 50%;
+}
+
+@-webkit-keyframes rotate {
+    /* 100% keyframe for  clockwise.
+       use 0% instead for anticlockwise */
+    100% {
+        -webkit-transform: rotate(360deg);
+    }
+}
+
+#CssLoader {
+    text-align: center;
+    height: 100%;
+    width: 100%;
+    position: fixed;
+    top: 0;
+    left: 0;
+    right: 0;
+    background: rgba(255, 255, 255, 0.9);
+    z-index: 9999;
+}
+
+
+#overlay{
+    position: fixed;
+    top: 0;
+    z-index: 100;
+    width: 100%;
+    height:100%;
+    display: none;
+    background: rgba(0,0,0,0.6);
+}
+.cv-spinner {
+    height: 100%;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}
+.spinner {
+    width: 40px;
+    height: 40px;
+    border: 4px #ddd solid;
+    border-top: 4px #2e93e6 solid;
+    border-radius: 50%;
+    animation: sp-anime 0.8s infinite linear;
+}
+@keyframes sp-anime {
+    100% {
+        transform: rotate(360deg);
+    }
+}
+.is-hide{
+    display:none;
+}
+
+ui-state-active h4,
+.ui-state-active h4:visited {
+    color: #26004d;
+}
+
+.ui-menu-item {
+    height: 80px;
+    border: 1px solid #ececf9;
+}
+.ui-menu-item:hover, .ui-menu-item:active, .ui-menu-item:focus, .ui-menu-item a:hover, .ui-menu-item a:active, .ui-menu-item a:focus {
+    background-color: #f4f4f4 !important;
+    color: black;!important;
+}
+
+.ui-widget-content .ui-state-active {
+    border: none !important;
+}
+
+.list_item_container {
+    width: 740px;
+    height: 80px;
+    float: left;
+    margin-left: 20px;
+}
+
+.ui-widget-content .ui-state-active .list_item_container {
+    background-color: #f5f5f5;
+}
+
+.ui-image {
+    width: 15%;
+    float: left;
+    padding: 10px;
+}
+
+.ui-image img {
+    width: 80px;
+    height: 60px;
+}
+
+.ui-label {
+    width: 85%;
+    float: right;
+    white-space: nowrap;
+    overflow: hidden;
+    /*color: rgb(124, 77, 255);*/
+    text-align: left;
+}
+
+input:focus {
+    background-color: #f5f5f5;
+}

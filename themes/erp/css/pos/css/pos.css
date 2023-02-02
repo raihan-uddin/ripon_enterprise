@@ -1,0 +1,478 @@
+
+/* 
+   TODO customize this sample style
+   Syntax recommendation http://www.w3.org/TR/REC-CSS2/
+*/
+html, body{
+    background: none repeat scroll 0 0 #2e3831;
+    font-family: Arial;
+}
+html,html:hover, 
+body,body:hover, 
+.posWrapper,.posWrapper:hover, 
+.firstPosWrapper,.firstPosWrapper:hover,  
+input,input:hover, 
+span,span:hover, 
+button,button:hover, 
+a,a:hover, 
+img,img:hover{
+/*       cursor: none;*/
+}
+.posWrapper{
+    float: left;
+    width: 100%;
+    padding-top: 6px;
+    background: none repeat scroll 0 0 #2e3831;
+    box-shadow: 0 5px 10px rgba(0, 0, 0, 0.1) inset;
+    user-select: none;
+}
+.firstPosWrapper{
+    margin: 1% auto;
+    width: 50%;
+}
+.homeDiv{
+    box-shadow: 0px 0px 4px teal;
+    border: 1px solid tan;
+    border-radius:6px;
+    float: left;
+    width: 90%;
+    padding: 0px 8px;
+}
+.homeDivSec{
+    float: left;
+    width: 100%;
+    margin: 4px 0px;
+}
+.homeDivSecSec{
+    float: left;
+    width: 50%;
+}
+.posTitle{
+    background: linear-gradient(to bottom, rgba(254,252,234,1) 0%,rgba(241,218,54,1) 100%); /* W3C */
+    float: left;
+    width: 100%;
+    text-align: center;
+    font-size: 22px;
+    text-shadow:1px 1px 0px #FFFFFF;
+    font-weight: bold;
+    padding: 3% 0px;
+    border-radius:6px;
+}
+.divSec{
+    float: left;
+    width: 100%;
+}
+.leftDiv{
+    float: left;
+    width: 40%;
+	margin-top:5px;
+}
+.rightDiv{
+    float: right;
+    width: 60%;
+}
+.scrollableDiv{
+    float: left;
+    width: 100%;
+    height: 365px;
+    overflow: scroll;
+    background-color: transparent;
+}
+table{
+    float: left;
+    width: 99%;
+    border-collapse: collapse;
+}
+table tr td{
+    padding: 0px;
+    text-align: center;
+}
+table tr th{
+    color: #FFFFFF;
+}
+table.posCheckoutTab{
+    color: #FFFFFF;
+}
+table.posCheckoutTab tr th{
+    padding: 5px;
+}
+.navBtn{
+    border: none;
+    float: left;
+    height: 64px;
+    width: 64px;
+}
+.navBtn:active{
+    position: relative;
+    top: 3px;
+}
+.scrlDn{
+    background: url(../images/down.png) center no-repeat transparent;
+}
+.scrlUp{
+    background: url(../images/up.png) center no-repeat transparent;
+}
+input[type="button"].main_menuBtn{
+    box-shadow:inset 0px 39px 0px -24px #e67a73;
+    background:#e4685d;
+    border:1px solid #000000;
+    border-radius:6px;
+    display:inline-block;
+    color:#ffffff;
+    font-size:16px;
+    font-weight: bold;
+    text-decoration:none;
+    text-shadow:1px 1px 1px #000000;
+    float: left;
+    width: 100%;
+    padding: 52px 0px;
+}
+input[type="button"].mmBtn{
+    box-shadow:inset 0px 39px 0px -24px #e67a73;
+    background:#e4685d;
+    border:1px solid #000000;
+    border-radius:6px;
+    display:inline-block;
+    color:#ffffff;
+    font-size:16px;
+    font-weight: bold;
+    text-decoration:none;
+    text-shadow:1px 1px 1px #000000;
+    float: left;
+    width: 100%;
+    padding: 52px 0px;
+}
+input[type="button"].mmBtn{
+    box-shadow:inset 0px 39px 0px -24px #e67a73;
+    background:#e4685d;
+    border:1px solid #000000;
+    border-radius:6px;
+    display:inline-block;
+    color:#ffffff;
+    font-size:16px;
+    font-weight: bold;
+    text-decoration:none;
+    text-shadow:1px 1px 1px #000000;
+    float: left;
+    width: 100%;
+    padding: 52px 0px;
+}
+input[type="button"].main_menuBtn:hover{
+    background:#eb675e;
+}
+input[type="button"].homeBtn{
+    background: linear-gradient(to bottom, #ffd65e 0%,#febf04 100%); /* W3C */
+    border:1px solid #000000;
+    border-radius:6px;
+    display:inline-block;
+    color:#000000;
+    font-size:16px;
+    font-weight: bold;
+    text-decoration:none;
+    text-shadow:1px 1px 0px #FFFFFF;
+    float: left;
+    width: 100%;
+    padding: 20px 0px;
+}
+input[type="button"].homeBtn2{
+    height: 100px;
+    width: 98%;
+}
+
+input[type="submit"].checkoutBtn {
+    box-shadow:inset 0px 1px 0px 0px #54a3f7;
+    background:linear-gradient(to bottom, #007dc1 5%, #0061a7 100%);
+    background-color:#007dc1;
+    border:1px solid #000000;
+    border-radius:6px;
+    display:inline-block;
+    color:#ffffff;
+    font-size:16px;
+    text-decoration:none;
+    text-shadow:1px 1px 1px #000000;
+    float: left;
+    width: 100%;
+    padding: 51px 0px;
+    margin: unset;
+}
+input[type="submit"].checkoutBtn:hover {
+    background:linear-gradient(to bottom, #0061a7 5%, #007dc1 100%);
+    background-color:#0061a7;
+}
+
+input[type="submit"].saveoutBtn {
+    box-shadow:inset 0px 1px 0px 0px #54a3f7;
+    background:#91e334 linear-gradient(to bottom, #91e334 5%, #7eb044 100%) repeat scroll 0 0;
+    background-color:#007dc1;
+    border:1px solid #000000;
+    border-radius:6px;
+    display:inline-block;
+    color:#ffffff;
+    font-size:16px;
+    text-decoration:none;
+    text-shadow:1px 1px 1px #000000;
+    float: left;
+    width: 100%;
+    padding: 51px 0px;
+    margin: unset;
+}
+input[type="submit"].saveoutBtn:hover {
+    background: linear-gradient(to bottom, #7fc332 5%, #91e334 100%);
+    background-color:#0061a7;
+}
+input[type="submit"].checkoutBtn:active {
+    position:relative;
+    top:1px;
+}
+.resetBtn:active{
+    position: relative;
+    top: 1px;
+}
+input[type="text"]{
+    text-align: center;
+    width: 80%;
+}
+input[type="text"].posCashPaidReturn,input[type="text"].itemCode{
+    height: 56px;
+}
+input[type="text"].notEditable{
+    background-color: #8fa395;
+    color: #ffffff;
+}
+input[type="button"].numPadBtn{
+    box-shadow:inset 0px -3px 7px 0px #29bbff;
+    background:linear-gradient(to bottom, #2dabf9 5%, #0688fa 100%);
+    background-color:#2dabf9;
+    border:1px solid #000000;
+    border-radius:4px;
+    display:inline-block;
+    color:#ffffff;
+    font-size:16px;
+    font-weight: bold;
+    text-decoration:none;
+    text-shadow:1px 1px 1px #000000;
+    float: left;
+    padding: 20px 25px;
+    width: 100%;
+}
+input[type="button"].numPadBtn:hover{
+    background:linear-gradient(to bottom, #0688fa 5%, #2dabf9 100%);
+    background-color:#0688fa;
+}
+input[type="button"].numPadBtn:active{
+    box-shadow:unset;
+    background: #828c95;
+}
+input[type="button"]#numPadBtn00{
+    padding-left:20px;
+    padding-right:20px;
+}
+input[type="button"]#numPadBtnDot{
+    padding-left:27px;
+    padding-right:27px;
+}
+input[type="button"].ersButton {
+    box-shadow:inset 0px 1px 0px 0px #f29c93;
+    background:linear-gradient(to bottom, #fe1a00 5%, #ce0100 100%);
+    background-color:#fe1a00;
+    border:1px solid #000000;
+    border-radius:6px;
+    display:inline-block;
+    color:#ffffff;
+    font-size:16px;
+    font-weight: bold;
+    text-decoration:none;
+    text-shadow:1px 1px 1px #000000;
+    float: left;
+    padding: 20px 25px;
+    width: 100%;
+}
+
+input[type="button"].deleteButton {
+    box-shadow:inset 0px 1px 0px 0px #f29c93;
+    background:linear-gradient(to bottom, #fe1a00 5%, #ce0100 100%);
+    background-color:#fe1a00;
+    border:1px solid #000000;
+    border-radius:6px;
+    display:inline-block;
+    color:#ffffff;
+    font-size:16px;
+    font-weight: bold;
+    text-decoration:none;
+    text-shadow:1px 1px 1px #000000;
+    float: left;
+    padding: 20px 25px;
+    width: 100%;
+}
+input[type="button"].ersButton:hover {
+    background:linear-gradient(to bottom, #ce0100 5%, #fe1a00 100%);
+    background-color:#ce0100;
+}
+input[type="button"].reprintBtn{
+    background: #b4ddb4; /* Old browsers */
+    background: linear-gradient(to bottom, #b4ddb4 0%,#83c783 17%,#52b152 33%,#008a00 67%,#005700 83%,#002400 100%); /* W3C */
+    border:1px solid #000000;
+    border-radius:6px;
+    display:inline-block;
+    color:#ffffff;
+    font-size:16px;
+    font-weight: bold;
+    text-decoration:none;
+    text-shadow:1px 1px 1px #000000;
+    width: 84%;
+    padding: 20px 0px;
+}
+input[type="button"].voidBtn{
+    box-shadow:inset 0px 1px 0px 0px #f29c93;
+    background:linear-gradient(to bottom, #fe1a00 5%, #ce0100 100%);
+    background-color:#fe1a00;
+    border:1px solid #000000;
+    border-radius:6px;
+    display:inline-block;
+    color:#ffffff;
+    font-size:16px;
+    font-weight: bold;
+    text-decoration:none;
+    text-shadow:1px 1px 1px #000000;
+    width: 84%;
+    padding: 20px 0px;
+}
+
+input[type="button"].saleBtn{
+    box-shadow:inset 0px 1px 0px 0px #f29c93;
+    background:linear-gradient(to bottom, #fe1a00 5%, #ce0100 100%);
+    background-color:#fe1a00;
+    border:1px solid #000000;
+    border-radius:6px;
+    display:inline-block;
+    color:#ffffff;
+    font-size:16px;
+    font-weight: bold;
+    text-decoration:none;
+    text-shadow:1px 1px 1px #000000;
+    width: 84%;
+    padding: 20px 0px;
+}
+input[type="button"].updateBtn{
+   background: linear-gradient(to bottom, #ffd65e 0%,#febf04 100%); /* W3C */
+    border:1px solid #000000;
+    border-radius:6px;
+    display:inline-block;
+    color:#000000;
+    font-size:16px;
+    font-weight: bold;
+    text-decoration:none;
+    text-shadow:1px 1px 0px #FFFFFF;
+    width: 84%;
+    padding: 20px 0px;
+}
+
+a.logoutBtn{
+    float: right;
+}
+a.logoutBtn img{
+    width: 60px;
+    height: 50px;
+    border: none;
+}
+a.posLogoutBtn{
+    float: right;
+}
+.posItemCats{
+    float: left;
+    width: 110px;
+    height: 110px;
+    display:inline-block;
+    color:#ffffff;
+    text-decoration:none;
+    text-shadow:0px 1px 0px #263666;
+    box-shadow:inset 0px -3px 7px 0px #eeeeee;
+    border-radius:4px;
+    margin: 1px;
+    border:1px solid #000000;
+    background: linear-gradient(to bottom, #eeeeee 0%,#cccccc 100%); /* W3C */
+}
+.posItemCats:hover{
+    background:linear-gradient(to bottom, #cccccc 5%, #eeeeee 100%);
+    background-color:#0688fa;
+}
+.posItemCats:active{
+    position: relative;
+    top: 1px;
+}
+.prodTitle{
+    font-size: 15px;
+    width: 110px;
+    height: 110px;
+    color: #000;
+    font-weight: bold;
+    text-shadow: 0px 0px 1px #FFFFFF;
+    text-align: center;
+    display: table-cell;
+    vertical-align:middle;
+}
+input[type="text"].noWidthInput{
+    width: 53px;
+}
+input[type="text"]{
+    box-shadow: unset;
+    border: 1px solid #aaa;
+    border-radius: 6px;
+    color: #555;
+}
+input[type="button"].dltBtn{
+    background: url(../images/deleteBtn.png) no-repeat center;
+    border: none;
+    height: 32px;
+    width: 32px;
+    margin-left: 12px;
+}
+.ajaxTargetDiv,ajaxTargetDivErr{
+    background-color: unset;
+}
+input[type="text"].coloredInpt{
+    font-size: 18px;
+    text-shadow: 0px 0px 1px #000000;
+	color:#FFF;
+    background-color: rebeccapurple;
+}
+#merchantCopy{
+    display: none;
+}
+
+.tablelist{
+    box-shadow: inset 0px 1px 0px 0px #f29c93;
+    background: linear-gradient(to bottom, #fe1a00 5%, #ce0100 100%);
+    background-color: #fe1a00;
+    border: 1px solid #000000;
+    border-radius: 6px;
+    color: #ffffff;
+    font-size: 16px;
+    font-weight: bold;
+    text-decoration: none;
+    text-shadow: 1px 1px 1px #000000;
+    padding: 20px 30px;
+}
+.printBtnPos{
+    background: #b4ddb4; /* Old browsers */
+    background: linear-gradient(to bottom, #b4ddb4 0%,#83c783 17%,#52b152 33%,#008a00 67%,#005700 83%,#002400 100%); /* W3C */
+    border:1px solid #000000;
+    border-radius:6px;
+    display:inline-block;
+    color:#ffffff;
+    font-size:16px;
+    font-weight: bold;
+    text-decoration:none;
+    text-shadow:1px 1px 1px #000000;
+    width: 84%;
+    padding: 20px 0px;
+}
+
+.cynListy{
+    height: 56px;
+    box-shadow: unset;
+    border: 1px solid #aaa;
+    border-radius: 6px;
+    color: #555;
+    width: 80%;
+}
