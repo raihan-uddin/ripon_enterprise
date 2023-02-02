@@ -18,7 +18,7 @@
  * @property double $row_total
  * @property integer $stock_status
  * @property integer $source_id
- * @property integer $stock_of
+ * @property string $product_sl_no
  * @property string $remarks
  * @property string $create_time
  * @property integer $create_by
@@ -43,6 +43,10 @@ class Inventory extends CActiveRecord
     public $name;
     public $t_type;
     public $unit_id;
+    public $item_id;
+    public $brand_id;
+    public $warranty;
+    public $image;
     public $closing_stock;
 
     public static function maxSlNo()
@@ -81,12 +85,12 @@ class Inventory extends CActiveRecord
         // will receive user inputs.
         return array(
             array('date, model_id, stock_status', 'required'),
-            array('sl_no, store_id, location_id, model_id, stock_status, source_id, stock_of, create_by, update_by', 'numerical', 'integerOnly' => true),
+            array('sl_no, store_id, location_id, model_id, stock_status, source_id, create_by, update_by', 'numerical', 'integerOnly' => true),
             array('stock_in, stock_out, sell_price, purchase_price, row_total', 'numerical'),
-            array('challan_no, remarks', 'length', 'max' => 255),
+            array('challan_no, remarks, product_sl_no', 'length', 'max' => 255),
             array('date, create_time, update_time', 'safe'),
             // The following rule is used by search().
-            array('id, sl_no, date, challan_no, row_total, store_id, location_id, model_id, stock_in, stock_out, sell_price, purchase_price, stock_status, source_id, stock_of, remarks, create_time, create_by, update_time, update_by', 'safe', 'on' => 'search'),
+            array('id, sl_no, date, challan_no, row_total, store_id, location_id, product_sl_no, model_id, stock_in, stock_out, sell_price, purchase_price, stock_status, source_id, product_sl_no, remarks, create_time, create_by, update_time, update_by', 'safe', 'on' => 'search'),
         );
     }
 
@@ -110,19 +114,18 @@ class Inventory extends CActiveRecord
             'sl_no' => 'Sl No',
             'closing_stock' => 'Stock',
             'row_total' => 'Total',
-            't_type' => 'Transaction Type',
+            't_type' => 'Trx. Type',
             'date' => 'Date',
             'challan_no' => 'Challan No',
             'store_id' => 'Store',
             'location_id' => 'Location',
-            'model_id' => 'Material',
+            'model_id' => 'Product',
             'stock_in' => 'Stock In',
             'stock_out' => 'Stock Out',
             'sell_price' => 'Sell Price',
             'purchase_price' => 'Purchase Price',
             'stock_status' => 'Stock Status',
             'source_id' => 'Source',
-            'stock_of' => 'Stock Of',
             'remarks' => 'Remarks',
             'create_time' => 'Create Time',
             'create_by' => 'Create By',
@@ -188,7 +191,7 @@ class Inventory extends CActiveRecord
         $criteria->compare('purchase_price', $this->purchase_price);
         $criteria->compare('stock_status', $this->stock_status);
         $criteria->compare('source_id', $this->source_id);
-        $criteria->compare('stock_of', $this->stock_of);
+        $criteria->compare('product_sl_no', $this->product_sl_no);
         $criteria->compare('remarks', $this->remarks, true);
         $criteria->compare('create_time', $this->create_time, true);
         $criteria->compare('create_by', $this->create_by);

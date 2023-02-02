@@ -27,7 +27,7 @@ $form = $this->beginWidget('CActiveForm', array(
     </div>
     <div class="card-body">
         <div class="row">
-            <div class="col-sm-12 col-md-3">
+            <div class="col-sm-12 col-md-2">
 
                 <div class="form-group row" style="">
                     <?php echo $form->labelEx($model, 'date', ['class' => 'col-sm-4 col-form-label']); ?>
@@ -107,11 +107,10 @@ $form = $this->beginWidget('CActiveForm', array(
                           style="color: red; width: 100%"> <?php echo $form->error($model, 'remarks'); ?></span>
                 </div>
             </div>
-            <div class="col-sm-12 col-md-9">
-
+            <div class="col-sm-12 col-md-10">
                 <div class="card card-info">
                     <div class="card-header">
-                        <h3 class="card-title">Materials</h3>
+                        <h3 class="card-title">Product</h3>
 
                         <div class="card-tools">
                             <button type="button" class="btn btn-tool" data-card-widget="collapse">
@@ -124,7 +123,7 @@ $form = $this->beginWidget('CActiveForm', array(
                     </div>
                     <div class="card-body">
                         <div class="row">
-                            <div class="form-group col-xs-12 col-md-4 col-lg-4">
+                            <div class="form-group col-sm-12 col-md-3 col-lg-2">
                                 <?php echo $form->labelEx($model, 'model_id'); ?>
                                 <input type="text" id="model_id_text" class="form-control">
                                 <?php echo $form->hiddenField($model, 'model_id', array('maxlength' => 255, 'class' => 'form-control', 'readonly' => true)); ?>
@@ -141,6 +140,99 @@ $form = $this->beginWidget('CActiveForm', array(
                                             source: function (request, response) {
                                                 var search = request.term;
                                                 $.post('<?php echo Yii::app()->baseUrl ?>/index.php/prodModels/Jquery_showprodSearch', {
+                                                        "q": search,
+                                                    },
+                                                    function (data) {
+                                                        response(data);
+                                                    }, "json");
+                                            },
+                                            minLength: 1,
+                                            select: function (event, ui) {
+                                                $('#model_id_text').val(ui.item.value);
+                                                $('#product_code').val(ui.item.code);
+                                                $('#Inventory_model_id').val(ui.item.id);
+                                                $('#Inventory_unit_id').val(ui.item.unit_id);
+                                                $('#Inventory_sell_price').val(ui.item.sell_price);
+                                                $('.product_unit_text').html($('#Inventory_unit_id option:selected').text());
+                                                if ($("#Inventory_t_type").val() == <?=  Inventory::STOCK_OUT ?>) {
+                                                    $.post('<?php echo Yii::app()->baseUrl ?>/index.php/inventory/inventory/Jquery_getStockQty', {
+                                                        model_id: ui.item.id,
+                                                        store_id: $("#Inventory_store_id").val(),
+                                                        location_id: $("#Inventory_location_id").val()
+                                                    }, function (response) {
+                                                        $("#Inventory_closing_stock").val(response);
+                                                    });
+                                                }
+                                            }
+                                        }).data("ui-autocomplete")._renderItem = function (ul, item) {
+                                            return $("<li></li>")
+                                                .data("item.autocomplete", item)
+                                                .append(`<a><img style="height: 50px; width: 50px;" src="${item.img}"> ${item.name} <br><i><small>${item.code}</small></i> </a>`)
+                                                .appendTo(ul);
+                                        };
+
+                                    });
+                                </script>
+                            </div>
+                            <div class="form-group col-sm-12 col-md-3 col-lg-2">
+                                <?php echo $form->labelEx($model, 'code'); ?>
+                                <input type="text" id="product_code" class="form-control">
+
+                                <span class="help-block"
+                                      style="color: red; width: 100%"> <?php echo $form->error($model, 'code'); ?></span>
+
+                                <script>
+                                    $(document).ready(function () {
+                                        $('#product_code').autocomplete({
+                                            source: function (request, response) {
+                                                var search = request.term;
+                                                $.post('<?php echo Yii::app()->baseUrl ?>/index.php/prodModels/Jquery_showprodCodeSearch', {
+                                                        "q": search,
+                                                    },
+                                                    function (data) {
+                                                        response(data);
+                                                    }, "json");
+                                            },
+                                            minLength: 1,
+                                            select: function (event, ui) {
+                                                $('#model_id_text').val(ui.item.value);
+                                                $('#product_code').val(ui.item.code);
+                                                $('#Inventory_model_id').val(ui.item.id);
+                                                $('#Inventory_unit_id').val(ui.item.unit_id);
+                                                $('#Inventory_sell_price').val(ui.item.sell_price);
+                                                $('.product_unit_text').html($('#Inventory_unit_id option:selected').text());
+                                                if ($("#Inventory_t_type").val() == <?=  Inventory::STOCK_OUT ?>) {
+                                                    $.post('<?php echo Yii::app()->baseUrl ?>/index.php/inventory/inventory/Jquery_getStockQty', {
+                                                        model_id: ui.item.id,
+                                                        store_id: $("#Inventory_store_id").val(),
+                                                        location_id: $("#Inventory_location_id").val()
+                                                    }, function (response) {
+                                                        $("#Inventory_closing_stock").val(response);
+                                                    });
+                                                }
+                                            }
+                                        }).data("ui-autocomplete")._renderItem = function (ul, item) {
+                                            return $("<li></li>")
+                                                .data("item.autocomplete", item)
+                                                .append(`<a><img style="height: 50px; width: 50px;" src="${item.img}"> ${item.name} <br><i><small>${item.code}</small></i> </a>`)
+                                                .appendTo(ul);
+                                        };
+                                    });
+                                </script>
+                            </div>
+                            <div class="form-group col-sm-12 col-md-3 col-lg-2">
+                                <?php echo $form->labelEx($model, 'product_sl_no'); ?>
+                                <input type="text" id="product_sl_no" class="form-control">
+
+                                <span class="help-block"
+                                      style="color: red; width: 100%"> <?php echo $form->error($model, 'product_sl_no'); ?></span>
+
+                                <script>
+                                    $(document).ready(function () {
+                                        $('#product_sl_no').autocomplete({
+                                            source: function (request, response) {
+                                                var search = request.term;
+                                                $.post('<?php echo Yii::app()->baseUrl ?>/index.php/inventory/inventory/Jquery_showprodSlNoSearch', {
                                                         "q": search,
                                                     },
                                                     function (data) {
@@ -174,7 +266,7 @@ $form = $this->beginWidget('CActiveForm', array(
                                     });
                                 </script>
                             </div>
-                            <div class="form-group col-xs-12 col-md-2 col-lg-2 stock-in">
+                            <div class="form-group col-sm-12 col-md-2 col-lg-2 stock-in">
                                 <?php echo $form->labelEx($model, 'stock_in'); ?>
                                 <div class="input-group">
                                     <?php echo $form->textField($model, 'stock_in', array('maxlength' => 255, 'class' => 'form-control')); ?>
@@ -185,7 +277,7 @@ $form = $this->beginWidget('CActiveForm', array(
                                 <span class="help-block"
                                       style="color: red; width: 100%"> <?php echo $form->error($model, 'model_id'); ?></span>
                             </div>
-                            <div class="form-group col-xs-12 col-md-2 col-lg-2 stock-out" style="display: none;">
+                            <div class="form-group col-sm-12 col-md-2 col-lg-2 stock-out" style="display: none;">
                                 <?php echo $form->labelEx($model, 'stock_out'); ?>
                                 <div class="input-group">
                                     <?php echo $form->textField($model, 'stock_out', array('maxlength' => 255, 'class' => 'form-control')); ?>
@@ -196,7 +288,7 @@ $form = $this->beginWidget('CActiveForm', array(
                                 <span class="help-block"
                                       style="color: red; width: 100%"> <?php echo $form->error($model, 'model_id'); ?></span>
                             </div>
-                            <div class="form-group col-xs-12 col-md-2 col-lg-2 stock-out" style="display: none;">
+                            <div class="form-group col-sm-12 col-md-2 col-lg-2 stock-out" style="display: none;">
                                 <?php echo $form->labelEx($model, 'closing_stock'); ?>
                                 <div class="input-group">
                                     <?php echo $form->textField($model, 'closing_stock', array('maxlength' => 255, 'class' => 'form-control', 'readonly' => true)); ?>
@@ -207,7 +299,7 @@ $form = $this->beginWidget('CActiveForm', array(
                                 <span class="help-block"
                                       style="color: red; width: 100%"> <?php echo $form->error($model, 'closing_stock'); ?></span>
                             </div>
-                            <div class="form-group col-xs-12 col-md-3 col-lg-2">
+                            <div class="form-group col-sm-12 col-md-3 col-lg-2">
                                 <button class="btn  btn-success mt-4" onclick="addToList()" type="button">ADD TO LIST
                                 </button>
                             </div>
@@ -217,7 +309,8 @@ $form = $this->beginWidget('CActiveForm', array(
                                 <table class="table table-bordered table-striped table-valign-middle" id="list">
                                     <thead class="table-info">
                                     <tr>
-                                        <th>Materials Name</th>
+                                        <th>Product Name</th>
+                                        <th style="width: 15%;" class="text-center">SL NO</th>
                                         <th style="width: 15%;" class="text-center">Stock In</th>
                                         <th style="width: 15%;" class="text-center">Stock Out</th>
                                         <th style="width: 5%;" class="text-center">Action</th>
@@ -266,7 +359,7 @@ $form = $this->beginWidget('CActiveForm', array(
             'beforeSend' => 'function(){    
                   let count_item =  $(".item").length;                     
                 if(count_item <= 0){
-                        toastr.error("Please add materials to list.");
+                        toastr.error("Please add Product to list.");
                         return false;
                 }else {                   
                       $("#overlay").fadeIn(300);　   
@@ -326,6 +419,7 @@ $form = $this->beginWidget('CActiveForm', array(
         let model_id = $("#Inventory_model_id").val();
         let model_id_text = $("#model_id_text").val();
         let unit_price = $("#Inventory_sell_price").val();
+        let product_sl_no = $("#product_sl_no").val();
         let stock_in = parseFloat($("#Inventory_stock_in").val());
         let stock_out = parseFloat($("#Inventory_stock_out").val());
         let closing_stock = parseFloat($("#Inventory_closing_stock").val());
@@ -348,7 +442,7 @@ $form = $this->beginWidget('CActiveForm', array(
         }
 
         if (model_id == "" || model_id_text == "") {
-            toastr.error("Please select a material");
+            toastr.error("Please select a product");
             return false;
         } else if (isproductpresent == true) {
             toastr.error(model_id_text + " is already on the list! Please add another!");
@@ -366,6 +460,9 @@ $form = $this->beginWidget('CActiveForm', array(
             $("#list tbody").append(`
                 <tr class="item">
                     <td>${model_id_text}</td>
+                    <td class="text-center">
+                            <input type="text" class="form-control text-center" value="${product_sl_no}" name="Inventory[temp_product_sl_no][] readonly">
+                    </td>
                     <td class="text-center">
                         <div class="input-group">
                             <input type="text" class="form-control text-center" value="${stock_in}" name="Inventory[temp_stock_in][]" ${t_type == <?=Inventory::STOCK_OUT ?> ? "readonly" : ""}>
@@ -397,6 +494,8 @@ $form = $this->beginWidget('CActiveForm', array(
     function clearDynamicItem() {
         $("#Inventory_model_id").val('');
         $("#model_id_text").val('');
+        $("#product_code").val('');
+        $("#product_sl_no").val('');
         $("#Inventory_unit_id").val('');
         $("#Inventory_stock_in").val('');
         $("#Inventory_stock_out").val('');

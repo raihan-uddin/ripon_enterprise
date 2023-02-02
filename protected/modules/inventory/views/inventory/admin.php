@@ -177,6 +177,7 @@ if (Yii::app()->user->checkAccess('Inventory.Inventory.VoucherPreview')) {
                     'name' => 'model_id',
                     'value' => 'ProdModels::model()->nameOfThis($data->model_id)',
                 ),
+                'product_sl_no',
                 array(
                     'name' => 'stock_in',
                     'htmlOptions' => ['class' => 'text-center']

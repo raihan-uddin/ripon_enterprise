@@ -16,6 +16,7 @@ class InventoryController extends Controller
     {
         return array(
             'rights
+            -Jquery_showprodSlNoSearch
             -Jquery_getStockQty',
         );
     }
@@ -67,6 +68,7 @@ class InventoryController extends Controller
                     $model2->challan_no = $challan_no;
                     $model2->model_id = $model_id;
                     $model2->date = $_POST['Inventory']['date'];
+                    $model2->product_sl_no = $_POST['Inventory']['temp_product_sl_no'][$key];
                     $model2->store_id = $_POST['Inventory']['store_id'];
                     $model2->location_id = $_POST['Inventory']['location_id'];
                     if ($t_type == Inventory::STOCK_IN) {
@@ -194,6 +196,75 @@ class InventoryController extends Controller
         $location_id = isset($_POST['location_id']) ? $_POST['location_id'] : 0;
         $stock = Inventory::model()->closingStock($model_id, $store_id, $location_id);
         echo json_encode($stock);
+    }
+
+
+    public function actionJquery_showprodSlNoSearch()
+    {
+        $search_prodName = trim($_POST['q']);
+
+        $criteria2 = new CDbCriteria();
+        $criteria2->compare('product_sl_no', $search_prodName);
+        $criteria2->addCondition("product_sl_no IS NOT NULL");
+
+        $criteria = new CDbCriteria();
+        $criteria->mergeWith($criteria2);
+        $criteria->select = "pm.code, pm.model_name, pm.id, pm.item_id, pm.brand_id, pm.unit_id, pm.warranty, pm.image";
+        $criteria->order = "product_sl_no asc";
+        $criteria->join = "INNER JOIN prod_models pm on t.model_id = pm.id ";
+        $criteria->limit = 20;
+        $prodInfos = Inventory::model()->findAll($criteria);
+        if ($prodInfos) {
+            foreach ($prodInfos as $prodInfo) {
+                $code = $prodInfo->code;
+                $value = "$prodInfo->model_name || $code";
+                $label = "$prodInfo->model_name || $code";
+                $id = $prodInfo->id;
+                $name = $prodInfo->model_name;
+                $item_id = $prodInfo->item_id;
+                $brand_id = $prodInfo->brand_id;
+                $unit_id = $prodInfo->unit_id;
+                $warranty = $prodInfo->warranty;
+                $activeInfos = SellPrice::model()->activeInfos($prodInfo->id);
+                $sellPrice = $sellDiscount = 0;
+                if ($activeInfos) {
+                    $sellPrice = $activeInfos->sell_price;
+                    $sellDiscount = $activeInfos->discount;
+                }
+                $imageWithUrl = $prodInfo->image != "" ? Yii::app()->baseUrl . "/uploads/products/$prodInfo->image" : Yii::app()->theme->baseUrl . "/images/no-image.jpg";
+                $results[] = array(
+                    'id' => $id,
+                    'name' => $name,
+                    'value' => $value,
+                    'label' => $label,
+                    'item_id' => $item_id,
+                    'brand_id' => $brand_id,
+                    'code' => $code,
+                    'warranty' => $warranty,
+                    'sell_price' => $sellPrice,
+                    'unit_id' => $unit_id,
+                    'sellDiscount' => $sellDiscount,
+                    'img' => $imageWithUrl,
+                );
+            }
+        } else {
+            $imageWithUrl = Yii::app()->theme->baseUrl . "/images/no-image.jpg";
+            $results[] = array(
+                'id' => '',
+                'name' => 'No data found!',
+                'value' => 'No data found!',
+                'label' => 'No data found!',
+                'item_id' => '',
+                'brand_id' => '',
+                'code' => '',
+                'warranty' => '',
+                'sell_price' => '',
+                'unit_id' => '',
+                'sellDiscount' => '',
+                'img' => $imageWithUrl,
+            );
+        }
+        echo json_encode($results);
     }
 
 }

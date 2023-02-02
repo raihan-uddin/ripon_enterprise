@@ -24,7 +24,7 @@ $this->widget('application.extensions.mbmenu.MbMenu', array(
                 )
             ),
         ),
-        array('label' => 'HR',
+        /*array('label' => 'HR',
             'items' => array(
                 array('label' => 'CONFIG',
                     'items' => array(
@@ -89,7 +89,7 @@ $this->widget('application.extensions.mbmenu.MbMenu', array(
                     ),
                 ),
             ),
-        ),
+        ),*/
         array('label' => 'EXPENSE',
             'items' => array(
                 array('label' => 'CONFIG',
@@ -111,7 +111,7 @@ $this->widget('application.extensions.mbmenu.MbMenu', array(
                     'items' => array(
                         ['label' => Yii::t('app', 'CATEGORY'), 'url' => ['/prodItems/admin'], 'visible' => Yii::app()->user->checkAccess('ProdItems.Admin')],
                         ['label' => Yii::t('app', 'SUB-CATEGORY'), 'url' => ['/prodBrands/admin'], 'visible' => Yii::app()->user->checkAccess('ProdBrands.Admin')],
-                        array('label' => 'MATERIAL SETUP',
+                        array('label' => 'PROUDCT SETUP',
                             'items' => array(
                                 ['label' => Yii::t('app', 'CREATE'), 'url' => ['/prodModels/create'], 'visible' => Yii::app()->user->checkAccess('ProdModels.Create')],
                                 ['label' => Yii::t('app', 'MANAGE'), 'url' => ['/prodModels/admin'], 'visible' => Yii::app()->user->checkAccess('ProdModels.Admin')],
@@ -121,12 +121,12 @@ $this->widget('application.extensions.mbmenu.MbMenu', array(
                         ['label' => Yii::t('app', 'LOCATION'), 'url' => ['/inventory/location/admin'], 'visible' => Yii::app()->user->checkAccess('Inventory.Location.Admin')],
                     ),
                 ),
-                array('label' => 'JOB CARD ISSUE',
-                    'items' => array(
-                        ['label' => Yii::t('app', 'CREATE'), 'url' => ['/inventory/jobCardIssue/create'], 'visible' => Yii::app()->user->checkAccess('Inventory.JobCardIssue.Create')],
-                        ['label' => Yii::t('app', 'MANAGE'), 'url' => ['/inventory/jobCardIssue/admin'], 'visible' => Yii::app()->user->checkAccess('Inventory.JobCardIssue.Admin')],
-                    ),
-                ),
+                /* array('label' => 'JOB CARD ISSUE',
+                     'items' => array(
+                         ['label' => Yii::t('app', 'CREATE'), 'url' => ['/inventory/jobCardIssue/create'], 'visible' => Yii::app()->user->checkAccess('Inventory.JobCardIssue.Create')],
+                         ['label' => Yii::t('app', 'MANAGE'), 'url' => ['/inventory/jobCardIssue/admin'], 'visible' => Yii::app()->user->checkAccess('Inventory.JobCardIssue.Admin')],
+                     ),
+                 ),*/
                 array('label' => 'STOCK',
                     'items' => array(
                         ['label' => Yii::t('app', 'MANAGE'), 'url' => ['/inventory/inventory/admin'], 'visible' => Yii::app()->user->checkAccess('Inventory.Inventory.Admin')],

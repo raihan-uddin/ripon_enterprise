@@ -18,6 +18,7 @@ class ProdModelsController extends Controller
         return array(
             'rights
             -Jquery_showprodSearch
+            -Jquery_showprodCodeSearch
             -SubCatOfThisCat',
         );
     }
@@ -46,6 +47,80 @@ class ProdModelsController extends Controller
                 $criteria->addNotInCondition('item_id', $item_id);
         }
         $criteria->order = "model_name asc";
+        $criteria->limit = 20;
+        $prodInfos = ProdModels::model()->findAll($criteria);
+        if ($prodInfos) {
+            foreach ($prodInfos as $prodInfo) {
+                $code = $prodInfo->code;
+                $value = "$prodInfo->model_name || $code";
+                $label = "$prodInfo->model_name || $code";
+                $id = $prodInfo->id;
+                $name = $prodInfo->model_name;
+                $item_id = $prodInfo->item_id;
+                $brand_id = $prodInfo->brand_id;
+                $unit_id = $prodInfo->unit_id;
+                $warranty = $prodInfo->warranty;
+                $activeInfos = SellPrice::model()->activeInfos($prodInfo->id);
+                $sellPrice = $sellDiscount = 0;
+                if ($activeInfos) {
+                    $sellPrice = $activeInfos->sell_price;
+                    $sellDiscount = $activeInfos->discount;
+                }
+                $imageWithUrl = $prodInfo->image != "" ? Yii::app()->baseUrl . "/uploads/products/$prodInfo->image" : Yii::app()->theme->baseUrl . "/images/no-image.jpg";
+                $results[] = array(
+                    'id' => $id,
+                    'name' => $name,
+                    'value' => $value,
+                    'label' => $label,
+                    'item_id' => $item_id,
+                    'brand_id' => $brand_id,
+                    'code' => $code,
+                    'warranty' => $warranty,
+                    'sell_price' => $sellPrice,
+                    'unit_id' => $unit_id,
+                    'sellDiscount' => $sellDiscount,
+                    'img' => $imageWithUrl,
+                );
+            }
+        } else {
+            $imageWithUrl = Yii::app()->theme->baseUrl . "/images/no-image.jpg";
+            $results[] = array(
+                'id' => '',
+                'name' => 'No data found!',
+                'value' => 'No data found!',
+                'label' => 'No data found!',
+                'item_id' => '',
+                'brand_id' => '',
+                'code' => '',
+                'warranty' => '',
+                'sell_price' => '',
+                'unit_id' => '',
+                'sellDiscount' => '',
+                'img' => $imageWithUrl,
+            );
+        }
+        echo json_encode($results);
+    }
+
+
+    public function actionJquery_showprodCodeSearch()
+    {
+        $search_prodName = trim($_POST['q']);
+        $item_id = isset($_POST['item_id']) ? $_POST['item_id'] : [];
+        $item_id_excluded = isset($_POST['item_id_excluded']) ? trim($_POST['item_id_excluded']) : false;
+
+        $criteria2 = new CDbCriteria();
+        $criteria2->compare('code', $search_prodName);
+
+        $criteria = new CDbCriteria();
+        $criteria->mergeWith($criteria2);
+        if (count($item_id) > 0) {
+            if (!$item_id_excluded)
+                $criteria->addInCondition('item_id', $item_id);
+            else
+                $criteria->addNotInCondition('item_id', $item_id);
+        }
+        $criteria->order = "code asc";
         $criteria->limit = 20;
         $prodInfos = ProdModels::model()->findAll($criteria);
         if ($prodInfos) {

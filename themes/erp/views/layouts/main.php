@@ -18,7 +18,7 @@
     <!--    <link rel="stylesheet" href="-->
     <?php //echo Yii::app()->theme->baseUrl; ?><!--/css/custom.css" type="text/css"-->
     <!--          media="screen"/>-->
-    <link rel="icon" href="<?php echo Yii::app()->theme->baseUrl; ?>/images/favicon.png"/>
+    <link rel="icon" href="<?php echo Yii::app()->theme->baseUrl; ?>/images/favicon.ico"/>
 
     <link rel="stylesheet" href="<?php echo Yii::app()->theme->baseUrl; ?>/font-awesome/css/font-awesome.min.css">
     <link rel="stylesheet" href="<?php echo Yii::app()->theme->baseUrl; ?>/css/ionicons.min.css">
