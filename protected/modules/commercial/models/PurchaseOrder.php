@@ -40,7 +40,6 @@ class PurchaseOrder extends CActiveRecord
     public $exp_delivery_date;
     public $customer_id;
     public $note;
-    public $order_note;
     public $web;
     public $address;
     public $contact_no;
@@ -77,10 +76,10 @@ class PurchaseOrder extends CActiveRecord
 			store_id', 'numerical', 'integerOnly' => true),
             array('total_amount, vat_amount, discount_percentage, discount, vat_percentage, grand_total', 'numerical'),
             array('po_no, manual_po_no', 'length', 'max' => 255),
-            array('created_at, updated_at, bill_to, ship_to, exp_receive_date', 'safe'),
+            array('created_at, updated_at, bill_to, ship_to, exp_receive_date, order_note', 'safe'),
             // The following rule is used by search().
 
-            array('id, date, max_sl_no, bill_to, ship_to, ship_by, order_type, po_no, store_id, vat_percentage, grand_total, manual_po_no, location_id,
+            array('id, date, max_sl_no, bill_to, ship_to, order_note, ship_by, order_type, po_no, store_id, vat_percentage, grand_total, manual_po_no, location_id,
 			 supplier_id, total_amount, vat_amount, discount_percentage, discount, is_paid, is_all_received, cash_due, created_by, created_at, updated_by, exp_receive_date, 
 			 updated_at', 'safe', 'on' => 'search'),
         );

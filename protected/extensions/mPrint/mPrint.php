@@ -222,7 +222,7 @@ class mPrint extends CWidget {
             $this->addApprClass();
 
             // hook the event to the print icon
-            $this->mPrint();
+            $this->mPrint2();
 
             //set some css...
             $this->someCss();
@@ -264,7 +264,8 @@ class mPrint extends CWidget {
     /**
      * @desc the one calling our js file
      */
-    public function mPrint() {
+    public function mPrint2()
+    {
         $mac = array();
         //set the file name. Defaults to the title of the HTML
         if (isset($this->title) && strlen($this->title) > 0)

@@ -124,7 +124,7 @@ class PaymentReceipt extends CActiveRecord
             'order_id' => 'Order',
             'max_sl_no' => 'Max Sl No',
             'pr_no' => 'Pr No',
-            'payment_type' => 'Payment Type',
+            'payment_type' => 'Pay Type',
             'bank_id' => 'Bank',
             'cheque_no' => 'Cheque No',
             'cheque_date' => 'Cheque Date',
@@ -136,7 +136,7 @@ class PaymentReceipt extends CActiveRecord
             'created_at' => 'Created At',
             'updated_by' => 'Updated By',
             'updated_at' => 'Updated At',
-            'received_by' => 'Payment By',
+            'received_by' => 'Pay By',
         );
     }
 

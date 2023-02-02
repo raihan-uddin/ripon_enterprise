@@ -406,7 +406,7 @@ Yii::app()->clientScript->registerCoreScript("jquery.ui");
             </div>
             <div class="card-body">
                 <div class="row">
-                    <div class="form-group col-xs-12 col-md-3 col-lg-3">
+                    <div class="form-group col-xs-12 col-md-3 col-lg-2">
                         <?php echo $form->labelEx($model2, 'model_id'); ?>
 
                         <div class="input-group" data-target-input="nearest">
@@ -490,6 +490,13 @@ Yii::app()->clientScript->registerCoreScript("jquery.ui");
                     </div>
 
                     <div class="form-group col-xs-12 col-md-2 col-lg-2">
+                        <?php echo $form->labelEx($model2, 'product_sl_no'); ?>
+                        <?php echo $form->textField($model2, 'product_sl_no', array('maxlength' => 255, 'class' => 'form-control')); ?>
+                        <span class="help-block"
+                              style="color: red; width: 100%"> <?php echo $form->error($model2, 'product_sl_no'); ?></span>
+                    </div>
+
+                    <div class="form-group col-xs-12 col-md-2 col-lg-2">
                         <?php echo $form->labelEx($model2, 'note'); ?>
                         <?php echo $form->textField($model2, 'note', array('maxlength' => 255, 'class' => 'form-control')); ?>
                         <span class="help-block"
@@ -548,7 +555,8 @@ Yii::app()->clientScript->registerCoreScript("jquery.ui");
                         <table class="table table-bordered table-striped table-valign-middle" id="list">
                             <thead class="table-info">
                             <tr>
-                                <th>Materials Name</th>
+                                <th>Product Name</th>
+                                <th style="width: 20%;" class="text-center">Product SL No</th>
                                 <th style="width: 20%;" class="text-center">Product Note</th>
                                 <th style="width: 10%;" class="text-center">Qty</th>
                                 <th style="width: 10%;" class="text-center">Unit Price</th>
@@ -687,6 +695,7 @@ Yii::app()->clientScript->registerCoreScript("jquery.ui");
         let model_id = $("#PurchaseOrderDetails_model_id").val();
         let model_id_text = $("#model_id_text").val();
         let unit_price = $("#PurchaseOrderDetails_amount").val();
+        let product_sl_no = $("#PurchaseOrderDetails_product_sl_no").val();
         let note = $("#PurchaseOrderDetails_note").val();
         let qty = $("#PurchaseOrderDetails_qty").val();
         let row_total = $("#PurchaseOrderDetails_row_total").val();
@@ -723,11 +732,13 @@ Yii::app()->clientScript->registerCoreScript("jquery.ui");
                 <tr class="item">
                     <td>${model_id_text}</td>
                     <td class="text-center">${note}</td>
+                    <td class="text-center">${product_sl_no}</td>
                     <td class="text-center">${unit_price}</td>
                     <td class="text-center">${qty}</td>
                     <td class="text-center">
                         ${row_total}
                         <input type="hidden" class="form-control text-center" value="${qty}" name=PurchaseOrderDetails[temp_qty][]"">
+                        <input type="hidden" class="form-control text-center" value="${product_sl_no}" name=PurchaseOrderDetails[temp_product_sl_no][]"">
                         <input type="hidden" class="form-control text-center" value="${note}" name=PurchaseOrderDetails[temp_note][]"">
                         <input type="hidden" class="form-control" value="${model_id}" name="PurchaseOrderDetails[temp_model_id][]" >
                         <input type="hidden" class="form-control" value="${unit_price}" name="PurchaseOrderDetails[temp_unit_price][]" >
@@ -763,6 +774,7 @@ Yii::app()->clientScript->registerCoreScript("jquery.ui");
     function clearDynamicItem() {
         $("#PurchaseOrderDetails_model_id").val('');
         $("#model_id_text").val('');
+        $("#PurchaseOrderDetails_product_sl_no").val('');
         $("#PurchaseOrderDetails_amount").val('');
         $("#PurchaseOrderDetails_row_total").val('');
         $("#PurchaseOrderDetails_qty").val('');

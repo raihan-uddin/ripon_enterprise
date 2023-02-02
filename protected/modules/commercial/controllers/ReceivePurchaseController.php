@@ -154,6 +154,7 @@ class ReceivePurchaseController extends Controller
                     foreach ($_POST['ReceivePurchaseDetails']['temp_model_id'] as $key => $model_id) {
                         $rcv_qty = $_POST['ReceivePurchaseDetails']['temp_rcv_qty'][$key];
                         $unit_price = $_POST['ReceivePurchaseDetails']['temp_unit_price'][$key];
+                        $product_sl_no = $_POST['ReceivePurchaseDetails']['temp_product_sl_no'][$key];
 
                         if ($rcv_qty > 0) {
                             $row_total = $unit_price * $rcv_qty;
@@ -164,6 +165,7 @@ class ReceivePurchaseController extends Controller
                             $m->qty = $rcv_qty;
                             $m->unit_price = $unit_price;
                             $m->row_total = $row_total;
+                            $m->product_sl_no = $product_sl_no;
                             if ($m->save()) {
                                 $inventory = new Inventory();
                                 $inventory->sl_no = $inv_sl;
@@ -174,6 +176,7 @@ class ReceivePurchaseController extends Controller
                                 $inventory->purchase_price = $m->unit_price;
                                 $inventory->sell_price = $m->unit_price;
                                 $inventory->row_total = $m->row_total;
+                                $inventory->product_sl_no = $m->product_sl_no;
                                 $inventory->stock_status = Inventory::PURCHASE_RECEIVE;
                                 $inventory->source_id = $m->id;
                                 if (!$inventory->save()) {

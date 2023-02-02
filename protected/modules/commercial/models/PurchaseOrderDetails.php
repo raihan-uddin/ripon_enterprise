@@ -16,6 +16,7 @@
  * @property integer $updated_by
  * @property string $updated_at
  * @property string $note
+ * @property string $product_sl_no
  */
 class PurchaseOrderDetails extends CActiveRecord
 {
@@ -45,10 +46,10 @@ class PurchaseOrderDetails extends CActiveRecord
             array('model_id, qty, unit_price, row_total, order_id', 'required'),
             array('model_id, is_all_received, created_by, updated_by, order_id', 'numerical', 'integerOnly' => true),
             array('qty, unit_price, row_total', 'numerical'),
-            array('created_at, updated_at, note', 'safe'),
+            array('created_at, updated_at, note, product_sl_no', 'safe'),
             // The following rule is used by search().
 
-            array('id, model_id, note, qty, unit_price, row_total, order_id, is_all_received, created_by, created_at, updated_by, updated_at', 'safe', 'on' => 'search'),
+            array('id, model_id, note, qty, unit_price, row_total, order_id, product_sl_no, is_all_received, created_by, created_at, updated_by, updated_at', 'safe', 'on' => 'search'),
         );
     }
 
@@ -70,7 +71,7 @@ class PurchaseOrderDetails extends CActiveRecord
         return array(
             'id' => 'ID',
             'order_id' => 'PO',
-            'model_id' => 'Model',
+            'model_id' => 'Product',
             'qty' => 'Qty',
             'unit_price' => 'Unit Price',
             'row_total' => 'Row Total',
@@ -125,7 +126,6 @@ class PurchaseOrderDetails extends CActiveRecord
             ),
         ));
     }
-
 
 
     public function beforeSave()

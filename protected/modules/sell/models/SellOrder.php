@@ -39,6 +39,7 @@ class SellOrder extends CActiveRecord
 {
     public $city;
     public $state;
+    public $invoice_no;
     public $item_count;
     public $row_total;
     public $print_type;
@@ -94,7 +95,7 @@ class SellOrder extends CActiveRecord
         return array(
             array('max_sl_no, cash_due, so_no, date, customer_id, discount_percentage, discount_amount, grand_total, order_type', 'required'),
             array('grand_total, discount_amount, discount_percentage, vat_percentage, vat_amount, job_max_sl_no, 
-            total_amount, is_all_issue_done, is_all_production_done', 'numerical'),
+            total_amount, is_all_issue_done, is_all_production_done, is_paid', 'numerical'),
             array('max_sl_no, cash_due, customer_id, is_invoice_done, bom_complete, is_job_card_done, is_delivery_done, 
             is_partial_delivery, is_partial_invoice, created_by, updated_by', 'numerical', 'integerOnly' => true),
             array('created_at, updated_at, date, exp_delivery_date, so_no, job_no, job_card_date, order_note', 'safe'),
@@ -102,7 +103,7 @@ class SellOrder extends CActiveRecord
             array('id, date, cash_due, exp_delivery_date, max_sl_no, vat_percentage, so_no, customer_id, discount_percentage, bom_complete, 
             discount_amount, grand_total, is_invoice_done, is_job_card_done, is_delivery_done, is_partial_delivery, is_partial_invoice, created_by, 
             created_at, updated_by, updated_at, job_max_sl_no, job_no, job_card_date, total_amount, order_type, 
-            order_note, is_all_issue_done, is_all_production_done', 'safe', 'on' => 'search'),
+            order_note, is_all_issue_done, is_all_production_done, is_paid', 'safe', 'on' => 'search'),
         );
     }
 
@@ -150,6 +151,7 @@ class SellOrder extends CActiveRecord
             'order_type' => 'Order Type',
             'order_note' => 'Order Note',
             'is_all_issue_done' => 'Issue Done?',
+            'is_paid' => 'Paid?',
             'is_all_production_done' => 'Production Done?',
         );
     }
@@ -215,6 +217,7 @@ class SellOrder extends CActiveRecord
         $criteria->compare('so_no', $this->so_no);
         $criteria->compare('job_no', $this->job_no);
         $criteria->compare('is_all_issue_done', $this->is_all_issue_done);
+        $criteria->compare('is_paid', $this->is_paid);
         $criteria->compare('cash_due', $this->cash_due);
         $criteria->compare('job_card_date', $this->job_card_date);
         $criteria->compare('job_max_sl_no', $this->job_max_sl_no);
@@ -265,6 +268,7 @@ class SellOrder extends CActiveRecord
 
         $criteria->compare('id', $this->id);
         $criteria->compare('date', $this->date);
+        $criteria->compare('is_paid', $this->is_paid);
         $criteria->compare('order_type', $this->order_type);
         $criteria->compare('max_sl_no', $this->max_sl_no);
         $criteria->compare('so_no', $this->so_no);
@@ -324,6 +328,7 @@ class SellOrder extends CActiveRecord
         $criteria->compare('is_all_production_done', $this->is_all_production_done);
         $criteria->compare('is_all_issue_done', $this->is_all_issue_done);
         $criteria->compare('so_no', $this->so_no);
+        $criteria->compare('is_paid', $this->is_paid);
         $criteria->compare('job_no', $this->job_no);
         $criteria->compare('cash_due', $this->cash_due);
         $criteria->compare('job_card_date', $this->job_card_date);
@@ -401,6 +406,16 @@ class SellOrder extends CActiveRecord
             $string = "<span class='badge badge-danger'>NOT COMPLETE</span>";
         } else {
             $string = "<span class='badge badge-success'>COMPLETE</span>";
+        }
+        return $string;
+    }
+
+    public function isPaid($value)
+    {
+        if ($value != Invoice::PAID) {
+            $string = "<span class='badge badge-danger'>DUE</span>";
+        } else {
+            $string = "<span class='badge badge-success'>PAID</span>";
         }
         return $string;
     }

@@ -140,7 +140,7 @@ $this->widget('application.extensions.mbmenu.MbMenu', array(
                 ),
             ),
         ),
-        array('label' => 'PRODUCTION',
+        /*array('label' => 'PRODUCTION',
             'items' => array(
                 array('label' => 'CONFIG',
                     'items' => array(
@@ -161,7 +161,7 @@ $this->widget('application.extensions.mbmenu.MbMenu', array(
                     ),
                 ),
             ),
-        ),
+        ),*/
         array('label' => 'SALES',
             'items' => array(
                 array('label' => 'CONFIG',
@@ -184,13 +184,13 @@ $this->widget('application.extensions.mbmenu.MbMenu', array(
 
                     ),
                 ),
-                array('label' => 'INVOICE',
-                    'items' => array(
-                        ['label' => Yii::t('app', 'CREATE'), 'url' => ['/crm/invoice/create'], 'visible' => Yii::app()->user->checkAccess('Crm.Invoice.AdminPendingDelivery')],
-                        ['label' => Yii::t('app', 'MANAGE'), 'url' => ['/crm/invoice/admin'], 'visible' => Yii::app()->user->checkAccess('Crm.Invoice.Admin')],
+                /* array('label' => 'INVOICE',
+                     'items' => array(
+                         ['label' => Yii::t('app', 'CREATE'), 'url' => ['/crm/invoice/create'], 'visible' => Yii::app()->user->checkAccess('Crm.Invoice.AdminPendingDelivery')],
+                         ['label' => Yii::t('app', 'MANAGE'), 'url' => ['/crm/invoice/admin'], 'visible' => Yii::app()->user->checkAccess('Crm.Invoice.Admin')],
 
-                    ),
-                ),
+                     ),
+                 ),*/
                 array('label' => 'COLLECTION',
                     'items' => array(
                         ['label' => Yii::t('app', 'MR CREATE'), 'url' => ['/accounting/moneyReceipt/adminMoneyReceipt'], 'visible' => Yii::app()->user->checkAccess('Accounting.MoneyReceipt.AdminMoneyReceipt')],

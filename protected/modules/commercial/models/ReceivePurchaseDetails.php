@@ -14,6 +14,7 @@
  * @property string $created_at
  * @property integer $updated_by
  * @property string $updated_at
+ * @property string $product_sl_no
  */
 class ReceivePurchaseDetails extends CActiveRecord
 {
@@ -42,10 +43,10 @@ class ReceivePurchaseDetails extends CActiveRecord
             array('receive_purchase_id, model_id, qty, unit_price, row_total', 'required'),
             array('receive_purchase_id, model_id, created_by, updated_by', 'numerical', 'integerOnly' => true),
             array('qty, unit_price, row_total', 'numerical'),
-            array('created_at, updated_at', 'safe'),
+            array('created_at, updated_at, product_sl_no', 'safe'),
             // The following rule is used by search().
 
-            array('id, receive_purchase_id, model_id, qty, unit_price, row_total, created_by, created_at, updated_by, updated_at', 'safe', 'on' => 'search'),
+            array('id, receive_purchase_id, model_id, qty, unit_price,product_sl_no, row_total, created_by, created_at, updated_by, updated_at', 'safe', 'on' => 'search'),
         );
     }
 

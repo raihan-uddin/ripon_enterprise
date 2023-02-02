@@ -209,7 +209,7 @@ class InventoryController extends Controller
 
         $criteria = new CDbCriteria();
         $criteria->mergeWith($criteria2);
-        $criteria->select = "pm.code, pm.model_name, pm.id, pm.item_id, pm.brand_id, pm.unit_id, pm.warranty, pm.image";
+        $criteria->select = "pm.code, pm.model_name, pm.id, pm.item_id, pm.brand_id, pm.unit_id, pm.warranty, pm.image, product_sl_no";
         $criteria->order = "product_sl_no asc";
         $criteria->join = "INNER JOIN prod_models pm on t.model_id = pm.id ";
         $criteria->limit = 20;
@@ -217,10 +217,11 @@ class InventoryController extends Controller
         if ($prodInfos) {
             foreach ($prodInfos as $prodInfo) {
                 $code = $prodInfo->code;
-                $value = "$prodInfo->model_name || $code";
+                $value = "$prodInfo->product_sl_no";
                 $label = "$prodInfo->model_name || $code";
                 $id = $prodInfo->id;
                 $name = $prodInfo->model_name;
+                $product_sl_no = $prodInfo->product_sl_no;
                 $item_id = $prodInfo->item_id;
                 $brand_id = $prodInfo->brand_id;
                 $unit_id = $prodInfo->unit_id;
@@ -234,6 +235,7 @@ class InventoryController extends Controller
                 $imageWithUrl = $prodInfo->image != "" ? Yii::app()->baseUrl . "/uploads/products/$prodInfo->image" : Yii::app()->theme->baseUrl . "/images/no-image.jpg";
                 $results[] = array(
                     'id' => $id,
+                    'product_sl_no' => $product_sl_no,
                     'name' => $name,
                     'value' => $value,
                     'label' => $label,
@@ -251,6 +253,7 @@ class InventoryController extends Controller
             $imageWithUrl = Yii::app()->theme->baseUrl . "/images/no-image.jpg";
             $results[] = array(
                 'id' => '',
+                'product_sl_no' => '',
                 'name' => 'No data found!',
                 'value' => 'No data found!',
                 'label' => 'No data found!',

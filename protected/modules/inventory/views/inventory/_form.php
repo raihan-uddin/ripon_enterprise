@@ -241,7 +241,8 @@ $form = $this->beginWidget('CActiveForm', array(
                                             },
                                             minLength: 1,
                                             select: function (event, ui) {
-                                                $('#model_id_text').val(ui.item.value);
+                                                $('#model_id_text').val(ui.item.label);
+                                                $('#product_code').val(ui.item.code);
                                                 $('#Inventory_model_id').val(ui.item.id);
                                                 $('#Inventory_unit_id').val(ui.item.unit_id);
                                                 $('#Inventory_sell_price').val(ui.item.sell_price);

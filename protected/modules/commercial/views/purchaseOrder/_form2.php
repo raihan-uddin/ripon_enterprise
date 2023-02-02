@@ -412,7 +412,7 @@ Yii::app()->clientScript->registerCoreScript("jquery.ui");
             </div>
             <div class="card-body">
                 <div class="row">
-                    <div class="form-group col-xs-12 col-md-3 col-lg-3">
+                    <div class="form-group col-xs-12 col-md-3 col-lg-2">
                         <?php echo $form->labelEx($model2, 'model_id'); ?>
 
                         <div class="input-group" data-target-input="nearest">
@@ -496,6 +496,13 @@ Yii::app()->clientScript->registerCoreScript("jquery.ui");
                     </div>
 
                     <div class="form-group col-xs-12 col-md-2 col-lg-2">
+                        <?php echo $form->labelEx($model2, 'product_sl_no'); ?>
+                        <?php echo $form->textField($model2, 'product_sl_no', array('maxlength' => 255, 'class' => 'form-control')); ?>
+                        <span class="help-block"
+                              style="color: red; width: 100%"> <?php echo $form->error($model2, 'product_sl_no'); ?></span>
+                    </div>
+
+                    <div class="form-group col-xs-12 col-md-2 col-lg-2">
                         <?php echo $form->labelEx($model2, 'note'); ?>
                         <?php echo $form->textField($model2, 'note', array('maxlength' => 255, 'class' => 'form-control')); ?>
                         <span class="help-block"
@@ -554,7 +561,8 @@ Yii::app()->clientScript->registerCoreScript("jquery.ui");
                         <table class="table table-bordered table-striped table-valign-middle" id="list">
                             <thead class="table-info">
                             <tr>
-                                <th>Materials Name</th>
+                                <th>Product Name</th>
+                                <th style="width: 20%;" class="text-center">Product SL No</th>
                                 <th style="width: 20%;" class="text-center">Product Note</th>
                                 <th style="width: 10%;" class="text-center">Qty</th>
                                 <th style="width: 10%;" class="text-center">Unit Price</th>
@@ -569,6 +577,7 @@ Yii::app()->clientScript->registerCoreScript("jquery.ui");
                                 <tr class="item">
                                     <td><?= $m3->model_name ?></td>
                                     <td class="text-center"><?= $m3->note ?></td>
+                                    <td class="text-center"><?= $m3->product_sl_no ?></td>
                                     <td class="text-center"><?= $m3->unit_price ?></td>
                                     <td class="text-center"><?= $m3->qty ?></td>
                                     <td class="text-center">
@@ -577,6 +586,9 @@ Yii::app()->clientScript->registerCoreScript("jquery.ui");
                                                name=PurchaseOrderDetails[temp_qty][]"">
                                         <input type="hidden" class="form-control text-center" value="<?= $m3->note ?>"
                                                name=PurchaseOrderDetails[temp_note][]"">
+                                        <input type="hidden" class="form-control text-center"
+                                               value="<?= $m3->product_sl_no ?>"
+                                               name=PurchaseOrderDetails[temp_product_sl_no][]"">
                                         <input type="hidden" class="form-control" value="<?= $m3->model_id ?>"
                                                name="PurchaseOrderDetails[temp_model_id][]">
                                         <input type="hidden" class="form-control" value="<?= $m3->unit_price ?>"

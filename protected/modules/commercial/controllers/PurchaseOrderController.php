@@ -75,6 +75,7 @@ class PurchaseOrderController extends Controller
                     $model2->qty = $_POST['PurchaseOrderDetails']['temp_qty'][$key];
                     $model2->unit_price = $_POST['PurchaseOrderDetails']['temp_unit_price'][$key];
                     $model2->row_total = $_POST['PurchaseOrderDetails']['temp_row_total'][$key];
+                    $model2->product_sl_no = $_POST['PurchaseOrderDetails']['temp_product_sl_no'][$key];
                     $model2->note = $_POST['PurchaseOrderDetails']['temp_note'][$key];
                     if ($model->order_type == PurchaseOrder::PURCHASE_RECEIVE) {
                         $model2->is_all_received = PurchaseOrder::ALL_RECEIVED;
@@ -87,6 +88,7 @@ class PurchaseOrderController extends Controller
                             $modelRcvD->unit_price = $model2->unit_price;
                             $modelRcvD->qty = $model2->qty;
                             $modelRcvD->row_total = $model2->row_total;
+                            $modelRcvD->product_sl_no = $model2->product_sl_no;
                             if ($modelRcvD->save()) {
                                 $inv = new Inventory();
                                 $inv->model_id = $model_id;
@@ -99,6 +101,7 @@ class PurchaseOrderController extends Controller
                                 $inv->sell_price = $model2->unit_price;
                                 $inv->row_total = $model2->row_total;
                                 $inv->purchase_price = $model2->unit_price;
+                                $inv->product_sl_no = $model2->product_sl_no;
                                 $inv->stock_status = Inventory::PURCHASE_RECEIVE;
                                 $inv->source_id = $modelRcvD->id;
                                 $inv->remarks = $model2->note;
@@ -180,12 +183,19 @@ class PurchaseOrderController extends Controller
             if ($model->save()) {
                 $details_id_arr = [];
                 foreach ($_POST['PurchaseOrderDetails']['temp_model_id'] as $key => $model_id) {
-                    $model2 = PurchaseOrderDetails::model()->findByAttributes(['order_id' => $id, 'model_id' => $model_id]);
+                    $product_sl_no = $_POST['PurchaseOrderDetails']['temp_product_sl_no'][$key];
+                    $criteria = new CDbCriteria();
+                    $criteria->addColumnCondition(['order_id' => $id, 'model_id' => $model_id]);
+                    if (strlen(trim($product_sl_no)) > 0) {
+                        $criteria->addColumnCondition(['product_sl_no' => $product_sl_no]);
+                    }
+                    $model2 = PurchaseOrderDetails::model()->findByAttributes([], $criteria);
                     if (!$model2)
                         $model2 = new PurchaseOrderDetails();
                     $model2->order_id = $model->id;
                     $model2->model_id = $model_id;
                     $model2->qty = $_POST['PurchaseOrderDetails']['temp_qty'][$key];
+                    $model2->product_sl_no = $product_sl_no;
                     $model2->unit_price = $_POST['PurchaseOrderDetails']['temp_unit_price'][$key];
                     $model2->row_total = $_POST['PurchaseOrderDetails']['temp_row_total'][$key];
                     $model2->note = $_POST['PurchaseOrderDetails']['temp_note'][$key];

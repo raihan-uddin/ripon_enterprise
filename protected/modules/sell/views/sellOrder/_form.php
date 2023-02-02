@@ -44,7 +44,7 @@ Yii::app()->clientScript->registerCoreScript("jquery.ui");
                     <div class="col-sm-8">
                         <?php
                         echo $form->dropDownList(
-                            $model, 'order_type', [SellOrder::NEW_ORDER => 'NEW', SellOrder::REPAIR_ORDER => 'REPAIR'], array(
+                            $model, 'order_type', [SellOrder::NEW_ORDER => 'NEW', SellOrder::REPAIR_ORDER => 'QUOTATION'], array(
                             'prompt' => 'Select',
                             'class' => 'form-control',
                         ));
@@ -414,6 +414,45 @@ Yii::app()->clientScript->registerCoreScript("jquery.ui");
                         </script>
                     </div>
 
+
+                    <div class="form-group col-sm-12 col-md-3 col-lg-2">
+                        <?php echo $form->labelEx($model, 'product_sl_no'); ?>
+                        <input type="text" id="product_sl_no" class="form-control">
+
+                        <span class="help-block"
+                              style="color: red; width: 100%"> <?php echo $form->error($model, 'product_sl_no'); ?></span>
+
+                        <script>
+                            $(document).ready(function () {
+                                $('#product_sl_no').autocomplete({
+                                    source: function (request, response) {
+                                        var search = request.term;
+                                        $.post('<?php echo Yii::app()->baseUrl ?>/index.php/inventory/inventory/Jquery_showprodSlNoSearch', {
+                                                "q": search,
+                                            },
+                                            function (data) {
+                                                response(data);
+                                            }, "json");
+                                    },
+                                    minLength: 1,
+                                    select: function (event, ui) {
+                                        $('#model_id_text').val(ui.item.label);
+                                        $('#product_sl_no').val(ui.item.product_sl_no);
+                                        $('#SellOrderDetails_model_id').val(ui.item.id);
+                                        $('#SellOrderDetails_amount').val(ui.item.sell_price);
+                                        // $('.product_unit_text').html($('#Inventory_unit_id option:selected').text());
+                                    }
+                                }).data("ui-autocomplete")._renderItem = function (ul, item) {
+                                    return $("<li></li>")
+                                        .data("item.autocomplete", item)
+                                        .append(`<a><img style="height: 50px; width: 50px;" src="${item.img}"> ${item.name} <br><i><small>${item.product_sl_no}</small></i> </a>`)
+                                        .appendTo(ul);
+                                };
+
+                            });
+                        </script>
+                    </div>
+
                     <div class="form-group col-xs-12 col-md-2 col-lg-2">
                         <?php echo $form->labelEx($model2, 'note'); ?>
                         <?php echo $form->textField($model2, 'note', array('maxlength' => 255, 'class' => 'form-control')); ?>
@@ -446,7 +485,9 @@ Yii::app()->clientScript->registerCoreScript("jquery.ui");
                     </div>
 
                     <div class="form-group col-xs-12 col-md-1 col-lg-1">
-                        <button class="btn  btn-success mt-4" onclick="addToList()" type="button">ADD TO LIST</button>
+                        <button class="btn  btn-success mt-4" onclick="addToList()" type="button" title="ADD TO LIST"><i
+                                    class="fa fa-cart-arrow-down" aria-hidden="true"></i>
+                        </button>
                     </div>
                 </div>
                 <div class="row">
@@ -454,7 +495,8 @@ Yii::app()->clientScript->registerCoreScript("jquery.ui");
                         <table class="table table-bordered table-striped table-valign-middle" id="list">
                             <thead class="table-info">
                             <tr>
-                                <th>Materials Name</th>
+                                <th>Product Name</th>
+                                <th style="width: 20%;" class="text-center">Product Sl No</th>
                                 <th style="width: 20%;" class="text-center">Product Note</th>
                                 <th style="width: 15%;" class="text-center">Color</th>
                                 <th style="width: 10%;" class="text-center">Qty</th>
@@ -594,6 +636,7 @@ Yii::app()->clientScript->registerCoreScript("jquery.ui");
         let model_id_text = $("#model_id_text").val();
         let unit_price = $("#SellOrderDetails_amount").val();
         let note = $("#SellOrderDetails_note").val();
+        let product_sl_no = $("#product_sl_no").val();
         let qty = $("#SellOrderDetails_qty").val();
         let row_total = $("#SellOrderDetails_row_total").val();
         let color = $("#SellOrderDetails_color").val();
@@ -629,6 +672,7 @@ Yii::app()->clientScript->registerCoreScript("jquery.ui");
             $("#list tbody").append(`
                 <tr class="item">
                     <td>${model_id_text}</td>
+                    <td class="text-center">${product_sl_no}</td>
                     <td class="text-center">${note}</td>
                     <td class="text-center">${color}</td>
                     <td class="text-center">${unit_price}</td>
@@ -636,6 +680,7 @@ Yii::app()->clientScript->registerCoreScript("jquery.ui");
                     <td class="text-center">
                         ${row_total}
                         <input type="hidden" class="form-control text-center" value="${qty}" name=SellOrderDetails[temp_qty][]"">
+                        <input type="hidden" class="form-control text-center" value="${product_sl_no}" name=SellOrderDetails[temp_product_sl_no][]"">
                         <input type="hidden" class="form-control text-center" value="${note}" name=SellOrderDetails[temp_note][]"">
                         <input type="hidden" class="form-control" value="${color}" name="SellOrderDetails[temp_color][]" >
                         <input type="hidden" class="form-control" value="${model_id}" name="SellOrderDetails[temp_model_id][]" >
@@ -672,6 +717,7 @@ Yii::app()->clientScript->registerCoreScript("jquery.ui");
     function clearDynamicItem() {
         $("#SellOrderDetails_model_id").val('');
         $("#model_id_text").val('');
+        $("#product_sl_no").val('');
         $("#SellOrderDetails_amount").val('');
         $("#SellOrderDetails_row_total").val('');
         $("#SellOrderDetails_qty").val('');

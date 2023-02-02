@@ -320,7 +320,7 @@ Yii::app()->clientScript->registerCoreScript("jquery.ui");
                         <table class="table table-bordered table-striped table-valign-middle" id="list">
                             <thead class="table-info">
                             <tr>
-                                <th>Materials Name</th>
+                                <th>Product Name</th>
                                 <th style="width: 20%;" class="text-center">Product Note</th>
                                 <th style="width: 15%;" class="text-center">Color</th>
                                 <th style="width: 10%;" class="text-center">Qty</th>

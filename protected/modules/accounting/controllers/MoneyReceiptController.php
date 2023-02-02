@@ -75,7 +75,7 @@ class MoneyReceiptController extends Controller
                 }
                 $criteria = new CDbCriteria();
                 $criteria->addInCondition('id', $invoice_id_arr);
-                $data = Invoice::model()->findAll($criteria);
+                $data = SellOrder::model()->findAll($criteria);
                 if ($data) {
                     foreach ($data as $dt) {
                         $grand_total = $dt->grand_total;

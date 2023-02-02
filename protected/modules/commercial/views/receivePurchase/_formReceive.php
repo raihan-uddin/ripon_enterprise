@@ -116,6 +116,7 @@ $form = $this->beginWidget('CActiveForm', array(
                     <tr>
                         <th style="text-align: center; vertical-align: middle;  width: 5%;">#</th>
                         <th style="text-align: center; vertical-align: middle;">Product</th>
+                        <th style="text-align: center; vertical-align: middle; width: 20%;">Product SL No</th>
                         <th style="text-align: center; vertical-align: middle;  width: 10%;">Order Qty</th>
                         <th style="text-align: center; vertical-align: middle;  width: 10%;">Rem. Rcv. Qty</th>
                         <th style="text-align: center; vertical-align: middle; width: 10%;">Rcv. Qty</th>
@@ -141,6 +142,12 @@ $form = $this->beginWidget('CActiveForm', array(
                                     <?= $dd->model_name ?>
                                     <input type="hidden" class="form-control model_id" value="<?= $dd->model_id ?>"
                                            name="ReceivePurchaseDetails[temp_model_id][]">
+                                </td>
+                                <td style="vertical-align: middle;">
+                                    <?= $dd->product_sl_no ?>
+                                    <input type="hidden" class="form-control product_sl_no"
+                                           value="<?= $dd->product_sl_no ?>"
+                                           name="ReceivePurchaseDetails[temp_product_sl_no][]">
                                 </td>
                                 <td class="text-center" style="vertical-align: middle;">
                                     <?= $order_qty ?>

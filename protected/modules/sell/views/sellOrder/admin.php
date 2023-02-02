@@ -218,14 +218,21 @@ if (Yii::app()->user->checkAccess('Sell.Order.VoucherPreview')) {
                     'name' => 'grand_total',
                     'htmlOptions' => ['class' => 'text-center']
                 ),
-
                 array(
-                    'name' => 'bom_complete',
-                    'value' => 'SellOrder::model()->bomStatus($data->bom_complete)',
+                    'name' => 'is_paid',
+                    'filter' => [Invoice::PAID => 'PAID', Invoice::DUE => 'DUE'],
+                    'value' => 'SellOrder::model()->isPaid($data->is_paid)',
                     'type' => 'raw',
-                    'filter' => [SellOrder::BOM_COMPLETE => 'COMPLETE', SellOrder::BOM_NOT_COMPLETE => 'NOT COMPLETE'],
                     'htmlOptions' => ['class' => 'text-center']
+
                 ),
+                /* array(
+                     'name' => 'bom_complete',
+                     'value' => 'SellOrder::model()->bomStatus($data->bom_complete)',
+                     'type' => 'raw',
+                     'filter' => [SellOrder::BOM_COMPLETE => 'COMPLETE', SellOrder::BOM_NOT_COMPLETE => 'NOT COMPLETE'],
+                     'htmlOptions' => ['class' => 'text-center']
+                 ),*/
                 /*array(
                     'name' => 'is_job_card_done',
                     'value' => 'SellOrder::model()->jobStatus($data->is_job_card_done)',
@@ -246,7 +253,7 @@ if (Yii::app()->user->checkAccess('Sell.Order.VoucherPreview')) {
                 array
                 (
                     'header' => 'Options',
-                    'template' => '{update}{createBom}{createJobCard}{delete}', // {delete}
+                    'template' => '{update}{delete}', // {delete}{createBom}{createJobCard}
                     'class' => 'CButtonColumn',
                     'htmlOptions' => ['style' => 'width: 200px', 'class' => 'text-center'],
                     'buttons' => array(

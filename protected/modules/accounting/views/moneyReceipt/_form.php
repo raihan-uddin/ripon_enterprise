@@ -242,7 +242,7 @@ $this->widget('application.components.BreadCrumb', array(
                     $invoice_total = $invoice_total_due = 0;
                     $criteriaInv = new CDbCriteria();
                     $criteriaInv->addColumnCondition(['is_paid' => Invoice::DUE]);
-                    $dataInv = Invoice::model()->findAll($criteriaInv);
+                    $dataInv = SellOrder::model()->findAll($criteriaInv);
                     if ($dataInv) {
                         foreach ($dataInv as $inv) {
                             $invoice_amount = $inv->grand_total;
@@ -255,7 +255,7 @@ $this->widget('application.components.BreadCrumb', array(
                                 <tr class="item">
                                     <td class="text-center sl-no" style="vertical-align: middle;"><?= $i++ ?></td>
                                     <td class="text-center" style="vertical-align: middle;">
-                                        <?= $inv->invoice_no ?>
+                                        <?= $inv->so_no ?>
                                         <?php echo $form->hiddenField($model, 'invoice_id[]', array('class' => 'form-control', 'readonly' => true, 'value' => $inv->id)); ?>
                                     </td>
                                     <td class="text-center"

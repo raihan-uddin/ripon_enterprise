@@ -163,7 +163,7 @@ if (Yii::app()->user->checkAccess('Accounting.MoneyReceipt.VoucherPreview')) {
                 ),
                 array(
                     'name' => 'invoice_id',
-                    'value' => 'Invoice::model()->nameOfThis($data->invoice_id)',
+                    'value' => 'SellOrder::model()->nameOfThis($data->invoice_id)',
                 ),
                 array(
                     'name' => 'bank_id',

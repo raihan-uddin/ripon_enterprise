@@ -90,7 +90,7 @@ Yii::app()->clientScript->registerCoreScript("jquery.ui");
                             <?php echo $form->labelEx($modelDetails, 'model_id'); ?>
 
                             <div class="input-group">
-                                <input type="text" class="form-control" aria-label="Materials Name" id="model_id_text">
+                                <input type="text" class="form-control" aria-label="Product Name" id="model_id_text">
                                 <?php echo $form->hiddenField($modelDetails, 'model_id', array('maxlength' => 255, 'class' => 'form-control')); ?>
                             </div>
                             <span class="help-block"
@@ -230,7 +230,7 @@ Yii::app()->clientScript->registerCoreScript("jquery.ui");
                             <table class="table table-bordered table-striped" id="list">
                                 <thead class="table-info">
                                 <tr>
-                                    <th>Materials Name</th>
+                                    <th>Product Name</th>
                                     <th style="width: 15%; display: none;" class="text-center">Unit</th>
                                     <th style="width: 20%;" class="text-center">Qty</th>
                                     <th style="width: 4%;" class="text-center">Action</th>
