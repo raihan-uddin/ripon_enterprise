@@ -8,12 +8,6 @@ nbactions.xml
 nb-configuration.xml
 .nb-gradle/
 
-assets/*
-!assets/.gitignore
-protected/runtime/*
-protected/runtime/application.log
-!protected/runtime/.gitignore
-protected/data/*.db
 uploads/*
 !uploads/.gitignore
 
