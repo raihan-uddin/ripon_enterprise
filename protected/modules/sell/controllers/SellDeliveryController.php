@@ -73,6 +73,7 @@ class SellDeliveryController extends Controller
                         $location_id = $_POST['SellDeliveryDetails']['temp_location_id'][$key];
                         $stock_qty = $_POST['SellDeliveryDetails']['temp_stock_qty'][$key];
                         $unit_price = $_POST['SellDeliveryDetails']['temp_unit_price'][$key];
+                        $product_sl_no = $_POST['SellDeliveryDetails']['temp_product_sl_no'][$key];
 
                         if ($del_qty > 0) {
                             $row_total = $unit_price * $del_qty;
@@ -85,6 +86,7 @@ class SellDeliveryController extends Controller
                             $m->qty = $del_qty;
                             $m->unit_price = $unit_price;
                             $m->row_total = $row_total;
+                            $m->product_sl_no = $product_sl_no;
                             if ($m->save()) {
                                 $inventory = new Inventory();
                                 $inventory->sl_no = $inv_sl;
@@ -96,6 +98,7 @@ class SellDeliveryController extends Controller
                                 $inventory->stock_out = $m->qty;
                                 $inventory->sell_price = $m->unit_price;
                                 $inventory->row_total = $m->row_total;
+                                $inventory->product_sl_no = $m->product_sl_no;
                                 $inventory->stock_status = Inventory::SALES_DELIVERY;
                                 $inventory->source_id = $m->id;
                                 if (!$inventory->save()) {
@@ -115,7 +118,7 @@ class SellDeliveryController extends Controller
                     $orderDetails = SellOrderDetails::model()->findAll($criteria);
                     $all_delivery_done = true;
                     foreach ($orderDetails as $od) {
-                        $totalDelivery = SellDeliveryDetails::model()->totalDeliveryQtyOfThisModelByOrder($od->model_id, $id);
+                        $totalDelivery = SellDeliveryDetails::model()->totalDeliveryQtyOfThisModelByOrder($od->model_id, $id, $od->product_sl_no);
                         if ($totalDelivery >= $od->qty) {
                             $od->is_delivery_done = SellOrderDetails::DELIVERY_DONE;
                             $od->save();

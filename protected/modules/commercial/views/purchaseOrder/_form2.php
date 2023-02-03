@@ -469,8 +469,6 @@ Yii::app()->clientScript->registerCoreScript("jquery.ui");
                                         var search = request.term;
                                         $.post('<?php echo Yii::app()->baseUrl ?>/index.php/prodModels/Jquery_showprodSearch', {
                                                 "q": search,
-                                                "item_id": [<?= ProdItems::FINISHED_GOODS ?>],
-                                                "item_id_excluded": true,
                                             },
                                             function (data) {
                                                 response(data);

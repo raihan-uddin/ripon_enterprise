@@ -124,11 +124,13 @@
                                 <div style="float: right; width: 29%;">
                                     <div style="float: right;">Tel.: <?= $company_contact ?> </div>
                                     <br>
-                                    <div style="float: right;">New Industrial Area</div>
+                                    <div style="float: right;  text-align: right;">
+                                        <?= $company_house ?>
+                                    </div>
                                     <br>
-                                    <div style="float: right;">(Bayan Properties Block - 9)</div>
+                                    <div style="float: right; text-align: right;"> <?= $company_road ?></div>
                                     <br>
-                                    <div style="float: right;">Umm Al Quwain - U.A.E</div>
+                                    <div style="float: right;  text-align: right;"> <?= $company_location ?></div>
                                 </div>
                             </div>
                             <hr>
@@ -136,36 +138,35 @@
                                 <div style="width: 33%; text-align: center; float: left;clear:right; vertical-align: middle;">
                                     <img src="<?= Yii::app()->theme->baseUrl . "/images/globe_icon.png" ?>"
                                          style="width: 16px; height: 16px; vertical-align: middle;">
-                                    www.halaindustry.com
+                                    <?= $company_web ?>
                                 </div>
                                 <div style="width: 33%; text-align: center; float: left;clear:right; vertical-align: middle;">
                                     <img src="<?= Yii::app()->theme->baseUrl . "/images/email.png" ?>"
                                          style="width: 16px; height: 16px; vertical-align: middle;">
-                                    info@halaindustry.com
+                                    <?= $company_email ?>
                                 </div>
                                 <div style="width: 33%; text-align: center; float: left;clear:right; vertical-align: middle;">
                                     <img src="<?= Yii::app()->theme->baseUrl . "/images/email.png" ?>"
                                          style="width: 16px; height: 16px; vertical-align: middle;">
-                                    sales@halaindustry.com
+                                    sales@tmebd.com
                                 </div>
                             </div>
                             <hr>
                             <div style="width: 100%; float: left; clear: right;">
                                 <div style="width: 30%; float: left; clear: right;">
                                     <div style="width: 65%; float: left; clear: right;">
-                                        <div style="float: left; clear: right; width: 70%;">Dhs.</div>
-                                        <div style="clear: right;">درهم</div>
+                                        <div style="float: left; clear: right; width: 70%;"></div>
+                                        <div style="clear: right;"></div>
                                         <div style="width: 100%; height: 30px; border: 2px solid black"></div>
                                     </div>
                                     <div style="width: 34%; float: left; clear: right;">
-                                        <div style="float: left; clear: right; width: 70%;">Fils.</div>
-                                        <div style="clear: right;">فلس</div>
+                                        <div style="float: left; clear: right; width: 70%;"></div>
+                                        <div style="clear: right;"></div>
                                         <div style="width: 100%; height: 30px; border: 2px solid black"></div>
                                     </div>
                                 </div>
                                 <div style="width: 38%; float: left; clear: right; text-align: center; vertical-align: middle;font-weight: bold;font-size: 18px;text-transform: uppercase;">
                                     <div>
-                                        <u>سند القبض</u><br>
                                         Receipt Voucher
                                     </div>
                                 </div>
@@ -177,7 +178,6 @@
                                     <div style="width: 100%; float: left; clear:right;">
                                         Date <span
                                                 style="text-decoration: underline dotted;">&nbsp;&nbsp;&nbsp;<?= date('d.M.Y', strtotime($dt->date)) ?> &nbsp;&nbsp;</span>&nbsp;&nbsp;
-                                        تاريخ
                                     </div>
                                 </div>
                             </div>
@@ -186,61 +186,43 @@
                                     <div style="width: 22%; float: left; clear: right;">
                                         Received from Mr. / M/s
                                     </div>
-                                    <div style="width: 57%; float: left; clear: right; border-bottom: 1px dotted black;">
+                                    <div style="width: 77%; float: left; clear: right; border-bottom: 1px dotted black;">
                                         &nbsp;&nbsp;&nbsp;<?= Customers::model()->nameOfThis($dt->customer_id) ?>&nbsp;&nbsp;&nbsp;
-                                    </div>
-                                    <div style="width: 20%; float: left; clear: right; text-align: right;">وردت من السيد
-                                        / السيدة
                                     </div>
                                 </div>
                                 <div class="mr-row" style="padding-top: 20px; float: left; clear: right; width: 100%;">
                                     <div style="width: 20%; float: left; clear: right;">The sum of Dhs</div>
-                                    <div style="width: 58%; float: left; clear: right; border-bottom: 1px dotted black; text-align: center;">
+                                    <div style="width: 78%; float: left; clear: right; border-bottom: 1px dotted black; text-align: center;">
                                         &nbsp;&nbsp;&nbsp;<?= number_format($dt->amount, 2) ?>/=&nbsp;&nbsp;&nbsp;
-                                    </div>
-                                    <div style="width: 20%; float: left; clear: right; text-align: right;">
-                                        مبلغ درهم / درهم
                                     </div>
                                 </div>
                                 <div class="mr-row" style="padding-top: 20px; float: left; clear: right; width: 100%;">
                                     <div style="width: 65%; float: left; clear: right;">
                                         <div style="width: 24%; float: left; clear: right;">Cash/Cheque No</div>
-                                        <div style="width: 54%; float: left; clear: right; border-bottom: 1px dotted black; text-align: center;">
+                                        <div style="width: 74%; float: left; clear: right; border-bottom: 1px dotted black; text-align: center;">
                                             &nbsp;&nbsp;&nbsp;<?= $dt->cheque_no == "" ? "N/A" : $dt->cheque_no ?>&nbsp;&nbsp;&nbsp;
-                                        </div>
-                                        <div style="width: 20%; float: left; clear: right; text-align: right;">
-                                            نقدا / رقم الشيك
                                         </div>
                                     </div>
                                     <div style="width: 34%; float: left; clear: right;">
                                         <div style="width: 15%; float: left; clear: right;">&nbsp;&nbsp;Date</div>
-                                        <div style="width: 60%; float: left; clear: right; border-bottom: 1px dotted black; text-align: center;">
+                                        <div style="width: 75%; float: left; clear: right; border-bottom: 1px dotted black; text-align: center;">
                                             &nbsp;&nbsp;&nbsp;<?= $dt->cheque_date != "" ? date('d.M.y', strtotime($dt->cheque_date)) : "N/A" ?>
                                             &nbsp;&nbsp;&nbsp;
-                                        </div>
-                                        <div style="width: 15%; float: left; clear: right; text-align: right;">
-                                            تاريخ
                                         </div>
                                     </div>
                                 </div>
 
                                 <div class="mr-row" style="padding-top: 20px; float: left; clear: right; width: 100%;">
                                     <div style="width: 10%; float: left; clear: right;">Bank</div>
-                                    <div style="width: 78%; float: left; clear: right; border-bottom: 1px dotted black; text-align: center;">
+                                    <div style="width: 88%; float: left; clear: right; border-bottom: 1px dotted black; text-align: center;">
                                         &nbsp;&nbsp;&nbsp;<?= CrmBank::model()->nameOfThis($dt->bank_id) ?>&nbsp;&nbsp;&nbsp;
-                                    </div>
-                                    <div style="width: 10%; float: left; clear: right; text-align: right;">
-                                        بنك
                                     </div>
                                 </div>
 
                                 <div class="mr-row" style="padding-top: 20px; float: left; clear: right; width: 100%;">
                                     <div style="width: 10%; float: left; clear: right;">Being</div>
-                                    <div style="width: 78%; float: left; clear: right; border-bottom: 1px dotted black; text-align: center;">
+                                    <div style="width: 88%; float: left; clear: right; border-bottom: 1px dotted black; text-align: center;">
                                         &nbsp;&nbsp;&nbsp;<?= $dt->remarks ?>&nbsp;&nbsp;&nbsp;
-                                    </div>
-                                    <div style="width: 10%; float: left; clear: right; text-align: right;">
-                                        كون
                                     </div>
                                 </div>
                                 <div class="mr-row" style="padding-top: 20px; float: left; clear: right; width: 100%;">
@@ -255,13 +237,10 @@
                                     <div style="width: 25%; float: left; clear: right">
                                         Received By
                                     </div>
-                                    <div style="width: 50%; float: left; clear: right; border-bottom: 1px dotted black;"><?= Users::model()->nameOfThis($dt->created_by) ?></div>
-                                    <div style="width: 25%; float: left; clear: right">
-                                        استلمت من قبل
-                                    </div>
+                                    <div style="width: 75%; float: left; clear: right; border-bottom: 1px dotted black;"><?= Users::model()->nameOfThis($dt->created_by) ?></div>
                                 </div>
                                 <div style="width: 50%; float: left; clear: right; text-align: center;">
-                                    <span style="border-top: 1px dotted black;">FOR HALA FURNITURE INDUSTRY LLC</span>
+                                    <span style="border-top: 1px dotted black;">FOR <?= strtoupper($company_name) ?></span>
                                 </div>
                             </div>
                         </td>

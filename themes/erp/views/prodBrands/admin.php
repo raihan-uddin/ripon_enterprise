@@ -86,6 +86,7 @@ endforeach;
             'summaryText' => "<div class='dataTables_info' role='status' aria-live='polite'><p>Displaying {start}-{end} of {page} result(s)</p></div>",
             'summaryCssClass' => 'col-sm-12 col-md-5',
             'pagerCssClass' => 'col-sm-12 col-md-7 pager',
+            'emptyText' => "<div class='alert alert-warning text-center' role='alert'><i class='icon fa fa-exclamation-triangle'></i>No results found.</div>",
 //            'enableSorting' => false,
             'columns' => array(
                 array(

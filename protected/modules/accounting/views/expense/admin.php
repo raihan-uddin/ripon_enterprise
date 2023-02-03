@@ -138,19 +138,27 @@ if (Yii::app()->user->checkAccess('Accounting.Expense.VoucherPreview')) {
 //            'loadingCssClass' => 'fa fa-spinner fa-spin fa-2x',
             'pager' => array(            //  pager like twitter bootstrap
                 'htmlOptions' => array('class' => 'pagination  justify-content-end'),
-//                'header'=>'',
-//                'cssFile'=>false,
-//                'maxButtonCount'=>24,
-//                'selectedPageCssClass'=>'active',
-//                'hiddenPageCssClass'=>'disabled',
-//                'firstPageCssClass'=>'previous',
-//                'lastPageCssClass'=>'next',
-//                'firstPageLabel'=>'<<',
-//                'lastPageLabel'=>'>>',
-//                'prevPageLabel'=>'<',
-//                'nextPageLabel'=>'>',
+                'header' => '',
+                'cssFile' => false,
+                'maxButtonCount' => 10,
+                'selectedPageCssClass' => 'page-item active', //default "selected"
+                'nextPageCssClass' => 'page-item',//default "next"
+                'hiddenPageCssClass' => 'page-item disabled',//default "hidden"
+                'firstPageCssClass' => 'page-item previous', //default "first"\
+                'lastPageCssClass' => 'page-item last', //default "last"
+                'internalPageCssClass' => 'page-item',//default "page"
+                'previousPageCssClass' => 'page-item',//default "previours"\
+                'firstPageLabel' => '<<',
+                'lastPageLabel' => '>>',
+                'prevPageLabel' => '<',
+                'nextPageLabel' => '>',
+//                'footer'=>'End',//defalut empty
             ),
-//            'template' => "{pager}{summary}{items}{summary}{pager}",
+            'template' => "{pager}\n\n{summary}{items}{summary}\n{pager}",
+            'summaryText' => "<div class='dataTables_info' role='status' aria-live='polite'><p>Displaying {start}-{end} of {page} result(s)</p></div>",
+            'summaryCssClass' => 'col-sm-12 col-md-5',
+            'pagerCssClass' => 'col-sm-12 col-md-7 pager',
+            'emptyText' => "<div class='alert alert-warning text-center' role='alert'><i class='icon fa fa-exclamation-triangle'></i>No results found.</div>",
             'columns' => array(
 //                'id',
 //                'max_sl_no',
@@ -200,11 +208,17 @@ $this->beginWidget('zii.widgets.jui.CJuiDialog', array(
         'modal' => true,
         'width' => 'auto',
         'resizable' => false,
+        /* 'position' => array(
+             'my' => 'left',
+             'at' => 'center',
+             'of' => '.wrapper'
+         ),*/
+
     ),
 ));
 ?>
-<div id="ajaxLoaderView" style="display: none;"><img
-            src="<?php echo Yii::app()->theme->baseUrl; ?>/images/ajax-loader.gif"/></div>
+<div id="ajaxLoaderView" style="display: none;">
+    <img src="<?php echo Yii::app()->theme->baseUrl; ?>/images/ajax-loader.gif"/></div>
 <div id='AjFlash' style="display:none; margin-top: 20px;">
 
 </div>

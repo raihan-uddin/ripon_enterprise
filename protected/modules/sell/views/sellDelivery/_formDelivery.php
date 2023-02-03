@@ -97,6 +97,7 @@ $form = $this->beginWidget('CActiveForm', array(
                     <tr>
                         <th style="text-align: center; vertical-align: middle;  width: 5%;">#</th>
                         <th style="text-align: center; vertical-align: middle;">Product</th>
+                        <th style="text-align: center; vertical-align: middle;">SL No</th>
                         <th style="text-align: center; vertical-align: middle;  width: 10%;">Order Qty</th>
                         <th style="text-align: center; vertical-align: middle;  width: 10%;">Rem. Del. Qty</th>
                         <th style="text-align: center; vertical-align: middle;  width: 10%; display: none;">Store</th>
@@ -117,8 +118,8 @@ $form = $this->beginWidget('CActiveForm', array(
                         $i = 1;
                         foreach ($detailsData as $key => $dd) {
                             $order_qty = $dd->qty;
-                            $current_stock = Inventory::model()->closingStock($dd->model_id);
-                            $delivery_qty = SellDeliveryDetails::model()->totalDeliveryQtyOfThisModelByOrder($dd->model_id, $data->id);
+                            $current_stock = Inventory::model()->closingStock($dd->model_id, null, null, $dd->product_sl_no);
+                            $delivery_qty = SellDeliveryDetails::model()->totalDeliveryQtyOfThisModelByOrder($dd->model_id, $data->id, $dd->product_sl_no);
                             $rem_qty = $order_qty - $delivery_qty;
                             ?>
                             <tr class="item">
@@ -127,6 +128,12 @@ $form = $this->beginWidget('CActiveForm', array(
                                     <?= $dd->model_name ?>
                                     <input type="hidden" class="form-control model_id" value="<?= $dd->model_id ?>"
                                            name="SellDeliveryDetails[temp_model_id][]">
+                                </td>
+                                <td style="vertical-align: middle;">
+                                    <?= $dd->product_sl_no ?>
+                                    <input type="hidden" class="form-control product_sl_no"
+                                           value="<?= $dd->product_sl_no ?>"
+                                           name="SellDeliveryDetails[temp_product_sl_no][]">
                                 </td>
                                 <td class="text-center" style="vertical-align: middle;">
                                     <?= $order_qty ?>

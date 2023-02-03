@@ -166,9 +166,10 @@
                 <?php
                 $vat = $data->vat_amount;
                 $criteria = new CDbCriteria();
-                $criteria->select = "t.*, pm.model_name, pm.code, pm.image";
+                $criteria->select = "SUM(t.qty) as qty, t.unit_price, SUM(t.row_total) as row_total, GROUP_CONCAT(product_sl_no ORDER BY product_sl_no SEPARATOR ', ') as product_sl_no, pm.model_name, pm.code, pm.image";
                 $criteria->join = " INNER JOIN prod_models pm on t.model_id = pm.id ";
                 $criteria->addColumnCondition(['t.order_id' => $data->id]);
+                $criteria->group = "model_id";
                 $criteria->order = "pm.model_name ASC";
                 $data2 = PurchaseOrderDetails::model()->findAll($criteria);
                 $row_total = 0;
@@ -178,7 +179,14 @@
                         ?>
                         <tr>
                             <td style="text-align: center;"><?= $i++ ?></td>
-                            <td colspan="2"><?= $dt->model_name ?></td>
+                            <td colspan="2">
+                                <?= $dt->model_name ?>
+                                <?php
+                                if (strlen($dt->product_sl_no) > 0) {
+                                    echo "<br><br>$dt->product_sl_no";
+                                }
+                                ?>
+                            </td>
                             <td style="text-align: center;"><?= $dt->qty ?></td>
                             <td style="text-align: right;"><?= $dt->unit_price ?></td>
                             <td style="text-align: right;"><?= $dt->row_total ?></td>

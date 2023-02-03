@@ -106,17 +106,17 @@ class ReceivePurchase extends CActiveRecord
         $criteria->select = "t.*";
         $criteria->join = " ";
 
-        if (trim($this->supplier_id) != "") {
+        if (($this->supplier_id) != "") {
             $criteria->join .= " INNER JOIN suppliers s on t.supplier_id = s.id ";
-            $criteria->compare('s.company_name', trim($this->supplier_id), true);
+            $criteria->compare('s.company_name', ($this->supplier_id), true);
         }
-        if (trim($this->created_by) != "") {
+        if (($this->created_by) != "") {
             $criteria->join .= " INNER JOIN users u on t.created_by = u.id ";
-            $criteria->compare('u.username', trim($this->created_by), true);
+            $criteria->compare('u.username', ($this->created_by), true);
         }
-        if (trim($this->purchase_order_id) != "") {
+        if (($this->purchase_order_id) != "") {
             $criteria->join .= " INNER JOIN purchase_order po on t.purchase_order_id = po.id ";
-            $criteria->compare('po.po_no', trim($this->purchase_order_id), true);
+            $criteria->compare('po.po_no', ($this->purchase_order_id), true);
         }
         $criteria->compare('id', $this->id);
         $criteria->compare('date', $this->date, true);
@@ -165,7 +165,7 @@ class ReceivePurchase extends CActiveRecord
 
     public function beforeSave()
     {
-        if (trim($this->supplier_memo_date) == "") {
+        if (($this->supplier_memo_date) == "") {
             $this->supplier_memo_date = NULL;
         }
         if ($this->isNewRecord) {

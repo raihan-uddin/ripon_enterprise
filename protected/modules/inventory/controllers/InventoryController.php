@@ -202,9 +202,13 @@ class InventoryController extends Controller
     public function actionJquery_showprodSlNoSearch()
     {
         $search_prodName = trim($_POST['q']);
+        $model_id = isset($_POST['model_id']) ? trim($_POST['model_id']) : 0;;
 
         $criteria2 = new CDbCriteria();
         $criteria2->compare('product_sl_no', $search_prodName);
+        if ($model_id > 0) {
+            $criteria2->addColumnCondition(['model_id' => $model_id]);
+        }
         $criteria2->addCondition("product_sl_no IS NOT NULL");
 
         $criteria = new CDbCriteria();

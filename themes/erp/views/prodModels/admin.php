@@ -22,7 +22,7 @@ $('.search-form form').submit(function(){
 });
 ");
 ?>
-<?php echo CHtml::link('Add Materials', array('/prodModels/create'), array('class' => 'btn btn-info btn-sm mb-2')); ?>
+<?php echo CHtml::link('Add Product', array('/prodModels/create'), array('class' => 'btn btn-info btn-sm mb-2')); ?>
 <?php echo CHtml::link('Add Sale Prices', array('/prodModels/adminSellPrice'), array('class' => 'btn btn-info btn-sm ml-2 mb-2')); ?>
 
 <?php
@@ -41,7 +41,7 @@ endforeach;
 
 <div class="card card-primary">
     <div class="card-header">
-        <h3 class="card-title">Manage Material Info</h3>
+        <h3 class="card-title">Manage Product Info</h3>
 
         <div class="card-tools">
             <button type="button" class="btn btn-tool" data-card-widget="collapse">
@@ -66,19 +66,27 @@ endforeach;
             'itemsCssClass' => 'table table-sm table-hover table-striped table-condensed table-bordered dataTable dtr-inline',
             'pager' => array(            //  pager like twitter bootstrap
                 'htmlOptions' => array('class' => 'pagination  justify-content-end'),
-//                'header'=>'',
-//                'cssFile'=>false,
-//                'maxButtonCount'=>24,
-//                'selectedPageCssClass'=>'active',
-//                'hiddenPageCssClass'=>'disabled',
-//                'firstPageCssClass'=>'previous',
-//                'lastPageCssClass'=>'next',
-//                'firstPageLabel'=>'<<',
-//                'lastPageLabel'=>'>>',
-//                'prevPageLabel'=>'<',
-//                'nextPageLabel'=>'>',
+                'header' => '',
+                'cssFile' => false,
+                'maxButtonCount' => 10,
+                'selectedPageCssClass' => 'page-item active', //default "selected"
+                'nextPageCssClass' => 'page-item',//default "next"
+                'hiddenPageCssClass' => 'page-item disabled',//default "hidden"
+                'firstPageCssClass' => 'page-item previous', //default "first"\
+                'lastPageCssClass' => 'page-item last', //default "last"
+                'internalPageCssClass' => 'page-item',//default "page"
+                'previousPageCssClass' => 'page-item',//default "previours"\
+                'firstPageLabel' => '<<',
+                'lastPageLabel' => '>>',
+                'prevPageLabel' => '<',
+                'nextPageLabel' => '>',
+//                'footer'=>'End',//defalut empty
             ),
-//            'template' => "{pager}{summary}{items}{summary}{pager}",
+            'template' => "{pager}\n\n{summary}{items}{summary}\n{pager}",
+            'summaryText' => "<div class='dataTables_info' role='status' aria-live='polite'><p>Displaying {start}-{end} of {page} result(s)</p></div>",
+            'summaryCssClass' => 'col-sm-12 col-md-5',
+            'pagerCssClass' => 'col-sm-12 col-md-7 pager',
+            'emptyText' => "<div class='alert alert-warning text-center' role='alert'><i class='icon fa fa-exclamation-triangle'></i>No results found.</div>",
             'columns' => array(
                 array(
                     'name' => 'item_id',

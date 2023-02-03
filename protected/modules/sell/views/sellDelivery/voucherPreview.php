@@ -172,7 +172,7 @@
                 <tbody>
                 <?php
                 $criteria = new CDbCriteria();
-                $criteria->select = "t.*, pm.model_name, pm.code, pm.image";
+                $criteria->select = "pm.model_name, pm.code, pm.image, sum(t.qty) as qty, GROUP_CONCAT(product_sl_no ORDER BY product_sl_no SEPARATOR ', ') as product_sl_no";
                 $criteria->join = " INNER JOIN prod_models pm on t.model_id = pm.id ";
                 $criteria->addColumnCondition(['t.sell_delivery_id' => $data->id]);
                 $criteria->order = "pm.model_name ASC";
@@ -183,7 +183,14 @@
                         ?>
                         <tr>
                             <td style="text-align: center;"><?= $i++ ?></td>
-                            <td><?= $dt->model_name ?></td>
+                            <td>
+                                <?= $dt->model_name ?>
+                                <?php
+                                if (strlen($dt->product_sl_no) > 0) {
+                                    echo "<br><br>$dt->product_sl_no";
+                                }
+                                ?>
+                            </td>
                             <td style="text-align: center;"><?= $dt->qty ?></td>
                         </tr>
                         <?php

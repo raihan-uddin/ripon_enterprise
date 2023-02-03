@@ -14,6 +14,7 @@
  * @property string $created_at
  * @property integer $updated_by
  * @property string $updated_at
+ * @property string $product_sl_no
  * @property integer $store_id
  * @property integer $location_id
  */
@@ -43,9 +44,9 @@ class SellDeliveryDetails extends CActiveRecord
             array('sell_delivery_id, model_id, qty, unit_price, row_total', 'required'),
             array('sell_delivery_id, model_id, created_by, updated_by, store_id, location_id', 'numerical', 'integerOnly' => true),
             array('qty, unit_price, row_total', 'numerical'),
-            array('created_at, updated_at', 'safe'),
+            array('created_at, updated_at, product_sl_no', 'safe'),
             // The following rule is used by search().
-            array('id, sell_delivery_id, model_id, qty, unit_price, row_total, created_by, store_id, location_id, created_at, updated_by, updated_at', 'safe', 'on' => 'search'),
+            array('id, sell_delivery_id, model_id, qty, unit_price, row_total, created_by, store_id, location_id, product_sl_no, created_at, updated_by, updated_at', 'safe', 'on' => 'search'),
         );
     }
 
@@ -134,12 +135,15 @@ class SellDeliveryDetails extends CActiveRecord
         return parent::beforeSave();
     }
 
-    public function totalDeliveryQtyOfThisModelByOrder($model_id, $order_id)
+    public function totalDeliveryQtyOfThisModelByOrder($model_id, $order_id, $product_sl_no)
     {
         $criteria = new CDbCriteria();
         $criteria->select = " SUM(qty) AS qty";
         $criteria->join = "INNER JOIN sell_delivery sd on t.sell_delivery_id = sd.id";
         $criteria->addColumnCondition(['sd.sell_order_id' => $order_id, 't.model_id' => $model_id]);
+        if (strlen($product_sl_no) > 0) {
+            $criteria->addColumnCondition(['t.product_sl_no' => $product_sl_no]);
+        }
         $data = self::model()->findByAttributes([], $criteria);
         return $data ? $data->qty : 0;
     }

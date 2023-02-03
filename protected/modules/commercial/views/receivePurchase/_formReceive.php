@@ -133,40 +133,43 @@ $form = $this->beginWidget('CActiveForm', array(
                         $i = 1;
                         foreach ($detailsData as $key => $dd) {
                             $order_qty = $dd->qty;
-                            $delivery_qty = ReceivePurchaseDetails::model()->totalReceiveQtyOfThisModelByOrder($dd->model_id, $data->id);
+                            $delivery_qty = ReceivePurchaseDetails::model()->totalReceiveQtyOfThisModelByOrder($dd->model_id, $data->id, $dd->product_sl_no);
                             $rem_qty = $order_qty - $delivery_qty;
-                            ?>
-                            <tr class="item">
-                                <td style="vertical-align: middle; text-align: center;"><?= $i++ ?></td>
-                                <td style="vertical-align: middle;">
-                                    <?= $dd->model_name ?>
-                                    <input type="hidden" class="form-control model_id" value="<?= $dd->model_id ?>"
-                                           name="ReceivePurchaseDetails[temp_model_id][]">
-                                </td>
-                                <td style="vertical-align: middle;">
-                                    <?= $dd->product_sl_no ?>
-                                    <input type="hidden" class="form-control product_sl_no"
-                                           value="<?= $dd->product_sl_no ?>"
-                                           name="ReceivePurchaseDetails[temp_product_sl_no][]">
-                                </td>
-                                <td class="text-center" style="vertical-align: middle;">
-                                    <?= $order_qty ?>
-                                    <input type="hidden" class="form-control" value="<?= $order_qty ?>"
-                                           name="ReceivePurchaseDetails[temp_order_qty][]">
-                                </td>
-                                <td class="text-center" style="vertical-align: middle;">
-                                    <?= $rem_qty ?>
-                                    <input type="hidden" class="form-control rem-qty" value="<?= $rem_qty ?>"
-                                           name="ReceivePurchaseDetails[temp_rem_qty][]">
-                                </td>
-                                <td class="text-center" style="vertical-align: middle;">
-                                    <input type="text" class="form-control receive_qty"
-                                           name="ReceivePurchaseDetails[temp_rcv_qty][]">
-                                    <input type="hidden" class="form-control unit-price" value="<?= $dd->unit_price ?>"
-                                           name="ReceivePurchaseDetails[temp_unit_price][]">
-                                </td>
-                            </tr>
-                            <?php
+                            if ($rem_qty > 0) {
+                                ?>
+                                <tr class="item">
+                                    <td style="vertical-align: middle; text-align: center;"><?= $i++ ?></td>
+                                    <td style="vertical-align: middle;">
+                                        <?= $dd->model_name ?>
+                                        <input type="hidden" class="form-control model_id" value="<?= $dd->model_id ?>"
+                                               name="ReceivePurchaseDetails[temp_model_id][]">
+                                    </td>
+                                    <td style="vertical-align: middle;">
+                                        <?= $dd->product_sl_no ?>
+                                        <input type="hidden" class="form-control product_sl_no"
+                                               value="<?= $dd->product_sl_no ?>"
+                                               name="ReceivePurchaseDetails[temp_product_sl_no][]">
+                                    </td>
+                                    <td class="text-center" style="vertical-align: middle;">
+                                        <?= $order_qty ?>
+                                        <input type="hidden" class="form-control" value="<?= $order_qty ?>"
+                                               name="ReceivePurchaseDetails[temp_order_qty][]">
+                                    </td>
+                                    <td class="text-center" style="vertical-align: middle;">
+                                        <?= $rem_qty ?>
+                                        <input type="hidden" class="form-control rem-qty" value="<?= $rem_qty ?>"
+                                               name="ReceivePurchaseDetails[temp_rem_qty][]">
+                                    </td>
+                                    <td class="text-center" style="vertical-align: middle;">
+                                        <input type="text" class="form-control receive_qty"
+                                               name="ReceivePurchaseDetails[temp_rcv_qty][]">
+                                        <input type="hidden" class="form-control unit-price"
+                                               value="<?= $dd->unit_price ?>"
+                                               name="ReceivePurchaseDetails[temp_unit_price][]">
+                                    </td>
+                                </tr>
+                                <?php
+                            }
                         }
                     }
                     ?>

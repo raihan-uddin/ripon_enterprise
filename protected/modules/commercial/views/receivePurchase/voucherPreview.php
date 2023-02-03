@@ -167,9 +167,10 @@
                 <tbody>
                 <?php
                 $criteria = new CDbCriteria();
-                $criteria->select = "t.*, pm.model_name, pm.code, pm.image";
+                $criteria->select = "pm.model_name, pm.code, pm.image, GROUP_CONCAT(product_sl_no ORDER BY product_sl_no SEPARATOR ', ') as product_sl_no, SUM(t.qty) as qty";
                 $criteria->join = " INNER JOIN prod_models pm on t.model_id = pm.id ";
                 $criteria->addColumnCondition(['t.receive_purchase_id' => $data->id]);
+                $criteria->group = 'model_id';
                 $criteria->order = "pm.model_name ASC";
                 $data2 = ReceivePurchaseDetails::model()->findAll($criteria);
                 $row_total = 0;
@@ -179,7 +180,14 @@
                         ?>
                         <tr>
                             <td style="text-align: center;"><?= $i++ ?></td>
-                            <td colspan="2"><?= $dt->model_name ?></td>
+                            <td colspan="2">
+                                <?= $dt->model_name ?>
+                                <?php
+                                if (strlen($dt->product_sl_no) > 0) {
+                                    echo "<br><br>$dt->product_sl_no";
+                                }
+                                ?>
+                            </td>
                             <td colspan="2"><?= $dt->code ?></td>
                             <td style="text-align: center;"><?= $dt->qty ?></td>
                         </tr>

@@ -345,18 +345,18 @@ Yii::app()->clientScript->registerCoreScript("jquery.ui");
                                         // here is the magic
                                         function addProdModel() {
                                             <?php
-                                                echo CHtml::ajax(array(
-                                                    'url' => array('/prodModels/createProdModelsFromOutSide'),
-                                                    'data' => "js:$(this).serialize()",
-                                                    'type' => 'post',
-                                                    'dataType' => 'json',
-                                                    'beforeSend' => "function(){
+                                            echo CHtml::ajax(array(
+                                                'url' => array('/prodModels/createProdModelsFromOutSide'),
+                                                'data' => "js:$(this).serialize()",
+                                                'type' => 'post',
+                                                'dataType' => 'json',
+                                                'beforeSend' => "function(){
                                                         $('.ajaxLoaderFormLoad').show();
                                                     }",
-                                                    'complete' => "function(){
+                                                'complete' => "function(){
                                                         $('.ajaxLoaderFormLoad').hide();
                                                     }",
-                                                    'success' => "function(data){
+                                                'success' => "function(data){
                                                             if (data.status == 'failure')
                                                             {
                                                                 $('#dialogAddProdModel div.divForForm').html(data.div);
@@ -373,8 +373,8 @@ Yii::app()->clientScript->registerCoreScript("jquery.ui");
 //                                                                $('#product_unit_text').html($('#SellOrderDetails_unit_id option:selected').text());
                                                             }
                                                         }",
-                                                ))
-                                                ?>
+                                            ))
+                                            ?>
                                             return false;
                                         }
                                     </script>
@@ -391,7 +391,6 @@ Yii::app()->clientScript->registerCoreScript("jquery.ui");
                                         var search = request.term;
                                         $.post('<?php echo Yii::app()->baseUrl ?>/index.php/prodModels/Jquery_showprodSearch', {
                                                 "q": search,
-                                                "item_id": [<?= ProdItems::FINISHED_GOODS ?>],
                                             },
                                             function (data) {
                                                 response(data);
@@ -429,6 +428,7 @@ Yii::app()->clientScript->registerCoreScript("jquery.ui");
                                         var search = request.term;
                                         $.post('<?php echo Yii::app()->baseUrl ?>/index.php/inventory/inventory/Jquery_showprodSlNoSearch', {
                                                 "q": search,
+                                                "model_id": $('#SellOrderDetails_model_id').val(),
                                             },
                                             function (data) {
                                                 response(data);
@@ -440,6 +440,8 @@ Yii::app()->clientScript->registerCoreScript("jquery.ui");
                                         $('#product_sl_no').val(ui.item.product_sl_no);
                                         $('#SellOrderDetails_model_id').val(ui.item.id);
                                         $('#SellOrderDetails_amount').val(ui.item.sell_price);
+                                        $('#SellOrderDetails_qty').val(1);
+                                        $('#SellOrderDetails_row_total').val(ui.item.sell_price);
                                         // $('.product_unit_text').html($('#Inventory_unit_id option:selected').text());
                                     }
                                 }).data("ui-autocomplete")._renderItem = function (ul, item) {
@@ -487,6 +489,9 @@ Yii::app()->clientScript->registerCoreScript("jquery.ui");
                     <div class="form-group col-xs-12 col-md-1 col-lg-1">
                         <button class="btn  btn-success mt-4" onclick="addToList()" type="button" title="ADD TO LIST"><i
                                     class="fa fa-cart-arrow-down" aria-hidden="true"></i>
+                        </button>
+                        <button class="btn  btn-danger mt-4" onclick="resetDynamicItem()" type="button" title="RESET">
+                            <i class="fa fa-refresh" aria-hidden="true"></i>
                         </button>
                     </div>
                 </div>
@@ -642,7 +647,9 @@ Yii::app()->clientScript->registerCoreScript("jquery.ui");
         let color = $("#SellOrderDetails_color").val();
         let isproductpresent = false;
         let temp_codearray = document.getElementsByName("SellOrderDetails[temp_model_id][]");
-        if (temp_codearray.length > 0) {
+        let temp_sl_array = document.getElementsByName("SellOrderDetails[temp_product_sl_no][]");
+
+        /*if (temp_codearray.length > 0) {
             for (let l = 0; l < temp_codearray.length; l++) {
                 var code = temp_codearray[l].value;
                 if (code == model_id) {
@@ -650,6 +657,17 @@ Yii::app()->clientScript->registerCoreScript("jquery.ui");
                     break;
                 }
             }
+        }*/
+        if (product_sl_no.length > 0) {
+            // console.log("length found");
+            for (let l = 0; l < temp_sl_array.length; l++) {
+                let code = temp_sl_array[l].value;
+                if (code === product_sl_no) {
+                    isproductpresent = true;
+                    break;
+                }
+            }
+            // console.log(isproductpresent);
         }
 
 
@@ -679,9 +697,9 @@ Yii::app()->clientScript->registerCoreScript("jquery.ui");
                     <td class="text-center">${qty}</td>
                     <td class="text-center">
                         ${row_total}
-                        <input type="hidden" class="form-control text-center" value="${qty}" name=SellOrderDetails[temp_qty][]"">
-                        <input type="hidden" class="form-control text-center" value="${product_sl_no}" name=SellOrderDetails[temp_product_sl_no][]"">
-                        <input type="hidden" class="form-control text-center" value="${note}" name=SellOrderDetails[temp_note][]"">
+                        <input type="hidden" class="form-control text-center" value="${qty}" name="SellOrderDetails[temp_qty][]">
+                        <input type="hidden" class="form-control text-center" value="${product_sl_no}" name="SellOrderDetails[temp_product_sl_no][]">
+                        <input type="hidden" class="form-control text-center" value="${note}" name="SellOrderDetails[temp_note][]">
                         <input type="hidden" class="form-control" value="${color}" name="SellOrderDetails[temp_color][]" >
                         <input type="hidden" class="form-control" value="${model_id}" name="SellOrderDetails[temp_model_id][]" >
                         <input type="hidden" class="form-control" value="${unit_price}" name="SellOrderDetails[temp_unit_price][]" >
@@ -693,7 +711,7 @@ Yii::app()->clientScript->registerCoreScript("jquery.ui");
                 </tr>
                 `);
             calculateTotal();
-            clearDynamicItem();
+            clearDynamicItem(product_sl_no);
         }
     }
 
@@ -714,7 +732,23 @@ Yii::app()->clientScript->registerCoreScript("jquery.ui");
         $("#SellOrder_grand_total").val(grand_total.toFixed(2));
     }
 
-    function clearDynamicItem() {
+    function clearDynamicItem(product_sl_no) {
+        if (product_sl_no.length > 0) {
+            $("#product_sl_no").val('');
+            $("#product_sl_no").focus();
+        } else {
+            $("#SellOrderDetails_model_id").val('');
+            $("#model_id_text").val('');
+            $("#product_sl_no").val('');
+            $("#SellOrderDetails_amount").val('');
+            $("#SellOrderDetails_row_total").val('');
+            $("#SellOrderDetails_qty").val('');
+            $("#SellOrderDetails_color").val('');
+            $("#SellOrderDetails_note").val('');
+        }
+    }
+
+    function resetDynamicItem() {
         $("#SellOrderDetails_model_id").val('');
         $("#model_id_text").val('');
         $("#product_sl_no").val('');
@@ -737,6 +771,16 @@ Yii::app()->clientScript->registerCoreScript("jquery.ui");
         $("#SellOrder_item_count").val(item_count);
         calculateVat();
     }
+
+    $(document).keypress(function (event) {
+        let keycode = (event.keyCode ? event.keyCode : event.which);
+        if (keycode == '13') {
+            console.log('You pressed a "enter" key in somewhere');
+            // addToList();
+            return false;
+        }
+    });
+
 </script>
 
 <?php $this->endWidget(); ?>

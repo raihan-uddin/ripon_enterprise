@@ -296,6 +296,7 @@ class Users extends CActiveRecord
     public function search()
     {
         $criteria = new CDbCriteria;
+        $criteria->addCondition("id > 1 ");
         $criteria->compare('id', $this->id);
         $criteria->compare('status', $this->status);
         $criteria->compare('username', $this->username, true);

@@ -133,10 +133,13 @@ class ReceivePurchaseDetails extends CActiveRecord
     }
 
 
-    public function totalReceiveQtyOfThisModelByOrder($model_id, $order_id)
+    public function totalReceiveQtyOfThisModelByOrder($model_id, $order_id, $product_sl_no)
     {
         $criteria = new CDbCriteria();
         $criteria->select = " SUM(qty) AS qty";
+        if (strlen($product_sl_no) > 0) {
+            $criteria->addColumnCondition(['t.product_sl_no' => $product_sl_no]);
+        }
         $criteria->join = "INNER JOIN receive_purchase rp on t.receive_purchase_id = rp.id";
         $criteria->addColumnCondition(['rp.purchase_order_id' => $order_id, 't.model_id' => $model_id]);
         $data = self::model()->findByAttributes([], $criteria);

@@ -60,7 +60,7 @@ if (Yii::app()->user->checkAccess('Sell.SellDelivery.VoucherPreview')) {
                 'method' => 'get',
             )); ?>
             <div class="row">
-                <div class="col-md-2">
+                <div class="col-md-3">
                     <div class="input-group">
                         <div class="input-group-prepend">
                             <span class="input-group-text"

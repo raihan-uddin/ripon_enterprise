@@ -134,7 +134,7 @@ class Inventory extends CActiveRecord
         );
     }
 
-    public function closingStock($model_id, $store_id = null, $location_id = null)
+    public function closingStock($model_id, $store_id = null, $location_id = null, $product_sl_no = null)
     {
         $criteria = new CDbCriteria();
         $criteria->select = "SUM(stock_in) AS stock_in, sum(stock_out) AS stock_out";
@@ -144,6 +144,9 @@ class Inventory extends CActiveRecord
         }
         if ($location_id > 0) {
             $criteria->addColumnCondition(['location_id' => $location_id]);
+        }
+        if ($product_sl_no && strlen($product_sl_no) > 0) {
+            $criteria->addColumnCondition(['t.product_sl_no' => $product_sl_no]);
         }
         $data = self::model()->findByAttributes([], $criteria);
         return $data ? ($data->stock_in - $data->stock_out) : 0;

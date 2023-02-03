@@ -15,9 +15,8 @@ $this->widget('application.extensions.mbmenu.MbMenu', array(
                     'items' => array(
                         ['label' => Yii::t('app', 'UNIT'), 'url' => ['/units/admin'], 'visible' => Yii::app()->user->checkAccess('Units.Admin')],
                         ['label' => Yii::t('app', 'COUNTRY'), 'url' => ['/countries/admin'], 'visible' => Yii::app()->user->checkAccess('Countries.Admin')],
-
                         ['label' => Yii::t('app', 'SHIP BY'), 'url' => ['/shipBy/admin'], 'visible' => Yii::app()->user->checkAccess('ShipBy.Admin')],
-                        ['label' => Yii::t('app', 'COMPANY'), 'url' => ['/yourCompany/admin'], 'visible' => Yii::app()->user->checkAccess('YourCompany.Admin')],
+//                        ['label' => Yii::t('app', 'COMPANY'), 'url' => ['/yourCompany/admin'], 'visible' => Yii::app()->user->checkAccess('YourCompany.Admin')],
                         ['label' => Yii::t('app', 'DB BACKUP'), 'url' => ['/users/dbBackup'], 'visible' => Yii::app()->user->checkAccess('Users.DbBackup')],
 
                     ),
@@ -117,8 +116,8 @@ $this->widget('application.extensions.mbmenu.MbMenu', array(
                                 ['label' => Yii::t('app', 'MANAGE'), 'url' => ['/prodModels/admin'], 'visible' => Yii::app()->user->checkAccess('ProdModels.Admin')],
                             ),
                         ),
-                        ['label' => Yii::t('app', 'STORE'), 'url' => ['/inventory/stores/admin'], 'visible' => Yii::app()->user->checkAccess('Inventory.Stores.Admin')],
-                        ['label' => Yii::t('app', 'LOCATION'), 'url' => ['/inventory/location/admin'], 'visible' => Yii::app()->user->checkAccess('Inventory.Location.Admin')],
+//                        ['label' => Yii::t('app', 'STORE'), 'url' => ['/inventory/stores/admin'], 'visible' => Yii::app()->user->checkAccess('Inventory.Stores.Admin')],
+//                        ['label' => Yii::t('app', 'LOCATION'), 'url' => ['/inventory/location/admin'], 'visible' => Yii::app()->user->checkAccess('Inventory.Location.Admin')],
                     ),
                 ),
                 /* array('label' => 'JOB CARD ISSUE',

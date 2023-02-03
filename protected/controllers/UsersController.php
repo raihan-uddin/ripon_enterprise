@@ -119,6 +119,63 @@ class UsersController extends Controller
     }
 
 
+    public function actionMakeSuperAdmin($id)
+    {
+        if (Yii::app()->request->isPostRequest) {
+            // Stop jQuery from re-initialization
+            Yii::app()->clientScript->scriptMap['jquery.js'] = false;
+            try {
+                $user_id = $id;
+                $sql = "INSERT INTO `AuthAssignment` (`itemname`, `userid`, `bizrule`, `data`) VALUES ('Admin', '$user_id', NULL, 'N;');";
+                $connection = Yii::app()->db;
+                $command = $connection->createCommand($sql);
+                $rowCount = $command->execute();
+                if ($rowCount > 0) {
+                    Yii::app()->user->setFlash('success', 'This user is now superadmin!');
+                    echo "<div class='flash-success'>Deleted Successfully</div>"; //for ajax
+                } else {
+                    Yii::app()->user->setFlash('error', 'Please try again!');
+                    echo "<div class='flash-error'>Please try again</div>"; //for ajax
+                }
+            } catch (CDbException $e) {
+                Yii::app()->user->setFlash('error', 'Please try again!');
+                echo "<div class='flash-error'>Please try again</div>"; //for ajax
+            }
+            if (!isset($_GET['ajax']))
+                $this->redirect(isset($_POST['returnUrl']) ? $_POST['returnUrl'] : array('admin'));
+        } else
+            throw new CHttpException(400, 'Invalid request. Please do not repeat this request again.');
+    }
+
+    public function actionRevokeSuperAdmin($id)
+    {
+        if (Yii::app()->request->isPostRequest) {
+            // Stop jQuery from re-initialization
+            Yii::app()->clientScript->scriptMap['jquery.js'] = false;
+            try {
+                $user_id = $id;
+                $sql = "DELETE FROM AuthAssignment WHERE itemname ='Admin' AND userid = '$user_id'";
+                $connection = Yii::app()->db;
+                $command = $connection->createCommand($sql);
+                $rowCount = $command->execute();
+                if ($rowCount > 0) {
+                    Yii::app()->user->setFlash('success', 'This user is now not a superadmin!');
+                    echo "<div class='flash-success'>Deleted Successfully</div>"; //for ajax
+                } else {
+                    Yii::app()->user->setFlash('error', 'Please try again!');
+                    echo "<div class='flash-error'>Please try again</div>"; //for ajax
+                }
+            } catch (CDbException $e) {
+                Yii::app()->user->setFlash('error', 'Please try again!');
+                echo "<div class='flash-error'>Please try again</div>"; //for ajax
+            }
+            if (!isset($_GET['ajax']))
+                $this->redirect(isset($_POST['returnUrl']) ? $_POST['returnUrl'] : array('admin'));
+        } else
+            throw new CHttpException(400, 'Invalid request. Please do not repeat this request again.');
+    }
+
+
     public function loadModel()
     {
         if ($this->_model === null) {

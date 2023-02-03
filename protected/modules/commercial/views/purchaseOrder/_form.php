@@ -463,8 +463,6 @@ Yii::app()->clientScript->registerCoreScript("jquery.ui");
                                         var search = request.term;
                                         $.post('<?php echo Yii::app()->baseUrl ?>/index.php/prodModels/Jquery_showprodSearch', {
                                                 "q": search,
-                                                "item_id": [<?= ProdItems::FINISHED_GOODS ?>],
-                                                "item_id_excluded": true,
                                             },
                                             function (data) {
                                                 response(data);
@@ -715,7 +713,7 @@ Yii::app()->clientScript->registerCoreScript("jquery.ui");
         let isproductpresent = false;
         let temp_codearray = document.getElementsByName("PurchaseOrderDetails[temp_model_id][]");
         let temp_sl_array = document.getElementsByName("PurchaseOrderDetails[temp_product_sl_no][]");
-        console.log(temp_sl_array);
+        // console.log(temp_sl_array);
         /* if (temp_codearray.length > 0) {
              for (let l = 0; l < temp_codearray.length; l++) {
                  var code = temp_codearray[l].value;
@@ -726,7 +724,7 @@ Yii::app()->clientScript->registerCoreScript("jquery.ui");
              }
          }*/
         if (product_sl_no.length > 0) {
-            console.log("length found");
+            // console.log("length found");
             for (let l = 0; l < temp_sl_array.length; l++) {
                 let code = temp_sl_array[l].value;
                 if (code === product_sl_no) {
@@ -734,7 +732,7 @@ Yii::app()->clientScript->registerCoreScript("jquery.ui");
                     break;
                 }
             }
-            console.log(isproductpresent);
+            // console.log(isproductpresent);
         }
 
 

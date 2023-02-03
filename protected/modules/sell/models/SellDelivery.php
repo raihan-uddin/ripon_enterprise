@@ -135,17 +135,17 @@ class SellDelivery extends CActiveRecord
         $criteria->select = "t.*";
         $criteria->join = " ";
 
-        if (trim($this->sell_order_id) != "") {
+        if (($this->sell_order_id) != "") {
             $criteria->join .= " INNER JOIN customers c on t.customer_id = c.id ";
-            $criteria->compare('c.company_name', trim($this->customer_id), true);
+            $criteria->compare('c.company_name', ($this->customer_id), true);
         }
-        if (trim($this->customer_id) != "") {
+        if (($this->customer_id) != "") {
             $criteria->join .= " INNER JOIN sell_order so on t.sell_order_id = so.id ";
-            $criteria->compare('so.so_no', trim($this->sell_order_id), true);
+            $criteria->compare('so.so_no', ($this->sell_order_id), true);
         }
-        if (trim($this->created_by) != "") {
+        if (($this->created_by) != "") {
             $criteria->join .= " INNER JOIN users u on t.created_by = u.id ";
-            $criteria->compare('u.username', trim($this->created_by), true);
+            $criteria->compare('u.username', ($this->created_by), true);
         }
         $criteria->compare('id', $this->id);
         $criteria->compare('date', $this->date, true);

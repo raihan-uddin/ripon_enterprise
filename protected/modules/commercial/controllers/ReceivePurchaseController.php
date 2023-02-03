@@ -31,29 +31,6 @@ class ReceivePurchaseController extends Controller
 
 
     /**
-     * Creates a new model.
-     * If creation is successful, the browser will be redirected to the 'view' page.
-     */
-    public function actionCreate()
-    {
-        $model = new ReceivePurchase;
-
-        // Uncomment the following line if AJAX validation is needed
-        // $this->performAjaxValidation($model);
-
-        if (isset($_POST['ReceivePurchase'])) {
-            $model->attributes = $_POST['ReceivePurchase'];
-            if ($model->save())
-                $this->redirect(array('admin'));
-        }
-
-        $this->render('create', array(
-            'model' => $model,
-        ));
-    }
-
-
-    /**
      * Deletes a particular model.
      * If deletion is successful, the browser will be redirected to the 'admin' page.
      * @param integer $id the ID of the model to be deleted
@@ -196,7 +173,7 @@ class ReceivePurchaseController extends Controller
                     $orderDetails = PurchaseOrderDetails::model()->findAll($criteria);
                     $all_delivery_done = true;
                     foreach ($orderDetails as $od) {
-                        $totalRcv = ReceivePurchaseDetails::model()->totalReceiveQtyOfThisModelByOrder($od->model_id, $id);
+                        $totalRcv = ReceivePurchaseDetails::model()->totalReceiveQtyOfThisModelByOrder($od->model_id, $id, $od->product_sl_no);
                         $rem = $od->qty - $totalRcv;
                         if ($rem > 0) {
                             $all_delivery_done = false;

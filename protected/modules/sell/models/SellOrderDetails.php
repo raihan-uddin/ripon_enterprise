@@ -18,6 +18,7 @@
  * @property string $updated_at
  * @property string $color
  * @property string $note
+ * @property string $product_sl_no
  */
 class SellOrderDetails extends CActiveRecord
 {
@@ -48,9 +49,9 @@ class SellOrderDetails extends CActiveRecord
             array('sell_order_id, model_id, qty, amount, row_total', 'required'),
             array('sell_order_id, model_id, is_delivery_done, is_invoice_done, created_by, updated_by', 'numerical', 'integerOnly' => true),
             array('qty, amount, row_total', 'numerical'),
-            array('created_at, updated_at, color, note', 'safe'),
+            array('created_at, updated_at, color, note, product_sl_no', 'safe'),
             // The following rule is used by search().
-            array('id, sell_order_id, model_id, qty, note, amount, row_total, is_delivery_done, color, is_invoice_done, created_by, created_at, updated_by, updated_at', 'safe', 'on' => 'search'),
+            array('id, sell_order_id, model_id, qty, note, product_sl_no, amount, row_total, is_delivery_done, color, is_invoice_done, created_by, created_at, updated_by, updated_at', 'safe', 'on' => 'search'),
         );
 	}
 
@@ -107,8 +108,9 @@ class SellOrderDetails extends CActiveRecord
         $criteria->join = " ";
 
 		$criteria->compare('id',$this->id);
-		$criteria->compare('sell_order_id',$this->sell_order_id);
-		$criteria->compare('model_id',$this->model_id);
+        $criteria->compare('sell_order_id', $this->sell_order_id);
+        $criteria->compare('product_sl_no', $this->product_sl_no);
+        $criteria->compare('model_id', $this->model_id);
 		$criteria->compare('qty',$this->qty);
 		$criteria->compare('amount',$this->amount);
 		$criteria->compare('row_total',$this->row_total);

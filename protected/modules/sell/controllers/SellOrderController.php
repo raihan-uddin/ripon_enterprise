@@ -83,6 +83,7 @@ class SellOrderController extends Controller
                     $model2->model_id = $model_id;
                     $model2->qty = $_POST['SellOrderDetails']['temp_qty'][$key];
                     $model2->amount = $_POST['SellOrderDetails']['temp_unit_price'][$key];
+                    $model2->product_sl_no = $_POST['SellOrderDetails']['temp_product_sl_no'][$key];
                     $model2->row_total = $_POST['SellOrderDetails']['temp_row_total'][$key];
                     $model2->color = $_POST['SellOrderDetails']['temp_color'][$key];
                     $model2->note = $_POST['SellOrderDetails']['temp_note'][$key];
