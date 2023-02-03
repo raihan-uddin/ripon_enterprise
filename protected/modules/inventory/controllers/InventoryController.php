@@ -166,7 +166,7 @@ class InventoryController extends Controller
 
     public function actionVoucherPreview()
     {
-        $challan_no = isset($_POST['challan_no']) ? trim($_POST['challan_no']) : "";
+        $challan_no = isset($_POST['challan_no']) ? ($_POST['challan_no']) : "";
 
         if ($challan_no != "") {
             $criteria = new CDbCriteria;

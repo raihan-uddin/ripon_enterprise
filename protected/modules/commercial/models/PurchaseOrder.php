@@ -158,13 +158,13 @@ class PurchaseOrder extends CActiveRecord
         $criteria->select = "t.*";
         $criteria->join = " ";
 
-        if (trim($this->customer_id) != "") {
+        if (($this->customer_id) != "") {
             $criteria->join .= " INNER JOIN suppliers s on t.supplier_id = s.id ";
-            $criteria->compare('s.company_name', trim($this->supplier_id), true);
+            $criteria->compare('s.company_name', ($this->supplier_id), true);
         }
-        if (trim($this->created_by) != "") {
+        if (($this->created_by) != "") {
             $criteria->join .= " INNER JOIN users u on t.created_by = u.id ";
-            $criteria->compare('u.username', trim($this->created_by), true);
+            $criteria->compare('u.username', ($this->created_by), true);
         }
 
         $criteria->compare('id', $this->id);
@@ -212,13 +212,13 @@ class PurchaseOrder extends CActiveRecord
         $criteria->join = " ";
 
         $criteria->addColumnCondition(['is_all_received' => PurchaseOrder::NOT_RECEIVED]);
-        if (trim($this->supplier_id) != "") {
+        if (($this->supplier_id) != "") {
             $criteria->join .= " INNER JOIN suppliers s on t.supplier_id = s.id ";
-            $criteria->compare('s.company_name', trim($this->supplier_id), true);
+            $criteria->compare('s.company_name', ($this->supplier_id), true);
         }
-        if (trim($this->created_by) != "") {
+        if (($this->created_by) != "") {
             $criteria->join .= " INNER JOIN users u on t.created_by = u.id ";
-            $criteria->compare('u.username', trim($this->created_by), true);
+            $criteria->compare('u.username', ($this->created_by), true);
         }
 
         $criteria->compare('id', $this->id);
@@ -260,7 +260,7 @@ class PurchaseOrder extends CActiveRecord
 
     public function beforeSave()
     {
-        if (trim($this->exp_receive_date) == "")
+        if (($this->exp_receive_date) == "")
             $this->exp_receive_date = NULL;
         if ($this->isNewRecord) {
             $this->created_at = new CDbExpression('NOW()');

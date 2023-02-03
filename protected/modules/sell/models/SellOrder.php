@@ -205,9 +205,9 @@ class SellOrder extends CActiveRecord
         $criteria->select = "t.*";
         $criteria->join = " ";
 
-        if (trim($this->customer_id) != "") {
+        if (($this->customer_id) != "") {
             $criteria->join .= " INNER JOIN customers c on t.customer_id = c.id ";
-            $criteria->compare('c.company_name', trim($this->customer_id), true);
+            $criteria->compare('c.company_name', ($this->customer_id), true);
         }
 
         $criteria->compare('id', $this->id);
@@ -261,9 +261,9 @@ class SellOrder extends CActiveRecord
         $criteria->addColumnCondition(['order_type' => self::NEW_ORDER]);
         $criteria->addCondition("job_max_sl_no > 0");
 
-        if (trim($this->customer_id) != "") {
+        if (($this->customer_id) != "") {
             $criteria->join .= " INNER JOIN customers c on t.customer_id = c.id ";
-            $criteria->compare('c.company_name', trim($this->customer_id), true);
+            $criteria->compare('c.company_name', ($this->customer_id), true);
         }
 
         $criteria->compare('id', $this->id);
@@ -316,9 +316,9 @@ class SellOrder extends CActiveRecord
         $criteria->join = " ";
         $criteria->addColumnCondition(['is_delivery_done' => SellOrder::DELIVERY_NOT_DONE]);
 
-        if (trim($this->customer_id) != "") {
+        if (($this->customer_id) != "") {
             $criteria->join .= " INNER JOIN customers c on t.customer_id = c.id ";
-            $criteria->compare('c.company_name', trim($this->customer_id), true);
+            $criteria->compare('c.company_name', ($this->customer_id), true);
         }
 
         $criteria->compare('id', $this->id);
@@ -366,7 +366,7 @@ class SellOrder extends CActiveRecord
 
     public function beforeSave()
     {
-        if (trim($this->exp_delivery_date) == '') {
+        if (($this->exp_delivery_date) == '') {
             $this->exp_delivery_date = NULL;
         }
         if ($this->isNewRecord) {

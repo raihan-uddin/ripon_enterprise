@@ -201,7 +201,7 @@
                 <tr>
                     <td rowspan="3" colspan="3">
                         <div>Total Amount In Words:</div>
-                        <div>Dirhams:
+                        <div>BDT:
                             <?php
                             $amountInWord = new AmountInWord();
                             $inword = $amountInWord->convert(intval($row_total));

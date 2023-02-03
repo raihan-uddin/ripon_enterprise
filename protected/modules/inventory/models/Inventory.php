@@ -169,14 +169,14 @@ class Inventory extends CActiveRecord
         $criteria->select = "t.*";
         $criteria->join = " ";
 
-        if (trim($this->model_id) != "") {
+        if (($this->model_id) != "") {
             $criteria->join .= " INNER JOIN prod_models pm on t.model_id = pm.id ";
-            $criteria->compare('pm.model_name', trim($this->model_id), true);
+            $criteria->compare('pm.model_name', ($this->model_id), true);
         }
 
-        if (trim($this->create_by) != "") {
+        if (($this->create_by) != "") {
             $criteria->join .= " INNER JOIN users u on t.created_by = u.id ";
-            $criteria->compare('u.username', trim($this->create_by), true);
+            $criteria->compare('u.username', ($this->create_by), true);
         }
 
         $criteria->compare('id', $this->id);

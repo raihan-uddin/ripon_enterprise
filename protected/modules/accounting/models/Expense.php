@@ -124,9 +124,9 @@ class Expense extends CActiveRecord
         $criteria->join = " ";
 
 
-        if (trim($this->created_by) != "") {
+        if (($this->created_by) != "") {
             $criteria->join .= " INNER JOIN users u on t.created_by = u.id ";
-            $criteria->compare('u.username', trim($this->created_by), true);
+            $criteria->compare('u.username', ($this->created_by), true);
         }
 
         $criteria->compare('id', $this->id);

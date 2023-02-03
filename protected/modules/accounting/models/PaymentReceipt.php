@@ -158,17 +158,17 @@ class PaymentReceipt extends CActiveRecord
         $criteria->select = "t.*";
         $criteria->join = " ";
 
-        if (trim($this->order_id) != "") {
+        if (($this->order_id) != "") {
             $criteria->join .= " INNER JOIN purchase_order po on t.order_id = po.id ";
-            $criteria->compare('po.po_no', trim($this->order_id), true);
+            $criteria->compare('po.po_no', ($this->order_id), true);
         }
-        if (trim($this->supplier_id) != "") {
+        if (($this->supplier_id) != "") {
             $criteria->join .= " INNER JOIN suppliers s on t.supplier_id = s.id ";
-            $criteria->compare('s.company_name', trim($this->supplier_id), true);
+            $criteria->compare('s.company_name', ($this->supplier_id), true);
         }
-        if (trim($this->created_by) != "") {
+        if (($this->created_by) != "") {
             $criteria->join .= " INNER JOIN users u on t.created_by = u.id ";
-            $criteria->compare('u.username', trim($this->created_by), true);
+            $criteria->compare('u.username', ($this->created_by), true);
         }
         $criteria->compare('id', $this->id);
         $criteria->compare('date', $this->date, true);
@@ -222,7 +222,7 @@ class PaymentReceipt extends CActiveRecord
 
     public function beforeSave()
     {
-        if (trim($this->cheque_date) == "") {
+        if (($this->cheque_date) == "") {
             $this->cheque_date = NULL;
         }
         if ($this->isNewRecord) {

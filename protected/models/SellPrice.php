@@ -170,9 +170,9 @@ class SellPrice extends CActiveRecord
         $criteria = new CDbCriteria;
         $criteria->select = " t.*";
         $criteria->join = "";
-        if (trim($this->model_id) != "") {
+        if (($this->model_id) != "") {
             $criteria->join .= " INNER JOIN prod_models pm on t.model_id = pm.id ";
-            $criteria->compare("pm.model_name", trim($this->model_id), true);
+            $criteria->compare("pm.model_name", ($this->model_id), true);
         }
 
         $criteria->compare('id', $this->id);

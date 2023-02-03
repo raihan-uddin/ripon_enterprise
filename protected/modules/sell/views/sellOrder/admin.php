@@ -81,8 +81,9 @@ if (Yii::app()->user->checkAccess('Sell.Order.VoucherPreview')) {
                         <?php
                         echo $form->dropDownList(
                             $model, 'print_type', [
-                            SellOrder::NORMAL_ORDER_PRINT => 'ORDER PREVIEW', SellOrder::PRODUCTION_ORDER_PRINT => 'PRODUCTION ORDER',
-                            SellOrder::ORDER_BOM => 'JOB CARD',
+                            SellOrder::NORMAL_ORDER_PRINT => 'ORDER PREVIEW',
+//                            SellOrder::PRODUCTION_ORDER_PRINT => 'PRODUCTION ORDER',
+//                            SellOrder::ORDER_BOM => 'JOB CARD',
                         ], array('class' => 'form-control',));
                         ?>
                     </div>

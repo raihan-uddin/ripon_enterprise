@@ -42,6 +42,9 @@ class PurchaseOrderController extends Controller
 
         // Uncomment the following line if AJAX validation is needed
         $this->performAjaxValidation($model);
+        if (Yii::app()->request->isAjaxRequest) {
+            Yii::app()->clientScript->scriptMap['jquery.js'] = false;
+        }
 
         if (isset($_POST['PurchaseOrder'], $_POST['PurchaseOrderDetails'])) {
             $model->attributes = $_POST['PurchaseOrder'];
@@ -90,6 +93,7 @@ class PurchaseOrderController extends Controller
                             $modelRcvD->row_total = $model2->row_total;
                             $modelRcvD->product_sl_no = $model2->product_sl_no;
                             if ($modelRcvD->save()) {
+
                                 $inv = new Inventory();
                                 $inv->model_id = $model_id;
                                 $inv->date = $model->date;
@@ -177,7 +181,9 @@ class PurchaseOrderController extends Controller
     {
         $model = $this->loadModel($id);
         $model2 = new PurchaseOrderDetails();
-
+        if (Yii::app()->request->isAjaxRequest) {
+            Yii::app()->clientScript->scriptMap['jquery.js'] = false;
+        }
         if (isset($_POST['PurchaseOrder'], $_POST['PurchaseOrderDetails'])) {
             $model->attributes = $_POST['PurchaseOrder'];
             if ($model->save()) {
@@ -186,7 +192,7 @@ class PurchaseOrderController extends Controller
                     $product_sl_no = $_POST['PurchaseOrderDetails']['temp_product_sl_no'][$key];
                     $criteria = new CDbCriteria();
                     $criteria->addColumnCondition(['order_id' => $id, 'model_id' => $model_id]);
-                    if (strlen(trim($product_sl_no)) > 0) {
+                    if (strlen(($product_sl_no)) > 0) {
                         $criteria->addColumnCondition(['product_sl_no' => $product_sl_no]);
                     }
                     $model2 = PurchaseOrderDetails::model()->findByAttributes([], $criteria);
@@ -297,6 +303,9 @@ class PurchaseOrderController extends Controller
 
     public function actionVoucherPreview()
     {
+        if (Yii::app()->request->isAjaxRequest) {
+            Yii::app()->clientScript->scriptMap['jquery.js'] = false;
+        }
         $po_no = isset($_POST['po_no']) ? trim($_POST['po_no']) : "";
 
         if ($po_no != "") {

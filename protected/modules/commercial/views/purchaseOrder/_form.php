@@ -250,7 +250,7 @@ Yii::app()->clientScript->registerCoreScript("jquery.ui");
                         <?php echo $form->textField($model, 'contact_no', array('maxlength' => 255, 'class' => 'form-control', 'readonly' => true, 'disabled' => true)); ?>
                     </div>
                     <span class="help-block"
-                          style="color: red; width: 100%"> <?php echo $form->error($model, 'qty'); ?></span>
+                          style="color: red; width: 100%"> <?php echo $form->error($model, 'contact_no'); ?></span>
                 </div>
 
                 <div class="form-group row" style="">
@@ -502,7 +502,7 @@ Yii::app()->clientScript->registerCoreScript("jquery.ui");
                         <span class="help-block"
                               style="color: red; width: 100%"> <?php echo $form->error($model2, 'note'); ?></span>
                     </div>
-                    <div class="form-group col-xs-12 col-md-2 col-lg-2">
+                    <div class="form-group col-xs-12 col-md-1 col-lg-1">
                         <?php echo $form->labelEx($model2, 'qty'); ?>
 
                         <div class="input-group">
@@ -522,7 +522,7 @@ Yii::app()->clientScript->registerCoreScript("jquery.ui");
                         <span class="help-block"
                               style="color: red; width: 100%"> <?php echo $form->error($model2, 'qty'); ?></span>
                     </div>
-                    <div class="form-group col-xs-12 col-md-1 col-lg-1">
+                    <div class="form-group col-xs-12 col-md-2 col-lg-2">
                         <?php echo $form->labelEx($model2, 'amount'); ?>
 
                         <div class="input-group">
@@ -534,7 +534,7 @@ Yii::app()->clientScript->registerCoreScript("jquery.ui");
                         <span class="help-block"
                               style="color: red; width: 100%"> <?php echo $form->error($model2, 'amount'); ?></span>
                     </div>
-                    <div class="form-group col-xs-12 col-md-1 col-lg-1">
+                    <div class="form-group col-xs-12 col-md-2 col-lg-2">
                         <?php echo $form->labelEx($model2, 'row_total'); ?>
                         <div class="input-group">
                             <?php echo $form->textField($model2, 'row_total', array('maxlength' => 255, 'class' => 'form-control', 'readonly' => true)); ?>
@@ -546,8 +546,13 @@ Yii::app()->clientScript->registerCoreScript("jquery.ui");
                               style="color: red; width: 100%"> <?php echo $form->error($model2, 'row_total'); ?></span>
                     </div>
 
-                    <div class="form-group col-xs-12 col-md-2 col-lg-2">
-                        <button class="btn  btn-success mt-4" onclick="addToList()" type="button">ADD TO LIST</button>
+                    <div class="form-group col-xs-12 col-md-1 col-lg-1">
+                        <button class="btn  btn-success mt-4" onclick="addToList()" type="button" title="ADD TO LIST">
+                            <i class="fa fa-cart-arrow-down" aria-hidden="true"></i>
+                        </button>
+                        <button class="btn  btn-danger mt-4" onclick="resetDynamicItem()" type="button" title="RESET">
+                            <i class="fa fa-refresh" aria-hidden="true"></i>
+                        </button>
                     </div>
                 </div>
                 <div class="row">
@@ -622,7 +627,7 @@ Yii::app()->clientScript->registerCoreScript("jquery.ui");
                         toastr.error("Please select supplier from the list!");
                         return false;
                     }else if(count_item <= 0){
-                        toastr.error("Please add material to list.");
+                        toastr.error("Please add product to list.");
                         return false;
                     }else if(grand_total == "" || grand_total <= 0){
                         toastr.error("Grand total amount is 0");
@@ -673,6 +678,14 @@ Yii::app()->clientScript->registerCoreScript("jquery.ui");
     });
 
     $(document).ready(function () {
+        $("#PurchaseOrderDetails_product_sl_no").keyup(function () {
+            let sl_wise_purchase = $(this);
+            if (sl_wise_purchase.length > 0) {
+                $("#PurchaseOrderDetails_qty").val(1).change();
+            } else {
+                $("#PurchaseOrderDetails_qty").val('').change();
+            }
+        });
         $(".qty-amount").keyup(function () {
             var $this = $(this);
             $this.val($this.val().replace(/[^\d.]/g, ''));
@@ -701,14 +714,27 @@ Yii::app()->clientScript->registerCoreScript("jquery.ui");
         let row_total = $("#PurchaseOrderDetails_row_total").val();
         let isproductpresent = false;
         let temp_codearray = document.getElementsByName("PurchaseOrderDetails[temp_model_id][]");
-        if (temp_codearray.length > 0) {
-            for (let l = 0; l < temp_codearray.length; l++) {
-                var code = temp_codearray[l].value;
-                if (code == model_id) {
+        let temp_sl_array = document.getElementsByName("PurchaseOrderDetails[temp_product_sl_no][]");
+        console.log(temp_sl_array);
+        /* if (temp_codearray.length > 0) {
+             for (let l = 0; l < temp_codearray.length; l++) {
+                 var code = temp_codearray[l].value;
+                 if (code == model_id) {
+                     isproductpresent = true;
+                     break;
+                 }
+             }
+         }*/
+        if (product_sl_no.length > 0) {
+            console.log("length found");
+            for (let l = 0; l < temp_sl_array.length; l++) {
+                let code = temp_sl_array[l].value;
+                if (code === product_sl_no) {
                     isproductpresent = true;
                     break;
                 }
             }
+            console.log(isproductpresent);
         }
 
 
@@ -731,15 +757,15 @@ Yii::app()->clientScript->registerCoreScript("jquery.ui");
             $("#list tbody").append(`
                 <tr class="item">
                     <td>${model_id_text}</td>
-                    <td class="text-center">${note}</td>
                     <td class="text-center">${product_sl_no}</td>
+                    <td class="text-center">${note}</td>
                     <td class="text-center">${unit_price}</td>
                     <td class="text-center">${qty}</td>
                     <td class="text-center">
                         ${row_total}
-                        <input type="hidden" class="form-control text-center" value="${qty}" name=PurchaseOrderDetails[temp_qty][]"">
-                        <input type="hidden" class="form-control text-center" value="${product_sl_no}" name=PurchaseOrderDetails[temp_product_sl_no][]"">
-                        <input type="hidden" class="form-control text-center" value="${note}" name=PurchaseOrderDetails[temp_note][]"">
+                        <input type="hidden" class="form-control text-center" value="${qty}" name="PurchaseOrderDetails[temp_qty][]">
+                        <input type="hidden" class="form-control text-center" value="${product_sl_no}" name="PurchaseOrderDetails[temp_product_sl_no][]">
+                        <input type="hidden" class="form-control text-center" value="${note}" name="PurchaseOrderDetails[temp_note][]">
                         <input type="hidden" class="form-control" value="${model_id}" name="PurchaseOrderDetails[temp_model_id][]" >
                         <input type="hidden" class="form-control" value="${unit_price}" name="PurchaseOrderDetails[temp_unit_price][]" >
                         <input type="hidden" class="form-control row-total" value="${row_total}" name="PurchaseOrderDetails[temp_row_total][]" >
@@ -750,7 +776,7 @@ Yii::app()->clientScript->registerCoreScript("jquery.ui");
                 </tr>
                 `);
             calculateTotal();
-            clearDynamicItem();
+            clearDynamicItem(product_sl_no);
         }
     }
 
@@ -771,7 +797,7 @@ Yii::app()->clientScript->registerCoreScript("jquery.ui");
         $("#PurchaseOrder_grand_total").val(grand_total.toFixed(2));
     }
 
-    function clearDynamicItem() {
+    function resetDynamicItem() {
         $("#PurchaseOrderDetails_model_id").val('');
         $("#model_id_text").val('');
         $("#PurchaseOrderDetails_product_sl_no").val('');
@@ -781,6 +807,31 @@ Yii::app()->clientScript->registerCoreScript("jquery.ui");
         $("#PurchaseOrderDetails_color").val('');
         $("#PurchaseOrderDetails_note").val('');
     }
+
+    function clearDynamicItem(product_sl_no) {
+        if (product_sl_no.length > 0) {
+            $("#PurchaseOrderDetails_product_sl_no").val('');
+            $("#PurchaseOrderDetails_product_sl_no").focus();
+        } else {
+            $("#PurchaseOrderDetails_model_id").val('');
+            $("#model_id_text").val('');
+            $("#PurchaseOrderDetails_product_sl_no").val('');
+            $("#PurchaseOrderDetails_amount").val('');
+            $("#PurchaseOrderDetails_row_total").val('');
+            $("#PurchaseOrderDetails_qty").val('');
+            $("#PurchaseOrderDetails_color").val('');
+            $("#PurchaseOrderDetails_note").val('');
+        }
+    }
+
+    $(document).keypress(function (event) {
+        let keycode = (event.keyCode ? event.keyCode : event.which);
+        if (keycode == '13') {
+            console.log('You pressed a "enter" key in somewhere');
+            // addToList();
+            return false;
+        }
+    });
 
     function calculateTotal() {
         let item_count = $(".item").length;

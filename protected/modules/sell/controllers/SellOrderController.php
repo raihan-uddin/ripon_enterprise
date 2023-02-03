@@ -60,6 +60,10 @@ class SellOrderController extends Controller
         // Uncomment the following line if AJAX validation is needed
         $this->performAjaxValidation($model);
 
+        if (Yii::app()->request->isAjaxRequest) {
+            Yii::app()->clientScript->scriptMap['jquery.js'] = false;
+        }
+
         if (isset($_POST['SellOrder'], $_POST['SellOrderDetails'])) {
             $model->attributes = $_POST['SellOrder'];
             $model->max_sl_no = SellOrder::maxSlNo();
@@ -127,6 +131,10 @@ class SellOrderController extends Controller
     {
         $model = $this->loadModel($id);
         $model2 = new SellOrderDetails();
+
+        if (Yii::app()->request->isAjaxRequest) {
+            Yii::app()->clientScript->scriptMap['jquery.js'] = false;
+        }
 
         if (isset($_POST['SellOrder'], $_POST['SellOrderDetails'])) {
             $model->attributes = $_POST['SellOrder'];
@@ -244,6 +252,10 @@ class SellOrderController extends Controller
     {
         $so_no = isset($_POST['so_no']) ? trim($_POST['so_no']) : "";
         $preview_type = isset($_POST['preview_type']) ? trim($_POST['preview_type']) : 0;
+
+        if (Yii::app()->request->isAjaxRequest) {
+            Yii::app()->clientScript->scriptMap['jquery.js'] = false;
+        }
 
         if ($so_no && $preview_type > 0) {
             $criteria = new CDbCriteria;
