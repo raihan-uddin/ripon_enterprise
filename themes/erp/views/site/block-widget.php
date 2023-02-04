@@ -45,10 +45,10 @@
                 <?php
                 $criteria = new CDbCriteria();
                 $criteria->select = "COUNT(*) as id";
-                $data = Customers::model()->findByAttributes([], $criteria);
+                $data = Suppliers::model()->findByAttributes([], $criteria);
                 ?>
                 <h3><?= $data ? $data->id : 0 ?></h3>
-                <p>Customer</p>
+                <p>Supplier</p>
             </div>
             <div class="icon">
                 <i class="fa fa-user"></i>
