@@ -131,6 +131,12 @@ class PurchaseOrderDetails extends CActiveRecord
     public function beforeSave()
     {
         if ($this->isNewRecord) {
+            $prodModel = ProdModels::model()->findByPk($this->model_id);
+            if ($prodModel) {
+                $prodModel->purchase_price = $this->unit_price;
+                $prodModel->save();
+            }
+
             $this->created_at = new CDbExpression('NOW()');
             $this->created_by = Yii::app()->user->id;
         } else {

@@ -106,7 +106,8 @@ endforeach;
                     'value' => 'Units::model()->unitLabel($data->unit_id)',
                     'filter' => CHtml::listData(Units::model()->findAll(), 'id', 'label'),
                 ),
-//                'ca_id',
+                'sell_price',
+                'purchase_price',
                 /*
                   array(
                   'name'=>'activePrice',

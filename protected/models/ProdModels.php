@@ -19,6 +19,8 @@
  * @property string $thumbnail
  * @property string $created_at
  * @property integer $created_by
+ * @property double $purchase_price
+ * @property double $sell_price
  * @property string $updated_at
  * @property string $description
  * @property integer $updated_by
@@ -38,6 +40,10 @@ class ProdModels extends CActiveRecord
     public $qty;
     public $barCodeGenerator;
     public $image2;
+    public $opening_stock;
+    public $stock_in;
+    public $stock_out;
+    public $model_id;
 
     public static function prodNameOfThis($id)
     {
@@ -70,7 +76,7 @@ class ProdModels extends CActiveRecord
         // will receive user inputs.
         return array(
             array('item_id, brand_id, model_name, code, unit_id', 'required'),
-            array('item_id, brand_id, unit_id, country_id, vatable', 'numerical', 'integerOnly' => true),
+            array('item_id, brand_id, unit_id, country_id, vatable, purchase_price, sell_price', 'numerical', 'integerOnly' => true),
             array('model_name, code, min_order_qty', 'length', 'max' => 255),
             array('warranty', 'numerical'),
             array('code', 'unique', 'caseSensitive' => FALSE),
@@ -78,7 +84,7 @@ class ProdModels extends CActiveRecord
             array('features, description', 'safe'),
             // The following rule is used by search().
             // Please remove those attributes that should not be searched.
-            array('min_order_qty, vatable, id, item_id, brand_id, model_name,  country_id, features, warranty, description', 'safe', 'on' => 'search'),
+            array('min_order_qty, vatable, id, item_id, brand_id, model_name,  country_id, features, warranty, description,  purchase_price, sell_price', 'safe', 'on' => 'search'),
         );
     }
 
@@ -112,6 +118,8 @@ class ProdModels extends CActiveRecord
             'unit_id' => 'Unit',
             'description' => 'Description',
             'image' => 'Image',
+            'purchase_price' => 'P. Price',
+            'sell_price' => 'S. Price'
         );
     }
 
@@ -221,6 +229,8 @@ class ProdModels extends CActiveRecord
         $criteria->compare('unit_id', $this->unit_id);
         $criteria->compare('description', $this->description, true);
         $criteria->compare('features', $this->features, true);
+        $criteria->compare('purchase_price', $this->purchase_price, true);
+        $criteria->compare('sell_price', $this->sell_price, true);
 
         return new CActiveDataProvider($this, array(
             'criteria' => $criteria,

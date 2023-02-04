@@ -41,6 +41,7 @@ class Inventory extends CActiveRecord
     public $model_name;
     public $code;
     public $name;
+    public $opening_stock;
     public $t_type;
     public $unit_id;
     public $item_id;

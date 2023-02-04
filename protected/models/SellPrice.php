@@ -87,6 +87,13 @@ class SellPrice extends CActiveRecord
 
     public function beforeSave()
     {
+        if ($this->is_active) {
+            $prodModel = ProdModels::model()->findByPk($this->model_id);
+            if ($prodModel) {
+                $prodModel->sell_price = $this->sell_price;
+                $prodModel->save();
+            }
+        }
         if ($this->isNewRecord) {
             $this->add_time = new CDbExpression('NOW()');
             $this->add_by = Yii::app()->user->getId();

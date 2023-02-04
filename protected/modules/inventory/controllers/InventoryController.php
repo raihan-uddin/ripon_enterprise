@@ -274,4 +274,56 @@ class InventoryController extends Controller
         echo json_encode($results);
     }
 
+
+    public function actionStockReport()
+    {
+        $model = new Inventory();
+        $this->pageTitle = 'STOCK REPORT';
+        $this->render('stockReport', array('model' => $model));
+    }
+
+    public function actionStockReportView()
+    {
+
+        if (Yii::app()->request->isAjaxRequest) {
+            Yii::app()->clientScript->scriptMap['jquery.js'] = false;
+        }
+
+        date_default_timezone_set("Asia/Dhaka");
+        $dateFrom = $_POST['Inventory']['date_from'];
+        $dateTo = $_POST['Inventory']['date_to'];
+        $model_id = $_POST['Inventory']['model_id'];
+
+        $message = "";
+        $data = "";
+
+        if ($dateFrom != "" && $dateTo != '') {
+            $criteria = new CDbCriteria;
+            $criteria->select = "
+            t.model_name, t.code, inv.model_id, t.sell_price,
+            IFNULL((SELECT (SUM(op.stock_in) - SUM(op.stock_out)) FROM inventory op where op.date < '$dateFrom' AND op.model_id = t.id), 0) as opening_stock,
+            SUM(CASE WHEN (inv.date BETWEEN '$dateFrom' AND '$dateTo') THEN inv.stock_in ELSE 0 END) as stock_in, 
+            SUM(CASE WHEN (inv.date BETWEEN '$dateFrom' AND '$dateTo') THEN inv.stock_out ELSE 0 END) as stock_out
+
+            ";
+            $message .= "Stock Report from  $dateFrom To $dateTo";
+
+            if ($model_id > 0) {
+                $criteria->addColumnCondition(['t.id' => $model_id]);
+            }
+
+            $criteria->join = " INNER JOIN inventory inv  on inv.model_id = t.id ";
+            $criteria->group = " t.id ";
+            $criteria->order = 'inv.date ASC';
+            $data = ProdModels::model()->findAll($criteria);
+        } else {
+            $message = "<div class='flash-error'>Please select date range!</div>";
+        }
+        echo $this->renderPartial('stockReportView', array(
+            'data' => $data,
+            'message' => $message,
+        ), true, true);
+        Yii::app()->end();
+    }
+
 }
