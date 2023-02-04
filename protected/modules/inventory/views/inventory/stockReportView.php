@@ -155,7 +155,7 @@ echo "</div>";
         </tbody>
     </table>
 
-    <table class="headerTab" style="float: left; width: 100%;">
+    <table class="headerTab table table-bordered " style="float: left; width: 100%;">
         <tr>
             <td style="padding-top: 40px; text-align: left;"></td>
             <td style="padding-top: 40px; text-align: right;"></td>

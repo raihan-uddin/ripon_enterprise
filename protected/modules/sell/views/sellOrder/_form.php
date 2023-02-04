@@ -308,9 +308,7 @@ Yii::app()->clientScript->registerCoreScript("jquery.ui");
                     <div class="form-group col-xs-12 col-md-3 col-lg-3">
                         <?php echo $form->labelEx($model2, 'model_id'); ?>
                         <div class="input-group" data-target-input="nearest">
-                            <input type="text" id="model_id_text" class="form-control">
-                            <?php echo $form->hiddenField($model2, 'model_id', array('maxlength' => 255, 'class' => 'form-control', 'readonly' => true)); ?>
-                            <div class="input-group-append">
+                            <div class="input-group-prepend">
                                 <div class="input-group-text">
                                     <?php
                                     echo CHtml::link(' <i class="fa fa-plus"></i>', "", // the link for open the dialog
@@ -380,6 +378,13 @@ Yii::app()->clientScript->registerCoreScript("jquery.ui");
                                     </script>
                                 </div>
                             </div>
+                            <input type="text" id="model_id_text" class="form-control">
+                            <?php echo $form->hiddenField($model2, 'model_id', array('maxlength' => 255, 'class' => 'form-control', 'readonly' => true)); ?>
+                            <div class="input-group-append" onclick="resetProduct()">
+                                <span class="input-group-text">
+                                 <i class="fa fa-refresh"></i>
+                                </span>
+                            </div>
                         </div>
                         <span class="help-block"
                               style="color: red; width: 100%"> <?php echo $form->error($model, 'model_id'); ?></span>
@@ -416,8 +421,15 @@ Yii::app()->clientScript->registerCoreScript("jquery.ui");
 
                     <div class="form-group col-sm-12 col-md-3 col-lg-2">
                         <?php echo $form->labelEx($model, 'product_sl_no'); ?>
-                        <input type="text" id="product_sl_no" class="form-control">
 
+                        <div class="input-group" data-target-input="nearest">
+                            <input type="text" id="product_sl_no" class="form-control">
+                            <div class="input-group-append" onclick="resetProductSlNo()">
+                                <span class="input-group-text">
+                                 <i class="fa fa-refresh"></i>
+                                </span>
+                            </div>
+                        </div>
                         <span class="help-block"
                               style="color: red; width: 100%"> <?php echo $form->error($model, 'product_sl_no'); ?></span>
 
@@ -730,6 +742,16 @@ Yii::app()->clientScript->registerCoreScript("jquery.ui");
         let grand_total = parseFloat(total_amount + vat);
         $("#SellOrder_vat_amount").val(vat.toFixed(2));
         $("#SellOrder_grand_total").val(grand_total.toFixed(2));
+    }
+
+    function resetProduct() {
+        $("#model_id_text").val('');
+        $("#SellOrderDetails_model_id").val('');
+        resetProductSlNo();
+    }
+
+    function resetProductSlNo() {
+        $("#product_sl_no").val('');
     }
 
     function clearDynamicItem(product_sl_no) {
