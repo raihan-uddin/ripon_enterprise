@@ -34,6 +34,8 @@
  * @property string $job_no
  * @property string $job_card_date
  * @property string $order_note
+ * @property double $total_paid
+ * @property double $total_due
  */
 class SellOrder extends CActiveRecord
 {
@@ -95,14 +97,14 @@ class SellOrder extends CActiveRecord
         return array(
             array('max_sl_no, cash_due, so_no, date, customer_id, discount_percentage, discount_amount, grand_total, order_type', 'required'),
             array('grand_total, discount_amount, discount_percentage, vat_percentage, vat_amount, job_max_sl_no, 
-            total_amount, is_all_issue_done, is_all_production_done, is_paid', 'numerical'),
+            total_amount, is_all_issue_done, is_all_production_done, is_paid, total_paid, total_due', 'numerical'),
             array('max_sl_no, cash_due, customer_id, is_invoice_done, bom_complete, is_job_card_done, is_delivery_done, 
             is_partial_delivery, is_partial_invoice, created_by, updated_by', 'numerical', 'integerOnly' => true),
             array('created_at, updated_at, date, exp_delivery_date, so_no, job_no, job_card_date, order_note', 'safe'),
             // The following rule is used by search().
             array('id, date, cash_due, exp_delivery_date, max_sl_no, vat_percentage, so_no, customer_id, discount_percentage, bom_complete, 
             discount_amount, grand_total, is_invoice_done, is_job_card_done, is_delivery_done, is_partial_delivery, is_partial_invoice, created_by, 
-            created_at, updated_by, updated_at, job_max_sl_no, job_no, job_card_date, total_amount, order_type, 
+            created_at, updated_by, updated_at, job_max_sl_no, job_no, job_card_date, total_amount, order_type, total_paid, total_due,
             order_note, is_all_issue_done, is_all_production_done, is_paid', 'safe', 'on' => 'search'),
         );
     }
@@ -218,6 +220,8 @@ class SellOrder extends CActiveRecord
         $criteria->compare('job_no', $this->job_no);
         $criteria->compare('is_all_issue_done', $this->is_all_issue_done);
         $criteria->compare('is_paid', $this->is_paid);
+        $criteria->compare('total_paid', $this->total_paid, true);
+        $criteria->compare('total_due', $this->total_due, true);
         $criteria->compare('cash_due', $this->cash_due);
         $criteria->compare('job_card_date', $this->job_card_date);
         $criteria->compare('job_max_sl_no', $this->job_max_sl_no);
@@ -393,7 +397,7 @@ class SellOrder extends CActiveRecord
     public function orderType($value)
     {
         if ($value != self::NEW_ORDER) {
-            $string = "<span class='badge badge-danger'>REPAIR ORDER</span>";
+            $string = "<span class='badge badge-danger'>QUOTATION</span>";
         } else {
             $string = "<span class='badge badge-success'>NEW ORDER</span>";
         }

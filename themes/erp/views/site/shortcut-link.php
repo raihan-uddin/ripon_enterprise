@@ -16,12 +16,18 @@
             )); ?></span>
         <i class="fa fa-inbox"></i> Orders
     </a>
-    <a class="btn btn-app bg-warning">
-        <span class="badge bg-info">12</span>
-        <i class="fa fa-envelope"></i> Inbox
+    <a class="btn btn-app bg-info" href="<?= Yii::app()->createUrl("/commercial/purchaseOrder/create") ?>">
+        <span class="badge bg-teal"><?= PurchaseOrder::model()->count(); ?></span>
+        <i class="fa fa-inbox"></i> Purchase Order
     </a>
-    <a class="btn btn-app bg-info">
-        <span class="badge bg-danger">531</span>
-        <i class="fa fa-heart"></i> Likes
+    <a class="btn btn-app bg-gradient-warning" href="<?= Yii::app()->createUrl("/accounting/expense/create") ?>">
+        <i class="fa fa-money"></i> Expense
+    </a>
+    <a class="btn btn-app bg-primary" href="<?= Yii::app()->createUrl("/accounting/moneyReceipt/adminMoneyReceipt") ?>">
+        <i class="fa fa-money"></i> Collection
     </a>
 </div>
+
+<?php
+
+$this->renderPartial('report-shortcut');

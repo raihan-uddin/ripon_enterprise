@@ -1,0 +1,19 @@
+<div class="row">
+    <div class="margin p-2">
+        <div class="btn-group">
+            <button type="button" class="btn btn-success">Reports</button>
+            <button type="button" class="btn btn-success dropdown-toggle dropdown-hover dropdown-icon"
+                    data-toggle="dropdown">
+                <span class="sr-only">Toggle Dropdown</span>
+            </button>
+            <div class="dropdown-menu" role="menu">
+                <a class="dropdown-item" href="<?= Yii::app()->createUrl("inventory/inventory/stockReport") ?>">Stock
+                    Report</a>
+                <!--                <a class="dropdown-item" href="#">Another action</a>-->
+                <!--                <a class="dropdown-item" href="#">Something else here</a>-->
+                <!--                <div class="dropdown-divider"></div>-->
+                <!--                <a class="dropdown-item" href="#">Separated link</a>-->
+            </div>
+        </div>
+    </div>
+</div>

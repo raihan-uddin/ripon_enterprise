@@ -160,6 +160,7 @@ class SellOrderController extends Controller
                     $model2->row_total = $_POST['SellOrderDetails']['temp_row_total'][$key];
                     $model2->color = $_POST['SellOrderDetails']['temp_color'][$key];
                     $model2->note = $_POST['SellOrderDetails']['temp_note'][$key];
+                    $model2->product_sl_no = $_POST['SellOrderDetails']['temp_product_sl_no'][$key];
                     if (!$model2->save()) {
                         var_dump($model2->getErrors());
                         exit;
@@ -186,7 +187,11 @@ class SellOrderController extends Controller
             }
         }
 
-        if ($model->bom_complete == SellOrder::BOM_NOT_COMPLETE) {
+        if (
+            $model->is_partial_delivery == SellOrder::DELIVERY_NOT_DONE ||
+            $model->is_delivery_done == SellOrder::DELIVERY_NOT_DONE ||
+            $model->total_paid == 0
+        ) {
 
             $criteria = new CDbCriteria();
             $criteria->select = "t.*, pm.model_name, pm.code";

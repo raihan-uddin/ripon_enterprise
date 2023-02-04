@@ -83,6 +83,8 @@ class MoneyReceiptController extends Controller
                         $rem = $grand_total - $total_mr;
                         if ($total_mr >= $grand_total) {
                             $dt->is_paid = Invoice::PAID;
+                            $dt->total_paid = $total_mr;
+                            $dt->total_due = $rem;
                             $dt->save();
                         }
                     }

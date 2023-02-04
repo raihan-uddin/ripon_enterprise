@@ -72,7 +72,7 @@ if (Yii::app()->user->checkAccess('Sell.Order.VoucherPreview')) {
                           style="color: red; width: 100%"> <?php echo $form->error($model, 'so_no'); ?></span>
 
                 </div>
-                <div class="col-md-2">
+                <div class="col-md-2" style="display: none;">
                     <div class="input-group">
                         <div class="input-group-prepend">
                             <span class="input-group-text"
@@ -198,33 +198,42 @@ if (Yii::app()->user->checkAccess('Sell.Order.VoucherPreview')) {
                     'name' => 'so_no',
                     'htmlOptions' => ['class' => 'text-center']
                 ),
-                array(
-                    'name' => 'job_no',
-                    'htmlOptions' => ['class' => 'text-center']
-                ),
+                /* array(
+                     'name' => 'job_no',
+                     'htmlOptions' => ['class' => 'text-center']
+                 ),*/
                 array(
                     'name' => 'customer_id',
                     'value' => 'Customers::model()->nameOfThis($data->customer_id)',
                     'htmlOptions' => ['class' => 'text-center']
                 ),
-                array(
-                    'name' => 'discount_percentage',
-                    'htmlOptions' => ['class' => 'text-center']
-                ),
-                array(
-                    'name' => 'discount_amount',
-                    'htmlOptions' => ['class' => 'text-center']
-                ),
-                array(
-                    'name' => 'vat_percentage',
-                    'htmlOptions' => ['class' => 'text-center']
-                ),
-                array(
-                    'name' => 'vat_amount',
-                    'htmlOptions' => ['class' => 'text-center']
-                ),
+                /* array(
+                     'name' => 'discount_percentage',
+                     'htmlOptions' => ['class' => 'text-center']
+                 ),
+                 array(
+                     'name' => 'discount_amount',
+                     'htmlOptions' => ['class' => 'text-center']
+                 ),
+                 array(
+                     'name' => 'vat_percentage',
+                     'htmlOptions' => ['class' => 'text-center']
+                 ),
+                 array(
+                     'name' => 'vat_amount',
+                     'htmlOptions' => ['class' => 'text-center']
+                 ),*/
                 array(
                     'name' => 'grand_total',
+                    'htmlOptions' => ['class' => 'text-center']
+                ),
+
+                array(
+                    'name' => 'total_paid',
+                    'htmlOptions' => ['class' => 'text-center']
+                ),
+                array(
+                    'name' => 'total_due',
                     'htmlOptions' => ['class' => 'text-center']
                 ),
                 array(
@@ -270,7 +279,7 @@ if (Yii::app()->user->checkAccess('Sell.Order.VoucherPreview')) {
                             'label' => '<i class="fa fa-pencil-square-o fa-2x" style="color: black;"></i>&nbsp;&nbsp;',
                             'imageUrl' => false,
                             'options' => array('rel' => 'tooltip', 'data-toggle' => 'tooltip', 'title' => Yii::t('app', 'Edit')),
-                            'visible' => '$data->bom_complete == SellOrder::BOM_NOT_COMPLETE ? TRUE : FALSE',
+                            'visible' => '$data->total_paid == 0 ? TRUE : FALSE',
                         ),
                         'createBom' => array(
                             'label' => '<i class="fa fa-list-alt fa-2x" style="color: green;"></i>&nbsp;&nbsp;',
@@ -303,7 +312,7 @@ if (Yii::app()->user->checkAccess('Sell.Order.VoucherPreview')) {
                             'label' => '<i class="fa fa-trash fa-2x" style="color: red;"></i>&nbsp;&nbsp;',
                             'imageUrl' => false,
                             'options' => array('rel' => 'tooltip', 'data-toggle' => 'tooltip', 'title' => Yii::t('app', 'Delete')),
-                            'visible' => '$data->bom_complete == SellOrder::BOM_NOT_COMPLETE ? TRUE : FALSE',
+                            'visible' => '($data->total_paid == 0 && $data->is_partial_delivery == 0 && $data->is_delivery_done == 0) ? TRUE : FALSE',
                         ),
                     )
                 ),
