@@ -231,6 +231,7 @@ Yii::app()->clientScript->registerCoreScript("jquery.ui");
                                         }, "json");
                                 },
                                 minLength: 1,
+                                delay: 700,
                                 autoFocus: true,
                                 select: function (event, ui) {
                                     $('#supplier_id_text').val(ui.item.value);
@@ -475,6 +476,7 @@ Yii::app()->clientScript->registerCoreScript("jquery.ui");
                                             }, "json");
                                     },
                                     minLength: 1,
+                                    delay: 700,
                                     select: function (event, ui) {
                                         $('#model_id_text').val(ui.item.value);
                                         $('#PurchaseOrderDetails_model_id').val(ui.item.id);

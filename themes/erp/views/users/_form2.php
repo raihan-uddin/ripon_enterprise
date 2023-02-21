@@ -57,6 +57,7 @@ Yii::app()->clientScript->registerCoreScript('jquery.ui');
                                     }, "json");
                             },
                             minLength: 2,
+                            delay: 700,
                             select: function (event, ui) {
                                 $("#Users_employee_id_text2").val(ui.item.label);
                                 $("#Users_employee_id2").val(ui.item.value);

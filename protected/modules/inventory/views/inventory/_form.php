@@ -147,6 +147,7 @@ $form = $this->beginWidget('CActiveForm', array(
                                                     }, "json");
                                             },
                                             minLength: 1,
+                                            delay: 700,
                                             select: function (event, ui) {
                                                 $('#model_id_text').val(ui.item.value);
                                                 $('#product_code').val(ui.item.code);
@@ -194,6 +195,7 @@ $form = $this->beginWidget('CActiveForm', array(
                                                     }, "json");
                                             },
                                             minLength: 1,
+                                            delay: 700,
                                             select: function (event, ui) {
                                                 $('#model_id_text').val(ui.item.value);
                                                 $('#product_code').val(ui.item.code);
@@ -240,6 +242,7 @@ $form = $this->beginWidget('CActiveForm', array(
                                                     }, "json");
                                             },
                                             minLength: 1,
+                                            delay: 700,
                                             select: function (event, ui) {
                                                 $('#model_id_text').val(ui.item.label);
                                                 $('#product_code').val(ui.item.code);

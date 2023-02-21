@@ -69,6 +69,7 @@ $form = $this->beginWidget('CActiveForm', array(
                                     }, "json");
                             },
                             minLength: 2,
+                            delay: 700,
                             select: function (event, ui) {
                                 $("#Users_employee_id_text").val(ui.item.label);
                                 $("#Users_employee_id").val(ui.item.value);

@@ -128,6 +128,7 @@ Yii::app()->clientScript->registerCoreScript("jquery.ui");
                                         }, "json");
                                 },
                                 minLength: 1,
+                                delay: 700,
                                 autoFocus: true,
                                 select: function (event, ui) {
                                     $('#customer_id_text').val(ui.item.value);
@@ -340,6 +341,7 @@ Yii::app()->clientScript->registerCoreScript("jquery.ui");
                                             }, "json");
                                     },
                                     minLength: 1,
+                                    delay: 700,
                                     select: function (event, ui) {
                                         $('#model_id_text').val(ui.item.value);
                                         $('#SellOrderDetails_model_id').val(ui.item.id);
@@ -384,6 +386,7 @@ Yii::app()->clientScript->registerCoreScript("jquery.ui");
                                             }, "json");
                                     },
                                     minLength: 1,
+                                    delay: 700,
                                     select: function (event, ui) {
                                         $('#model_id_text').val(ui.item.label);
                                         $('#product_sl_no').val(ui.item.product_sl_no);

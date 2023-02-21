@@ -189,6 +189,7 @@ Yii::app()->clientScript->registerCoreScript("jquery.ui");
                                                     }, "json");
                                             },
                                             minLength: 2,
+                                            delay: 700,
                                             select: function (event, ui) {
                                                 $('#expense_head_id_text').val(ui.item.value);
                                                 $('#ExpenseDetails_expense_head_id').val(ui.item.id);

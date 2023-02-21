@@ -44,12 +44,16 @@ $form = $this->beginWidget('CActiveForm', array(
                                 source: function (request, response) {
                                     var emp_name = request.term;
 									var branch_id = $('#AhAmounProllNormal_branch_name').val();
-                                    $.post('<?php echo Yii::app()->baseUrl ?>/index.php/hr_payroll/employees/jqueryEmpSearch', {"emp_name": emp_name,"branch_id":branch_id},
-                                            function (data) {
-                                                response(data);
-                                            }, "json");
+                                    $.post('<?php echo Yii::app()->baseUrl ?>/index.php/hr_payroll/employees/jqueryEmpSearch', {
+                                            "emp_name": emp_name,
+                                            "branch_id": branch_id
+                                        },
+                                        function (data) {
+                                            response(data);
+                                        }, "json");
                                 },
                                 minLength: 2,
+                                delay: 700,
                                 select: function (event, ui) {
                                     $("#emp_id").val(ui.item.label);
                                     $("#AhAmounProllNormal_employee_id").val(ui.item.value);
