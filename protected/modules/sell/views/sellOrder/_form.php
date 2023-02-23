@@ -305,7 +305,7 @@ Yii::app()->clientScript->registerCoreScript("jquery.ui");
             </div>
             <div class="card-body">
                 <div class="row">
-                    <div class="form-group col-xs-12 col-md-3 col-lg-3">
+                    <div class="form-group col-xs-12 col-md-3">
                         <?php echo $form->labelEx($model2, 'model_id'); ?>
                         <div class="input-group" data-target-input="nearest">
                             <div class="input-group-prepend">
@@ -418,9 +418,7 @@ Yii::app()->clientScript->registerCoreScript("jquery.ui");
                             });
                         </script>
                     </div>
-
-
-                    <div class="form-group col-sm-12 col-md-3 col-lg-2">
+                    <div class="form-group col-sm-12 col-md-3">
                         <?php echo $form->labelEx($model, 'product_sl_no'); ?>
 
                         <div class="input-group" data-target-input="nearest">
@@ -468,39 +466,44 @@ Yii::app()->clientScript->registerCoreScript("jquery.ui");
                             });
                         </script>
                     </div>
-
-                    <div class="form-group col-xs-12 col-md-2 col-lg-2">
+                    <div class="form-group col-xs-12 col-md-2">
+                        <?php echo $form->labelEx($model2, 'warranty'); ?>
+                        <?php echo $form->textField($model2, 'warranty', array('maxlength' => 255, 'class' => 'form-control warranty')); ?>
+                        <span class="help-block"
+                              style="color: red; width: 100%"> <?php echo $form->error($model2, 'warranty'); ?></span>
+                    </div>
+                    <div class="form-group col-xs-12 col-md-2">
                         <?php echo $form->labelEx($model2, 'note'); ?>
                         <?php echo $form->textField($model2, 'note', array('maxlength' => 255, 'class' => 'form-control')); ?>
                         <span class="help-block"
                               style="color: red; width: 100%"> <?php echo $form->error($model2, 'note'); ?></span>
                     </div>
-                    <div class="form-group col-xs-12 col-md-1 col-lg-1">
+                    <div class="form-group col-xs-12 col-md-2">
                         <?php echo $form->labelEx($model2, 'color'); ?>
                         <?php echo $form->textField($model2, 'color', array('maxlength' => 255, 'class' => 'form-control')); ?>
                         <span class="help-block"
                               style="color: red; width: 100%"> <?php echo $form->error($model2, 'color'); ?></span>
                     </div>
-                    <div class="form-group col-xs-12 col-md-1 col-lg-1">
+                    <div class="form-group col-xs-12 col-md-2">
                         <?php echo $form->labelEx($model2, 'qty'); ?>
                         <?php echo $form->textField($model2, 'qty', array('maxlength' => 255, 'class' => 'form-control qty-amount')); ?>
                         <span class="help-block"
                               style="color: red; width: 100%"> <?php echo $form->error($model2, 'qty'); ?></span>
                     </div>
-                    <div class="form-group col-xs-12 col-md-1 col-lg-1">
+                    <div class="form-group col-xs-12 col-md-2">
                         <?php echo $form->labelEx($model2, 'amount'); ?>
                         <?php echo $form->textField($model2, 'amount', array('maxlength' => 255, 'class' => 'form-control qty-amount')); ?>
                         <span class="help-block"
                               style="color: red; width: 100%"> <?php echo $form->error($model2, 'amount'); ?></span>
                     </div>
-                    <div class="form-group col-xs-12 col-md-1 col-lg-1">
+                    <div class="form-group col-xs-12 col-md-2">
                         <?php echo $form->labelEx($model2, 'row_total'); ?>
                         <?php echo $form->textField($model2, 'row_total', array('maxlength' => 255, 'class' => 'form-control', 'readonly' => true)); ?>
                         <span class="help-block"
                               style="color: red; width: 100%"> <?php echo $form->error($model2, 'row_total'); ?></span>
                     </div>
 
-                    <div class="form-group col-xs-12 col-md-1 col-lg-1">
+                    <div class="form-group col-xs-12 col-md-1">
                         <button class="btn  btn-success mt-4" onclick="addToList()" type="button" title="ADD TO LIST"><i
                                     class="fa fa-cart-arrow-down" aria-hidden="true"></i>
                         </button>
@@ -516,8 +519,9 @@ Yii::app()->clientScript->registerCoreScript("jquery.ui");
                             <tr>
                                 <th>Product Name</th>
                                 <th style="width: 20%;" class="text-center">Product Sl No</th>
-                                <th style="width: 20%;" class="text-center">Product Note</th>
-                                <th style="width: 15%;" class="text-center">Color</th>
+                                <th style="width: 10%;" class="text-center">Warranty(Mon.)</th>
+                                <th style="width: 10%;" class="text-center">Product Note</th>
+                                <th style="width: 10%;" class="text-center">Color</th>
                                 <th style="width: 10%;" class="text-center">Qty</th>
                                 <th style="width: 10%;" class="text-center">Unit Price</th>
                                 <th style="width: 10%;" class="text-center">Row Total</th>
@@ -659,6 +663,7 @@ Yii::app()->clientScript->registerCoreScript("jquery.ui");
         let qty = $("#SellOrderDetails_qty").val();
         let row_total = $("#SellOrderDetails_row_total").val();
         let color = $("#SellOrderDetails_color").val();
+        let warranty = $("#SellOrderDetails_warranty").val();
         let isproductpresent = false;
         let temp_codearray = document.getElementsByName("SellOrderDetails[temp_model_id][]");
         let temp_sl_array = document.getElementsByName("SellOrderDetails[temp_product_sl_no][]");
@@ -705,6 +710,7 @@ Yii::app()->clientScript->registerCoreScript("jquery.ui");
                 <tr class="item">
                     <td>${model_id_text}</td>
                     <td class="text-center">${product_sl_no}</td>
+                    <td class="text-center">${warranty}</td>
                     <td class="text-center">${note}</td>
                     <td class="text-center">${color}</td>
                     <td class="text-center">${unit_price}</td>
@@ -712,6 +718,7 @@ Yii::app()->clientScript->registerCoreScript("jquery.ui");
                     <td class="text-center">
                         ${row_total}
                         <input type="hidden" class="form-control text-center" value="${qty}" name="SellOrderDetails[temp_qty][]">
+                        <input type="hidden" class="form-control text-center" value="${warranty}" name="SellOrderDetails[temp_warranty][]">
                         <input type="hidden" class="form-control text-center" value="${product_sl_no}" name="SellOrderDetails[temp_product_sl_no][]">
                         <input type="hidden" class="form-control text-center" value="${note}" name="SellOrderDetails[temp_note][]">
                         <input type="hidden" class="form-control" value="${color}" name="SellOrderDetails[temp_color][]" >
@@ -749,6 +756,7 @@ Yii::app()->clientScript->registerCoreScript("jquery.ui");
     function resetProduct() {
         $("#model_id_text").val('');
         $("#SellOrderDetails_model_id").val('');
+        $("#SellOrderDetails_warranty").val('');
         resetProductSlNo();
     }
 
@@ -781,6 +789,7 @@ Yii::app()->clientScript->registerCoreScript("jquery.ui");
         $("#SellOrderDetails_qty").val('');
         $("#SellOrderDetails_color").val('');
         $("#SellOrderDetails_note").val('');
+        $("#SellOrderDetails_warranty").val('');
     }
 
     function calculateTotal() {

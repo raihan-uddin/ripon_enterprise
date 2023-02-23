@@ -213,9 +213,11 @@ class InventoryController extends Controller
 
         $criteria = new CDbCriteria();
         $criteria->mergeWith($criteria2);
-        $criteria->select = "pm.code, pm.model_name, pm.id, pm.item_id, pm.brand_id, pm.unit_id, pm.warranty, pm.image, product_sl_no";
+        $criteria->select = "pm.code, pm.model_name, pm.id, pm.item_id, pm.brand_id, pm.unit_id, pm.warranty, pm.image, product_sl_no, SUM(t.stock_in - t.stock_out) as stock";
         $criteria->order = "product_sl_no asc";
         $criteria->join = "INNER JOIN prod_models pm on t.model_id = pm.id ";
+        $criteria->having = 'stock > 0';
+        $criteria->group = 't.model_id, t.product_sl_no';
         $criteria->limit = 20;
         $prodInfos = Inventory::model()->findAll($criteria);
         if ($prodInfos) {
@@ -240,6 +242,7 @@ class InventoryController extends Controller
                 $results[] = array(
                     'id' => $id,
                     'product_sl_no' => $product_sl_no,
+                    'stock' => $prodInfo->stock,
                     'name' => $name,
                     'value' => $value,
                     'label' => $label,

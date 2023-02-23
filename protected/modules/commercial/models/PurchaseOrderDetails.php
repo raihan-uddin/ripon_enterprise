@@ -44,12 +44,12 @@ class PurchaseOrderDetails extends CActiveRecord
         // will receive user inputs.
         return array(
             array('model_id, qty, unit_price, row_total, order_id', 'required'),
-            array('model_id, is_all_received, created_by, updated_by, order_id', 'numerical', 'integerOnly' => true),
+            array('model_id, is_all_received, created_by, updated_by, order_id, warranty', 'numerical', 'integerOnly' => true),
             array('qty, unit_price, row_total', 'numerical'),
             array('created_at, updated_at, note, product_sl_no', 'safe'),
             // The following rule is used by search().
 
-            array('id, model_id, note, qty, unit_price, row_total, order_id, product_sl_no, is_all_received, created_by, created_at, updated_by, updated_at', 'safe', 'on' => 'search'),
+            array('id, model_id, note, qty, unit_price, row_total, order_id, product_sl_no, warranty, is_all_received, created_by, created_at, updated_by, updated_at', 'safe', 'on' => 'search'),
         );
     }
 

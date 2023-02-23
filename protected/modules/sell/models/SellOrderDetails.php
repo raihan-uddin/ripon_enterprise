@@ -13,6 +13,7 @@
  * @property integer $is_delivery_done
  * @property integer $is_invoice_done
  * @property integer $created_by
+ * @property integer $warranty
  * @property string $created_at
  * @property integer $updated_by
  * @property string $updated_at
@@ -47,11 +48,11 @@ class SellOrderDetails extends CActiveRecord
 		// will receive user inputs.
 		return array(
             array('sell_order_id, model_id, qty, amount, row_total', 'required'),
-            array('sell_order_id, model_id, is_delivery_done, is_invoice_done, created_by, updated_by', 'numerical', 'integerOnly' => true),
+            array('sell_order_id, model_id, is_delivery_done, is_invoice_done, created_by, updated_by, warranty', 'numerical', 'integerOnly' => true),
             array('qty, amount, row_total', 'numerical'),
             array('created_at, updated_at, color, note, product_sl_no', 'safe'),
             // The following rule is used by search().
-            array('id, sell_order_id, model_id, qty, note, product_sl_no, amount, row_total, is_delivery_done, color, is_invoice_done, created_by, created_at, updated_by, updated_at', 'safe', 'on' => 'search'),
+            array('id, sell_order_id, model_id, qty, note, product_sl_no, amount, row_total, is_delivery_done, warranty, color, is_invoice_done, created_by, created_at, updated_by, updated_at', 'safe', 'on' => 'search'),
         );
 	}
 
@@ -86,6 +87,7 @@ class SellOrderDetails extends CActiveRecord
             'created_at' => 'Created At',
             'updated_by' => 'Updated By',
             'updated_at' => 'Updated At',
+            'warranty' => 'Warranty (Mon.)',
         );
 	}
 
@@ -111,7 +113,8 @@ class SellOrderDetails extends CActiveRecord
         $criteria->compare('sell_order_id', $this->sell_order_id);
         $criteria->compare('product_sl_no', $this->product_sl_no);
         $criteria->compare('model_id', $this->model_id);
-		$criteria->compare('qty',$this->qty);
+        $criteria->compare('warranty', $this->warranty);
+        $criteria->compare('qty', $this->qty);
 		$criteria->compare('amount',$this->amount);
 		$criteria->compare('row_total',$this->row_total);
 		$criteria->compare('color',$this->color);
