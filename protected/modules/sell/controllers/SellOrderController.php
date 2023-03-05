@@ -165,10 +165,10 @@ class SellOrderController extends Controller
             $model->discount_percentage = 0;
             $model->discount_amount = 0;
             $model->is_invoice_done = SellOrder::INVOICE_NOT_DONE;
-            $model->is_delivery_done = SellOrder::DELIVERY_NOT_DONE;
+            $model->is_delivery_done = SellOrder::DELIVERY_DONE;
             $model->is_job_card_done = SellOrder::JOB_CARD_NOT_DONE;
             $model->is_partial_invoice = SellOrder::PARTIAL_INVOICE_NOT_DONE;
-            $model->is_partial_delivery = SellOrder::PARTIAL_DELIVERY_NOT_DONE;
+            $model->is_partial_delivery = SellOrder::PARTIAL_DELIVERY_DONE;
             $model->bom_complete = SellOrder::BOM_NOT_COMPLETE;
             if ($model->save()) {
                 $details_id_arr = [];

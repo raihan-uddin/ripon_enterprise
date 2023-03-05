@@ -14,10 +14,10 @@ $this->widget('application.extensions.mbmenu.MbMenu', array(
                 array('label' => 'CONFIG',
                     'items' => array(
                         ['label' => Yii::t('app', 'UNIT'), 'url' => ['/units/admin'], 'visible' => Yii::app()->user->checkAccess('Units.Admin')],
-                        ['label' => Yii::t('app', 'COUNTRY'), 'url' => ['/countries/admin'], 'visible' => Yii::app()->user->checkAccess('Countries.Admin')],
-                        ['label' => Yii::t('app', 'SHIP BY'), 'url' => ['/shipBy/admin'], 'visible' => Yii::app()->user->checkAccess('ShipBy.Admin')],
+//                        ['label' => Yii::t('app', 'COUNTRY'), 'url' => ['/countries/admin'], 'visible' => Yii::app()->user->checkAccess('Countries.Admin')],
+//                        ['label' => Yii::t('app', 'SHIP BY'), 'url' => ['/shipBy/admin'], 'visible' => Yii::app()->user->checkAccess('ShipBy.Admin')],
 //                        ['label' => Yii::t('app', 'COMPANY'), 'url' => ['/yourCompany/admin'], 'visible' => Yii::app()->user->checkAccess('YourCompany.Admin')],
-                        ['label' => Yii::t('app', 'DB BACKUP'), 'url' => ['/users/dbBackup'], 'visible' => Yii::app()->user->checkAccess('Users.DbBackup')],
+//                        ['label' => Yii::t('app', 'DB BACKUP'), 'url' => ['/users/dbBackup'], 'visible' => Yii::app()->user->checkAccess('Users.DbBackup')],
 
                     ),
                 )
@@ -110,7 +110,7 @@ $this->widget('application.extensions.mbmenu.MbMenu', array(
                     'items' => array(
                         ['label' => Yii::t('app', 'CATEGORY'), 'url' => ['/prodItems/admin'], 'visible' => Yii::app()->user->checkAccess('ProdItems.Admin')],
                         ['label' => Yii::t('app', 'SUB-CATEGORY'), 'url' => ['/prodBrands/admin'], 'visible' => Yii::app()->user->checkAccess('ProdBrands.Admin')],
-                        array('label' => 'PROUDCT SETUP',
+                        array('label' => 'PRODUCT SETUP',
                             'items' => array(
                                 ['label' => Yii::t('app', 'CREATE'), 'url' => ['/prodModels/create'], 'visible' => Yii::app()->user->checkAccess('ProdModels.Create')],
                                 ['label' => Yii::t('app', 'MANAGE'), 'url' => ['/prodModels/admin'], 'visible' => Yii::app()->user->checkAccess('ProdModels.Admin')],
