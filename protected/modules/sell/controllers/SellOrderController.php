@@ -70,12 +70,14 @@ class SellOrderController extends Controller
             $model->discount_percentage = 0;
             $model->discount_amount = 0;
             $model->is_invoice_done = SellOrder::INVOICE_NOT_DONE;
-            $model->is_delivery_done = SellOrder::DELIVERY_NOT_DONE;
+            $model->is_delivery_done = SellOrder::DELIVERY_DONE;
             $model->is_job_card_done = SellOrder::JOB_CARD_NOT_DONE;
             $model->is_partial_invoice = SellOrder::PARTIAL_INVOICE_NOT_DONE;
             $model->is_partial_delivery = SellOrder::PARTIAL_DELIVERY_NOT_DONE;
             $model->bom_complete = SellOrder::BOM_NOT_COMPLETE;
             $model->so_no = "SO-" . date('y') . "-" . date('m') . "-" . str_pad($model->max_sl_no, 5, "0", STR_PAD_LEFT);
+            $inv_sl = Inventory::maxSlNo();
+            $inv_sl_challan = "CHALLAN-" . str_pad($sl_no, 6, '0', STR_PAD_LEFT);
             if ($model->save()) {
                 foreach ($_POST['SellOrderDetails']['temp_model_id'] as $key => $model_id) {
                     $model2 = new SellOrderDetails();
@@ -91,6 +93,26 @@ class SellOrderController extends Controller
                     if (!$model2->save()) {
                         var_dump($model2->getErrors());
                         exit;
+                    } else {
+                        if ($model->order_type == SellOrder::NEW_ORDER) {
+                            $inventory = new Inventory();
+                            $inventory->sl_no = $inv_sl;
+                            $inventory->date = $model->date;
+                            $inventory->challan_no = $inv_sl_challan;
+                            $inventory->store_id = 1;
+                            $inventory->location_id = 1;
+                            $inventory->model_id = $model2->model_id;
+                            $inventory->stock_out = $model2->qty;
+                            $inventory->sell_price = $model2->amount;
+                            $inventory->row_total = $model2->row_total;
+                            $inventory->product_sl_no = $model2->product_sl_no;
+                            $inventory->stock_status = Inventory::SALES_DELIVERY;
+                            $inventory->source_id = $model2->id;
+                            if (!$inventory->save()) {
+                                var_dump($inventory->getErrors());
+                                exit;
+                            }
+                        }
                     }
                 }
                 echo CJSON::encode(array(

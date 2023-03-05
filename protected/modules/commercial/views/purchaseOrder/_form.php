@@ -50,12 +50,12 @@ Yii::app()->clientScript->registerCoreScript("jquery.ui");
     <div class="card-body">
         <div class="row">
             <div class="col-xs-12 col-sm-12 col-md-4 col-lg-4">
-                <div class="form-group row">
+                <div class="form-group row" style="display: none;">
                     <?php echo $form->labelEx($model, 'order_type', ['class' => 'col-sm-4 col-form-label']); ?>
                     <div class="col-sm-8">
                         <?php
                         echo $form->dropDownList(
-                            $model, 'order_type', [PurchaseOrder::PURCHASE => 'PURCHASE', PurchaseOrder::PURCHASE_RECEIVE => 'PURCHASE & RECEIVE'], array(
+                            $model, 'order_type', [PurchaseOrder::PURCHASE_RECEIVE => 'PURCHASE & RECEIVE'], array(
 //                            'prompt' => 'Select',
                             'class' => 'form-control',
                         ));
@@ -91,7 +91,7 @@ Yii::app()->clientScript->registerCoreScript("jquery.ui");
                     <span class="help-block"
                           style="color: red; width: 100%"> <?php echo $form->error($model, 'date'); ?></span>
                 </div>
-                <div class="form-group row" style="">
+                <div class="form-group row" style="display: none;">
                     <?php echo $form->labelEx($model, 'exp_receive_date', ['class' => 'col-sm-4 col-form-label']); ?>
                     <div class="col-sm-8">
                         <div class="input-group" id="exp_receive_date" data-target-input="nearest">
@@ -149,7 +149,7 @@ Yii::app()->clientScript->registerCoreScript("jquery.ui");
                 </div>
 
 
-                <div class="form-group row" style="">
+                <div class="form-group row" style="display: none;">
                     <?php echo $form->labelEx($model, 'bill_to', ['class' => 'col-sm-4 col-form-label']); ?>
                     <div class="col-sm-8">
                         <?php echo $form->textField($model, 'bill_to', array('maxlength' => 255, 'class' => 'form-control',)); ?>
@@ -201,7 +201,37 @@ Yii::app()->clientScript->registerCoreScript("jquery.ui");
                                     <script type="text/javascript">
                                         // here is the magic
                                         function addSupplier() {
-
+                                            <?php
+                                            echo CHtml::ajax(array(
+                                                'url' => array('/commercial/suppliers/createSupplierFromOutSide'),
+                                                'data' => "js:$(this).serialize()",
+                                                'type' => 'post',
+                                                'dataType' => 'json',
+                                                'beforeSend' => "function(){
+                                            $('.ajaxLoaderFormLoad').show();
+                                        }",
+                                                'complete' => "function(){
+                                            $('.ajaxLoaderFormLoad').hide();
+                                        }",
+                                                'success' => "function(data){
+                                            if (data.status == 'failure')
+                                            {
+                                                $('#addSupplierDialog div.divForForm').html(data.div);
+                                                      // Here is the trick: on submit-> once again this function!
+                                                $('#addSupplierDialog div.divForForm form').submit(addSupplier);
+                                            }
+                                            else
+                                            {
+                                                $('#addSupplierDialog div.divForForm').html(data.div);
+                                                setTimeout(\"$('#addSupplierDialog').dialog('close') \",1000);
+                                                $('#supplier_id_text').val(data.label);
+                                                $('#PurchaseOrder_supplier_id').val(data.id).change();
+                                                $('#PurchaseOrder_contact_no').val(data.contact_no).change();
+                                                $('#PurchaseOrder_address').val(data.address    ).change();
+                                            }
+                                        }",
+                                            ))
+                                            ?>
                                             return false;
                                         }
                                     </script>
@@ -263,7 +293,7 @@ Yii::app()->clientScript->registerCoreScript("jquery.ui");
                           style="color: red; width: 100%"> <?php echo $form->error($model, 'address'); ?></span>
                 </div>
 
-                <div class="form-group row" style="">
+                <div class="form-group row" style="display: none;">
                     <?php echo $form->labelEx($model, 'ship_by', ['class' => 'col-sm-4 col-form-label']); ?>
                     <div class="col-sm-8">
 
@@ -320,7 +350,7 @@ Yii::app()->clientScript->registerCoreScript("jquery.ui");
                           style="color: red; width: 100%"> <?php echo $form->error($model, 'ship_by'); ?></span>
                 </div>
 
-                <div class="form-group row" style="">
+                <div class="form-group row" style="display: none;">
                     <?php echo $form->labelEx($model, 'ship_to', ['class' => 'col-sm-4 col-form-label']); ?>
                     <div class="col-sm-8">
                         <?php echo $form->textField($model, 'ship_to', array('maxlength' => 255, 'class' => 'form-control',)); ?>

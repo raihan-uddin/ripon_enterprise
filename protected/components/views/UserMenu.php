@@ -176,13 +176,13 @@ $this->widget('application.extensions.mbmenu.MbMenu', array(
 
                     ),
                 ),
-                array('label' => 'DELIVERY',
+                /*array('label' => 'DELIVERY',
                     'items' => array(
                         ['label' => Yii::t('app', 'PENDING DELIVERY'), 'url' => ['/sell/sellDelivery/adminPendingDelivery'], 'visible' => Yii::app()->user->checkAccess('Sell.SellDelivery.AdminPendingDelivery')],
                         ['label' => Yii::t('app', 'MANAGE'), 'url' => ['/sell/sellDelivery/admin'], 'visible' => Yii::app()->user->checkAccess('Sell.SellDelivery.Admin')],
 
                     ),
-                ),
+                ),*/
                 /* array('label' => 'INVOICE',
                      'items' => array(
                          ['label' => Yii::t('app', 'CREATE'), 'url' => ['/crm/invoice/create'], 'visible' => Yii::app()->user->checkAccess('Crm.Invoice.AdminPendingDelivery')],
@@ -218,13 +218,13 @@ $this->widget('application.extensions.mbmenu.MbMenu', array(
 
                     ),
                 ),
-                array('label' => 'RECEIVE',
+                /*array('label' => 'RECEIVE',
                     'items' => array(
                         ['label' => Yii::t('app', 'PENDING RECEIVE'), 'url' => ['/commercial/receivePurchase/adminPendingReceive'], 'visible' => Yii::app()->user->checkAccess('Commercial.ReceivePurchase.AdminPendingReceive')],
                         ['label' => Yii::t('app', 'MANAGE'), 'url' => ['/commercial/receivePurchase/admin'], 'visible' => Yii::app()->user->checkAccess('Commercial.ReceivePurchase.Admin')],
 
                     ),
-                ),
+                ),*/
                 array('label' => 'PAYMENT',
                     'items' => array(
                         ['label' => Yii::t('app', 'CREATE'), 'url' => ['/accounting/paymentReceipt/adminPaymentReceipt'], 'visible' => Yii::app()->user->checkAccess('Accounting.PaymentReceipt.AdminPaymentReceipt')],
