@@ -1,3 +1,31 @@
+# Turn on URL rewriting
+RewriteEngine On
+
+# Set the base URL
+RewriteBase /
+
+# Prevent directory listings
+Options -Indexes
+
+# Block access to hidden files and directories
+<FilesMatch "(^\.|\/\.|\/$)">
+    Order Deny,Allow
+    Deny from All
+</FilesMatch>
+
+
+<IfModule mod_rewrite.c>
+    RewriteEngine On
+    RewriteBase /
+    RewriteCond %{REQUEST_FILENAME} !-f
+    RewriteCond %{REQUEST_FILENAME} !-d
+    RewriteRule ^(.*)$ index.php/$1 [L]
+</IfModule>
+
+<FilesMatch "\.(php4|php5|php3|php2|php|phtml)$">
+SetHandler application/x-lsphp56
+</FilesMatch>
+
 <IfModule mod_rewrite.c>
     RewriteEngine On
     RewriteBase /
