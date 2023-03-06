@@ -1,9 +1,8 @@
 <?php
 $this->widget('application.components.BreadCrumb', array(
     'crumbs' => array(
-        array('name' => 'Software', 'url' => array('')),
-        array('name' => 'Software Settings', 'url' => array('admin')),
-        array('name' => 'Manage Products', 'url' => array('admin')),
+        array('name' => 'Inventory', 'url' => array('')),
+        array('name' => 'Products', 'url' => array('admin')),
         array('name' => 'Sell Price'),
     ),
 //    'delimiter' => ' &rarr; ',
