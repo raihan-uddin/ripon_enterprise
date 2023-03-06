@@ -49,7 +49,7 @@ $form = $this->beginWidget('CActiveForm', array(
     <div class="card-body">
         <div class="row">
 
-            <div class="form-group col-xs-12 col-sm-6 col-lg-4" style="">
+            <div class="form-group col-sm-12 col-md-6 col-lg-4" style="">
                 <?php echo $form->labelEx($model, 'item_id'); ?>
                 <div class="input-group" data-target-input="nearest"><?php
                     echo $form->dropDownList(
@@ -145,7 +145,7 @@ $form = $this->beginWidget('CActiveForm', array(
                       style="color: red; width: 100%"> <?php echo $form->error($model, 'item_id'); ?></span>
             </div>
 
-            <div class="form-group col-xs-12 col-sm-6 col-lg-4" style="">
+            <div class="form-group col-sm-12 col-md-6 col-lg-4" style="">
                 <?php echo $form->labelEx($model, 'brand_id'); ?>
                 <div class="input-group" data-target-input="nearest"><?php
                     echo $form->dropDownList(
@@ -223,20 +223,20 @@ $form = $this->beginWidget('CActiveForm', array(
                       style="color: red; width: 100%"> <?php echo $form->error($model, 'brand_id'); ?></span>
             </div>
 
-            <div class="form-group col-xs-12 col-sm-6 col-lg-4">
+            <div class="form-group col-sm-12 col-md-6 col-lg-4">
                 <?php echo $form->labelEx($model, 'model_name'); ?>
                 <?php echo $form->textField($model, 'model_name', array('maxlength' => 255, 'class' => 'form-control')); ?>
                 <span class="help-block"
                       style="color: red; width: 100%"> <?php echo $form->error($model, 'model_name'); ?></span>
             </div>
 
-            <div class="form-group col-xs-12 col-sm-6 col-lg-4">
+            <div class="form-group col-sm-12 col-md-6 col-lg-4">
                 <?php echo $form->labelEx($model, 'code'); ?>
                 <?php echo $form->textField($model, 'code', array('maxlength' => 255, 'class' => 'form-control')); ?>
                 <span class="help-block"
                       style="color: red; width: 100%"> <?php echo $form->error($model, 'code'); ?></span>
             </div>
-            <div class="form-group col-xs-12 col-sm-6 col-lg-4" style="">
+            <div class="form-group col-sm-12 col-md-6 col-lg-4" style="">
                 <?php echo $form->labelEx($model, 'unit_id'); ?>
                 <div class="input-group" data-target-input="nearest"><?php
                     echo $form->dropDownList(
@@ -316,13 +316,28 @@ $('.ajaxLoaderFormLoad').hide();
             </div>
 
 
-            <div class="form-group col-xs-12 col-sm-6 col-lg-4">
+            <div class="form-group col-sm-12 col-md-6 col-lg-4">
                 <?php echo $form->labelEx($model, 'min_order_qty'); ?>
                 <?php echo $form->textField($model, 'min_order_qty', array('maxlength' => 255, 'class' => 'form-control')); ?>
                 <span class="help-block"
                       style="color: red; width: 100%"> <?php echo $form->error($model, 'min_order_qty'); ?></span>
             </div>
-            <div class="form-group col-xs-12 col-sm-6 col-lg-4">
+
+            <div class="form-group col-sm-12 col-md-6 col-lg-4">
+                <?php echo $form->labelEx($model, 'sell_price'); ?>
+                <?php echo $form->textField($model, 'sell_price', array('maxlength' => 255, 'class' => 'form-control')); ?>
+                <span class="help-block"
+                      style="color: red; width: 100%"> <?php echo $form->error($model, 'sell_price'); ?></span>
+            </div>
+
+            <div class="form-group col-sm-12 col-md-6 col-lg-4">
+                <?php echo $form->labelEx($model, 'purchase_price'); ?>
+                <?php echo $form->textField($model, 'purchase_price', array('maxlength' => 255, 'class' => 'form-control')); ?>
+                <span class="help-block"
+                      style="color: red; width: 100%"> <?php echo $form->error($model, 'purchase_price'); ?></span>
+            </div>
+
+            <div class="form-group col-sm-12 col-md-6 col-lg-4">
                 <?php echo $form->labelEx($model, 'image'); ?>
                 <div class="custom-file">
                     <?= $form->fileField($model, 'image2', ['id' => 'customFile', 'accept' => '.png, .jpg, .jpeg', 'class' => 'custom-file-input']); ?>
@@ -332,13 +347,13 @@ $('.ajaxLoaderFormLoad').hide();
                       style="color: red; width: 100%"> <?php echo $form->error($model, 'image2'); ?></span>
             </div>
 
-            <div class="form-group col-xs-12 col-sm-6 col-lg-4">
+
+            <div class="form-group col-sm-12 col-md-6 col-lg-4">
                 <?php echo $form->labelEx($model, 'description'); ?>
                 <?php echo $form->textArea($model, 'description', array('maxlength' => 255, 'class' => 'form-control', 'style' => 'height: 200px;')); ?>
                 <span class="help-block"
                       style="color: red; width: 100%"> <?php echo $form->error($model, 'description'); ?></span>
             </div>
-
         </div>
     </div>
     <div class="card-footer">

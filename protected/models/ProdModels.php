@@ -76,7 +76,8 @@ class ProdModels extends CActiveRecord
         // will receive user inputs.
         return array(
             array('item_id, brand_id, model_name, code, unit_id', 'required'),
-            array('item_id, brand_id, unit_id, country_id, vatable, purchase_price, sell_price', 'numerical', 'integerOnly' => true),
+            array('item_id, brand_id, unit_id, country_id, vatable, purchase_price', 'numerical', 'integerOnly' => true),
+            array('sell_price', 'numerical'),
             array('model_name, code, min_order_qty', 'length', 'max' => 255),
             array('warranty', 'numerical'),
             array('code', 'unique', 'caseSensitive' => FALSE),
@@ -118,14 +119,21 @@ class ProdModels extends CActiveRecord
             'unit_id' => 'Unit',
             'description' => 'Description',
             'image' => 'Image',
-            'purchase_price' => 'P. Price',
-            'sell_price' => 'S. Price'
+            'purchase_price' => 'Purchase Price',
+            'sell_price' => 'Sell Price'
         );
     }
 
     public function beforeSave()
     {
         $this->model_name = strtoupper($this->model_name);
+        if (!$this->sell_price > 0) {
+            $this->sell_price = NULL;
+        }
+
+        if (!$this->purchase_price > 0) {
+            $this->purchase_price = NULL;
+        }
 
         if ($this->isNewRecord) {
             $this->created_at = new CDbExpression('NOW()');

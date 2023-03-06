@@ -46,9 +46,9 @@ $form = $this->beginWidget('CActiveForm', array(
     </div>
     <div class="card-body">
         <div class="row">
-            <div class="col-xs-12 col-sm-10 col-lg-10">
+            <div class="col-sm-12 col-sm-10 col-lg-10">
                 <div class="row">
-                    <div class="form-group col-xs-12 col-sm-6 col-lg-4" style="">
+                    <div class="form-group col-sm-12 col-md-6 col-lg-4" style="">
                         <?php echo $form->labelEx($model, 'item_id'); ?>
                         <div class="input-group" data-target-input="nearest"><?php
                             echo $form->dropDownList(
@@ -144,7 +144,7 @@ $form = $this->beginWidget('CActiveForm', array(
                               style="color: red; width: 100%"> <?php echo $form->error($model, 'item_id'); ?></span>
                     </div>
 
-                    <div class="form-group col-xs-12 col-sm-6 col-lg-4" style="">
+                    <div class="form-group col-sm-12 col-md-6 col-lg-4" style="">
                         <?php echo $form->labelEx($model, 'brand_id'); ?>
                         <div class="input-group" data-target-input="nearest"><?php
                             echo $form->dropDownList(
@@ -222,21 +222,21 @@ $form = $this->beginWidget('CActiveForm', array(
                               style="color: red; width: 100%"> <?php echo $form->error($model, 'brand_id'); ?></span>
                     </div>
 
-                    <div class="form-group col-xs-12 col-sm-6 col-lg-4">
+                    <div class="form-group col-sm-12 col-md-6 col-lg-4">
                         <?php echo $form->labelEx($model, 'model_name'); ?>
                         <?php echo $form->textField($model, 'model_name', array('maxlength' => 255, 'class' => 'form-control')); ?>
                         <span class="help-block"
                               style="color: red; width: 100%"> <?php echo $form->error($model, 'model_name'); ?></span>
                     </div>
 
-                    <div class="form-group col-xs-12 col-sm-6 col-lg-4">
+                    <div class="form-group col-sm-12 col-md-6 col-lg-4">
                         <?php echo $form->labelEx($model, 'code'); ?>
                         <?php echo $form->textField($model, 'code', array('maxlength' => 255, 'class' => 'form-control')); ?>
                         <span class="help-block"
                               style="color: red; width: 100%"> <?php echo $form->error($model, 'code'); ?></span>
                     </div>
 
-                    <div class="form-group col-xs-12 col-sm-6 col-lg-4" style="">
+                    <div class="form-group col-sm-12 col-md-6 col-lg-4" style="">
                         <?php echo $form->labelEx($model, 'unit_id'); ?>
                         <div class="input-group" data-target-input="nearest"><?php
                             echo $form->dropDownList(
@@ -315,15 +315,26 @@ $form = $this->beginWidget('CActiveForm', array(
                               style="color: red; width: 100%"> <?php echo $form->error($model, 'unit_id'); ?></span>
                     </div>
 
-                    <div class="form-group col-xs-12 col-sm-6 col-lg-4">
+                    <div class="form-group col-sm-12 col-md-6 col-lg-4">
                         <?php echo $form->labelEx($model, 'min_order_qty'); ?>
                         <?php echo $form->textField($model, 'min_order_qty', array('maxlength' => 255, 'class' => 'form-control')); ?>
                         <span class="help-block"
                               style="color: red; width: 100%"> <?php echo $form->error($model, 'min_order_qty'); ?></span>
                     </div>
+                    <div class="form-group col-sm-12 col-md-6 col-lg-4">
+                        <?php echo $form->labelEx($model, 'sell_price'); ?>
+                        <?php echo $form->textField($model, 'sell_price', array('maxlength' => 255, 'class' => 'form-control')); ?>
+                        <span class="help-block"
+                              style="color: red; width: 100%"> <?php echo $form->error($model, 'sell_price'); ?></span>
+                    </div>
+                    <div class="form-group col-sm-12 col-md-6 col-lg-4">
+                        <?php echo $form->labelEx($model, 'purchase_price'); ?>
+                        <?php echo $form->textField($model, 'purchase_price', array('maxlength' => 255, 'class' => 'form-control')); ?>
+                        <span class="help-block"
+                              style="color: red; width: 100%"> <?php echo $form->error($model, 'purchase_price'); ?></span>
+                    </div>
 
-
-                    <div class="form-group col-xs-12 col-sm-12 col-lg-12">
+                    <div class="form-group col-sm-12 col-md-12 col-lg-12">
                         <?php echo $form->labelEx($model, 'description'); ?>
                         <?php echo $form->textArea($model, 'description', array('maxlength' => 255, 'class' => 'form-control', 'style' => 'height: 250px;')); ?>
                         <span class="help-block"
@@ -331,9 +342,9 @@ $form = $this->beginWidget('CActiveForm', array(
                     </div>
                 </div>
             </div>
-            <div class="col-xs-12 col-sm-2 col-lg-2">
+            <div class="col-sm-12 col-sm-2 col-lg-2">
                 <div class="row">
-                    <div class="form-group col-xs-12 col-sm-12 col-lg-12">
+                    <div class="form-group col-sm-12 col-md-12 col-lg-12">
                         <div class="avatar-upload">
                             <div class="avatar-edit">
                                 <?= $form->fileField($model, 'image2', ['id' => 'imageUpload', 'accept' => '.png, .jpg, .jpeg']); ?>

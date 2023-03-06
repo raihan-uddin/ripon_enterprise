@@ -298,6 +298,16 @@ class ProdModelsController extends Controller
                     $newFile = $pathImage . $imageFileName;
                     $imageUploadFile->saveAs($newFile);
                 }
+                if ($model->sell_price > 0) {
+                    $sellPrice = SellPrice::model()->activeSellPriceOnly($model->id);
+                    if ($model->sell_price != $sellPrice) {
+                        $sp = new SellPrice();
+                        $sp->model_id = $model->id;
+                        $sp->sell_price = $model->sell_price;
+                        $sp->is_active = SellPrice::ACTIVE;
+                        $sp->save();
+                    }
+                }
                 $this->redirect(array('admin'));
             }
         }
@@ -339,6 +349,16 @@ class ProdModelsController extends Controller
                     }
                     $newFile = $pathImage . $imageFileName;
                     $imageUploadFile->saveAs($newFile);
+                }
+                if ($model->sell_price > 0) {
+                    $sellPrice = SellPrice::model()->activeSellPriceOnly($model->id);
+                    if ($model->sell_price != $sellPrice) {
+                        $sp = new SellPrice();
+                        $sp->model_id = $model->id;
+                        $sp->sell_price = $model->sell_price;
+                        $sp->is_active = SellPrice::ACTIVE;
+                        $sp->save();
+                    }
                 }
                 $this->redirect(array('admin'));
             }
