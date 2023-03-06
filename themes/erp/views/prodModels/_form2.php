@@ -1,10 +1,9 @@
 <?php
 $this->widget('application.components.BreadCrumb', array(
     'crumbs' => array(
-        array('name' => 'Software', 'url' => array('')),
-        array('name' => 'Software Settings', 'url' => array('admin')),
-        array('name' => 'Add Product', 'url' => array('admin')),
-        array('name' => 'Update: ' . $model->model_name),
+        array('name' => 'Inventory', 'url' => array('')),
+        array('name' => 'Product', 'url' => array('admin')),
+        array('name' => $model->model_name),
     ),
 //    'delimiter' => ' &rarr; ',
 ));
@@ -324,9 +323,9 @@ $form = $this->beginWidget('CActiveForm', array(
                     </div>
 
 
-                    <div class="form-group col-xs-12 col-sm-6 col-lg-4">
+                    <div class="form-group col-xs-12 col-sm-12 col-lg-12">
                         <?php echo $form->labelEx($model, 'description'); ?>
-                        <?php echo $form->textArea($model, 'description', array('maxlength' => 255, 'class' => 'form-control')); ?>
+                        <?php echo $form->textArea($model, 'description', array('maxlength' => 255, 'class' => 'form-control', 'style' => 'height: 250px;')); ?>
                         <span class="help-block"
                               style="color: red; width: 100%"> <?php echo $form->error($model, 'description'); ?></span>
                     </div>

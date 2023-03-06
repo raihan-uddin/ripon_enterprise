@@ -334,7 +334,7 @@ $('.ajaxLoaderFormLoad').hide();
 
             <div class="form-group col-xs-12 col-sm-6 col-lg-4">
                 <?php echo $form->labelEx($model, 'description'); ?>
-                <?php echo $form->textArea($model, 'description', array('maxlength' => 255, 'class' => 'form-control')); ?>
+                <?php echo $form->textArea($model, 'description', array('maxlength' => 255, 'class' => 'form-control', 'style' => 'height: 200px;')); ?>
                 <span class="help-block"
                       style="color: red; width: 100%"> <?php echo $form->error($model, 'description'); ?></span>
             </div>

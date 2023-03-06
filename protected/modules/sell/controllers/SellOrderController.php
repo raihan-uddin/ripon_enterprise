@@ -75,9 +75,9 @@ class SellOrderController extends Controller
             $model->is_partial_invoice = SellOrder::PARTIAL_INVOICE_NOT_DONE;
             $model->is_partial_delivery = SellOrder::PARTIAL_DELIVERY_NOT_DONE;
             $model->bom_complete = SellOrder::BOM_NOT_COMPLETE;
-            $model->so_no = "SO-" . date('y') . "-" . date('m') . "-" . str_pad($model->max_sl_no, 5, "0", STR_PAD_LEFT);
+            $model->so_no = "SO" . date('y') . date('m') . "-" . str_pad($model->max_sl_no, 5, "0", STR_PAD_LEFT);
             $inv_sl = Inventory::maxSlNo();
-            $inv_sl_challan = "CHALLAN-" . str_pad($sl_no, 6, '0', STR_PAD_LEFT);
+            $inv_sl_challan = "CHALLAN-" . str_pad($inv_sl, 6, '0', STR_PAD_LEFT);
             if ($model->save()) {
                 foreach ($_POST['SellOrderDetails']['temp_model_id'] as $key => $model_id) {
                     $model2 = new SellOrderDetails();
@@ -290,13 +290,36 @@ class SellOrderController extends Controller
             $criteria = new CDbCriteria;
             $criteria->addColumnCondition(['so_no' => $so_no]);
             $data = SellOrder::model()->findByAttributes([], $criteria);
-            if ($preview_type == SellOrder::PRODUCTION_ORDER_PRINT) {
-                $view = "voucherPreviewProduction";
-            } else if ($preview_type == SellOrder::ORDER_BOM) {
-                $view = "voucherPreviewBom";
+            $view = "voucherPreview";
+
+            if ($data) {
+                echo $this->renderPartial($view, array('data' => $data,), true, true);
             } else {
-                $view = "voucherPreview";
+                header('Content-type: application/json');
+                echo CJSON::encode(array(
+                    'status' => 'error',
+                ));
             }
+            Yii::app()->end();
+        } else {
+            echo '<div class="alert alert-danger" role="alert">Please select sales invoice no!</div>';
+        }
+    }
+
+    public function actionVoucherPreview2()
+    {
+        $so_no = "SO-23-02-00004";
+        $preview_type = 1;
+
+        if (Yii::app()->request->isAjaxRequest) {
+            Yii::app()->clientScript->scriptMap['jquery.js'] = false;
+        }
+
+        if ($so_no && $preview_type > 0) {
+            $criteria = new CDbCriteria;
+            $criteria->addColumnCondition(['so_no' => $so_no]);
+            $data = SellOrder::model()->findByAttributes([], $criteria);
+            $view = "voucherPreview";
 
             if ($data) {
                 echo $this->renderPartial($view, array('data' => $data,), true, true);

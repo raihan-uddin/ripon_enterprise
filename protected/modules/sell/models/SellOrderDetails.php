@@ -27,6 +27,7 @@ class SellOrderDetails extends CActiveRecord
     public $model_name;
     public $code;
     public $image;
+    public $description;
 
     const DELIVERY_DONE = 1;
     const DELIVERY_NOT_DONE = 0;
