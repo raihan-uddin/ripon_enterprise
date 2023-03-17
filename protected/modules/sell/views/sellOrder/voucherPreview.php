@@ -108,9 +108,9 @@
                     <td colspan="6">
                         <div style="width: 30%; float: left; clear: right;">
                             <img src="<?= Yii::app()->theme->baseUrl . "/images/voucher-logo.png" ?>"
-                                 style="width: 220px; height: 180px;">
+                                 style="width: 180px; height: 130px;">
                         </div>
-                        <div style="width: 70%; float: left; clear: right; text-align: right; font-size: 16px;">
+                        <div style="width: 70%; float: left; clear: right; text-align: right; font-size: 12px;">
                             <span>INVOICE</span> <br>
                             <span><b>The Mihan Engineers (TMEBD)</b></span><br>
                             <?php
@@ -177,6 +177,7 @@
                 <?php
                 $vat = $data->vat_amount;
                 $vat_percentage = $data->vat_percentage;
+                $delivery_charge = $data->delivery_charge;
                 $criteria = new CDbCriteria();
                 $criteria->select = "pm.model_name, pm.code, pm.image, sum(t.qty) as qty, t.amount, t.note, sum(t.row_total) as row_total, GROUP_CONCAT(product_sl_no ORDER BY product_sl_no SEPARATOR ', ') as product_sl_no, pm.description";
                 $criteria->join = " INNER JOIN prod_models pm on t.model_id = pm.id ";
@@ -197,7 +198,7 @@
                                     echo "<br>" . nl2br($dt->note);
                                 }
                                 if (strlen($dt->product_sl_no) > 0) {
-                                    echo "<br><br>$dt->product_sl_no";
+                                    echo "<br><b>SL:</b>$dt->product_sl_no";
                                 }
                                 ?>
                             </td>
@@ -245,7 +246,11 @@
                     <td style="text-align: right;">TK <?= number_format($vat, 2) ?></td>
                 </tr>
                 <tr>
-                    <td colspan="2">Grand Total</td>
+                    <td colspan="2">Delivery Charge</td>
+                    <td style="text-align: right;">TK <?= number_format($delivery_charge, 2) ?></td>
+                </tr>
+                <tr>
+                    <td colspan="4">Grand Total</td>
                     <td style="text-align: right;">TK <?= number_format($data->grand_total, 2) ?></td>
                 </tr>
                 <tr>

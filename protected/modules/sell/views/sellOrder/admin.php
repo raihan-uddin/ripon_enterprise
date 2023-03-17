@@ -215,14 +215,19 @@ if (Yii::app()->user->checkAccess('Sell.Order.VoucherPreview')) {
                      'name' => 'discount_amount',
                      'htmlOptions' => ['class' => 'text-center']
                  ),
-                 array(
-                     'name' => 'vat_percentage',
-                     'htmlOptions' => ['class' => 'text-center']
-                 ),
-                 array(
-                     'name' => 'vat_amount',
-                     'htmlOptions' => ['class' => 'text-center']
-                 ),*/
+                 */
+                array(
+                    'name' => 'vat_percentage',
+                    'htmlOptions' => ['class' => 'text-center']
+                ),
+                array(
+                    'name' => 'delivery_charge',
+                    'htmlOptions' => ['class' => 'text-center']
+                ),
+                array(
+                    'name' => 'vat_amount',
+                    'htmlOptions' => ['class' => 'text-center']
+                ),
                 array(
                     'name' => 'grand_total',
                     'htmlOptions' => ['class' => 'text-center']

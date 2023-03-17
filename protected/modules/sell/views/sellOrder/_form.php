@@ -220,12 +220,12 @@ Yii::app()->clientScript->registerCoreScript("jquery.ui");
                 </div>
 
                 <div class="form-group row" style="">
-                    <?php echo $form->labelEx($model, 'state', ['class' => 'col-sm-4 col-form-label']); ?>
+                    <?php echo $form->labelEx($model, 'delivery_charge', ['class' => 'col-sm-4 col-form-label']); ?>
                     <div class="col-sm-8">
-                        <?php echo $form->textField($model, 'state', array('maxlength' => 255, 'class' => 'form-control', 'readonly' => true, 'disabled' => true)); ?>
+                        <?php echo $form->textField($model, 'delivery_charge', array('maxlength' => 255, 'class' => 'form-control', 'onkeyup' => 'addDeliveryCharge();')); ?>
                     </div>
                     <span class="help-block"
-                          style="color: red; width: 100%"> <?php echo $form->error($model, 'state'); ?></span>
+                          style="color: red; width: 100%"> <?php echo $form->error($model, 'delivery_charge'); ?></span>
                 </div>
             </div>
 
@@ -753,6 +753,7 @@ Yii::app()->clientScript->registerCoreScript("jquery.ui");
         $("#SellOrder_grand_total").val(grand_total.toFixed(2));
     }
 
+
     function resetProduct() {
         $("#model_id_text").val('');
         $("#SellOrderDetails_model_id").val('');
@@ -800,9 +801,24 @@ Yii::app()->clientScript->registerCoreScript("jquery.ui");
             total += parseFloat($(this).val());
         });
 
+
         $("#SellOrder_total_amount").val(total.toFixed(2)).change();
         $("#SellOrder_item_count").val(item_count);
+
         calculateVat();
+        addDeliveryCharge();
+    }
+
+    function addDeliveryCharge() {
+        let delivery_charge = parseFloat($("#SellOrder_delivery_charge").val());
+        let total_amount = parseFloat($("#SellOrder_total_amount").val());
+        let vat_amount = parseFloat($("#SellOrder_vat_amount").val());
+
+        delivery_charge = isNaN(delivery_charge) ? 0 : delivery_charge;
+        vat_amount = isNaN(vat_amount) ? 0 : vat_amount;
+        total_amount = isNaN(total_amount) ? 0 : total_amount;
+
+        $("#SellOrder_grand_total").val((delivery_charge + total_amount + vat_amount).toFixed(2));
     }
 
     $(document).keypress(function (event) {
