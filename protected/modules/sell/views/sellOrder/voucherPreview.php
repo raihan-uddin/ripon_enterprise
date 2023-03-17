@@ -166,9 +166,9 @@
                     </td>
                 </tr>
                 <tr>
-                    <td style="text-align: center;">#</td>
+                    <td style="text-align: center; width: 2%;">#</td>
                     <td style="text-align: center;">Description</td>
-                    <td style="text-align: center;">Color</td>
+                    <td style="text-align: center; display: none;">Color</td>
                     <td style="text-align: center;  width: 10%;">Qty</td>
                     <td style="text-align: center;  width: 10%;">Price</td>
                     <td style="text-align: center; width: 10%;">Total</td>
@@ -176,8 +176,9 @@
                 <tbody>
                 <?php
                 $vat = $data->vat_amount;
+                $vat_percentage = $data->vat_percentage;
                 $criteria = new CDbCriteria();
-                $criteria->select = "pm.model_name, pm.code, pm.image, sum(t.qty) as qty, t.amount, sum(t.row_total) as row_total, GROUP_CONCAT(product_sl_no ORDER BY product_sl_no SEPARATOR ', ') as product_sl_no, pm.description";
+                $criteria->select = "pm.model_name, pm.code, pm.image, sum(t.qty) as qty, t.amount, t.note, sum(t.row_total) as row_total, GROUP_CONCAT(product_sl_no ORDER BY product_sl_no SEPARATOR ', ') as product_sl_no, pm.description";
                 $criteria->join = " INNER JOIN prod_models pm on t.model_id = pm.id ";
                 $criteria->addColumnCondition(['t.sell_order_id' => $data->id]);
                 $criteria->order = "pm.model_name ASC";
@@ -192,15 +193,15 @@
                             <td>
                                 <?= $dt->model_name ?>
                                 <?php
-                                if ($dt->description) {
-                                    echo "<br>" . nl2br($dt->description);
+                                if ($dt->note) {
+                                    echo "<br>" . nl2br($dt->note);
                                 }
                                 if (strlen($dt->product_sl_no) > 0) {
                                     echo "<br><br>$dt->product_sl_no";
                                 }
                                 ?>
                             </td>
-                            <td><?= $dt->color ?></td>
+                            <td style="display: none;"><?= $dt->color ?></td>
                             <td style="text-align: center;"><?= number_format($dt->qty) ?></td>
                             <td style="text-align: right;"> TK <?= number_format($dt->amount, 2) ?></td>
                             <td style="text-align: right;"> TK <?= number_format($dt->row_total, 2) ?></td>
@@ -221,7 +222,7 @@
                 }
                 ?>
                 <tr>
-                    <td rowspan="3" colspan="3">
+                    <td rowspan="3" colspan="2">
                         <div>Total Amount In Words:</div>
                         <div>BDT:
                             <?php
@@ -240,7 +241,7 @@
                     <td style="text-align: right;">TK <?= number_format($row_total, 2) ?></td>
                 </tr>
                 <tr>
-                    <td colspan="2">Vat</td>
+                    <td colspan="2">Vat (<?= number_format($vat_percentage, 2) ?>%)</td>
                     <td style="text-align: right;">TK <?= number_format($vat, 2) ?></td>
                 </tr>
                 <tr>

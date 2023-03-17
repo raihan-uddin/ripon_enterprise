@@ -85,7 +85,7 @@ Yii::app()->clientScript->registerCoreScript("jquery.ui");
                     <span class="help-block"
                           style="color: red; width: 100%"> <?php echo $form->error($model, 'date'); ?></span>
                 </div>
-                <div class="form-group row" style="">
+                <div class="form-group row" style="display: none;">
                     <?php echo $form->labelEx($model, 'exp_delivery_date', ['class' => 'col-sm-4 col-form-label']); ?>
                     <div class="col-sm-8">
                         <div class="input-group" id="exp_delivery_date" data-target-input="nearest">
@@ -413,7 +413,7 @@ Yii::app()->clientScript->registerCoreScript("jquery.ui");
                         <span class="help-block"
                               style="color: red; width: 100%"> <?php echo $form->error($model2, 'note'); ?></span>
                     </div>
-                    <div class="form-group col-xs-12 col-md-1 col-lg-1">
+                    <div class="form-group col-xs-12 col-md-1 col-lg-1" style="display: none;">
                         <?php echo $form->labelEx($model2, 'color'); ?>
                         <?php echo $form->textField($model2, 'color', array('maxlength' => 255, 'class' => 'form-control')); ?>
                         <span class="help-block"
@@ -455,7 +455,7 @@ Yii::app()->clientScript->registerCoreScript("jquery.ui");
                                 <th>Product Name</th>
                                 <th class="text-center">Product Sl No</th>
                                 <th class="text-center">Product Note</th>
-                                <th class="text-center">Color</th>
+                                <th class="text-center" style="display: none;">Color</th>
                                 <th style="width: 10%;" class="text-center">Qty</th>
                                 <th style="width: 10%;" class="text-center">Unit Price</th>
                                 <th style="width: 10%;" class="text-center">Row Total</th>
@@ -470,7 +470,7 @@ Yii::app()->clientScript->registerCoreScript("jquery.ui");
                                     <td><?= $m3->model_name ?></td>
                                     <td class="text-center"><?= $m3->product_sl_no ?></td>
                                     <td class="text-center"><?= $m3->note ?></td>
-                                    <td class="text-center"><?= $m3->color ?></td>
+                                    <td class="text-center" style="display: none;"><?= $m3->color ?></td>
                                     <td class="text-center"><?= $m3->amount ?></td>
                                     <td class="text-center"><?= $m3->qty ?></td>
                                     <td class="text-center">
@@ -625,6 +625,7 @@ Yii::app()->clientScript->registerCoreScript("jquery.ui");
 
     function addToList() {
         let model_id = $("#SellOrderDetails_model_id").val();
+        let product_sl_no = $("#product_sl_no").val();
         let model_id_text = $("#model_id_text").val();
         let unit_price = $("#SellOrderDetails_amount").val();
         let qty = $("#SellOrderDetails_qty").val();
@@ -679,7 +680,7 @@ Yii::app()->clientScript->registerCoreScript("jquery.ui");
                     <td>${model_id_text}</td>
                     <td class="text-center">${product_sl_no}</td>
                     <td class="text-center">${note}</td>
-                    <td class="text-center">${color}</td>
+                    <td class="text-center" style="display: none;">${color}</td>
                     <td class="text-center">${unit_price}</td>
                     <td class="text-center">${qty}</td>
                     <td class="text-center">

@@ -39,6 +39,19 @@ Yii::app()->clientScript->registerCoreScript("jquery.ui");
     <div class="card-body">
         <div class="row">
             <div class="col-xs-12 col-sm-12 col-md-4 col-lg-4">
+                <div class="form-group row" style="">
+                    <?php echo $form->labelEx($model, 'date', ['class' => 'col-sm-4 col-form-label']); ?>
+                    <div class="col-sm-8">
+                        <div class="input-group" id="entry_date" data-target-input="nearest">
+                            <?php echo $form->textField($model, 'date', array('class' => 'form-control datetimepicker-input', 'placeholder' => 'YYYY-MM-DD', 'value' => date('Y-m-d'))); ?>
+                            <div class="input-group-append">
+                                <div class="input-group-text"><i class="fa fa-calendar"></i></div>
+                            </div>
+                        </div>
+                    </div>
+                    <span class="help-block"
+                          style="color: red; width: 100%"> <?php echo $form->error($model, 'date'); ?></span>
+                </div>
                 <div class="form-group row">
                     <?php echo $form->labelEx($model, 'order_type', ['class' => 'col-sm-4 col-form-label']); ?>
                     <div class="col-sm-8">
@@ -67,19 +80,7 @@ Yii::app()->clientScript->registerCoreScript("jquery.ui");
                     <span class="help-block"
                           style="color: red; width: 100%"> <?php echo $form->error($model, 'cash_due'); ?></span>
                 </div>
-                <div class="form-group row" style="">
-                    <?php echo $form->labelEx($model, 'date', ['class' => 'col-sm-4 col-form-label']); ?>
-                    <div class="col-sm-8">
-                        <div class="input-group" id="entry_date" data-target-input="nearest">
-                            <?php echo $form->textField($model, 'date', array('class' => 'form-control datetimepicker-input', 'placeholder' => 'YYYY-MM-DD', 'value' => date('Y-m-d'))); ?>
-                            <div class="input-group-append">
-                                <div class="input-group-text"><i class="fa fa-calendar"></i></div>
-                            </div>
-                        </div>
-                    </div>
-                    <span class="help-block"
-                          style="color: red; width: 100%"> <?php echo $form->error($model, 'date'); ?></span>
-                </div>
+
                 <div class="form-group row" style="display: none;">
                     <?php echo $form->labelEx($model, 'exp_delivery_date', ['class' => 'col-sm-4 col-form-label']); ?>
                     <div class="col-sm-8">
@@ -472,13 +473,7 @@ Yii::app()->clientScript->registerCoreScript("jquery.ui");
                         <span class="help-block"
                               style="color: red; width: 100%"> <?php echo $form->error($model2, 'warranty'); ?></span>
                     </div>
-                    <div class="form-group col-xs-12 col-md-2">
-                        <?php echo $form->labelEx($model2, 'note'); ?>
-                        <?php echo $form->textField($model2, 'note', array('maxlength' => 255, 'class' => 'form-control')); ?>
-                        <span class="help-block"
-                              style="color: red; width: 100%"> <?php echo $form->error($model2, 'note'); ?></span>
-                    </div>
-                    <div class="form-group col-xs-12 col-md-2">
+                    <div class="form-group col-xs-12 col-md-2" style="display: none;">
                         <?php echo $form->labelEx($model2, 'color'); ?>
                         <?php echo $form->textField($model2, 'color', array('maxlength' => 255, 'class' => 'form-control')); ?>
                         <span class="help-block"
@@ -502,7 +497,12 @@ Yii::app()->clientScript->registerCoreScript("jquery.ui");
                         <span class="help-block"
                               style="color: red; width: 100%"> <?php echo $form->error($model2, 'row_total'); ?></span>
                     </div>
-
+                    <div class="form-group col-xs-12 col-md-2">
+                        <?php echo $form->labelEx($model2, 'note'); ?>
+                        <?php echo $form->textArea($model2, 'note', array('maxlength' => 255, 'class' => 'form-control')); ?>
+                        <span class="help-block"
+                              style="color: red; width: 100%"> <?php echo $form->error($model2, 'note'); ?></span>
+                    </div>
                     <div class="form-group col-xs-12 col-md-1">
                         <button class="btn  btn-success mt-4" onclick="addToList()" type="button" title="ADD TO LIST"><i
                                     class="fa fa-cart-arrow-down" aria-hidden="true"></i>
@@ -521,7 +521,7 @@ Yii::app()->clientScript->registerCoreScript("jquery.ui");
                                 <th style="width: 20%;" class="text-center">Product Sl No</th>
                                 <th style="width: 10%;" class="text-center">Warranty(Mon.)</th>
                                 <th style="width: 10%;" class="text-center">Product Note</th>
-                                <th style="width: 10%;" class="text-center">Color</th>
+                                <th style="width: 10%; display: none;" class="text-center">Color</th>
                                 <th style="width: 10%;" class="text-center">Qty</th>
                                 <th style="width: 10%;" class="text-center">Unit Price</th>
                                 <th style="width: 10%;" class="text-center">Row Total</th>
@@ -712,7 +712,7 @@ Yii::app()->clientScript->registerCoreScript("jquery.ui");
                     <td class="text-center">${product_sl_no}</td>
                     <td class="text-center">${warranty}</td>
                     <td class="text-center">${note}</td>
-                    <td class="text-center">${color}</td>
+                    <td class="text-center" style="display: none;">${color}</td>
                     <td class="text-center">${unit_price}</td>
                     <td class="text-center">${qty}</td>
                     <td class="text-center">
