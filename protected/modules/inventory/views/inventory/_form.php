@@ -273,7 +273,7 @@ $form = $this->beginWidget('CActiveForm', array(
                             <div class="form-group col-sm-12 col-md-2 col-lg-2 stock-in">
                                 <?php echo $form->labelEx($model, 'stock_in'); ?>
                                 <div class="input-group">
-                                    <?php echo $form->textField($model, 'stock_in', array('maxlength' => 255, 'class' => 'form-control')); ?>
+                                    <?php echo $form->textField($model, 'stock_in', array('maxlength' => 255, 'class' => 'form-control', 'value' => 1)); ?>
                                     <div class="input-group-append">
                                         <span class="input-group-text product_unit_text" id="product_unit_text"></span>
                                     </div>
@@ -397,6 +397,18 @@ $form = $this->beginWidget('CActiveForm', array(
 <?php $this->endWidget(); ?>
 
 <script>
+
+
+    $(document).keypress(function (event) {
+        let keycode = (event.keyCode ? event.keyCode : event.which);
+        if (keycode == '13') {
+            console.log('You pressed a "enter" key in somewhere');
+            // addToList();
+            return false;
+        }
+    });
+
+
     var picker = new Lightpick({
         field: document.getElementById('entry_date'),
         minDate: moment(),
@@ -435,7 +447,7 @@ $form = $this->beginWidget('CActiveForm', array(
         let unit_name = $("#Inventory_unit_id option:selected").text();
         let isproductpresent = false;
         let temp_codearray = document.getElementsByName("Inventory[temp_model_id][]");
-        if (temp_codearray.length > 0) {
+        /*if (temp_codearray.length > 0) {
             for (let l = 0; l < temp_codearray.length; l++) {
                 var code = temp_codearray[l].value;
                 if (code == model_id) {
@@ -443,7 +455,7 @@ $form = $this->beginWidget('CActiveForm', array(
                     break;
                 }
             }
-        }
+        }*/
 
         if (model_id == "" || model_id_text == "") {
             toastr.error("Please select a product");
@@ -496,13 +508,13 @@ $form = $this->beginWidget('CActiveForm', array(
 
 
     function clearDynamicItem() {
-        $("#Inventory_model_id").val('');
-        $("#model_id_text").val('');
-        $("#product_code").val('');
+        // $("#Inventory_model_id").val('');
+        // $("#model_id_text").val('');
+        // $("#product_code").val('');
         $("#product_sl_no").val('');
         $("#Inventory_unit_id").val('');
-        $("#Inventory_stock_in").val('');
-        $("#Inventory_stock_out").val('');
+        // $("#Inventory_stock_in").val('');
+        // $("#Inventory_stock_out").val('');
         $("#Inventory_closing_stock").val('');
     }
 
