@@ -133,4 +133,71 @@ class ReportController extends Controller
         Yii::app()->end();
     }
 
+
+    public function actionCustomerDueReport()
+    {
+        $model = new Inventory();
+        $this->pageTitle = 'CUSTOMER DUE REPORT';
+        $this->render('customerDueReport', array('model' => $model));
+    }
+
+    public function actionCustomerDueReportView()
+    {
+
+        if (Yii::app()->request->isAjaxRequest) {
+            Yii::app()->clientScript->scriptMap['jquery.js'] = false;
+        }
+
+        date_default_timezone_set("Asia/Dhaka");
+        $dateFrom = $_POST['Inventory']['date_from'];
+        $dateTo = $_POST['Inventory']['date_to'];
+        $customer_id = $_POST['Inventory']['customer_id'];
+
+        $message = "";
+        $data = NULL;
+
+
+        $message .= "DUE REPORT";
+
+        $sql = "SELECT 
+                customer_id, 
+                c.company_name,
+                c.company_contact_no,
+                ROUND(SUM(t.sale_amount), 2) AS total_sale_amount,
+                ROUND(SUM(t.receipt_amount), 2) AS total_receipt_amount,
+                ROUND(SUM(amount), 2) AS due_amount
+            FROM 
+                (SELECT 
+                    customer_id, 
+                    grand_total as sale_amount,
+                    0 as receipt_amount,
+                    grand_total as amount 
+                FROM 
+                    sell_order
+                    " . ($customer_id > 0 ? " WHERE customer_id = $customer_id" : "") . "
+                UNION ALL
+                SELECT 
+                    customer_id, 
+                    0 as sale_amount,
+                    amount as receipt_amount,
+                    -amount 
+                FROM 
+                    money_receipt
+                    " . ($customer_id > 0 ? " WHERE customer_id = $customer_id" : "") . "
+                ) AS t
+            inner join customers c on t.customer_id = c.id
+            GROUP BY 
+                customer_id
+            HAVING 
+                due_amount <> 0
+            ORDER BY c.company_name;";
+        $command = Yii::app()->db->createCommand($sql);
+        $data = $command->queryAll();
+
+        echo $this->renderPartial('customerDueReportView', array(
+            'data' => $data,
+            'message' => $message,
+        ), true, true);
+        Yii::app()->end();
+    }
 }

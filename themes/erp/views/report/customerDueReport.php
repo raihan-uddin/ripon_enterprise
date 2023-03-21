@@ -9,7 +9,7 @@ $this->widget('application.components.BreadCrumb', array(
     'crumbs' => array(
         array('name' => 'Sell', 'url' => array('')),
         array('name' => 'Reports', 'url' => array('')),
-        array('name' => 'Customer Ledger',),
+        array('name' => 'Customer DUE REPORT',),
     ),
 //    'delimiter' => ' &rarr; ',
 ));
@@ -21,7 +21,7 @@ $form = $this->beginWidget('CActiveForm', array(
 ?>
 <div class="card card-primary">
     <div class="card-header">
-        <h3 class="card-title">Search Conditions (CUSTOMER LEDGER)</h3>
+        <h3 class="card-title">Search Conditions (CUSTOMER DUE REPORT)</h3>
         <div class="card-tools">
             <button type="button" class="btn btn-tool" data-card-widget="collapse">
                 <i class="fa fa-minus"></i>
@@ -35,7 +35,7 @@ $form = $this->beginWidget('CActiveForm', array(
     <div class="card-body">
         <div class="row">
 
-            <div class="col-sm-12 col-md-2">
+            <div class="col-sm-12 col-md-2" style="display: none">
                 <div class="form-group" style="">
                     <?php echo $form->labelEx($model, 'date_from', ['class' => 'col-form-label']); ?>
                     <div class="input-group" id="date_from" data-target-input="nearest">
@@ -49,7 +49,7 @@ $form = $this->beginWidget('CActiveForm', array(
                 </div>
             </div>
 
-            <div class="col-sm-12 col-md-2">
+            <div class="col-sm-12 col-md-2" style="display: none">
                 <div class="form-group" style="">
                     <?php echo $form->labelEx($model, 'date_to', ['class' => 'col-form-label']); ?>
                     <div class="input-group" id="date_to" data-target-input="nearest">
@@ -110,19 +110,11 @@ $form = $this->beginWidget('CActiveForm', array(
         echo CHtml::submitButton('Search', array(
                 'ajax' => array(
                     'type' => 'POST',
-                    'url' => CController::createUrl('/report/customerLedgerView'),
+                    'url' => CController::createUrl('/report/customerDueReportView'),
                     'beforeSend' => 'function(){
-                                if($("#Inventory_date_from").val()=="" || $("#Inventory_date_to").val()==""){
-                                    toastr.error("Warning! Please select date range!");
-                                    return false;
-                                }else if($("#Inventory_customer_id").val()==""){
-                                    toastr.error("Warning! Please select customer!");
-                                    return false;
-                                }else{
-                                    $(".ajaxLoaderResultView").show();
-                                    $("#reportSearchButton").prop("disabled", true);
-                                    $("#reportSearchButton").val("Please wait ...");
-                                }
+                                $(".ajaxLoaderResultView").show();
+                                $("#reportSearchButton").prop("disabled", true);
+                                $("#reportSearchButton").val("Please wait ...");
                             }',
                     'error' => 'function(XMLHttpRequest, textStatus, errorThrown){
                                 $(".ajaxLoaderResultView").hide();

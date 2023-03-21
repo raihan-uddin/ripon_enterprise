@@ -92,49 +92,39 @@ echo "</div>";
         </tr>
         <tr class="titlesTr sticky">
             <th style="width: 2%; box-shadow: 0px 0px 0px 1px black inset;">SL</th>
-            <th style="width: 10%; box-shadow: 0px 0px 0px 1px black inset;">Trx Type</th>
-            <th style="width: 10%; box-shadow: 0px 0px 0px 1px black inset;">Date</th>
-            <th style="width: 5%;box-shadow: 0px 0px 0px 1px black inset;">ID</th>
-            <th style="width: 10%;box-shadow: 0px 0px 0px 1px black inset;">Invoice No</th>
-            <th style="width: 10%;box-shadow: 0px 0px 0px 1px black inset;">Amount</th>
-            <th style="width: 10%;box-shadow: 0px 0px 0px 1px black inset; width: 10%; min-width: 60px;">Closing</th>
+            <th style="width: 8%; box-shadow: 0px 0px 0px 1px black inset;">Customer ID</th>
+            <th style="width: 15%; box-shadow: 0px 0px 0px 1px black inset;">Name</th>
+            <th style="width: 10%; box-shadow: 0px 0px 0px 1px black inset;">Phone</th>
+            <th style="width: 10%;box-shadow: 0px 0px 0px 1px black inset;">Sale</th>
+            <th style="width: 10%;box-shadow: 0px 0px 0px 1px black inset;">Collection</th>
+            <th style="width: 10%;box-shadow: 0px 0px 0px 1px black inset;">Due</th>
         </tr>
         </thead>
         <tbody>
         <?php
         $sl = 1;
         $rowFound = false;
-        $groundTotal = 0;
-        $row_closing = 0;
+        $total_sale = 0;
+        $total_collection = 0;
+        $total_due = 0;
         ?>
-        <tr>
-            <td></td>
-            <td style="text-align: center;">Opening</td>
-            <td colspan="3"></td>
-            <td style="text-align: right;"><?= number_format($opening) ?></td>
-            <td></td>
-        </tr>
 
         <?php
-        $row_closing += $opening;
         if ($data) {
             foreach ($data as $dmr) {
-                $trx_type = $dmr['trx_type'];
-                if ($trx_type == 'sale') {
-                    $row_closing += $dmr['amount'];
-                } else {
-                    $row_closing -= $dmr['amount'];
-                }
+                $total_sale += $dmr['total_sale_amount'];
+                $total_collection += $dmr['total_receipt_amount'];
+                $total_due += $dmr['due_amount'];
                 $rowFound = true;
                 ?>
                 <tr>
                     <td style="text-align: center;"><?php echo $sl++; ?></td>
-                    <td style="text-align: center;"><?php echo $dmr['trx_type']; ?></td>
-                    <td style="text-align: center;"><?php echo $dmr['date']; ?></td>
-                    <td style="text-align: center;"><?php echo $dmr['id']; ?></td>
-                    <td style="text-align: left;"><?php echo $dmr['order_no']; ?></td>
-                    <td style="text-align: right;"><?php echo number_format($dmr['amount'], 2); ?></td>
-                    <td style="text-align: right;"><?php echo number_format($row_closing, 2); ?></td>
+                    <td style="text-align: center;"><?php echo $dmr['customer_id']; ?></td>
+                    <td style="text-align: center;"><?php echo $dmr['company_name']; ?></td>
+                    <td style="text-align: center;"><?php echo $dmr['company_contact_no']; ?></td>
+                    <td style="text-align: right;"><?php echo number_format($dmr['total_sale_amount'], 2); ?></td>
+                    <td style="text-align: right;"><?php echo number_format($dmr['total_receipt_amount'], 2); ?></td>
+                    <td style="text-align: right;"><?php echo number_format($dmr['due_amount'], 2); ?></td>
                 </tr>
                 <?php
 
@@ -145,7 +135,7 @@ echo "</div>";
         if (!$rowFound) {
             ?>
             <tr>
-                <td colspan="10">
+                <td colspan="8">
                     <div class="alert alert-warning"><i class="fa fa-exclamation-triangle"></i> No result found !</div>
                 </td>
             </tr>
@@ -153,8 +143,10 @@ echo "</div>";
         } else {
             ?>
             <tr>
-                <th style="text-align: right;" colspan="6">Ground Total</th>
-                <th style="text-align: right;"><?= number_format($row_closing, 2) ?></th>
+                <th style="text-align: right;" colspan="4">Ground Total</th>
+                <th style="text-align: right;"><?= number_format($total_sale, 2) ?></th>
+                <th style="text-align: right;"><?= number_format($total_collection, 2) ?></th>
+                <th style="text-align: right;"><?= number_format($total_due, 2) ?></th>
             </tr>
             <?php
         }
