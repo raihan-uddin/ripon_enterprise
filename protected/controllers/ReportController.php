@@ -183,7 +183,7 @@ class ReportController extends Controller
             $message .= "<br>  Date: " . date('d/m/Y', strtotime($dateFrom)) . "-" . date('d/m/Y', strtotime($dateTo));
 
             $criteriaOpSell = new CDbCriteria();
-            $criteriaOpSell->select = " sum(total_amount) as total_amount";
+            $criteriaOpSell->select = " sum(grand_total) as total_amount";
             $criteriaOpSell->addColumnCondition(['supplier_id' => $customer_id]);
             $criteriaOpSell->addCondition(" date < '$dateFrom'");
             $data_opening_sell = PurchaseOrder::model()->findByAttributes([], $criteriaOpSell);
@@ -213,6 +213,74 @@ class ReportController extends Controller
             'data' => $data,
             'message' => $message,
             'opening' => $opening,
+        ), true, true);
+        Yii::app()->end();
+    }
+
+
+    public function actionSupplierDueReport()
+    {
+        $model = new Inventory();
+        $this->pageTitle = 'SUPPLIER DUE REPORT';
+        $this->render('supplierDueReport', array('model' => $model));
+    }
+
+    public function actionSupplierDueReportView()
+    {
+
+        if (Yii::app()->request->isAjaxRequest) {
+            Yii::app()->clientScript->scriptMap['jquery.js'] = false;
+        }
+
+        date_default_timezone_set("Asia/Dhaka");
+        $dateFrom = $_POST['Inventory']['date_from'];
+        $dateTo = $_POST['Inventory']['date_to'];
+        $customer_id = $_POST['Inventory']['supplier_id'];
+
+        $message = "";
+        $data = NULL;
+
+
+        $message .= "DUE REPORT";
+
+        $sql = "SELECT 
+                supplier_id, 
+                s.company_name,
+                s.company_contact_no,
+                ROUND(SUM(t.purchase_amount), 2) AS total_purchase_amount,
+                ROUND(SUM(t.payment_amount), 2) AS total_payment_amount,
+                ROUND(SUM(amount), 2) AS due_amount
+            FROM 
+                (SELECT 
+                    supplier_id, 
+                    grand_total as purchase_amount,
+                    0 as payment_amount,
+                    grand_total as amount 
+                FROM 
+                    purchase_order
+                    " . ($customer_id > 0 ? " WHERE supplier_id = $customer_id" : "") . "
+                UNION ALL
+                SELECT 
+                    supplier_id, 
+                    0 as purchase_amount,
+                    amount as payment_amount,
+                    -amount 
+                FROM 
+                    payment_receipt
+                    " . ($customer_id > 0 ? " WHERE supplier_id = $customer_id" : "") . "
+                ) AS t
+            inner join suppliers s on t.supplier_id = s.id
+            GROUP BY 
+                supplier_id
+            HAVING 
+                due_amount <> 0
+            ORDER BY s.company_name;";
+        $command = Yii::app()->db->createCommand($sql);
+        $data = $command->queryAll();
+
+        echo $this->renderPartial('supplierDueReportView', array(
+            'data' => $data,
+            'message' => $message,
         ), true, true);
         Yii::app()->end();
     }

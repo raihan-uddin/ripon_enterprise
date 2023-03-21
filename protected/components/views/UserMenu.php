@@ -229,7 +229,7 @@ $this->widget('application.extensions.mbmenu.MbMenu', array(
 
                 array('label' => 'REPORTS',
                     'items' => array(
-                        ['label' => Yii::t('app', 'SUPPLIER DUE REPORT'), 'url' => ['/report/customerDueReport'], 'visible' => Yii::app()->user->checkAccess('Report.CustomerDueReport')],
+                        ['label' => Yii::t('app', 'SUPPLIER DUE REPORT'), 'url' => ['/report/supplierDueReport'], 'visible' => Yii::app()->user->checkAccess('Report.SupplierDueReport')],
                         ['label' => Yii::t('app', 'SUPPLIER LEDGER'), 'url' => ['/report/supplierLedger'], 'visible' => Yii::app()->user->checkAccess('Report.SupplierLedger')],
                     ),
                 ),
