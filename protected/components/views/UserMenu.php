@@ -157,7 +157,7 @@ $this->widget('application.extensions.mbmenu.MbMenu', array(
                 ),
             ),
         ),
-        array('label' => 'LOGOUT (' . Yii::app()->user->name . ')', 'url' => array('/site/logout')),
+        array('label' => 'LOGOUT', 'url' => array('/site/logout')),
     ),
 ));
 ?>
