@@ -120,7 +120,7 @@ echo "</div>";
         if ($data) {
             foreach ($data as $dmr) {
                 $trx_type = $dmr['trx_type'];
-                if ($trx_type == 'sale') {
+                if ($trx_type == 'purchase') {
                     $row_closing += $dmr['amount'];
                 } else {
                     $row_closing -= $dmr['amount'];
