@@ -9,6 +9,16 @@
             <div class="dropdown-menu" role="menu">
                 <a class="dropdown-item" href="<?= Yii::app()->createUrl("inventory/inventory/stockReport") ?>">Stock
                     Report</a>
+                <div class="dropdown-divider"></div>
+                <a class="dropdown-item" href="<?= Yii::app()->createUrl("report/customerDueReport") ?>">Customer Due
+                    Report</a>
+                <a class="dropdown-item" href="<?= Yii::app()->createUrl("report/customerLedger") ?>">Customer
+                    Ledger</a>
+                <div class="dropdown-divider"></div>
+                <a class="dropdown-item" href="<?= Yii::app()->createUrl("report/supplierDueReport") ?>">Supplier Due
+                    Report</a>
+                <a class="dropdown-item" href="<?= Yii::app()->createUrl("report/supplierLedger") ?>">Supplier
+                    Ledger</a>
                 <!--                <a class="dropdown-item" href="#">Another action</a>-->
                 <!--                <a class="dropdown-item" href="#">Something else here</a>-->
                 <!--                <div class="dropdown-divider"></div>-->

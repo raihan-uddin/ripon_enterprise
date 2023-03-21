@@ -7,7 +7,7 @@
 <?php
 $this->widget('application.components.BreadCrumb', array(
     'crumbs' => array(
-        array('name' => 'Inventory', 'url' => array('')),
+//        array('name' => 'Inventory', 'url' => array('')),
         array('name' => 'Reports', 'url' => array('')),
         array('name' => 'Stock Report',),
     ),
