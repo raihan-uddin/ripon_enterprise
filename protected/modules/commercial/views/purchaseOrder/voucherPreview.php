@@ -105,7 +105,8 @@
         <div class='printAllTableForThisReport' style="width: 8.5in;">
             <table style="width: 100%; border-collapse: collapse; font-size: 11px;" class="item-list">
                 <tr>
-                    <td colspan="4"><img src="<?= Yii::app()->theme->baseUrl . "/images/logo.png" ?>" style="width: 100%; height: 100px;" ></td>
+                    <td colspan="4"><img src="<?= Yii::app()->theme->baseUrl . "/images/logo.png" ?>"
+                                         style="width: 130px; height: 100px;"></td>
                     <td style="text-align: center;" colspan="2"><h3>PURCHASE ORDER</h3></td>
                 </tr>
                 <tr>

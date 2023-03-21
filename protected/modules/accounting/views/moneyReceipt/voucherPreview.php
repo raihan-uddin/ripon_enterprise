@@ -119,7 +119,7 @@
                             <div style="width: 100%; float: left; clear: right;">
                                 <div style="width: 70%; float: left; clear: right;">
                                     <img src="<?= Yii::app()->theme->baseUrl . "/images/logo.png" ?>"
-                                         style="width: 100%; height: 100px;">
+                                         style="width: 130px; height: 100px;">
                                 </div>
                                 <div style="float: right; width: 29%;">
                                     <div style="float: right;">Tel.: <?= $company_contact ?> </div>

@@ -105,7 +105,7 @@
                     <td colspan="4" style="vertical-align: middle;">
                         <div style="width: 70%; float: left;">
                             <img src="<?= Yii::app()->theme->baseUrl . "/images/logo.png" ?>"
-                                 style="width: 100%; height: 100px;">
+                                 style="width: 130px; height: 100px;">
                         </div>
                         <div style="width: 29%; float: right; vertical-align: middle; text-align: center;">
                             <h3 style="vertical-align: middle;">EXPENSE</h3>
