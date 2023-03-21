@@ -198,7 +198,7 @@ $this->widget('application.extensions.mbmenu.MbMenu', array(
                 ),
                 array('label' => 'REPORTS',
                     'items' => array(
-                        ['label' => Yii::t('app', 'CUSTOMER LEDGER'), 'url' => ['/report/CustomerLedger'], 'visible' => Yii::app()->user->checkAccess('Report.CustomerLedger')],
+                        ['label' => Yii::t('app', 'CUSTOMER LEDGER'), 'url' => ['/report/customerLedger'], 'visible' => Yii::app()->user->checkAccess('Report.CustomerLedger')],
                     ),
                 ),
             ),
