@@ -42,6 +42,7 @@ class Inventory extends CActiveRecord
     public $code;
     public $name;
     public $opening_stock;
+    public $customer_id;
     public $t_type;
     public $unit_id;
     public $item_id;
@@ -133,6 +134,7 @@ class Inventory extends CActiveRecord
             'update_time' => 'Update Time',
             'update_by' => 'Update By',
             'warranty' => 'Warranty',
+            'customer_id' => 'Customer',
         );
     }
 
