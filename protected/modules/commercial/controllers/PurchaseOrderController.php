@@ -108,6 +108,7 @@ class PurchaseOrderController extends Controller
                                 $inv->product_sl_no = $model2->product_sl_no;
                                 $inv->stock_status = Inventory::PURCHASE_RECEIVE;
                                 $inv->source_id = $modelRcvD->id;
+                                $inv->master_id = $model->id;
                                 $inv->remarks = $model2->note;
                                 $inv->save();
                             }
