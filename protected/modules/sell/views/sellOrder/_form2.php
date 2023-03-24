@@ -471,8 +471,8 @@ Yii::app()->clientScript->registerCoreScript("jquery.ui");
                                     <td class="text-center"><?= $m3->product_sl_no ?></td>
                                     <td class="text-center"><?= $m3->note ?></td>
                                     <td class="text-center" style="display: none;"><?= $m3->color ?></td>
-                                    <td class="text-center"><?= $m3->amount ?></td>
                                     <td class="text-center"><?= $m3->qty ?></td>
+                                    <td class="text-center"><?= $m3->amount ?></td>
                                     <td class="text-center">
                                         <?= $m3->row_total ?>
                                         <input type="hidden" class="form-control text-center" value="<?= $m3->qty ?>"
