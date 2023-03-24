@@ -182,6 +182,7 @@
                 $criteria->select = "pm.model_name, pm.code, pm.image, sum(t.qty) as qty, t.amount, t.note, sum(t.row_total) as row_total, GROUP_CONCAT(product_sl_no ORDER BY product_sl_no SEPARATOR ', ') as product_sl_no, pm.description";
                 $criteria->join = " INNER JOIN prod_models pm on t.model_id = pm.id ";
                 $criteria->addColumnCondition(['t.sell_order_id' => $data->id]);
+                $criteria->group = "pm.model_id";
                 $criteria->order = "pm.model_name ASC";
                 $data2 = SellOrderDetails::model()->findAll($criteria);
                 $row_total = 0;
