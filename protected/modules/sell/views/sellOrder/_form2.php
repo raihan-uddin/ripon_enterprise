@@ -681,8 +681,8 @@ Yii::app()->clientScript->registerCoreScript("jquery.ui");
                     <td class="text-center">${product_sl_no}</td>
                     <td class="text-center">${note}</td>
                     <td class="text-center" style="display: none;">${color}</td>
-                    <td class="text-center">${unit_price}</td>
                     <td class="text-center">${qty}</td>
+                    <td class="text-center">${unit_price}</td>
                     <td class="text-center">
                         ${row_total}
                         <input type="hidden" class="form-control text-center" value="${qty}" name=SellOrderDetails[temp_qty][]"">
