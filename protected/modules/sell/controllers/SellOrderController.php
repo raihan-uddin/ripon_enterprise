@@ -108,6 +108,7 @@ class SellOrderController extends Controller
                             $inventory->product_sl_no = $model2->product_sl_no;
                             $inventory->stock_status = Inventory::SALES_DELIVERY;
                             $inventory->source_id = $model2->id;
+                            $inventory->master_id = $model->id;
                             if (!$inventory->save()) {
                                 var_dump($inventory->getErrors());
                                 exit;
@@ -164,12 +165,12 @@ class SellOrderController extends Controller
             $model->attributes = $_POST['SellOrder'];
             $model->discount_percentage = 0;
             $model->discount_amount = 0;
-            $model->is_invoice_done = SellOrder::INVOICE_NOT_DONE;
+            $model->is_invoice_done = SellOrder::INVOICE_DONE;
             $model->is_delivery_done = SellOrder::DELIVERY_DONE;
-            $model->is_job_card_done = SellOrder::JOB_CARD_NOT_DONE;
-            $model->is_partial_invoice = SellOrder::PARTIAL_INVOICE_NOT_DONE;
+            $model->is_job_card_done = SellOrder::JOB_CARD_DONE;
+            $model->is_partial_invoice = SellOrder::PARTIAL_INVOICE_DONE;
             $model->is_partial_delivery = SellOrder::PARTIAL_DELIVERY_DONE;
-            $model->bom_complete = SellOrder::BOM_NOT_COMPLETE;
+            $model->bom_complete = SellOrder::BOM_COMPLETE;
             if ($model->save()) {
                 $details_id_arr = [];
                 foreach ($_POST['SellOrderDetails']['temp_model_id'] as $key => $model_id) {
@@ -196,6 +197,45 @@ class SellOrderController extends Controller
                     $criteriaDel->addColumnCondition(['sell_order_id' => $id]);
                     SellOrderDetails::model()->deleteAll($criteriaDel);
                 }
+
+                $delete_inv_arr = [];
+                $criteria2 = new CDbCriteria();
+                $criteria2->addColumnCondition(['sell_order_id', $id]);
+                $sellOrderDetails = SellOrderDetails::model()->findAll($criteria2);
+
+//                echo count($sellOrderDetails);exit;
+                $inv_sl = Inventory::maxSlNo();
+                $inv_sl_challan = "CHALLAN-" . str_pad($inv_sl, 6, '0', STR_PAD_LEFT);
+                foreach ($sellOrderDetails as $detail) {
+                    $inventory = Inventory::model()->findByAttributes(['model_id' => $detail->model_id, 'stock_status' => Inventory::SALES_DELIVERY, 'source_id' => $detail->id]);
+                    if (!$inventory) {
+                        $inventory = new Inventory();
+                        $inventory->sl_no = $inv_sl;
+                        $inventory->date = $model->date;
+                        $inventory->challan_no = $inv_sl_challan;
+                        $inventory->store_id = 1;
+                        $inventory->location_id = 1;
+                        $inventory->model_id = $detail->model_id;
+                        $inventory->stock_out = $detail->qty;
+                        $inventory->sell_price = $detail->amount;
+                        $inventory->row_total = $detail->row_total;
+                        $inventory->product_sl_no = $detail->product_sl_no;
+                        $inventory->stock_status = Inventory::SALES_DELIVERY;
+                        $inventory->source_id = $detail->id;
+                        $inventory->master_id = $id;
+                        if (!$inventory->save()) {
+                            var_dump($inventory->getErrors());
+                            exit;
+                        }
+                    }
+                    $delete_inv_arr[] = $inventory->id;
+                }
+                if (count($delete_inv_arr) > 0) {
+                    $criteriaDel = new CDbCriteria;
+                    $criteriaDel->addNotInCondition('id', $delete_inv_arr);
+                    $criteriaDel->addColumnCondition(['master_id' => $id, 'stock_status' => Inventory::SALES_DELIVERY]);
+                    Inventory::model()->deleteAll($criteriaDel);
+                }
                 $data = $model;
                 echo CJSON::encode(array(
                     'status' => 'success',
@@ -211,8 +251,6 @@ class SellOrderController extends Controller
         }
 
         if (
-            $model->is_partial_delivery == SellOrder::DELIVERY_NOT_DONE ||
-            $model->is_delivery_done == SellOrder::DELIVERY_NOT_DONE ||
             $model->total_paid == 0
         ) {
 
@@ -241,7 +279,20 @@ class SellOrderController extends Controller
      */
     public function actionDelete($id)
     {
-        $this->loadModel($id)->delete();
+
+        $criteria = new CDbCriteria();
+        $criteria->addColumnCondition(['sell_order_id' => $id]);
+        $sellOrderDetail = SellOrderDetails::model()->findAll($criteria);
+        if ($sellOrderDetail) {
+            foreach ($sellOrderDetail as $item) {
+                $inventory = Inventory::model()->findByAttributes(['source_id' => $item->id, 'stock_status' => Inventory::SALES_DELIVERY]); // 'master_id' => $id,
+                if ($inventory) {
+                    $inventory->delete();
+                }
+                $item->delete();
+            }
+            $this->loadModel($id)->delete();
+        }
 
         // if AJAX request (triggered by deletion via admin grid view), we should not redirect the browser
         if (!isset($_GET['ajax']))

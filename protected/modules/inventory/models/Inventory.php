@@ -22,6 +22,7 @@
  * @property string $remarks
  * @property string $create_time
  * @property integer $create_by
+ * @property integer $master_id
  * @property string $update_time
  * @property integer $update_by
  */
