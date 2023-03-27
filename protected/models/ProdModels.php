@@ -10,11 +10,8 @@
  * @property string $model_name
  * @property string $code
  * @property integer $unit_id
- * @property integer $country_id
  * @property integer $min_order_qty
- * @property string $features
  * @property double $warranty
- * @property integer $vatable
  * @property string $image
  * @property string $thumbnail
  * @property string $created_at
@@ -76,8 +73,8 @@ class ProdModels extends CActiveRecord
         // will receive user inputs.
         return array(
             array('item_id, brand_id, model_name, code, unit_id', 'required'),
-            array('item_id, brand_id, unit_id, country_id, vatable, purchase_price', 'numerical', 'integerOnly' => true),
-            array('sell_price', 'numerical'),
+            array('item_id, brand_id, unit_id', 'numerical', 'integerOnly' => true),
+            array('sell_price, purchase_price', 'numerical'),
             array('model_name, code, min_order_qty', 'length', 'max' => 255),
             array('warranty', 'numerical'),
             array('code', 'unique', 'caseSensitive' => FALSE),
@@ -85,7 +82,7 @@ class ProdModels extends CActiveRecord
             array('features, description', 'safe'),
             // The following rule is used by search().
             // Please remove those attributes that should not be searched.
-            array('min_order_qty, vatable, id, item_id, brand_id, model_name,  country_id, features, warranty, description,  purchase_price, sell_price', 'safe', 'on' => 'search'),
+            array('min_order_qty, id, item_id, brand_id, model_name, features, warranty, description,  purchase_price, sell_price', 'safe', 'on' => 'search'),
         );
     }
 
@@ -112,8 +109,6 @@ class ProdModels extends CActiveRecord
             'model_name' => 'Product Name',
             'code' => 'Code',
             'min_order_qty' => 'Alert QTY',
-            'country_id' => 'Country',
-            'features' => 'Additional Features',
             'warranty' => 'Warranty (M)',
             'activePrice' => 'Price (Pictorial)',
             'unit_id' => 'Unit',
