@@ -94,13 +94,13 @@ echo "</div>";
             <th style="width: 3%; box-shadow: 0px 0px 0px 1px black inset;">ID</th>
             <th style="box-shadow: 0px 0px 0px 1px black inset;">Product Name</th>
             <th style="box-shadow: 0px 0px 0px 1px black inset;">Code</th>
-            <th style="box-shadow: 0px 0px 0px 1px black inset;">Sell Price</th>
             <th style="box-shadow: 0px 0px 0px 1px black inset; width: 10%; min-width: 60px;">Opening Stock</th>
             <th style="box-shadow: 0px 0px 0px 1px black inset;  width: 10%; min-width: 60px;">Stock In</th>
             <th style="box-shadow: 0px 0px 0px 1px black inset;  width: 10%; min-width: 60px;">Stock Out</th>
             <th style="box-shadow: 0px 0px 0px 1px black inset;  width: 10%; min-width: 60px;">Closing
                 Stock
             </th>
+            <th style="box-shadow: 0px 0px 0px 1px black inset;">Sell Price</th>
             <th style="box-shadow: 0px 0px 0px 1px black inset;  width: 10%; min-width: 60px;">
                 Stock Value
             </th>
@@ -123,11 +123,11 @@ echo "</div>";
                     <td style="text-align: center;"><?php echo $dmr->model_id; ?></td>
                     <td style="text-align: left;"><?php echo $dmr->model_name; ?></td>
                     <td style="text-align: left;"><?php echo $dmr->code; ?></td>
-                    <td style="text-align: center;"><?php echo number_format($dmr->sell_price, 2); ?></td>
                     <td style="text-align: center;"><?php echo $dmr->opening_stock; ?></td>
                     <td style="text-align: center;"><?php echo $dmr->stock_in; ?></td>
                     <td style="text-align: center;"><?php echo $dmr->stock_out; ?></td>
                     <td style="text-align: center;"><?php echo $closing; ?></td>
+                    <td style="text-align: center;"><?php echo number_format($dmr->sell_price, 2); ?></td>
                     <td style="text-align: right;"><?php echo number_format($stockValue, 2); ?></td>
                 </tr>
                 <?php
