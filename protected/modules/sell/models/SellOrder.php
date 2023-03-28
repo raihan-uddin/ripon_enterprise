@@ -76,6 +76,7 @@ class SellOrder extends CActiveRecord
     const REPAIR_ORDER = 2;
 
     const NORMAL_ORDER_PRINT = 1;
+    const NORMAL_PAD_PRINT = 4;
     const PRODUCTION_ORDER_PRINT = 2;
     const ORDER_BOM = 3;
 

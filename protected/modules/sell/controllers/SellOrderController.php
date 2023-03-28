@@ -315,18 +315,6 @@ class SellOrderController extends Controller
         ));
     }
 
-    public function actionAdminProductionOrder()
-    {
-        $model = new SellOrder('searchProductionOrder');
-        $model->unsetAttributes();  // clear any default values
-        if (isset($_GET['SellOrder']))
-            $model->attributes = $_GET['SellOrder'];
-
-        $this->pageTitle = 'PRODUCTION ORDER MANAGE';
-        $this->render('adminProduction', array(
-            'model' => $model,
-        ));
-    }
 
     public function actionVoucherPreview()
     {
@@ -341,10 +329,9 @@ class SellOrderController extends Controller
             $criteria = new CDbCriteria;
             $criteria->addColumnCondition(['so_no' => $so_no]);
             $data = SellOrder::model()->findByAttributes([], $criteria);
-            $view = "voucherPreview";
 
             if ($data) {
-                echo $this->renderPartial($view, array('data' => $data,), true, true);
+                echo $this->renderPartial("voucherPreview", array('data' => $data, 'preview_type' => $preview_type), true, true);
             } else {
                 header('Content-type: application/json');
                 echo CJSON::encode(array(
@@ -357,59 +344,27 @@ class SellOrderController extends Controller
         }
     }
 
-    public function actionVoucherPreview2()
-    {
-        $so_no = "SO-23-02-00004";
-        $preview_type = 1;
 
+    public function actionSinglePreview($id)
+    {
         if (Yii::app()->request->isAjaxRequest) {
+            // Stop jQuery from re-initialization
             Yii::app()->clientScript->scriptMap['jquery.js'] = false;
+            Yii::app()->clientScript->scriptMap['jquery.min.js'] = false;
+//            Yii::app()->clientScript->scriptMap['jquery.yiiactiveform.js'] = false;
+            Yii::app()->clientScript->scriptMap['jquery-ui-i18n.min.js'] = false;
+            Yii::app()->clientScript->scriptMap['jquery-ui-timepicker-addon.js'] = false;
+            Yii::app()->clientScript->scriptMap['jquery-ui.min.js'] = false;
         }
-
-        if ($so_no && $preview_type > 0) {
-            $criteria = new CDbCriteria;
-            $criteria->addColumnCondition(['so_no' => $so_no]);
-            $data = SellOrder::model()->findByAttributes([], $criteria);
-            $view = "voucherPreview";
-
-            if ($data) {
-                echo $this->renderPartial($view, array('data' => $data,), true, true);
-            } else {
-                header('Content-type: application/json');
-                echo CJSON::encode(array(
-                    'status' => 'error',
-                ));
-            }
-            Yii::app()->end();
-        } else {
-            echo '<div class="alert alert-danger" role="alert">Please select sales invoice no!</div>';
-        }
-    }
-
-    public function actionCreateJobCard($id)
-    {
-        $sellItemsData = SellOrder::model()->findByPk($id);
-        $criteria = new CDbCriteria();
-        $criteria->addColumnCondition(['sell_order_id' => $id]);
-        $sellDetails = SellOrderDetails::model()->findAll($criteria);
-        if ($sellItemsData && $sellDetails) {
-            $max_sl_no = SellOrder::maxJobNo();
-            $job_no = "JC-" . str_pad($max_sl_no, 5, "0", STR_PAD_LEFT);
-            $sellItemsData->is_job_card_done = SellOrder::JOB_CARD_DONE;
-            $sellItemsData->job_card_date = date('Y-m-d');
-            $sellItemsData->job_max_sl_no = $max_sl_no;
-            $sellItemsData->job_no = $job_no;
-            $sellItemsData->save();
-            $status = ['status' => 'success', 'message' => 'Job Card created successfully!'];
-
-        } else {
-            $status = ['status' => 'danger', 'message' => 'Order Not Found'];
-        }
+        $criteria = new CDbCriteria;
+        $criteria->addColumnCondition(['id' => $id]);
+        $data = SellOrder::model()->findByAttributes([], $criteria);
+        echo $this->renderPartial('voucherPreview', array('data' => $data, 'preview_type' => SellOrder::NORMAL_ORDER_PRINT), true, true);
 
         if (!isset($_GET['ajax'])) {
-            Yii::app()->user->setFlash($status['status'], $status['message']);
-            $this->redirect(isset($_POST['returnUrl']) ? $_POST['returnUrl'] : array('admin'));
+            $this->redirect(Yii::app()->request->urlReferrer);
         }
+
     }
 
 
@@ -481,137 +436,4 @@ class SellOrderController extends Controller
         ));
     }
 
-
-    public function actionJobCardDetails()
-    {
-        $job_no = trim($_POST['job_no']);
-        $status = 404;
-        $order_item_status = 405;
-        $message = 'Order not found!';
-        $data = NULL;
-        $order_items = [];
-        $order_info = [];
-        if (strlen($job_no) > 0) {
-            $criteria = new CDbCriteria();
-            $criteria->select = "t.*, c.company_name, c.customer_code";
-            $criteria->join = " INNER JOIN customers c on t.customer_id = c.id ";
-            $criteria->addColumnCondition(['job_no' => $job_no]);
-            $data = SellOrder::model()->findByAttributes([], $criteria);
-            if ($data) {
-                $order_info = [
-                    'order_id' => $data->id,
-                    'customer_id' => $data->customer_id,
-                    'customer_name' => $data->company_name,
-                    'customer_code' => $data->customer_code,
-                    'so_no' => $data->so_no,
-                    'date' => $data->date,
-                ];
-                $status = 200;
-                $message = 'Order found!';
-                $criteria2 = new CDbCriteria();
-                $criteria2->select = "t.*, pm.model_name, pm.unit_id, pm.code ";
-                $criteria2->join = " INNER JOIN prod_models pm on t.model_id = pm.id ";
-                $criteria2->addColumnCondition(['sell_order_id' => $data->id]);
-                $orderDetails = SellOrderBom::model()->findAll($criteria2);
-                if ($orderDetails) {
-                    foreach ($orderDetails as $od) {
-                        $order_qty = $od->qty;
-                        $total_issue_qty = JobCardIssueDetails::model()->totalIssueQtyOfThisModelByOrder($od->model_id, $data->id);
-                        $rem_qty = $order_qty - $total_issue_qty;
-                        if ($rem_qty > 0) {
-                            $current_stock = Inventory::model()->closingStock($od->model_id);
-                            $order_item_status = 200;
-                            $order_items[] = [
-                                'model_name' => $od->model_name,
-                                'code' => $od->code,
-                                'model_id' => $od->model_id,
-                                'rem_qty' => $rem_qty,
-                                'qty' => $od->qty,
-                                'stock' => $current_stock,
-                            ];
-                        }
-                    }
-                } else {
-                    $message = 'Order items not found!';
-                }
-            }
-        } else {
-            $message = 'Please insert job card No!';
-
-        }
-        echo CJSON::encode(array(
-            'status' => $status,
-            'order' => $data,
-            'order_info' => $order_info,
-            'order_item_status' => $order_item_status,
-            'order_items' => $order_items,
-            'message' => $message,
-        ));
-    }
-
-
-    public function actionProductionDetails()
-    {
-        $job_no = trim($_POST['job_no']);
-        $status = 404;
-        $order_item_status = 405;
-        $message = 'Order not found!';
-        $data = NULL;
-        $order_items = [];
-        $order_info = [];
-        if (strlen($job_no) > 0) {
-            $criteria = new CDbCriteria();
-            $criteria->select = "t.*, c.company_name, c.customer_code";
-            $criteria->join = " INNER JOIN customers c on t.customer_id = c.id ";
-            $criteria->addColumnCondition(['job_no' => $job_no]);
-            $data = SellOrder::model()->findByAttributes([], $criteria);
-            if ($data) {
-                $order_info = [
-                    'order_id' => $data->id,
-                    'customer_id' => $data->customer_id,
-                    'customer_name' => $data->company_name,
-                    'customer_code' => $data->customer_code,
-                    'so_no' => $data->so_no,
-                    'date' => $data->date,
-                ];
-                $status = 200;
-                $message = 'Order found!';
-                $criteria2 = new CDbCriteria();
-                $criteria2->select = "t.*, pm.model_name, pm.unit_id, pm.code ";
-                $criteria2->join = " INNER JOIN prod_models pm on t.model_id = pm.id ";
-                $criteria2->addColumnCondition(['sell_order_id' => $data->id]);
-                $orderDetails = SellOrderDetails::model()->findAll($criteria2);
-                if ($orderDetails) {
-                    foreach ($orderDetails as $od) {
-                        $order_qty = $od->qty;
-                        $total_production_qty = ProductionDetails::model()->totalProductionQtyOfThisModelByOrder($od->model_id, $data->id);
-                        $rem_qty = $order_qty - $total_production_qty;
-                        if ($rem_qty > 0) {
-                            $order_item_status = 200;
-                            $order_items[] = [
-                                'model_name' => $od->model_name,
-                                'code' => $od->code,
-                                'model_id' => $od->model_id,
-                                'rem_qty' => $rem_qty,
-                                'qty' => $od->qty,
-                            ];
-                        }
-                    }
-                } else {
-                    $message = 'Order items not found!';
-                }
-            }
-        } else {
-            $message = 'Please insert job card No!';
-
-        }
-        echo CJSON::encode(array(
-            'status' => $status,
-            'order' => $data,
-            'order_info' => $order_info,
-            'order_item_status' => $order_item_status,
-            'order_items' => $order_items,
-            'message' => $message,
-        ));
-    }
 }

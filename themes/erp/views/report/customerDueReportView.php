@@ -120,7 +120,7 @@ echo "</div>";
                 <tr>
                     <td style="text-align: center;"><?php echo $sl++; ?></td>
                     <td style="text-align: center;"><?php echo $dmr['customer_id']; ?></td>
-                    <td style="text-align: center;"><?php echo $dmr['company_name']; ?></td>
+                    <td style="text-align: left;"><?php echo $dmr['company_name']; ?></td>
                     <td style="text-align: center;"><?php echo $dmr['company_contact_no']; ?></td>
                     <td style="text-align: right;"><?php echo number_format($dmr['total_sale_amount'], 2); ?></td>
                     <td style="text-align: right;"><?php echo number_format($dmr['total_receipt_amount'], 2); ?></td>

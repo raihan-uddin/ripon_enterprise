@@ -4,6 +4,12 @@
 
     /* override styles when printing */
     @media print {
+        body {
+            margin: 0;
+            padding: 0;
+            font-family: Helvetica Neue, Helvetica, Arial, sans-serif;;
+        }
+
         .printAllTableForThisReport {
             font-family: Helvetica Neue, Helvetica, Arial, sans-serif;
             font-size: 12px;
@@ -22,23 +28,11 @@
         }
     }
 
-    @page {
-        size: 8.27in 11.69in;  /* width height A4 size paper */
-    }
 
-
-    .item-list thead th,
     .item-list tbody th,
     .item-list tbody td {
         border: 1px solid black;
-    }
-
-    .heading td {
-        min-height: 25px !important;
-    }
-
-    .heading tr:nth-child(even) {
-        background: #f5f5f5;
+        font-family: fangsong;
     }
 
     .item-list tbody tr:nth-child(even) {
@@ -47,6 +41,19 @@
 
     .item-list tbody tr:nth-child(odd) {
         background: white;
+    }
+
+
+    .top-sheet-item-list tbody th,
+    .top-sheet-item-list tbody td,
+    .top-sheet-footer td,
+    .top-sheet-footer th {
+        border: 1px solid black;
+        font-family: fangsong;
+    }
+
+    .page-break-div {
+        page-break-after: always !important;
     }
 </style>
 
@@ -85,183 +92,157 @@
                 'debug' => FALSE, //enable the debugger to see what you will get
                 'id' => 'print-div'         //id of the print link
             ));
-            echo "</div>";
-            $yourCompany = YourCompany::model()->findByAttributes(['is_active' => YourCompany::ACTIVE]);
-            $company_name = $company_location = $company_road = $company_house = $company_contact = $company_email = $company_web = $company_trn_no = "N/A";
-            if ($yourCompany) {
-                $company_name = $yourCompany->company_name;
-                $company_location = $yourCompany->location;
-                $company_road = $yourCompany->road;
-                $company_house = $yourCompany->house;
-                $company_contact = $yourCompany->contact;
-                $company_email = $yourCompany->email;
-                $company_web = $yourCompany->web;
-                $company_trn_no = $yourCompany->trn_no;
-            }
+            echo "</div><br><br><br>";
+
 
             $customer = Customers::model()->findByPk($data->customer_id);
             ?>
-        </div>
-        <div class='printAllTableForThisReport' style="width: 8.5in;">
-            <table style="width: 100%; border-collapse: collapse; font-size: 11px;" class="item-list">
-                <tr>
-                    <td colspan="6">
-                        <div style="width: 30%; float: left; clear: right;">
-                            <img src="<?= Yii::app()->theme->baseUrl . "/images/voucher-logo.png" ?>"
-                                 style="width: 180px; height: 130px;">
-                        </div>
-                        <div style="width: 70%; float: left; clear: right; text-align: right; font-size: 12px;">
-                            <span>INVOICE</span> <br>
-                            <span><b>The Mihan Engineers (TMEBD)</b></span><br>
-                            <?php
-                            echo "$company_road<br>";
-                            echo "$company_house<br>";
-                            echo "$company_location<br>";
-                            echo "Ph : $company_contact<br>";
-                            echo "Email: $company_email<br>";
-                            echo "Website: $company_web<br>";
-                            ?>
-                        </div>
-                    </td>
-                </tr>
-                <tr>
-                    <td colspan="3">
-                        <h5>Customer Details</h5>
+            <div class='printAllTableForThisReport' style="width: 8.5in;">
+                <div class="page-begaining">
+                    <div class="header" id="pageHeader" style="width: 100%; height: 150px;">
                         <?php
-                        $customer_name = $customer_zip = $customer_city = $customer_state = $customer_phone = $customer_trn_no = "N/A";
-                        if ($customer) {
-                            $customer_name = $customer->company_name;
-                            $customer_zip = $customer->zip;
-                            $customer_city = $customer->city;
-                            $customer_state = $customer->state;
-                            $customer_phone = $customer->owner_mobile_no;
-                            $customer_trn_no = $customer->trn_no;
+                        if (isset($preview_type)) {
+                            if ($preview_type == SellOrder::NORMAL_PAD_PRINT) {
+                                $this->renderPartial('pad_header');
+                            } else {
+                                $this->renderPartial('without_pad_header');
+                            }
+                        } else {
+                            $this->renderPartial('without_pad_header');
                         }
-                        echo "$customer_name<br>";
-                        echo "$customer_zip, $customer_state<br>";
-                        echo "$customer_city<br>";
-                        echo "$customer_phone<br>";
-                        echo "$customer_trn_no<br>";
                         ?>
-                    </td>
-                    <td colspan="3">
-                        <table style="width: 100%; border-collapse: collapse; font-size: 11px;">
+                        <div style="width: 100%; float: left; clear: right;">
+                            <div style="width: 50%; float: left; clear: right;">
+                                <h3>Customer Details</h3>
+                                <?php
+                                $customer_name = $customer_zip = $customer_city = $customer_state = $customer_phone = $customer_trn_no = "N/A";
+                                if ($customer) {
+                                    $customer_name = $customer->company_name;
+                                    $customer_zip = $customer->zip;
+                                    $customer_city = $customer->city;
+                                    $customer_state = $customer->state;
+                                    $customer_phone = $customer->owner_mobile_no;
+                                    $customer_trn_no = $customer->trn_no;
+                                }
+                                echo "$customer_name<br>";
+                                echo "$customer_zip, $customer_state<br>";
+                                echo "$customer_city<br>";
+                                echo "$customer_phone<br>";
+                                echo "$customer_trn_no<br>";
+                                ?>
+                            </div>
+                            <div style="width: 50%; float: left; text-align: right; vertical-align: bottom; margin-top: 20px;">
+                                <b>Date:</b>
+                                <?= date('d.m.Y', strtotime($data->date)) ?>
+                                <br>
+
+                                <b>Invoice No:</b>
+                                <?= "$data->so_no" ?>
+                                <br>
+                            </div>
+                        </div>
+                    </div>
+                    <table style="width: 100%; border-collapse: collapse; font-size: 12px;" class="item-list">
+
+                        <tr>
+                            <td style="text-align: center; width: 2%;">#</td>
+                            <td style="text-align: center;">Description</td>
+                            <td style="text-align: center; display: none;">Color</td>
+                            <td style="text-align: center;  width: 10%;">Qty</td>
+                            <td style="text-align: center;  width: 10%;">Price</td>
+                            <td style="text-align: center; width: 10%;">Total</td>
+                        </tr>
+                        <tbody>
+                        <?php
+                        $vat = $data->vat_amount;
+                        $vat_percentage = $data->vat_percentage;
+                        $delivery_charge = $data->delivery_charge;
+                        $criteria = new CDbCriteria();
+                        $criteria->select = "pm.model_name, pm.code, pm.image, sum(t.qty) as qty, t.amount, t.note, sum(t.row_total) as row_total, GROUP_CONCAT(product_sl_no ORDER BY product_sl_no SEPARATOR ', ') as product_sl_no, pm.description";
+                        $criteria->join = " INNER JOIN prod_models pm on t.model_id = pm.id ";
+                        $criteria->addColumnCondition(['t.sell_order_id' => $data->id]);
+                        $criteria->group = "pm.id";
+                        $criteria->order = "pm.model_name ASC";
+                        $data2 = SellOrderDetails::model()->findAll($criteria);
+                        $row_total = 0;
+                        if ($data2) {
+                            $i = 1;
+                            foreach ($data2 as $dt) {
+                                ?>
+                                <tr>
+                                    <td style="text-align: center;"><?= $i++ ?></td>
+                                    <td>
+                                        <?= $dt->model_name ?>
+                                        <?php
+                                        if ($dt->note) {
+                                            echo "<br>" . nl2br($dt->note);
+                                        }
+                                        if (strlen($dt->product_sl_no) > 0) {
+                                            echo "<br><b>SL:</b>$dt->product_sl_no";
+                                        }
+                                        ?>
+                                    </td>
+                                    <td style="display: none;"><?= $dt->color ?></td>
+                                    <td style="text-align: center;"><?= number_format($dt->qty) ?></td>
+                                    <td style="text-align: right;"> TK <?= number_format($dt->amount, 2) ?></td>
+                                    <td style="text-align: right;"> TK <?= number_format($dt->row_total, 2) ?></td>
+                                </tr>
+                                <?php
+                                $row_total += $dt->row_total;
+                            }
+                        } else {
+                            ?>
                             <tr>
-                                <td style="text-align: center;"><b>Invoice No</b></td>
-                                <td style="text-align: center;"><b>Date</b></td>
+                                <td colspan="6">
+                                    <div class="alert alert-danger" role="alert">
+                                        No item found
+                                    </div>
+                                </td>
                             </tr>
-                            <tr>
-                                <td style="text-align: center;"><?= "$data->so_no" ?></td>
-                                <td style="text-align: center;"><?= date('d.m.Y', strtotime($data->date)) ?></td>
-                            </tr>
-                            <tr>
-                                <td style="text-align: center;"><b>Customer Code</b></td>
-                                <td></td>
-                            </tr>
-                            <tr>
-                                <td style="text-align: center;"><?= $customer->customer_code ?></td>
-                                <td></td>
-                            </tr>
-                        </table>
-                    </td>
-                </tr>
-                <tr>
-                    <td style="text-align: center; width: 2%;">#</td>
-                    <td style="text-align: center;">Description</td>
-                    <td style="text-align: center; display: none;">Color</td>
-                    <td style="text-align: center;  width: 10%;">Qty</td>
-                    <td style="text-align: center;  width: 10%;">Price</td>
-                    <td style="text-align: center; width: 10%;">Total</td>
-                </tr>
-                <tbody>
-                <?php
-                $vat = $data->vat_amount;
-                $vat_percentage = $data->vat_percentage;
-                $delivery_charge = $data->delivery_charge;
-                $criteria = new CDbCriteria();
-                $criteria->select = "pm.model_name, pm.code, pm.image, sum(t.qty) as qty, t.amount, t.note, sum(t.row_total) as row_total, GROUP_CONCAT(product_sl_no ORDER BY product_sl_no SEPARATOR ', ') as product_sl_no, pm.description";
-                $criteria->join = " INNER JOIN prod_models pm on t.model_id = pm.id ";
-                $criteria->addColumnCondition(['t.sell_order_id' => $data->id]);
-                $criteria->group = "pm.id";
-                $criteria->order = "pm.model_name ASC";
-                $data2 = SellOrderDetails::model()->findAll($criteria);
-                $row_total = 0;
-                if ($data2) {
-                    $i = 1;
-                    foreach ($data2 as $dt) {
+                            <?php
+                        }
                         ?>
                         <tr>
-                            <td style="text-align: center;"><?= $i++ ?></td>
-                            <td>
-                                <?= $dt->model_name ?>
-                                <?php
-                                if ($dt->note) {
-                                    echo "<br>" . nl2br($dt->note);
-                                }
-                                if (strlen($dt->product_sl_no) > 0) {
-                                    echo "<br><b>SL:</b>$dt->product_sl_no";
-                                }
-                                ?>
+                            <td rowspan="3" colspan="2">
+                                <div>Total Amount In Words:</div>
+                                <div>BDT:
+                                    <?php
+                                    $amountInWord = new AmountInWord();
+                                    $inword = $amountInWord->convert(intval($row_total));
+                                    if ($amountInWord->convertFloat($row_total)) {
+                                        $inword .= $amountInWord->convertFloat($row_total) . ' Only';
+                                    } else {
+                                        $inword .= ' Only';
+                                    }
+                                    echo $inword;
+                                    ?>
+                                </div>
                             </td>
-                            <td style="display: none;"><?= $dt->color ?></td>
-                            <td style="text-align: center;"><?= number_format($dt->qty) ?></td>
-                            <td style="text-align: right;"> TK <?= number_format($dt->amount, 2) ?></td>
-                            <td style="text-align: right;"> TK <?= number_format($dt->row_total, 2) ?></td>
+                            <td colspan="2">Sub Total</td>
+                            <td style="text-align: right;">TK <?= number_format($row_total, 2) ?></td>
                         </tr>
-                        <?php
-                        $row_total += $dt->row_total;
-                    }
-                } else {
-                    ?>
-                    <tr>
-                        <td colspan="6">
-                            <div class="alert alert-danger" role="alert">
-                                No item found
-                            </div>
-                        </td>
-                    </tr>
-                    <?php
-                }
-                ?>
-                <tr>
-                    <td rowspan="3" colspan="2">
-                        <div>Total Amount In Words:</div>
-                        <div>BDT:
-                            <?php
-                            $amountInWord = new AmountInWord();
-                            $inword = $amountInWord->convert(intval($row_total));
-                            if ($amountInWord->convertFloat($row_total)) {
-                                $inword .= $amountInWord->convertFloat($row_total) . ' Only';
-                            } else {
-                                $inword .= ' Only';
-                            }
-                            echo $inword;
-                            ?>
+                        <tr>
+                            <td colspan="2">Vat (<?= number_format($vat_percentage, 2) ?>%)</td>
+                            <td style="text-align: right;">TK <?= number_format($vat, 2) ?></td>
+                        </tr>
+                        <tr>
+                            <td colspan="2">Delivery Charge</td>
+                            <td style="text-align: right;">TK <?= number_format($delivery_charge, 2) ?></td>
+                        </tr>
+                        <tr>
+                            <td colspan="4">Grand Total</td>
+                            <td style="text-align: right;">TK <?= number_format($data->grand_total, 2) ?></td>
+                        </tr>
+                        </tbody>
+                    </table>
+                    <div style="width: 100%; float: left; clear: right; height: 150px; font-size: 12px;">
+                        <div style="height: 30px; text-align: left; width: 100%; float: left; clear: right;">
+                            By signing this document, the customer agrees to he services and conditions
+                            described in this document.
                         </div>
-                    </td>
-                    <td colspan="2">Sub Total</td>
-                    <td style="text-align: right;">TK <?= number_format($row_total, 2) ?></td>
-                </tr>
-                <tr>
-                    <td colspan="2">Vat (<?= number_format($vat_percentage, 2) ?>%)</td>
-                    <td style="text-align: right;">TK <?= number_format($vat, 2) ?></td>
-                </tr>
-                <tr>
-                    <td colspan="2">Delivery Charge</td>
-                    <td style="text-align: right;">TK <?= number_format($delivery_charge, 2) ?></td>
-                </tr>
-                <tr>
-                    <td colspan="4">Grand Total</td>
-                    <td style="text-align: right;">TK <?= number_format($data->grand_total, 2) ?></td>
-                </tr>
-                <tr>
-                    <td colspan="6" style="height: 150px; vertical-align: bottom; text-align: left;">
-                        <div>
-                            By signing this document, the customer agrees to he services and conditions described in
-                            this document
-                        </div>
+
                         <br>
-                        <div>
+                        <div style="width: 100%; float: left; clear:right;">
 
                             <div style="width: 50%; float: left;clear:right; text-decoration: overline; margin: auto; display: flex;  justify-content: center;  align-items: center;">
                                 <span style="text-decoration: underline; font-weight: bold;">The Mihan Engineers (TMEBD)</span>
@@ -270,11 +251,7 @@
                                 <span style="text-decoration: underline; font-weight: bold;"><?= $customer_name ?></span>
                             </div>
                         </div>
-                        <br>
-                        <br>
-                        <br>
-                        <br>
-                        <div style="height: 50px;">
+                        <div style="height: 50px; width: 100%; float: left; clear: right; margin-top: 40px;">
                             <div style="width: 50%; float: left;clear:right; text-decoration: overline; margin: auto; display: flex;  justify-content: center;  align-items: center;">
                                 <div><?= date('F d, Y') ?></div>
                             </div>
@@ -284,19 +261,18 @@
                                 </div>
                             </div>
                         </div>
-                    </td>
-                </tr>
-                </tbody>
-            </table>
-        </div>
-        <?php
-        } else {
-            ?>
-            <div class="alert alert-danger" role="alert">
-                No result found!
+                    </div>
+                </div>
+                <?php
+                } else {
+                    ?>
+                    <div class="alert alert-danger" role="alert">
+                        No result found!
+                    </div>
+                    <?php
+                }
+                ?>
             </div>
-            <?php
-        }
-        ?>
+        </div>
     </div>
 </div>

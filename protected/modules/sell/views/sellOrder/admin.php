@@ -60,7 +60,7 @@ if (Yii::app()->user->checkAccess('Sell.Order.VoucherPreview')) {
                 'method' => 'get',
             )); ?>
             <div class="row">
-                <div class="col-md-2">
+                <div class="col-md-2 col-sm-12">
                     <div class="input-group">
                         <div class="input-group-prepend">
                             <span class="input-group-text"
@@ -72,28 +72,29 @@ if (Yii::app()->user->checkAccess('Sell.Order.VoucherPreview')) {
                           style="color: red; width: 100%"> <?php echo $form->error($model, 'so_no'); ?></span>
 
                 </div>
-                <div class="col-md-2" style="display: none;">
+                <div class="col-md-2 col-sm-12">
                     <div class="input-group">
                         <div class="input-group-prepend">
                             <span class="input-group-text"
-                                  id="basic-addon1">Type</span>
+                                  id="basic-addon1">PRINT</span>
                         </div>
                         <?php
                         echo $form->dropDownList(
                             $model, 'print_type', [
-                            SellOrder::NORMAL_ORDER_PRINT => 'ORDER PREVIEW',
+                            SellOrder::NORMAL_ORDER_PRINT => 'NORMAL PRINT',
+                            SellOrder::NORMAL_PAD_PRINT => 'PAD PRINT',
 //                            SellOrder::PRODUCTION_ORDER_PRINT => 'PRODUCTION ORDER',
 //                            SellOrder::ORDER_BOM => 'JOB CARD',
                         ], array('class' => 'form-control',));
                         ?>
                     </div>
                     <span class="help-block"
-                          style="color: red; width: 100%"> <?php echo $form->error($model, 'so_no'); ?></span>
+                          style="color: red; width: 100%"> <?php echo $form->error($model, 'print_type'); ?></span>
 
                 </div>
 
 
-                <div class="col-md-3">
+                <div class="col-md-3 col-sm-12">
                     <?php
                     echo CHtml::ajaxLink(
                         "Print", Yii::app()->createUrl('/sell/sellOrder/voucherPreview'), array(
@@ -275,8 +276,41 @@ if (Yii::app()->user->checkAccess('Sell.Order.VoucherPreview')) {
                 */
                 array
                 (
+                    'header' => '',
+                    'htmlOptions' => array('style' => 'width:20px'),
+                    'template' => '{singleInvoice}',
+                    'class' => 'CButtonColumn',
+                    'afterDelete' => 'function(link,success,data){ if(success) $("#statusMsg").html(data); }',
+                    'buttons' => array(
+                        'singleInvoice' => array(
+                            'label' => '<i class="fa fa-file-pdf-o fa-2x" style="color: green; cursor: pointer; "></i>&nbsp;&nbsp;',
+                            'imageUrl' => false,
+                            'options' => array('rel' => 'tooltip', 'data-toggle' => 'tooltip', 'title' => Yii::t('app', 'Preview Invoice')),
+                            'url' => 'Yii::app()->controller->createUrl("singlePreview",array("id"=>$data->id))',
+                            'click' => "function(){
+                                    $('#viewDialog').dialog('open');
+                                    $.fn.yiiGridView.update('sell-order-grid', {
+                                        type:'POST',
+                                        url:$(this).attr('href'),
+                                        success:function(data) {
+                                             $('#ajaxLoaderView').hide();  
+                                              //$('#AjFlash').html(data).fadeIn().animate({opacity: 1.0}, 3000).fadeOut('slow');
+                                              $('#AjFlash').html(data).show();
+                                        },
+                                        beforeSend: function(){
+                                            $('#ajaxLoaderView').show();
+                                        }
+                                    })
+                                    return false;
+                              }
+                     ",
+                        ),
+                    )
+                ),
+                array
+                (
                     'header' => 'Options',
-                    'template' => '{update}{delete}', // {delete}{createBom}{createJobCard}
+                    'template' => '{update}{delete}',
                     'class' => 'CButtonColumn',
                     'htmlOptions' => ['style' => 'width: 200px', 'class' => 'text-center'],
                     'buttons' => array(
@@ -285,33 +319,6 @@ if (Yii::app()->user->checkAccess('Sell.Order.VoucherPreview')) {
                             'imageUrl' => false,
                             'options' => array('rel' => 'tooltip', 'data-toggle' => 'tooltip', 'title' => Yii::t('app', 'Edit')),
                             'visible' => '$data->total_paid == 0 ? TRUE : FALSE',
-                        ),
-                        'createBom' => array(
-                            'label' => '<i class="fa fa-list-alt fa-2x" style="color: green;"></i>&nbsp;&nbsp;',
-                            'imageUrl' => false,
-                            'options' => array('rel' => 'tooltip', 'data-toggle' => 'tooltip', 'title' => Yii::t('app', 'FINAL BOM')),
-                            'visible' => '($data->bom_complete == SellOrder::BOM_NOT_COMPLETE  && $data->order_type == SellOrder::NEW_ORDER )? TRUE : FALSE',
-                            'url' => 'Yii::app()->controller->createUrl("/production/sellOrderBom/create",array("id"=>$data->id))',
-                        ),
-                        'createJobCard' => array(
-                            'label' => '<i class="fa fa-tag fa-2x" style="color: violet;"></i>&nbsp;&nbsp;',
-                            'imageUrl' => false,
-                            'options' => array('rel' => 'tooltip', 'data-toggle' => 'tooltip', 'title' => Yii::t('app', 'Job Card')),
-                            'visible' => '$data->is_job_card_done == SellOrder::JOB_CARD_NOT_DONE ? TRUE : FALSE',
-                            'url' => 'Yii::app()->controller->createUrl("/sell/sellOrder/createJobCard",array("id"=>$data->id))',
-                        ),
-                        'update2' => array(
-                            'label' => '<i class="fa fa-pencil-square-o fa-2x" style="color: black;"></i>&nbsp;&nbsp;',
-                            'imageUrl' => false,
-                            'options' => array('rel' => 'tooltip', 'data-toggle' => 'tooltip', 'title' => Yii::t('app', 'Edit')),
-                            'click' => "function( e ){
-                                e.preventDefault();
-                                $( '#update-dialog' ).children( ':eq(0)' ).empty(); // Stop auto POST
-                                updateDialog( $( this ).attr( 'href' ) );
-                                $( '#update-dialog' )
-                                  .dialog( { title: 'Update Category' } )
-                                  .dialog( 'open' ); 
-                              }",
                         ),
                         'delete' => array(
                             'label' => '<i class="fa fa-trash fa-2x" style="color: red;"></i>&nbsp;&nbsp;',
@@ -332,81 +339,6 @@ if (Yii::app()->user->checkAccess('Sell.Order.VoucherPreview')) {
         <span class="spinner"></span>
     </div>
 </div>
-<?php
-$this->beginWidget('zii.widgets.jui.CJuiDialog', array(
-    'id' => 'update-dialog',
-    'options' => array(
-        'title' => 'Update Category',
-        'autoOpen' => false,
-        'modal' => true,
-        'width' => 'auto',
-        'resizable' => false,
-    ),
-));
-?>
-<div class="update-dialog-content"></div>
-<?php $this->endWidget(); ?>
-
-<?php
-$updateJS = CHtml::ajax(array(
-    'url' => "js:url",
-    'data' => "js:form.serialize() + action",
-    'type' => 'post',
-    'dataType' => 'json',
-    'success' => "function( data )
-  {
-    if( data.status == 'failure' )
-    {
-      $( '#update-dialog div.update-dialog-content' ).html( data.content );
-      $( '#update-dialog div.update-dialog-content form input[type=submit]' )
-        .off() // Stop from re-binding event handlers
-        .on( 'click', function( e ){ // Send clicked button value
-          e.preventDefault();
-          updateDialog( false, $( this ).attr( 'name' ) );
-      });
-    }
-    else
-    {
-      $( '#update-dialog div.update-dialog-content' ).html( data.content );
-      if( data.status == 'success' ) // Update all grid views on success
-      {
-        $( 'div.grid-view' ).each( function(){ // Change the selector if you use different class or element
-          $.fn.yiiGridView.update( $( this ).attr( 'id' ) );
-        });
-      }
-      setTimeout( \"$( '#update-dialog' ).dialog( 'close' ).children( ':eq(0)' ).empty();\", 1000 );
-    }
-  }"
-));
-?>
-
-<?php Yii::app()->clientScript->registerScript('updateDialog', "
-function updateDialog( url, act )
-{
-  var action = '';
-  var form = $( '#update-dialog div.update-dialog-content form' );
-  if( url == false )
-  {
-    action = '&action=' + act;
-    url = form.attr( 'action' );
-  }
-  {$updateJS}
-}"); ?>
-
-<?php
-Yii::app()->clientScript->registerScript('updateDialogCreate', "
-jQuery( function($){
-    $( 'a.update-dialog-create' ).bind( 'click', function( e ){
-      e.preventDefault();
-      $( '#update-dialog' ).children( ':eq(0)' ).empty();
-      updateDialog( $( this ).attr( 'href' ) );
-      $( '#update-dialog' )
-        .dialog( { title: 'Create' } )
-        .dialog( 'open' );
-    });
-});
-");
-?>
 
 <?php
 $this->beginWidget('zii.widgets.jui.CJuiDialog', array(
