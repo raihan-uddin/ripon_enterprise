@@ -161,13 +161,13 @@ endforeach;
                     'filter' => Lookup::items('cash_due'),
                     'htmlOptions' => ['class' => 'text-center']
                 ),
-                array(
+                /*array(
                     'name' => 'ship_by',
                     'type' => 'raw',
                     'value' => ' ShipBy::model()->nameOfThis($data->ship_by)',
                     'filter' => CHtml::listData(ShipBy::model()->findAll(array('order' => 'ship_by ASC')), 'id', 'ship_by'),
                     'htmlOptions' => ['class' => 'text-center']
-                ),
+                ),*/
 //                'max_sl_no',
                 array(
                     'name' => 'po_no',
@@ -178,7 +178,7 @@ endforeach;
                     'value' => 'Suppliers::model()->nameOfThis($data->supplier_id)',
                     'htmlOptions' => ['class' => 'text-center']
                 ),
-                array(
+                /*array(
                     'name' => 'exp_receive_date',
                     'htmlOptions' => ['class' => 'text-center']
                 ),
@@ -189,7 +189,7 @@ endforeach;
                 array(
                     'name' => 'ship_to',
                     'htmlOptions' => ['class' => 'text-center']
-                ),
+                ),*/
                 array(
                     'name' => 'vat_percentage',
                     'htmlOptions' => ['class' => 'text-center']
