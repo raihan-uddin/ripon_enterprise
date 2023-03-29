@@ -157,6 +157,7 @@
                         $vat = $data->vat_amount;
                         $vat_percentage = $data->vat_percentage;
                         $delivery_charge = $data->delivery_charge;
+                        $discount_amount = $data->discount_amount;
                         $criteria = new CDbCriteria();
                         $criteria->select = "pm.model_name, pm.code, pm.image, sum(t.qty) as qty, t.amount, t.note, sum(t.row_total) as row_total, GROUP_CONCAT(product_sl_no ORDER BY product_sl_no SEPARATOR ', ') as product_sl_no, pm.description";
                         $criteria->join = " INNER JOIN prod_models pm on t.model_id = pm.id ";
@@ -203,7 +204,7 @@
                         }
                         ?>
                         <tr>
-                            <td rowspan="3" colspan="2">
+                            <td rowspan="4" colspan="2">
                                 <div>Total Amount In Words:</div>
                                 <div>BDT:
                                     <?php
@@ -228,6 +229,10 @@
                         <tr>
                             <td colspan="2">Delivery Charge</td>
                             <td style="text-align: right;">TK <?= number_format($delivery_charge, 2) ?></td>
+                        </tr>
+                        <tr>
+                            <td colspan="2">Discount</td>
+                            <td style="text-align: right;">TK (-<?= number_format($discount_amount, 2) ?>)</td>
                         </tr>
                         <tr>
                             <td colspan="4">Grand Total</td>

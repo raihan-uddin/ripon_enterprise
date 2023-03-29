@@ -98,8 +98,8 @@ echo "</div>";
             </td>
         </tr>
         <tr class="titlesTr sticky">
-            <th style="width: 10%; box-shadow: 0px 0px 0px 1px black inset;" rowspan="2">Date</th>
-            <th style="width: 10%; box-shadow: 0px 0px 0px 1px black inset;" rowspan="2">Income</th>
+            <th style="width: 10%; box-shadow: 0px 0px 0px 1px black inset;" rowspan="2">(A) Date</th>
+            <th style="width: 10%; box-shadow: 0px 0px 0px 1px black inset;" rowspan="2">(B) Income</th>
             <th style="width: 10%; box-shadow: 0px 0px 0px 1px black inset;" colspan="3">Expense</th>
             <th style="width: 5%;box-shadow: 0px 0px 0px 1px black inset;" rowspan="2">Closing</th>
         </tr>

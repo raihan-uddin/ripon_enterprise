@@ -230,6 +230,10 @@ if (Yii::app()->user->checkAccess('Sell.Order.VoucherPreview')) {
                     'htmlOptions' => ['class' => 'text-center']
                 ),
                 array(
+                    'name' => 'discount_amount',
+                    'htmlOptions' => ['class' => 'text-center']
+                ),
+                array(
                     'name' => 'grand_total',
                     'htmlOptions' => ['class' => 'text-center']
                 ),
