@@ -284,4 +284,80 @@ class ReportController extends Controller
         ), true, true);
         Yii::app()->end();
     }
+
+
+    public function actionDayInOutReport()
+    {
+        $model = new Inventory();
+        $this->pageTitle = 'DAY IN/OUT REPORT';
+        $this->render('dayInOutReport', array('model' => $model));
+    }
+
+    public function actionDayInOutReportView()
+    {
+
+        if (Yii::app()->request->isAjaxRequest) {
+            Yii::app()->clientScript->scriptMap['jquery.js'] = false;
+        }
+
+        date_default_timezone_set("Asia/Dhaka");
+        $dateFrom = $_POST['Inventory']['date_from'];
+        $dateTo = $_POST['Inventory']['date_to'];
+
+        $message = "";
+        $data = NULL;
+        $opening = 0;
+        if ($dateFrom != "" && $dateTo != '') {
+
+            $message = "<br>  Date: " . date('d/m/Y', strtotime($dateFrom)) . "-" . date('d/m/Y', strtotime($dateTo));
+
+            $criteriaOpMr = new CDbCriteria();
+            $criteriaOpMr->select = " sum(amount) as amount";
+            $criteriaOpMr->addCondition(" date < '$dateFrom'");
+            $data_opening_mr = MoneyReceipt::model()->findByAttributes([], $criteriaOpMr);
+
+            $criteriaOpPr = new CDbCriteria();
+            $criteriaOpPr->select = " sum(amount) as amount";
+            $criteriaOpPr->addCondition(" date < '$dateFrom'");
+            $data_opening_pr = PaymentReceipt::model()->findByAttributes([], $criteriaOpPr);
+
+            $criteriaOpExp = new CDbCriteria();
+            $criteriaOpExp->select = " sum(amount) as amount";
+            $criteriaOpExp->addCondition(" date < '$dateFrom'");
+            $data_opening_exp = PaymentReceipt::model()->findByAttributes([], $criteriaOpExp);
+
+            $opening = ($data_opening_mr ? $data_opening_mr->amount : 0) - (($data_opening_pr ? $data_opening_pr->amount : 0) + ($data_opening_exp ? $data_opening_exp->amount : 0));
+
+            $sql = "SELECT date, 
+               SUM(CASE WHEN transaction_type = 'Expense' THEN amount ELSE 0 END) AS expense, 
+               SUM(CASE WHEN transaction_type = 'Income' THEN amount ELSE 0 END) AS income, 
+               SUM(CASE WHEN transaction_type = 'Outgoing Payment' THEN amount ELSE 0 END) AS payment 
+                FROM (
+                        (SELECT 'Expense' AS transaction_type, date, amount
+                         FROM expense
+                         WHERE date BETWEEN '$dateFrom' AND '$dateTo')
+                
+                         UNION ALL
+                
+                         (SELECT 'Income' AS transaction_type, date, amount
+                         FROM money_receipt
+                         WHERE date BETWEEN '$dateFrom' AND '$dateTo')
+                
+                         UNION ALL
+                
+                         (SELECT 'Outgoing Payment' AS transaction_type, date, amount
+                         FROM payment_receipt
+                         WHERE date BETWEEN '$dateFrom' AND '$dateTo')
+                     ) AS t
+                GROUP BY date";
+            $command = Yii::app()->db->createCommand($sql);
+            $data = $command->queryAll();
+        }
+        echo $this->renderPartial('dayInOutReportView', array(
+            'data' => $data,
+            'message' => $message,
+            'opening' => $opening,
+        ), true, true);
+        Yii::app()->end();
+    }
 }

@@ -19,6 +19,9 @@
                     Report</a>
                 <a class="dropdown-item" href="<?= Yii::app()->createUrl("report/supplierLedger") ?>">Supplier
                     Ledger</a>
+                <div class="dropdown-divider"></div>
+                <a class="dropdown-item" href="<?= Yii::app()->createUrl("report/dayInOutReport") ?>">Day In/Out
+                    Report</a>
                 <!--                <a class="dropdown-item" href="#">Another action</a>-->
                 <!--                <a class="dropdown-item" href="#">Something else here</a>-->
                 <!--                <div class="dropdown-divider"></div>-->
