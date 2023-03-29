@@ -99,7 +99,7 @@
             ?>
             <div class='printAllTableForThisReport' style="width: 8.5in;">
                 <div class="page-begaining">
-                    <div class="header" id="pageHeader" style="width: 100%; height: 150px;">
+                    <div class="header" id="pageHeader" style="width: 100%; min-height: 80px; margin-bottom: 10px;">
                         <?php
                         if (isset($preview_type)) {
                             if ($preview_type == SellOrder::NORMAL_PAD_PRINT) {
