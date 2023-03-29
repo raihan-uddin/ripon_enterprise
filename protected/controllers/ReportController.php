@@ -324,7 +324,7 @@ class ReportController extends Controller
             $criteriaOpExp = new CDbCriteria();
             $criteriaOpExp->select = " sum(amount) as amount";
             $criteriaOpExp->addCondition(" date < '$dateFrom'");
-            $data_opening_exp = PaymentReceipt::model()->findByAttributes([], $criteriaOpExp);
+            $data_opening_exp = Expense::model()->findByAttributes([], $criteriaOpExp);
 
             $opening = ($data_opening_mr ? $data_opening_mr->amount : 0) - (($data_opening_pr ? $data_opening_pr->amount : 0) + ($data_opening_exp ? $data_opening_exp->amount : 0));
 
