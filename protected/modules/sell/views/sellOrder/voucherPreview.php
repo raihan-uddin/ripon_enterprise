@@ -125,10 +125,10 @@
                                     $customer_trn_no = $customer->trn_no;
                                 }
                                 echo "$customer_name<br>";
-                                echo "$customer_zip, $customer_state<br>";
-                                echo "$customer_city<br>";
-                                echo "$customer_phone<br>";
-                                echo "$customer_trn_no<br>";
+                                echo ($customer_zip || $customer_state) ? "$customer_zip, $customer_state<br>" : "";
+                                echo ($customer_city) ? "$customer_city<br>" : "";
+                                echo ($customer_phone) ? "$customer_phone<br>" : "";
+                                echo ($customer_trn_no) ? "$customer_trn_no<br>" : "";
                                 ?>
                             </div>
                             <div style="width: 50%; float: left; text-align: right; vertical-align: bottom; margin-top: 20px;">
