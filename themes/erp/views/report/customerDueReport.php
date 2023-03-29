@@ -158,6 +158,10 @@ $form = $this->beginWidget('CActiveForm', array(
 
 <?php $this->endWidget(); ?>
 <script>
+
+    var startDate = moment().startOf('month').format('YYYY-MM-DD');
+    var endDate = moment().format('YYYY-MM-DD');
+
     var picker = new Lightpick({
         field: document.getElementById('Inventory_date_from'),
         // minDate: moment(),
@@ -165,6 +169,8 @@ $form = $this->beginWidget('CActiveForm', array(
             document.getElementById('Inventory_date_from').value = date.format('YYYY-MM-DD');
         }
     });
+    picker.setStartDate(startDate);
+
     var picker2 = new Lightpick({
         field: document.getElementById('Inventory_date_to'),
         // minDate: moment(),
@@ -172,6 +178,8 @@ $form = $this->beginWidget('CActiveForm', array(
             document.getElementById('Inventory_date_to').value = date.format('YYYY-MM-DD');
         }
     });
+    picker2.setStartDate(endDate);
+
     $("#resetBtn").click(function () {
         $("#inventory-form")[0].reset();
         $("#Inventory_date_from").val("");
