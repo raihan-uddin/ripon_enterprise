@@ -113,7 +113,7 @@
                         ?>
                         <div style="width: 100%; float: left; clear: right; margin-bottom: 10px;">
                             <div style="width: 50%; float: left; clear: right;">
-                                <h3>Customer Details</h3>
+                                <h5>Customer Details</h5>
                                 <?php
                                 $customer_name = $customer_zip = $customer_city = $customer_state = $customer_phone = $customer_trn_no = "N/A";
                                 if ($customer) {
