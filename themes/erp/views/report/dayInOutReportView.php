@@ -104,8 +104,8 @@ echo "</div>";
             <th style="width: 5%;box-shadow: 0px 0px 0px 1px black inset;" rowspan="2">Closing</th>
         </tr>
         <tr class="titlesTr sticky2">
-            <th style="width: 10%; box-shadow: 0px 0px 0px 1px black inset;">Expense</th>
             <th style="width: 10%; box-shadow: 0px 0px 0px 1px black inset;">Payment</th>
+            <th style="width: 10%; box-shadow: 0px 0px 0px 1px black inset;">Expense</th>
             <th style="width: 8%; box-shadow: 0px 0px 0px 1px black inset;">Total</th>
         </tr>
         </thead>
