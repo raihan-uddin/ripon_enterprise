@@ -99,7 +99,7 @@
             ?>
             <div class='printAllTableForThisReport' style="width: 8.5in;">
                 <div class="page-begaining">
-                    <div class="header" id="pageHeader" style="width: 100%; min-height: 80px; margin-bottom: 10px;">
+                    <div class="header" id="pageHeader" style="width: 100%; min-height: 80px;">
                         <?php
                         if (isset($preview_type)) {
                             if ($preview_type == SellOrder::NORMAL_PAD_PRINT) {
@@ -111,7 +111,7 @@
                             $this->renderPartial('without_pad_header');
                         }
                         ?>
-                        <div style="width: 100%; float: left; clear: right;">
+                        <div style="width: 100%; float: left; clear: right; margin-bottom: 10px;">
                             <div style="width: 50%; float: left; clear: right;">
                                 <h3>Customer Details</h3>
                                 <?php
