@@ -36,6 +36,8 @@ class PaymentReceipt extends CActiveRecord
     public $cash_due;
     public $exp_delivery_date;
     public $city;
+    public $invoice_id;
+    public $username;
     public $state;
     public $item_count;
     public $so_no;

@@ -122,6 +122,8 @@ $this->widget('application.extensions.mbmenu.MbMenu', array(
                     'items' => array(
                         ['label' => Yii::t('app', 'CUSTOMER DUE REPORT'), 'url' => ['/report/customerDueReport'], 'visible' => Yii::app()->user->checkAccess('Report.CustomerDueReport')],
                         ['label' => Yii::t('app', 'CUSTOMER LEDGER'), 'url' => ['/report/customerLedger'], 'visible' => Yii::app()->user->checkAccess('Report.CustomerLedger')],
+                        ['label' => Yii::t('app', 'COLLECTION REPORT'), 'url' => ['/report/collectionReport'], 'visible' => Yii::app()->user->checkAccess('Report.CollectionReport')],
+
                     ),
                 ),
             ),
@@ -153,7 +155,7 @@ $this->widget('application.extensions.mbmenu.MbMenu', array(
                     'items' => array(
                         ['label' => Yii::t('app', 'SUPPLIER DUE REPORT'), 'url' => ['/report/supplierDueReport'], 'visible' => Yii::app()->user->checkAccess('Report.SupplierDueReport')],
                         ['label' => Yii::t('app', 'SUPPLIER LEDGER'), 'url' => ['/report/supplierLedger'], 'visible' => Yii::app()->user->checkAccess('Report.SupplierLedger')],
-                        ['label' => Yii::t('app', 'Collection Report'), 'url' => ['/report/collectionReport'], 'visible' => Yii::app()->user->checkAccess('Report.CollectionReport')],
+                        ['label' => Yii::t('app', 'PAYMENT REPORT'), 'url' => ['/report/paymentReport'], 'visible' => Yii::app()->user->checkAccess('Report.PaymentReport')],
                     ),
                 ),
             ),

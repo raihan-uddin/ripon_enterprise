@@ -1,6 +1,6 @@
 <?php
 
-class ReportController extends Controller
+class ReportController extends RController
 {
 
     /**
@@ -397,6 +397,54 @@ class ReportController extends Controller
             $data = MoneyReceipt::model()->findAll($criteria);
         }
         echo $this->renderPartial('collectionReportView', array(
+            'data' => $data,
+            'message' => $message,
+        ), true, true);
+        Yii::app()->end();
+    }
+
+
+    public function actionPaymentReport()
+    {
+        $model = new Inventory();
+        $this->pageTitle = 'PAYMENT REPORT';
+        $this->render('paymentReport', array('model' => $model));
+    }
+
+    public function actionPaymentReportView()
+    {
+
+        if (Yii::app()->request->isAjaxRequest) {
+            Yii::app()->clientScript->scriptMap['jquery.js'] = false;
+        }
+
+        date_default_timezone_set("Asia/Dhaka");
+        $dateFrom = $_POST['Inventory']['date_from'];
+        $dateTo = $_POST['Inventory']['date_to'];
+        $supplier_id = $_POST['Inventory']['supplier_id'];
+        $created_by = $_POST['Inventory']['created_by'];
+
+        $message = "";
+        $data = NULL;
+
+        if ($dateFrom != "" && $dateTo != '') {
+            $message .= "<br>  Date: " . date('d/m/Y', strtotime($dateFrom)) . "-" . date('d/m/Y', strtotime($dateTo));
+
+            $criteria = new CDbCriteria();
+            $criteria->addBetweenCondition('t.date', $dateFrom, $dateTo);
+            if ($supplier_id > 0) {
+                $criteria->addColumnCondition(['t.supplier_id' => $supplier_id]);
+            }
+            if ($created_by > 0) {
+                $criteria->addColumnCondition(['t.created_by' => $created_by]);
+            }
+            $criteria->join = " INNER JOIN users u on t.created_by = u.id ";
+            $criteria->join .= " INNER JOIN suppliers c on t.supplier_id = c.id ";
+            $criteria->select = "t.*, u.username, c.company_name as customer_name, c.company_contact_no as contact_no";
+            $criteria->order = 't.date asc';
+            $data = PaymentReceipt::model()->findAll($criteria);
+        }
+        echo $this->renderPartial('paymentReportView', array(
             'data' => $data,
             'message' => $message,
         ), true, true);

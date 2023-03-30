@@ -17,6 +17,8 @@
                 <a class="dropdown-item" href="<?= Yii::app()->createUrl("report/customerLedger") ?>">Customer
                     Ledger</a>
                 <div class="dropdown-divider"></div>
+                <a class="dropdown-item" href="<?= Yii::app()->createUrl("report/paymentReport") ?>">Payment
+                    Report</a>
                 <a class="dropdown-item" href="<?= Yii::app()->createUrl("report/supplierDueReport") ?>">Supplier Due
                     Report</a>
                 <a class="dropdown-item" href="<?= Yii::app()->createUrl("report/supplierLedger") ?>">Supplier
