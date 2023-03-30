@@ -171,7 +171,7 @@ echo "</div>";
                 $(table).table2excel({
                     exclude: ".noExl",
                     name: "Excel Document Name",
-                    filename: "COLLECTION_REPORT-" + new Date().toISOString().replace(/[\-\:\.]/g, "") + ".xls",
+                    filename: "PAYMENT_REPORT-" + new Date().toISOString().replace(/[\-\:\.]/g, "") + ".xls",
                     fileext: ".xls",
                     exclude_img: true,
                     exclude_links: true,
