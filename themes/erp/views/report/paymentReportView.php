@@ -95,7 +95,7 @@ echo "</div>";
             <th style="width: 10%; box-shadow: 0px 0px 0px 1px black inset;">Date</th>
             <th style="box-shadow: 0px 0px 0px 1px black inset;">Customer</th>
             <th style="width: 5%;box-shadow: 0px 0px 0px 1px black inset;">Order No</th>
-            <th style="width: 10%;box-shadow: 0px 0px 0px 1px black inset;">Receive By</th>
+            <th style="width: 10%;box-shadow: 0px 0px 0px 1px black inset;">Payment By</th>
             <th style="width: 10%;box-shadow: 0px 0px 0px 1px black inset;">Amount</th>
         </tr>
         </thead>
