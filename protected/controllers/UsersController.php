@@ -1,6 +1,6 @@
 <?php
 
-class UsersController extends Controller
+class UsersController extends RController
 {
 
     public $layout = '//layouts/column1';
@@ -10,7 +10,8 @@ class UsersController extends Controller
     public function filters()
     {
         return array(
-            'rights', // perform access control for CRUD operations
+            'rights
+            -jquery_userSearch', // perform access control for CRUD operations
         );
     }
 
@@ -198,7 +199,6 @@ class UsersController extends Controller
     public function actionDbBackup()
     {
         $this->backup_Database1('localhost', 'root', 'OF1YKK4HxtLSFUtF', 'erp');
-        //$this->backup_Database1('localhost', 'root', 'OF1YKK4HxtLSFUtF', 'erp');
     }
 
     function backup_Database1($hostName, $userName, $password, $DbName)
@@ -267,6 +267,43 @@ class UsersController extends Controller
         } else {
             return 'NULL';
         }
+    }
+
+    public function actionJquery_userSearch()
+    {
+        $search_prodName = trim($_POST['q']);
+
+        $criteria2 = new CDbCriteria();
+        $criteria2->compare('username', $search_prodName, true);
+
+        $criteria = new CDbCriteria();
+        $criteria->mergeWith($criteria2);
+
+        $criteria->order = "username asc";
+        $criteria->limit = 20;
+        $users = User::model()->findAll($criteria);
+        if ($users) {
+            foreach ($users as $user) {
+                $value = "$user->username";
+                $label = "$user->username";
+                $id = $user->id;
+
+                $results[] = array(
+                    'id' => $id,
+                    'name' => $value,
+                    'value' => $value,
+                    'label' => $label,
+                );
+            }
+        } else {
+            $results[] = array(
+                'id' => '',
+                'name' => 'No data found!',
+                'value' => 'No data found!',
+                'label' => 'No data found!',
+            );
+        }
+        echo json_encode($results);
     }
 
 }

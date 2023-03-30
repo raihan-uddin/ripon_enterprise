@@ -10,6 +10,8 @@
                 <a class="dropdown-item" href="<?= Yii::app()->createUrl("inventory/inventory/stockReport") ?>">Stock
                     Report</a>
                 <div class="dropdown-divider"></div>
+                <a class="dropdown-item" href="<?= Yii::app()->createUrl("report/collectionReport") ?>">Collection
+                    Report</a>
                 <a class="dropdown-item" href="<?= Yii::app()->createUrl("report/customerDueReport") ?>">Customer Due
                     Report</a>
                 <a class="dropdown-item" href="<?= Yii::app()->createUrl("report/customerLedger") ?>">Customer

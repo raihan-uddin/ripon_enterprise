@@ -25,7 +25,6 @@ class ReportController extends Controller
         return '';
     }
 
-
     public function actionCustomerLedger()
     {
         $model = new Inventory();
@@ -86,7 +85,6 @@ class ReportController extends Controller
         ), true, true);
         Yii::app()->end();
     }
-
 
     public function actionCustomerDueReport()
     {
@@ -155,7 +153,6 @@ class ReportController extends Controller
         Yii::app()->end();
     }
 
-
     public function actionSupplierLedger()
     {
         $model = new Inventory();
@@ -216,7 +213,6 @@ class ReportController extends Controller
         ), true, true);
         Yii::app()->end();
     }
-
 
     public function actionSupplierDueReport()
     {
@@ -284,7 +280,6 @@ class ReportController extends Controller
         ), true, true);
         Yii::app()->end();
     }
-
 
     public function actionDayInOutReport()
     {
@@ -357,6 +352,53 @@ class ReportController extends Controller
             'data' => $data,
             'message' => $message,
             'opening' => $opening,
+        ), true, true);
+        Yii::app()->end();
+    }
+
+    public function actionCollectionReport()
+    {
+        $model = new Inventory();
+        $this->pageTitle = 'COLLECTION REPORT';
+        $this->render('collectionReport', array('model' => $model));
+    }
+
+    public function actionCollectionReportView()
+    {
+
+        if (Yii::app()->request->isAjaxRequest) {
+            Yii::app()->clientScript->scriptMap['jquery.js'] = false;
+        }
+
+        date_default_timezone_set("Asia/Dhaka");
+        $dateFrom = $_POST['Inventory']['date_from'];
+        $dateTo = $_POST['Inventory']['date_to'];
+        $customer_id = $_POST['Inventory']['customer_id'];
+        $created_by = $_POST['Inventory']['created_by'];
+
+        $message = "";
+        $data = NULL;
+
+        if ($dateFrom != "" && $dateTo != '') {
+            $message .= "<br>  Date: " . date('d/m/Y', strtotime($dateFrom)) . "-" . date('d/m/Y', strtotime($dateTo));
+
+            $criteria = new CDbCriteria();
+            $criteria->addBetweenCondition('t.date', $dateFrom, $dateTo);
+            if ($customer_id > 0) {
+                $criteria->addColumnCondition(['t.customer_id' => $customer_id]);
+            }
+            if ($created_by > 0) {
+                $criteria->addColumnCondition(['t.created_by' => $created_by]);
+            }
+            $criteria->join = " INNER JOIN users u on t.created_by = u.id ";
+            $criteria->join .= " INNER JOIN customers c on t.customer_id = c.id ";
+            $criteria->select = "t.*, u.username, c.company_name as customer_name, c.company_contact_no as contact_no";
+            $criteria->order = 't.date asc';
+            $data = MoneyReceipt::model()->findAll($criteria);
+        }
+        echo $this->renderPartial('collectionReportView', array(
+            'data' => $data,
+            'message' => $message,
         ), true, true);
         Yii::app()->end();
     }
