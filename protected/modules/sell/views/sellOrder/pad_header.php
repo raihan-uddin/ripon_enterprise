@@ -1,7 +1,7 @@
 <style>
     @media print {
         @page {
-            margin-top: 4cm;
+            margin-top: 6cm;
         }
     }
 </style>

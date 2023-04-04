@@ -7,12 +7,13 @@
         body {
             margin: 0;
             padding: 0;
-            font-family: Helvetica Neue, Helvetica, Arial, sans-serif;;
+            font-family: Helvetica Neue, Helvetica, Arial, sans-serif;
         }
 
         .printAllTableForThisReport {
             font-family: Helvetica Neue, Helvetica, Arial, sans-serif;
             font-size: 12px;
+            font-weight: bold;
         }
 
         .page-break-div {
