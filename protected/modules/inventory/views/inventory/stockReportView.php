@@ -120,9 +120,22 @@ echo "</div>";
                 ?>
                 <tr>
                     <td style="text-align: center;"><?php echo $sl++; ?></td>
-                    <td style="text-align: center;"><?php echo $dmr->model_id; ?></td>
-                    <td style="text-align: left;"><?php echo $dmr->model_name; ?></td>
-                    <td style="text-align: left;"><?php echo $dmr->code; ?></td>
+                    <td style="text-align: center;">
+                        <?php echo $dmr->model_id; ?>
+                    </td>
+                    <td style="text-align: left;">
+                        <a href="#"
+                           onclick="currentStockPreview(<?= $dmr->model_id > 0 ? $dmr->model_id : 0 ?>);">
+                            <?php echo $dmr->model_name; ?>
+                        </a>
+                    </td>
+                    <td style="text-align: left;">
+                        <a href="#"
+                           onclick="currentStockPreview(<?= $dmr->model_id > 0 ? $dmr->model_id : 0 ?>);">
+                            <?php echo $dmr->code; ?>
+                        </a>
+                    </td>
+
                     <td style="text-align: center;"><?php echo $dmr->opening_stock; ?></td>
                     <td style="text-align: center;"><?php echo $dmr->stock_in; ?></td>
                     <td style="text-align: center;"><?php echo $dmr->stock_out; ?></td>
@@ -202,4 +215,18 @@ echo "</div>";
         });
 
     });
+
+
+    function currentStockPreview(product_id) {
+        var URL = '<?php echo Yii::app()->createUrl('inventory/inventory/currentStockReportBatchWiseView'); ?>?product_id=' + product_id;
+        var day = new Date();
+        var id = day.getTime();
+        var w = 900;
+        var h = 600;
+        var scrl = 1;
+        var winl = (screen.width - w) / 2;
+        var wint = (screen.height - h) / 2;
+        winprops = 'height=' + h + ',width=' + w + ',top=' + wint + ',left=' + winl + ',scrollbars=' + scrl + ',toolbar=0,location=0,statusbar=0,menubar=0,resizable=0';
+        eval("page" + id + " = window.open(URL, '" + id + "', winprops);");
+    }
 </script>

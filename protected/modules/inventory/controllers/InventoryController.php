@@ -202,7 +202,7 @@ class InventoryController extends Controller
     public function actionJquery_showprodSlNoSearch()
     {
         $search_prodName = trim($_POST['q']);
-        $model_id = isset($_POST['model_id']) ? trim($_POST['model_id']) : 0;;
+        $model_id = isset($_POST['model_id']) ? trim($_POST['model_id']) : 0;
 
         $criteria2 = new CDbCriteria();
         $criteria2->compare('product_sl_no', $search_prodName);
@@ -325,6 +325,26 @@ class InventoryController extends Controller
         echo $this->renderPartial('stockReportView', array(
             'data' => $data,
             'message' => $message,
+        ), true, true);
+        Yii::app()->end();
+    }
+
+    public function actionCurrentStockReportBatchWiseView()
+    {
+        date_default_timezone_set('Asia/Dhaka');
+
+        $data = '';
+        $condition = '';
+        if ($_GET['product_id'] != "") {
+            $message = "";
+        } else {
+            $message = "<div class='flash-error'>Please select a product!</div>";
+        }
+        $model_id = $_GET['product_id'];
+
+        echo $this->renderPartial('currentStockReportBatchWiseView', array(
+            'model_id' => $model_id,
+            'message' => $message
         ), true, true);
         Yii::app()->end();
     }
