@@ -33,7 +33,7 @@ class MoneyReceiptController extends Controller
      * Creates a new model.
      * If creation is successful, the browser will be redirected to the 'view' page.
      */
-    public function actionCreate($id)
+    public function actionCreate($id, $sell_id = 0)
     {
         $model = new MoneyReceipt;
         $model2 = Customers::model()->findByPk($id);
@@ -115,6 +115,7 @@ class MoneyReceiptController extends Controller
         $this->render('create', array(
             'model' => $model,
             'model2' => $model2,
+            'sell_id' => $sell_id,
             'id' => $id,
         ));
     }

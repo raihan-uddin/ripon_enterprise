@@ -242,6 +242,9 @@ $this->widget('application.components.BreadCrumb', array(
                     $invoice_total = $invoice_total_due = 0;
                     $criteriaInv = new CDbCriteria();
                     $criteriaInv->addColumnCondition(['is_paid' => Invoice::DUE]);
+                    if ($sell_id > 0) {
+                        $criteriaInv->addColumnCondition(['t.id' => $sell_id]);
+                    }
                     $dataInv = SellOrder::model()->findAll($criteriaInv);
                     if ($dataInv) {
                         foreach ($dataInv as $inv) {

@@ -314,10 +314,17 @@ if (Yii::app()->user->checkAccess('Sell.Order.VoucherPreview')) {
                 array
                 (
                     'header' => 'Options',
-                    'template' => '{update}{delete}',
+                    'template' => '{createMr}{update}{delete}',
                     'class' => 'CButtonColumn',
                     'htmlOptions' => ['style' => 'width: 200px', 'class' => 'text-center'],
                     'buttons' => array(
+                        'createMr' => array(
+                            'label' => '<i class="fa fa-money fa-2x" style="color: green;"></i>&nbsp;&nbsp;',
+                            'imageUrl' => false,
+                            'options' => array('rel' => 'tooltip', 'data-toggle' => 'tooltip', 'title' => Yii::t('app', 'Create MR')),
+                            'url' => 'Yii::app()->controller->createUrl("/accounting/moneyReceipt/create",array("id"=>$data->customer_id, "sell_id"=>$data->id))',
+                            'visible' => '$data->total_paid == 0 ? TRUE : FALSE',
+                        ),
                         'update' => array(
                             'label' => '<i class="fa fa-pencil-square-o fa-2x" style="color: black;"></i>&nbsp;&nbsp;',
                             'imageUrl' => false,
