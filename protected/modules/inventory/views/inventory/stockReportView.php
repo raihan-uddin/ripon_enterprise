@@ -112,7 +112,7 @@ echo "</div>";
         $rowFound = false;
         $groundTotal = 0;
         foreach ($data as $dmr) {
-            if ($dmr->opening_stock > 0 || $dmr->stock_in > 0 || $dmr->stock_out) {
+            if ($dmr->opening_stock != 0 || $dmr->stock_in != 0 || $dmr->stock_out) {
                 $closing = (($dmr->opening_stock + $dmr->stock_in) - $dmr->stock_out);
                 $stockValue = $closing * $dmr->sell_price;
                 $rowFound = true;
