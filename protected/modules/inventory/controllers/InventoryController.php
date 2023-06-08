@@ -315,9 +315,9 @@ class InventoryController extends Controller
                 $criteria->addColumnCondition(['t.id' => $model_id]);
             }
 
-            $criteria->join = " INNER JOIN inventory inv  on inv.model_id = t.id ";
+            $criteria->join = " LEFT JOIN inventory inv  on inv.model_id = t.id ";
             $criteria->group = " t.id ";
-            $criteria->order = 'inv.date ASC';
+            $criteria->order = 't.model_name ASC';
             $data = ProdModels::model()->findAll($criteria);
         } else {
             $message = "<div class='flash-error'>Please select date range!</div>";
