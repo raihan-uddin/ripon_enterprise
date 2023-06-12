@@ -135,6 +135,9 @@ class ProdModels extends CActiveRecord
         if ($this->isNewRecord) {
             $this->created_at = new CDbExpression('NOW()');
             $this->created_by = Yii::app()->user->id;
+            if ($this->item_id == 1) {
+                $this->stockable = 0;
+            }
         } else {
             $this->updated_at = new CDbExpression('NOW()');
             $this->updated_by = Yii::app()->user->id;
