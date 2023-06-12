@@ -76,7 +76,6 @@ class SellOrderController extends Controller
             $model->bom_complete = SellOrder::BOM_NOT_COMPLETE;
             $model->so_no = "SO" . date('y') . date('m') . "-" . str_pad($model->max_sl_no, 5, "0", STR_PAD_LEFT);
             $inv_sl = Inventory::maxSlNo();
-            $inv_sl_challan = "CHALLAN-" . str_pad($inv_sl, 6, '0', STR_PAD_LEFT);
             if ($model->save()) {
                 foreach ($_POST['SellOrderDetails']['temp_model_id'] as $key => $model_id) {
                     $model2 = new SellOrderDetails();
@@ -97,7 +96,7 @@ class SellOrderController extends Controller
                             $inventory = new Inventory();
                             $inventory->sl_no = $inv_sl;
                             $inventory->date = $model->date;
-                            $inventory->challan_no = $inv_sl_challan;
+                            $inventory->challan_no = $model->so_no;
                             $inventory->store_id = 1;
                             $inventory->location_id = 1;
                             $inventory->model_id = $model2->model_id;
@@ -199,19 +198,18 @@ class SellOrderController extends Controller
 
                 $delete_inv_arr = [];
                 $criteria2 = new CDbCriteria();
-                $criteria2->addColumnCondition(['sell_order_id', $id]);
+                $criteria2->addColumnCondition(['sell_order_id' => $id]);
                 $sellOrderDetails = SellOrderDetails::model()->findAll($criteria2);
 
 //                echo count($sellOrderDetails);exit;
                 $inv_sl = Inventory::maxSlNo();
-                $inv_sl_challan = "CHALLAN-" . str_pad($inv_sl, 6, '0', STR_PAD_LEFT);
                 foreach ($sellOrderDetails as $detail) {
                     $inventory = Inventory::model()->findByAttributes(['model_id' => $detail->model_id, 'stock_status' => Inventory::SALES_DELIVERY, 'source_id' => $detail->id]);
                     if (!$inventory) {
                         $inventory = new Inventory();
                         $inventory->sl_no = $inv_sl;
                         $inventory->date = $model->date;
-                        $inventory->challan_no = $inv_sl_challan;
+                        $inventory->challan_no = $model->so_no;
                         $inventory->store_id = 1;
                         $inventory->location_id = 1;
                         $inventory->model_id = $detail->model_id;
