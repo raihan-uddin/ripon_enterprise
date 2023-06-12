@@ -249,9 +249,7 @@ class SellOrderController extends Controller
             }
         }
 
-        if (
-            $model->total_paid == 0
-        ) {
+//        if ($model->total_paid == 0) {
 
             $criteria = new CDbCriteria();
             $criteria->select = "t.*, pm.model_name, pm.code";
@@ -264,11 +262,11 @@ class SellOrderController extends Controller
                 'model2' => $model2,
                 'model3' => SellOrderDetails::model()->findAll($criteria),
             ));
-        } else {
-            $status = ['status' => 'danger', 'message' => 'You can not update this order(' . $model->so_no . ') now!'];
-            Yii::app()->user->setFlash($status['status'], $status['message']);
-            $this->redirect(isset($_POST['returnUrl']) ? $_POST['returnUrl'] : array('admin'));
-        }
+        /* } else {
+             $status = ['status' => 'danger', 'message' => 'You can not update this order(' . $model->so_no . ') now!'];
+             Yii::app()->user->setFlash($status['status'], $status['message']);
+             $this->redirect(isset($_POST['returnUrl']) ? $_POST['returnUrl'] : array('admin'));
+         }*/
     }
 
     /**
