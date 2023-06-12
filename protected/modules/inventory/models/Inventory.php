@@ -91,11 +91,11 @@ class Inventory extends CActiveRecord
         return array(
             array('date, model_id, stock_status', 'required'),
             array('sl_no, store_id, location_id, model_id, stock_status, source_id, create_by, update_by, warranty', 'numerical', 'integerOnly' => true),
-            array('stock_in, stock_out, sell_price, purchase_price, row_total', 'numerical'),
+            array('stock_in, stock_out, sell_price, purchase_price, row_total, master_id, source_id', 'numerical'),
             array('challan_no, remarks, product_sl_no', 'length', 'max' => 255),
             array('date, create_time, update_time', 'safe'),
             // The following rule is used by search().
-            array('id, sl_no, date, challan_no, row_total, store_id, location_id, product_sl_no, model_id, stock_in, warranty, stock_out, sell_price, purchase_price, stock_status, source_id, product_sl_no, remarks, create_time, create_by, update_time, update_by', 'safe', 'on' => 'search'),
+            array('id, sl_no, date, challan_no, row_total, store_id, location_id, master_id, source_id, product_sl_no, model_id, stock_in, warranty, stock_out, sell_price, purchase_price, stock_status, source_id, product_sl_no, remarks, create_time, create_by, update_time, update_by', 'safe', 'on' => 'search'),
         );
     }
 
