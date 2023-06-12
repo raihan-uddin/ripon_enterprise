@@ -108,6 +108,11 @@ endforeach;
                 ),
                 'sell_price',
                 'purchase_price',
+                array(
+                    'name' => 'stockable',
+                    'value' => '$data->stockable == 1 ? "YES" : "NO"',
+                    'filter' => [1 => "YES", 0 => "NO"],
+                ),
                 /*
                   array(
                   'name'=>'activePrice',

@@ -192,11 +192,11 @@ $form = $this->beginWidget('CActiveForm', array(
                                         'type' => 'post',
                                         'dataType' => 'json',
                                         'beforeSend' => "function(){
-    $('.ajaxLoaderFormLoad').show();
-    }",
+                                            $('.ajaxLoaderFormLoad').show();
+                                        }",
                                         'complete' => "function(){
-    $('.ajaxLoaderFormLoad').hide();
-    }",
+                                            $('.ajaxLoaderFormLoad').hide();
+                                        }",
                                         'success' => "function(data){
                                         if (data.status == 'failure')
                                         {
@@ -238,7 +238,8 @@ $form = $this->beginWidget('CActiveForm', array(
             </div>
             <div class="form-group col-sm-12 col-md-6 col-lg-4" style="">
                 <?php echo $form->labelEx($model, 'unit_id'); ?>
-                <div class="input-group" data-target-input="nearest"><?php
+                <div class="input-group" data-target-input="nearest">
+                    <?php
                     echo $form->dropDownList(
                         $model, 'unit_id', CHtml::listData(Units::model()->findAll(array('order' => 'label ASC')), 'id', 'label'), array(
                         'prompt' => 'Select',
@@ -284,11 +285,11 @@ $form = $this->beginWidget('CActiveForm', array(
                                         'type' => 'post',
                                         'dataType' => 'json',
                                         'beforeSend' => "function(){
-$('.ajaxLoaderFormLoad').show();
-}",
+                                            $('.ajaxLoaderFormLoad').show();
+                                        }",
                                         'complete' => "function(){
-$('.ajaxLoaderFormLoad').hide();
-}",
+                                            $('.ajaxLoaderFormLoad').hide();
+                                        }",
                                         'success' => "function(data){
                                         if (data.status == 'failure')
                                         {
@@ -353,6 +354,19 @@ $('.ajaxLoaderFormLoad').hide();
                 <?php echo $form->textArea($model, 'description', array('maxlength' => 255, 'class' => 'form-control', 'style' => 'height: 200px;')); ?>
                 <span class="help-block"
                       style="color: red; width: 100%"> <?php echo $form->error($model, 'description'); ?></span>
+            </div>
+
+            <div class="form-group col-sm-12 col-md-6 col-lg-4">
+                <?php echo $form->labelEx($model, 'stockable'); ?>
+                <?php
+                echo $form->dropDownList(
+                    $model, 'stockable', [1 => 'YES', 0 => 'NO'], array(
+                    'prompt' => 'Select',
+                    'class' => 'form-control',
+                ));
+                ?>
+                <span class="help-block"
+                      style="color: red; width: 100%"> <?php echo $form->error($model, 'stockable'); ?></span>
             </div>
         </div>
     </div>

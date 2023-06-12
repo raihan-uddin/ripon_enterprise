@@ -21,6 +21,7 @@
  * @property string $updated_at
  * @property string $description
  * @property integer $updated_by
+ * @property boolean $stockable
  *
  * The followings are the available model relations:
  * @property ProdBrands $brand
@@ -73,7 +74,7 @@ class ProdModels extends CActiveRecord
         // will receive user inputs.
         return array(
             array('item_id, brand_id, model_name, code, unit_id', 'required'),
-            array('item_id, brand_id, unit_id', 'numerical', 'integerOnly' => true),
+            array('item_id, brand_id, unit_id, stockable', 'numerical', 'integerOnly' => true),
             array('sell_price, purchase_price', 'numerical'),
             array('model_name, code, min_order_qty', 'length', 'max' => 255),
             array('warranty', 'numerical'),
@@ -82,7 +83,7 @@ class ProdModels extends CActiveRecord
             array('features, description', 'safe'),
             // The following rule is used by search().
             // Please remove those attributes that should not be searched.
-            array('min_order_qty, id, item_id, brand_id, model_name, features, warranty, description,  purchase_price, sell_price', 'safe', 'on' => 'search'),
+            array('min_order_qty, id, item_id, brand_id, model_name, features, stockable, warranty, description,  purchase_price, sell_price', 'safe', 'on' => 'search'),
         );
     }
 
@@ -115,7 +116,8 @@ class ProdModels extends CActiveRecord
             'description' => 'Description',
             'image' => 'Image',
             'purchase_price' => 'Purchase Price',
-            'sell_price' => 'Sell Price'
+            'sell_price' => 'Sell Price',
+            'stockable' => 'Stock Maintain?',
         );
     }
 
@@ -230,6 +232,7 @@ class ProdModels extends CActiveRecord
         $criteria->compare('min_order_qty', $this->min_order_qty, true);
         $criteria->compare('warranty', $this->warranty);
         $criteria->compare('unit_id', $this->unit_id);
+        $criteria->compare('stockable', $this->stockable);
         $criteria->compare('description', $this->description, true);
         $criteria->compare('features', $this->features, true);
         $criteria->compare('purchase_price', $this->purchase_price, true);

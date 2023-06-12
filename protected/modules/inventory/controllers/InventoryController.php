@@ -310,6 +310,8 @@ class InventoryController extends Controller
             ";
             $message .= "Stock Report from  $dateFrom To $dateTo";
 
+            $criteria->addColumnCondition(['stockable' => 1]);
+
             if ($model_id > 0) {
                 $criteria->addColumnCondition(['t.id' => $model_id]);
             }

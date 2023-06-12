@@ -113,11 +113,11 @@ $form = $this->beginWidget('CActiveForm', array(
                                                 'type' => 'post',
                                                 'dataType' => 'json',
                                                 'beforeSend' => "function(){
-    $('.ajaxLoaderFormLoad').show();
-    }",
+                                                    $('.ajaxLoaderFormLoad').show();
+                                                }",
                                                 'complete' => "function(){
-    $('.ajaxLoaderFormLoad').hide();
-    }",
+                                                    $('.ajaxLoaderFormLoad').hide();
+                                                }",
                                                 'success' => "function(data){
                                         if (data.status == 'failure')
                                         {
@@ -191,11 +191,11 @@ $form = $this->beginWidget('CActiveForm', array(
                                                 'type' => 'post',
                                                 'dataType' => 'json',
                                                 'beforeSend' => "function(){
-    $('.ajaxLoaderFormLoad').show();
-    }",
+                                                    $('.ajaxLoaderFormLoad').show();
+                                                }",
                                                 'complete' => "function(){
-    $('.ajaxLoaderFormLoad').hide();
-    }",
+                                                    $('.ajaxLoaderFormLoad').hide();
+                                                }",
                                                 'success' => "function(data){
                                         if (data.status == 'failure')
                                         {
@@ -332,6 +332,19 @@ $form = $this->beginWidget('CActiveForm', array(
                         <?php echo $form->textField($model, 'purchase_price', array('maxlength' => 255, 'class' => 'form-control')); ?>
                         <span class="help-block"
                               style="color: red; width: 100%"> <?php echo $form->error($model, 'purchase_price'); ?></span>
+                    </div>
+
+                    <div class="form-group col-sm-12 col-md-6 col-lg-4">
+                        <?php echo $form->labelEx($model, 'stockable'); ?>
+                        <?php
+                        echo $form->dropDownList(
+                            $model, 'stockable', [1 => 'YES', 0 => 'NO'], array(
+                            'prompt' => 'Select',
+                            'class' => 'form-control',
+                        ));
+                        ?>
+                        <span class="help-block"
+                              style="color: red; width: 100%"> <?php echo $form->error($model, 'stockable'); ?></span>
                     </div>
 
                     <div class="form-group col-sm-12 col-md-12 col-lg-12">
