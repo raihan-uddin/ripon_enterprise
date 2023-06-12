@@ -218,11 +218,11 @@ class SellOrder extends CActiveRecord
         }
 
         $criteria->compare('id', $this->id);
-        $criteria->compare('date', $this->date);
+        $criteria->compare('date', $this->date, true);
         $criteria->compare('order_type', $this->order_type);
         $criteria->compare('delivery_charge', $this->delivery_charge);
         $criteria->compare('max_sl_no', $this->max_sl_no);
-        $criteria->compare('so_no', $this->so_no);
+        $criteria->compare('so_no', $this->so_no, true);
         $criteria->compare('job_no', $this->job_no);
         $criteria->compare('is_all_issue_done', $this->is_all_issue_done);
         $criteria->compare('is_paid', $this->is_paid);

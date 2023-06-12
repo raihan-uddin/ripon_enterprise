@@ -184,13 +184,13 @@ if (Yii::app()->user->checkAccess('Sell.Order.VoucherPreview')) {
             'summaryCssClass' => 'col-sm-12 col-md-5',
             'pagerCssClass' => 'col-sm-12 col-md-7 pager',
             'columns' => array(
-//                'id',
-                array(
+                'id',
+                /*array(
                     'name' => 'order_type',
                     'value' => 'SellOrder::model()->orderType($data->order_type)',
                     'type' => 'raw',
                     'filter' => [SellOrder::NEW_ORDER => 'NEW ORDER', SellOrder::REPAIR_ORDER => 'REPLACE ORDER']
-                ),
+                ),*/
                 array(
                     'name' => 'date',
                     'htmlOptions' => ['class' => 'text-center']
@@ -217,18 +217,18 @@ if (Yii::app()->user->checkAccess('Sell.Order.VoucherPreview')) {
                      'htmlOptions' => ['class' => 'text-center']
                  ),
                  */
-                array(
+                /*array(
                     'name' => 'vat_percentage',
                     'htmlOptions' => ['class' => 'text-center']
-                ),
-                array(
+                ),*/
+                /*array(
                     'name' => 'delivery_charge',
                     'htmlOptions' => ['class' => 'text-center']
-                ),
-                array(
+                ),*/
+                /*array(
                     'name' => 'vat_amount',
                     'htmlOptions' => ['class' => 'text-center']
-                ),
+                ),*/
                 array(
                     'name' => 'discount_amount',
                     'htmlOptions' => ['class' => 'text-center']
