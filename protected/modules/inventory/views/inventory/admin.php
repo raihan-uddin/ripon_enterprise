@@ -194,11 +194,32 @@ if (Yii::app()->user->checkAccess('Inventory.Inventory.VoucherPreview')) {
                     'htmlOptions' => ['class' => 'text-center']
                 ),
                 array(
+                    'name' => 'purchase_price',
+                    'htmlOptions' => ['class' => 'text-center']
+                ),
+                array(
+                    'name' => 'sell_price',
+                    'htmlOptions' => ['class' => 'text-center']
+                ),
+                array(
+                    'name' => 'row_total',
+                    'htmlOptions' => ['class' => 'text-center']
+                ),
+                array(
+                    'name' => 'master_id',
+                    'htmlOptions' => ['class' => 'text-center']
+                ),
+                array(
+                    'name' => 'source_id',
+                    'htmlOptions' => ['class' => 'text-center']
+                ),
+                array(
                     'name' => 'stock_status',
                     'type' => 'raw',
                     'value' => 'Inventory::model()->getStatus($data->stock_status)',
                     'filter' => CHtml::listData(Inventory::model()->getStockStatusFilter(), 'id', 'title'),
                 ),
+                'create_time',
                 /*
                 array
                 (

@@ -130,7 +130,8 @@ class Inventory extends CActiveRecord
             'sell_price' => 'Sell Price',
             'purchase_price' => 'Purchase Price',
             'stock_status' => 'Stock Status',
-            'source_id' => 'Source',
+            'source_id' => 'Source ID',
+            'master_id' => 'Master ID',
             'remarks' => 'Remarks',
             'create_time' => 'Create Time',
             'create_by' => 'Create By',
@@ -202,6 +203,7 @@ class Inventory extends CActiveRecord
         $criteria->compare('purchase_price', $this->purchase_price);
         $criteria->compare('stock_status', $this->stock_status);
         $criteria->compare('source_id', $this->source_id);
+        $criteria->compare('master_id', $this->master_id);
         $criteria->compare('product_sl_no', $this->product_sl_no);
         $criteria->compare('remarks', $this->remarks, true);
         $criteria->compare('create_time', $this->create_time, true);
