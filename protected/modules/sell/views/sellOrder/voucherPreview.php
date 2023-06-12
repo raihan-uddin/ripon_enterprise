@@ -164,7 +164,7 @@
                         $criteria->join = " INNER JOIN prod_models pm on t.model_id = pm.id ";
                         $criteria->addColumnCondition(['t.sell_order_id' => $data->id]);
                         $criteria->group = "pm.id";
-                        $criteria->order = "pm.model_name ASC";
+                        $criteria->order = "pm.item_id DESC, pm.model_name ASC";
                         $data2 = SellOrderDetails::model()->findAll($criteria);
                         $row_total = 0;
                         if ($data2) {
