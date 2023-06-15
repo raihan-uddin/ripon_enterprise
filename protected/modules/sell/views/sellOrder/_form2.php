@@ -699,7 +699,7 @@ Yii::app()->clientScript->registerCoreScript("jquery.ui");
                 </tr>
                 `);
             calculateTotal();
-            clearDynamicItem();
+            clearDynamicItem(product_sl_no);
         }
     }
 
@@ -730,13 +730,14 @@ Yii::app()->clientScript->registerCoreScript("jquery.ui");
         $("#product_sl_no").val('');
     }
 
-    function clearDynamicItem() {
+    function clearDynamicItem(product_sl_no) {
         if (product_sl_no.length > 0) {
             $("#product_sl_no").val('');
             $("#product_sl_no").focus();
         } else {
             $("#SellOrderDetails_model_id").val('');
             $("#model_id_text").val('');
+            $("#product_sl_no").val('');
             $("#SellOrderDetails_amount").val('');
             $("#SellOrderDetails_row_total").val('');
             $("#SellOrderDetails_qty").val('');

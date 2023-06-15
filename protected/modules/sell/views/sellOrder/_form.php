@@ -784,6 +784,7 @@ Yii::app()->clientScript->registerCoreScript("jquery.ui");
             $("#product_sl_no").focus();
         } else {
             $("#SellOrderDetails_model_id").val('');
+            $("#product_sl_no").val('');
             $("#model_id_text").val('');
             $("#product_sl_no").val('');
             $("#SellOrderDetails_amount").val('');

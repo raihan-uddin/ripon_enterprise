@@ -174,7 +174,8 @@ class SellOrderController extends Controller
             if ($model->save()) {
                 $details_id_arr = [];
                 foreach ($_POST['SellOrderDetails']['temp_model_id'] as $key => $model_id) {
-                    $model2 = SellOrderDetails::model()->findByAttributes(['model_id' => $model_id, 'sell_order_id' => $model->id]);
+                    $product_sl_no = $_POST['SellOrderDetails']['temp_product_sl_no'][$key];
+                    $model2 = SellOrderDetails::model()->findByAttributes(['model_id' => $model_id, 'sell_order_id' => $model->id, 'product_sl_no' => $product_sl_no]);
                     if (!$model2)
                         $model2 = new SellOrderDetails();
                     $model2->sell_order_id = $model->id;
@@ -184,7 +185,7 @@ class SellOrderController extends Controller
                     $model2->row_total = $_POST['SellOrderDetails']['temp_row_total'][$key];
                     $model2->color = $_POST['SellOrderDetails']['temp_color'][$key];
                     $model2->note = $_POST['SellOrderDetails']['temp_note'][$key];
-                    $model2->product_sl_no = $_POST['SellOrderDetails']['temp_product_sl_no'][$key];
+                    $model2->product_sl_no = $product_sl_no;
                     if (!$model2->save()) {
                         var_dump($model2->getErrors());
                         exit;
@@ -206,7 +207,7 @@ class SellOrderController extends Controller
 //                echo count($sellOrderDetails);exit;
                 $inv_sl = Inventory::maxSlNo();
                 foreach ($sellOrderDetails as $detail) {
-                    $inventory = Inventory::model()->findByAttributes(['model_id' => $detail->model_id, 'stock_status' => Inventory::SALES_DELIVERY, 'source_id' => $detail->id]);
+                    $inventory = Inventory::model()->findByAttributes(['model_id' => $detail->model_id, 'stock_status' => Inventory::SALES_DELIVERY, 'source_id' => $detail->id, 'product_sl_no' => $detail->product_sl_no]);
                     if (!$inventory) {
                         $inventory = new Inventory();
                         $inventory->sl_no = $inv_sl;
@@ -235,10 +236,10 @@ class SellOrderController extends Controller
                     $criteriaDel->addColumnCondition(['master_id' => $id, 'stock_status' => Inventory::SALES_DELIVERY]);
                     Inventory::model()->deleteAll($criteriaDel);
                 }
-                $data = $model;
+
                 echo CJSON::encode(array(
                     'status' => 'success',
-                    'soReportInfo' => $this->renderPartial('voucherPreview', array('data' => $data, 'new' => true), true, true), //
+                    'soReportInfo' => $this->renderPartial('voucherPreview', array('data' => $model, 'new' => true), true, true), //
                 ));
                 Yii::app()->end();
             } else {
@@ -254,9 +255,9 @@ class SellOrderController extends Controller
             $criteria = new CDbCriteria();
             $criteria->select = "t.*, pm.model_name, pm.code";
             $criteria->addColumnCondition(['sell_order_id' => $id]);
-            $criteria->join = " INNER JOIN prod_models pm on t.model_id = pm.id ";
-            $criteria->order = "pm.model_name ASC";
-            $this->pageTitle = 'UPDATE ORDER';
+        $criteria->join = " INNER JOIN prod_models pm on t.model_id = pm.id ";
+        $criteria->order = "pm.model_name ASC, t.product_sl_no ASC";
+        $this->pageTitle = 'UPDATE ORDER';
             $this->render('update', array(
                 'model' => $model,
                 'model2' => $model2,
