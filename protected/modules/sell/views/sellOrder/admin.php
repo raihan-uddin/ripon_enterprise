@@ -274,10 +274,10 @@ if (Yii::app()->user->checkAccess('Sell.Order.VoucherPreview')) {
                 'is_partial_delivery',
                 'is_partial_invoice',
                 'created_by',
-                'created_at',
                 'updated_by',
-                'updated_at',
                 */
+                'created_at',
+                'updated_at',
                 array
                 (
                     'header' => '',

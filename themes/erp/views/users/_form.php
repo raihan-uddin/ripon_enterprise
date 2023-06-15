@@ -47,38 +47,6 @@ $form = $this->beginWidget('CActiveForm', array(
                 <span class="help-block"
                       style="color: red; width: 100%"> <?php echo $form->error($model, 'password2'); ?></span>
             </div>
-            <div class="form-group col-xs-12 col-sm-6 col-lg-4">
-                <?php echo $form->labelEx($model, 'employee_id'); ?>
-                <input type="text" id="Users_employee_id_text" class="form-control">
-                <?php echo $form->hiddenField($model, 'employee_id', array('maxlength' => 255, 'class' => 'form-control')); ?>
-                <span class="help-block"
-                      style="color: red; width: 100%"> <?php echo $form->error($model, 'employee_id'); ?></span>
-                <script>
-                    $(function () {
-                        $("#Users_employee_id_text").autocomplete({
-                            source: function (request, response) {
-                                var emp_name = request.term;
-                                $.post('<?php echo Yii::app()->baseUrl ?>/hr/employees/jqueryEmpSearch', {
-                                        "empName": emp_name,
-                                        "getBaseSalary": 0,
-                                        "getDesignation": 0,
-                                        "getDepartment": 0,
-                                    },
-                                    function (data) {
-                                        response(data);
-                                    }, "json");
-                            },
-                            minLength: 2,
-                            delay: 700,
-                            select: function (event, ui) {
-                                $("#Users_employee_id_text").val(ui.item.label);
-                                $("#Users_employee_id").val(ui.item.value);
-                                return false;
-                            }
-                        });
-                    });
-                </script>
-            </div>
 
             <?php
             if (Yii::app()->user->isSuperuser) {

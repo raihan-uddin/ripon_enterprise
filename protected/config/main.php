@@ -20,7 +20,6 @@ return array(
         'application.helpers.*',
         'application.models.*',
         'application.modules.accounting.models.*',
-        'application.modules.hr_payroll.models.*',
         'application.modules.inventory.models.*',
         'application.modules.rights.*',
         'application.modules.rights.components.*',
@@ -28,8 +27,6 @@ return array(
         'application.modules.rights.models.*',
         'application.modules.user.components.*',
         'application.modules.user.models.*',
-        'application.modules.hr.models.*',
-        'application.modules.hr.components.*',
         'application.modules.crm.models.*',
         'application.modules.crm.components.*',
         'application.modules.commercial.models.*',
@@ -89,9 +86,7 @@ return array(
             'password' => 'admin',
         ),
         'accounting',
-        'hr_payroll',
         'inventory',
-        'hr',
         'crm',
         'commercial',
         'sell',
@@ -135,10 +130,6 @@ return array(
                     'enabled' => true,
                 ),
             ),
-        ),
-        'JWT' => array(
-            'class' => 'ext.jwt.JWT',
-            'key' => '1212121212121',
         ),
 
         'session' => array(

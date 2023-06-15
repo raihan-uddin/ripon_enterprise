@@ -36,39 +36,6 @@ Yii::app()->clientScript->registerCoreScript('jquery.ui');
                       style="color: red; width: 100%"> <?php echo $form->error($model, 'username'); ?></span>
             </div>
 
-            <div class="form-group col-xs-12 col-sm-6 col-lg-4">
-                <?php echo $form->labelEx($model, 'employee_id'); ?>
-                <input type="text" id="Users_employee_id_text2" class="form-control"
-                       value="<?= Employees::model()->fullNameAndIdNo($model->employee_id) ?>"/>
-                <?php echo $form->hiddenField($model, 'employee_id', ['id' => 'Users_employee_id2']); ?>
-                <script>
-                    $(function () {
-                        $("#Users_employee_id_text2").autocomplete({
-                            source: function (request, response) {
-                                var emp_name = request.term;
-                                $.post('<?php echo Yii::app()->baseUrl ?>/hr/employees/jqueryEmpSearch', {
-                                        "empName": emp_name,
-                                        "getBaseSalary": 0,
-                                        "getDesignation": 0,
-                                        "getDepartment": 0,
-                                    },
-                                    function (data) {
-                                        response(data);
-                                    }, "json");
-                            },
-                            minLength: 2,
-                            delay: 700,
-                            select: function (event, ui) {
-                                $("#Users_employee_id_text2").val(ui.item.label);
-                                $("#Users_employee_id2").val(ui.item.value);
-                                return false;
-                            }
-                        });
-                    });
-                </script>
-                <span class="help-block"
-                      style="color: red; width: 100%"> <?php echo $form->error($model, 'employee_id'); ?></span>
-            </div>
 
 
             <div class="form-group col-xs-12 col-sm-6 col-lg-4">

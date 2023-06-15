@@ -50,7 +50,7 @@ class PurchaseOrderController extends Controller
             $model->attributes = $_POST['PurchaseOrder'];
             $model->max_sl_no = PurchaseOrder::maxSlNo();
             $model->discount_percentage = 0;
-            $model->po_no = "PO-" . date('y') . "-" . date('m') . "-" . str_pad($model->max_sl_no, 5, "0", STR_PAD_LEFT);
+            $model->po_no = date('y') . "-" . date('m') . str_pad($model->max_sl_no, 5, "0", STR_PAD_LEFT);
             if ($model->order_type == PurchaseOrder::PURCHASE_RECEIVE) {
                 $model->is_all_received = PurchaseOrder::ALL_RECEIVED;
             }
@@ -60,7 +60,7 @@ class PurchaseOrderController extends Controller
                     $rcv_max_sl_no = ReceivePurchase::maxSlNo();
                     $modelRcv = new ReceivePurchase();
                     $modelRcv->max_sl_no = $rcv_max_sl_no;
-                    $modelRcv->receive_no = "RCV-" . date('y') . "-" . date('m') . "-" . str_pad($modelRcv->max_sl_no, 5, "0", STR_PAD_LEFT);
+                    $modelRcv->receive_no = date('y') . date('m') . str_pad($modelRcv->max_sl_no, 5, "0", STR_PAD_LEFT);
                     $modelRcv->date = $model->date;
                     $modelRcv->supplier_id = $model->supplier_id;
                     $modelRcv->purchase_order_id = $model->id;
@@ -188,14 +188,22 @@ class PurchaseOrderController extends Controller
         if (isset($_POST['PurchaseOrder'], $_POST['PurchaseOrderDetails'])) {
             $model->attributes = $_POST['PurchaseOrder'];
             if ($model->save()) {
+
+                $modelRcv = ReceivePurchase::model()->findByAttributes(['purchase_order_id' => $id]);
+                $modelRcv->rcv_amount = $model->grand_total;
+                $rcv_id = $challan_no = $sl_no = NULL;
+                if ($modelRcv->save()) {
+                    $rcv_id = $modelRcv->id;
+                    $sl_no = Inventory::maxSlNo();
+                    $challan_no = "RCV-" . str_pad($sl_no, 6, '0', STR_PAD_LEFT);
+                }
+
+
                 $details_id_arr = [];
                 foreach ($_POST['PurchaseOrderDetails']['temp_model_id'] as $key => $model_id) {
                     $product_sl_no = $_POST['PurchaseOrderDetails']['temp_product_sl_no'][$key];
                     $criteria = new CDbCriteria();
-                    $criteria->addColumnCondition(['order_id' => $id, 'model_id' => $model_id]);
-                    if (strlen(($product_sl_no)) > 0) {
-                        $criteria->addColumnCondition(['product_sl_no' => $product_sl_no]);
-                    }
+                    $criteria->addColumnCondition(['order_id' => $id, 'model_id' => $model_id, 'product_sl_no' => $product_sl_no]);
                     $model2 = PurchaseOrderDetails::model()->findByAttributes([], $criteria);
                     if (!$model2)
                         $model2 = new PurchaseOrderDetails();
@@ -206,7 +214,45 @@ class PurchaseOrderController extends Controller
                     $model2->unit_price = $_POST['PurchaseOrderDetails']['temp_unit_price'][$key];
                     $model2->row_total = $_POST['PurchaseOrderDetails']['temp_row_total'][$key];
                     $model2->note = $_POST['PurchaseOrderDetails']['temp_note'][$key];
-                    if (!$model2->save()) {
+                    if ($model2->save()) {
+
+                        $criteriaRcvD = new CDbCriteria();
+                        $criteriaRcvD->addColumnCondition(['receive_purchase_id' => $rcv_id, 'model_id' => $model_id, 'product_sl_no' => $product_sl_no]);
+                        $modelRcvD = PurchaseOrderDetails::model()->findByAttributes([], $criteriaRcvD);
+                        if (!$modelRcvD)
+                            $modelRcvD = new ReceivePurchaseDetails();
+                        $modelRcvD->receive_purchase_id = $rcv_id;
+                        $modelRcvD->model_id = $model_id;
+                        $modelRcvD->unit_price = $model2->unit_price;
+                        $modelRcvD->qty = $model2->qty;
+                        $modelRcvD->row_total = $model2->row_total;
+                        $modelRcvD->product_sl_no = $model2->product_sl_no;
+                        if ($modelRcvD->save()) {
+
+                            $criteriaInv = new CDbCriteria();
+                            $criteriaInv->addColumnCondition(['receive_purchase_id' => $rcv_id, 'model_id' => $model_id, 'product_sl_no' => $product_sl_no]);
+                            $inv = Inventory::model()->findByAttributes([], $criteriaInv);
+                            if (!$inv)
+                                $inv = new Inventory();
+                            $inv->model_id = $model_id;
+                            $inv->date = $model->date;
+                            $inv->sl_no = $sl_no;
+                            $inv->challan_no = $challan_no;
+                            $inv->store_id = $model->store_id;
+                            $inv->location_id = $model->location_id;
+                            $inv->stock_in = $model2->qty;
+                            $inv->sell_price = $model2->unit_price;
+                            $inv->row_total = $model2->row_total;
+                            $inv->purchase_price = $model2->unit_price;
+                            $inv->product_sl_no = $model2->product_sl_no;
+                            $inv->stock_status = Inventory::PURCHASE_RECEIVE;
+                            $inv->source_id = $modelRcvD->id;
+                            $inv->master_id = $model->id;
+                            $inv->remarks = $model2->note;
+                            $inv->save();
+                        }
+
+                    } else {
                         var_dump($model2->getErrors());
                         exit;
                     }
@@ -218,6 +264,8 @@ class PurchaseOrderController extends Controller
                     $criteriaDel->addColumnCondition(['order_id' => $id]);
                     PurchaseOrderDetails::model()->deleteAll($criteriaDel);
                 }
+
+
                 echo CJSON::encode(array(
                     'status' => 'success',
                     'soReportInfo' => $this->renderPartial('voucherPreview', array('data' => $model, 'new' => true), true, true), //

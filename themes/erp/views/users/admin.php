@@ -103,12 +103,7 @@ endforeach;
                         'class' => 'form-control',
                     ]
                 ),
-                array(
-                    'name' => 'employee_id',
-                    'type' => 'raw',
-                    //'filter' => Users::onlyAuthenticateEmployeesList(),
-                    'value' => 'Employees::nameWithIdNo($data->employee_id)',
-                ),
+
                 array(
                     'name' => 'roles',
                     'type' => 'raw',
