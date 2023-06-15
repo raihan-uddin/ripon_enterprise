@@ -75,7 +75,7 @@ class SellOrderController extends Controller
             $model->is_partial_delivery = SellOrder::PARTIAL_DELIVERY_NOT_DONE;
             $model->bom_complete = SellOrder::BOM_NOT_COMPLETE;
             $model->total_due = $_POST['SellOrder']['grand_total'];
-            $model->so_no = "SO" . date('y') . date('m') . "-" . str_pad($model->max_sl_no, 5, "0", STR_PAD_LEFT);
+            $model->so_no = date('y') . date('m') . str_pad($model->max_sl_no, 5, "0", STR_PAD_LEFT);
             $inv_sl = Inventory::maxSlNo();
             if ($model->save()) {
                 foreach ($_POST['SellOrderDetails']['temp_model_id'] as $key => $model_id) {
