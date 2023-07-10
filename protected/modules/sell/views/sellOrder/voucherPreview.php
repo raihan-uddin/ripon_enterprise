@@ -151,7 +151,7 @@
                             <td style="text-align: center; display: none;">Color</td>
                             <td style="text-align: center;  width: 10%;">Qty</td>
                             <td style="text-align: center;  width: 10%;">Price</td>
-                            <td style="text-align: center; width: 10%;">Total</td>
+                            <td style="text-align: center; width: 15%;">Total</td>
                         </tr>
                         <tbody>
                         <?php
@@ -205,7 +205,7 @@
                         }
                         ?>
                         <tr>
-                            <td rowspan="4" colspan="2">
+                            <td rowspan="5" colspan="2" style="border: none;">
                                 <div>Total Amount In Words:</div>
                                 <div>BDT:
                                     <?php
@@ -220,28 +220,75 @@
                                     ?>
                                 </div>
                             </td>
-                            <td colspan="2">Sub Total</td>
-                            <td style="text-align: right;">TK <?= number_format($row_total, 2) ?></td>
+                            <td colspan="2" style="border: none;">Sub Total</td>
+                            <td style="text-align: right; border: none;">TK <?= number_format($row_total, 2) ?></td>
                         </tr>
                         <tr>
-                            <td colspan="2">Vat (<?= number_format($vat_percentage, 2) ?>%)</td>
-                            <td style="text-align: right;">TK <?= number_format($vat, 2) ?></td>
+                            <td colspan="2" style="border: none;">Vat (<?= number_format($vat_percentage, 2) ?>%)</td>
+                            <td style="text-align: right; border: none;">TK <?= number_format($vat, 2) ?></td>
                         </tr>
                         <tr>
-                            <td colspan="2">Delivery Charge</td>
-                            <td style="text-align: right;">TK <?= number_format($delivery_charge, 2) ?></td>
+                            <td colspan="2" style="border: none;">Delivery Charge</td>
+                            <td style="text-align: right; border: none;">
+                                TK <?= number_format($delivery_charge, 2) ?></td>
                         </tr>
                         <tr>
-                            <td colspan="2">Discount</td>
-                            <td style="text-align: right;">TK (-<?= number_format($discount_amount, 2) ?>)</td>
+                            <td colspan="2" style="border: none;">Discount</td>
+                            <td style="text-align: right; border: none;">TK (-<?= number_format($discount_amount, 2) ?>
+                                )
+                            </td>
                         </tr>
+                        <tr style="font-weight: bold;">
+                            <td colspan="2" style="border: none;">
+                                <div style="height: 1px; width: 100%; border: 1px solid black;"></div>
+                                Net payable amount
+                            </td>
+                            <td style="text-align: right; border: none;">
+                                <div style="height: 1px; width: 100%; border: 1px solid black;"></div>
+                                TK <?= number_format($data->grand_total, 2) ?></td>
+                        </tr>
+
                         <tr>
-                            <td colspan="4">Grand Total</td>
-                            <td style="text-align: right;">TK <?= number_format($data->grand_total, 2) ?></td>
+                            <td colspan="2" style="border: none; background: white;"></td>
+                            <td colspan="2" style="border: none;">
+                                Previous Due Amount
+                            </td>
+                            <td style="text-align: right; border: none;">
+                                <?php
+                                $criteria = new CDbCriteria();
+                                $criteria->select = "SUM(grand_total) as grand_total";
+                                $criteria->addColumnCondition(['t.customer_id' => $data->customer_id]);
+                                $criteria->addCondition("id < '$data->id'");
+                                $sellOrder = SellOrder::model()->findByAttributes([], $criteria);
+                                $prev_sell_value = $sellOrder ? $sellOrder->grand_total : 0;
+
+                                $criteriaMr = new CDbCriteria();
+                                $criteriaMr->select = "SUM(amount + discount) as amount";
+                                $criteriaMr->addColumnCondition(['t.customer_id' => $data->customer_id]);
+                                $criteriaMr->addCondition("invoice_id != '$data->id' and created_at < '$data->created_at' ");
+                                $moneyReceipt = MoneyReceipt::model()->findByAttributes([], $criteriaMr);
+                                $prev_collection = $moneyReceipt ? $moneyReceipt->amount : 0;
+
+                                $previous_due_amount = $prev_sell_value - $prev_collection;
+
+                                $current_due_amount = $previous_due_amount + $data->grand_total;
+                                ?>
+                                TK <?= number_format($previous_due_amount, 2) ?></td>
+                        </tr>
+                        <tr style="font-weight: bold;">
+                            <td colspan="2" style="border: none;"></td>
+                            <td colspan="2" style="border: none;">
+                                <div style="height: 1px; width: 100%; border: 1px solid black;"></div>
+                                Current Due Amount
+                            </td>
+                            <td style="text-align: right; border: none;">
+                                <div style="height: 1px; width: 100%; border: 1px solid black;"></div>
+                                TK <?= number_format($current_due_amount, 2) ?></td>
                         </tr>
                         </tbody>
                     </table>
-                    <div style="width: 100%; float: left; clear: right; height: 150px; font-size: 12px;">
+
+                    <div style="width: 100%; float: left; clear: right; height: 150px; font-size: 12px; margin-top: 20px;">
                         <div style="height: 30px; text-align: left; width: 100%; float: left; clear: right;">
                             By signing this document, the customer agrees to he services and conditions
                             described in this document.
