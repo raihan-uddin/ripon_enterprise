@@ -247,44 +247,64 @@
                                 <div style="height: 1px; width: 100%; border: 1px solid black;"></div>
                                 TK <?= number_format($data->grand_total, 2) ?></td>
                         </tr>
+                        <?php
+                        if ($data->customer_id != 39) {
+                            ?>
 
-                        <tr>
-                            <td colspan="2" style="border: none; background: white;"></td>
-                            <td colspan="2" style="border: none;">
-                                Previous Due Amount
-                            </td>
-                            <td style="text-align: right; border: none;">
-                                <?php
-                                $criteria = new CDbCriteria();
-                                $criteria->select = "SUM(grand_total) as grand_total";
-                                $criteria->addColumnCondition(['t.customer_id' => $data->customer_id]);
-                                $criteria->addCondition("id < '$data->id'");
-                                $sellOrder = SellOrder::model()->findByAttributes([], $criteria);
-                                $prev_sell_value = $sellOrder ? $sellOrder->grand_total : 0;
+                            <tr>
+                                <td colspan="2" style="border: none; background: white;"></td>
+                                <td colspan="2" style="border: none;">
+                                    Previous Due Amount
+                                </td>
+                                <td style="text-align: right; border: none;">
+                                    <?php
+                                    $criteria = new CDbCriteria();
+                                    $criteria->select = "SUM(grand_total) as grand_total";
+                                    $criteria->addColumnCondition(['t.customer_id' => $data->customer_id]);
+                                    $criteria->addCondition("id != '$data->id'");
+                                    $sellOrder = SellOrder::model()->findByAttributes([], $criteria);
+                                    $prev_sell_value = $sellOrder ? $sellOrder->grand_total : 0;
 
-                                $criteriaMr = new CDbCriteria();
-                                $criteriaMr->select = "SUM(amount + discount) as amount";
-                                $criteriaMr->addColumnCondition(['t.customer_id' => $data->customer_id]);
-                                $criteriaMr->addCondition("invoice_id != '$data->id' and created_at < '$data->created_at' ");
-                                $moneyReceipt = MoneyReceipt::model()->findByAttributes([], $criteriaMr);
-                                $prev_collection = $moneyReceipt ? $moneyReceipt->amount : 0;
+                                    $criteriaMr = new CDbCriteria();
+                                    $criteriaMr->select = "SUM(amount + discount) as amount";
+                                    $criteriaMr->addColumnCondition(['t.customer_id' => $data->customer_id]);
+                                    $criteriaMr->addCondition("invoice_id != '$data->id' ");
+                                    $moneyReceipt = MoneyReceipt::model()->findByAttributes([], $criteriaMr);
+                                    $prev_collection = $moneyReceipt ? $moneyReceipt->amount : 0;
 
-                                $previous_due_amount = $prev_sell_value - $prev_collection;
+                                    $criteriaMr1 = new CDbCriteria();
+                                    $criteriaMr1->select = "SUM(amount + discount) as amount";
+                                    $criteriaMr1->addColumnCondition(['t.customer_id' => $data->customer_id, 'invoice_id' => $data->id]);
+                                    $moneyReceipt1 = MoneyReceipt::model()->findByAttributes([], $criteriaMr1);
+                                    $current_collection = $moneyReceipt1 ? $moneyReceipt1->amount : 0;
 
-                                $current_due_amount = $previous_due_amount + $data->grand_total;
-                                ?>
-                                TK <?= number_format($previous_due_amount, 2) ?></td>
-                        </tr>
-                        <tr style="font-weight: bold;">
-                            <td colspan="2" style="border: none;"></td>
-                            <td colspan="2" style="border: none;">
-                                <div style="height: 1px; width: 100%; border: 1px solid black;"></div>
-                                Current Due Amount
-                            </td>
-                            <td style="text-align: right; border: none;">
-                                <div style="height: 1px; width: 100%; border: 1px solid black;"></div>
-                                TK <?= number_format($current_due_amount, 2) ?></td>
-                        </tr>
+                                    $previous_due_amount = $prev_sell_value - $prev_collection;
+
+                                    $current_due_amount = $previous_due_amount + $data->grand_total - $current_collection;
+                                    ?>
+                                    TK <?= number_format($previous_due_amount, 2) ?></td>
+                            </tr>
+                            <tr style="font-weight: bold;">
+                                <td colspan="2" style="border: none;"></td>
+                                <td colspan="2" style="border: none;">
+                                    Current Paid Amount
+                                </td>
+                                <td style="text-align: right; border: none;">
+                                    TK <?= number_format($current_collection, 2) ?></td>
+                            </tr>
+                            <tr style="font-weight: bold;">
+                                <td colspan="2" style="border: none;"></td>
+                                <td colspan="2" style="border: none;">
+                                    <div style="height: 1px; width: 100%; border: 1px solid black;"></div>
+                                    Current Due Amount
+                                </td>
+                                <td style="text-align: right; border: none;">
+                                    <div style="height: 1px; width: 100%; border: 1px solid black;"></div>
+                                    TK <?= number_format($current_due_amount, 2) ?></td>
+                            </tr>
+                            <?php
+                        }
+                        ?>
                         </tbody>
                     </table>
 
