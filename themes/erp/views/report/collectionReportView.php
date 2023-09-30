@@ -97,6 +97,7 @@ echo "</div>";
             <th style="box-shadow: 0px 0px 0px 1px black inset;">Customer</th>
             <th style="width: 5%;box-shadow: 0px 0px 0px 1px black inset;">Invoice No</th>
             <th style="width: 10%;box-shadow: 0px 0px 0px 1px black inset;">Receive By</th>
+            <th style="width: 10%;box-shadow: 0px 0px 0px 1px black inset;">Discount</th>
             <th style="width: 10%;box-shadow: 0px 0px 0px 1px black inset;">Amount</th>
         </tr>
         </thead>
@@ -105,12 +106,13 @@ echo "</div>";
         $sl = 1;
         $rowFound = false;
         $groundTotal = 0;
-        $row_closing = 0;
+        $row_closing = $row_closing_discount = 0;
         ?>
 
         <?php
         if ($data) {
             foreach ($data as $dmr) {
+                $row_closing_discount += $dmr->discount;
                 $row_closing += $dmr->amount;
                 $rowFound = true;
                 ?>
@@ -121,6 +123,7 @@ echo "</div>";
                     <td style="text-align: left;"><?php echo $dmr->customer_name; ?></td>
                     <td style="text-align: center;"><?php echo $dmr->invoice_id; ?></td>
                     <td style="text-align: left;"><?php echo $dmr->username; ?></td>
+                    <td style="text-align: right;"><?php echo number_format($dmr->discount, 2); ?></td>
                     <td style="text-align: right;"><?php echo number_format($dmr->amount, 2); ?></td>
                 </tr>
                 <?php
@@ -131,6 +134,7 @@ echo "</div>";
 
         <tr>
             <th style="text-align: right;" colspan="6">Ground Total</th>
+            <th style="text-align: right;"><?= number_format($row_closing_discount, 2) ?></th>
             <th style="text-align: right;"><?= number_format($row_closing, 2) ?></th>
         </tr>
 

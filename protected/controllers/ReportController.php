@@ -131,8 +131,8 @@ class ReportController extends RController
                 SELECT 
                     customer_id, 
                     0 as sale_amount,
-                    amount as receipt_amount,
-                    -amount 
+                    (amount+discount) as receipt_amount,
+                    -(amount+discount) 
                 FROM 
                     money_receipt
                     " . ($customer_id > 0 ? " WHERE customer_id = $customer_id" : "") . "
