@@ -191,9 +191,14 @@
                                     </div>
                                 </div>
                                 <div class="mr-row" style="padding-top: 20px; float: left; clear: right; width: 100%;">
-                                    <div style="width: 20%; float: left; clear: right;">The sum of Dhs</div>
+                                    <div style="width: 20%; float: left; clear: right;">The sum of BDT</div>
                                     <div style="width: 78%; float: left; clear: right; border-bottom: 1px dotted black; text-align: center;">
                                         &nbsp;&nbsp;&nbsp;<?= number_format($dt->amount, 2) ?>/=&nbsp;&nbsp;&nbsp;
+                                        <?php
+                                        if ($dt->discount > 0){
+                                            echo sprintf("Discount: %s/=", number_format($dt->discount, 2));
+                                        }
+                                        ?>
                                     </div>
                                 </div>
                                 <div class="mr-row" style="padding-top: 20px; float: left; clear: right; width: 100%;">

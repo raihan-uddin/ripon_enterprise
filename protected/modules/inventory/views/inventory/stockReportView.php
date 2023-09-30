@@ -140,8 +140,8 @@ echo "</div>";
                     <td style="text-align: center;"><?php echo $dmr->stock_in; ?></td>
                     <td style="text-align: center;"><?php echo $dmr->stock_out; ?></td>
                     <td style="text-align: center;"><?php echo $closing; ?></td>
-                    <td style="text-align: center;"><?php echo number_format($dmr->sell_price, 2); ?></td>
-                    <td style="text-align: right;"><?php echo number_format($stockValue, 2); ?></td>
+                    <td style="text-align: center;"><?php echo is_numeric($dmr->sell_price)  ?  number_format($dmr->sell_price, 2) : ''; ?></td>
+                    <td style="text-align: right;"><?php echo is_numeric($stockValue) ? number_format($stockValue, 2) : ''; ?></td>
                 </tr>
                 <?php
             }

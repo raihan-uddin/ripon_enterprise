@@ -86,8 +86,9 @@ echo "</div>";
             </td>
         </tr>
         <tr class="titlesTr">
-            <th>SL NO</th>
-            <th>Stock Qty</th>
+            <th style="width: 5%;">SL NO</th>
+            <th>Product Serial NO</th>
+            <th style="width: 10%;">Stock Qty</th>
         </tr>
         </thead>
         <tbody>
@@ -107,6 +108,7 @@ echo "</div>";
                 $total += $d->stock_in;
                 ?>
                 <tr>
+                    <td><?= $sl++ ?></td>
                     <td>
                         <?php echo $d->product_sl_no ?>
                     </td>
@@ -119,7 +121,7 @@ echo "</div>";
         </tbody>
         <tfoot>
         <tr>
-            <th>Total</th>
+            <th colspan="2">Total</th>
             <th style="text-align: center;"><?= $total ?></th>
         </tr>
         </tfoot>

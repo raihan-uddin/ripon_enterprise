@@ -10,4 +10,5 @@ return array(
 //    'schemaCachingDuration' => 1,
     'enableProfiling' => false,
     'enableParamLogging' => true,
+    'initSQLs' => array("SET SESSION sql_mode=(SELECT REPLACE(@@sql_mode,'ONLY_FULL_GROUP_BY',''));"),
 );

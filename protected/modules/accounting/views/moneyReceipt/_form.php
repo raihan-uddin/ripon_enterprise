@@ -65,8 +65,8 @@ $this->widget('application.components.BreadCrumb', array(
 
             <div class=" col-sm-12 col-md-3">
                 <div class="form-group row" style="">
-                    <?php echo $form->labelEx($model, 'payment_type', ['class' => 'col-sm-12 col-md-3 col-form-label']); ?>
-                    <div class="col-sm-12 col-md-9">
+                    <?php echo $form->labelEx($model, 'payment_type', ['class' => 'col-sm-12 col-md-4 col-form-label']); ?>
+                    <div class="col-sm-12 col-md-8">
                         <div class="input-group" id="customer_id" data-target-input="nearest">
                             <?php
                             echo $form->dropDownList($model, 'payment_type', CHtml::listData(MoneyReceipt::model()->paymentTypeFilter(), 'id', 'title'), array(
@@ -231,6 +231,7 @@ $this->widget('application.components.BreadCrumb', array(
                         <th class="text-center" style="width: 10%;">Invoice Amount</th>
                         <th class="text-center" style="width: 10%;">Due Amount</th>
                         <th class="text-center" style="width: 10%;">Payment</th>
+                        <th class="text-center" style="width: 10%;">Discount</th>
                         <th class="text-center" style="width: 10%;">Rem. Amount</th>
                         <th class="text-center" style="width: 3%;">Action</th>
                     </tr>
@@ -259,7 +260,7 @@ $this->widget('application.components.BreadCrumb', array(
                                     <td class="text-center sl-no" style="vertical-align: middle;"><?= $i++ ?></td>
                                     <td class="text-center" style="vertical-align: middle;">
                                         <?= $inv->so_no ?>
-                                        <?php echo $form->hiddenField($model, 'invoice_id[]', array('class' => 'form-control', 'readonly' => true, 'value' => $inv->id)); ?>
+                                        <?php echo $form->hiddenField($model, 'tmp_invoice_id[]', array('class' => 'form-control', 'readonly' => true, 'value' => $inv->id)); ?>
                                     </td>
                                     <td class="text-center"
                                         style="vertical-align: middle;"><?= date('d.M.y', strtotime($inv->date)) ?></td>
@@ -271,7 +272,10 @@ $this->widget('application.components.BreadCrumb', array(
                                         <?php echo $form->hiddenField($model, 'due_amount[]', array('class' => 'form-control due-amount', 'readonly' => true, 'value' => $due)); ?>
                                     </td>
                                     <td class="text-center" style="vertical-align: middle;">
-                                        <?php echo $form->textField($model, 'amount[]', array('class' => 'form-control  text-right amount',)); ?>
+                                        <?php echo $form->textField($model, 'tmp_amount[]', array('class' => 'form-control  text-right amount',)); ?>
+                                    </td>
+                                    <td class="text-center" style="vertical-align: middle;">
+                                        <?php echo $form->textField($model, 'tmp_discount[]', array('class' => 'form-control  text-right discount',)); ?>
                                     </td>
                                     <td class="text-center" style="vertical-align: middle;">
                                         <span class="rem-span"></span>
@@ -456,14 +460,16 @@ $this->widget('application.components.BreadCrumb', array(
         clearBankInfo();
     });
 
-    $(document).on('keyup', ".amount", function () {
+    $(document).on('keyup', ".amount, .discount", function () {
         this.value = this.value.replace(/[^0-9\.]/g, '');
         let due_amount = parseFloat($(this).closest('tr').find('.due-amount').val());
         let amount = parseFloat($(this).closest('tr').find('.amount').val());
+        let discount = parseFloat($(this).closest('tr').find('.discount').val());
         let _row_remaining = $(this).closest('tr').find('.rem-amount');
         due_amount = isNaN(due_amount) ? 0 : due_amount;
+        discount = isNaN(discount) ? 0 : discount;
         amount = isNaN(amount) ? 0 : amount;
-        let rem = due_amount - amount;
+        let rem = due_amount - (amount + discount);
         if (rem >= 0) {
             _row_remaining.val(rem);
             $(this).removeClass("is-invalid");

@@ -345,7 +345,7 @@ $form = $this->beginWidget('CActiveForm', array(
                         toastr.success("Data saved successfully.")
                         $("#prod-items-form")[0].reset();
                         $("#formResult").animate({opacity:1.0},1000).fadeOut("slow");
-                        $("#list").empty();
+                        $("#list tbody").empty();
                         $.fn.yiiGridView.update("inventory-grid", {
                             data: $(this).serialize()
                         });

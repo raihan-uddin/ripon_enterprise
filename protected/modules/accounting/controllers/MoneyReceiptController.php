@@ -36,6 +36,7 @@ class MoneyReceiptController extends Controller
     public function actionCreate($id, $sell_id = 0)
     {
         $model = new MoneyReceipt;
+        $model->scenario = 'custom_form_save';
         $model2 = Customers::model()->findByPk($id);
 
         // Uncomment the following line if AJAX validation is needed
@@ -50,9 +51,10 @@ class MoneyReceiptController extends Controller
             $model->mr_no = "MR-" . date('y') . "-" . date('m') . "-" . str_pad($model->max_sl_no, 5, "0", STR_PAD_LEFT);
             if ($model->validate()) {
                 $invoice_id_arr = [];
-                foreach ($_POST['MoneyReceipt']['amount'] as $key => $amount) {
+                foreach ($_POST['MoneyReceipt']['tmp_amount'] as $key => $amount) {
                     $rem_amount = $_POST['MoneyReceipt']['rem_amount'][$key];
-                    $invoice_id = $_POST['MoneyReceipt']['invoice_id'][$key];
+                    $invoice_id = $_POST['MoneyReceipt']['tmp_invoice_id'][$key];
+                    $discount = $_POST['MoneyReceipt']['tmp_discount'][$key];
                     if ($amount > 0) {
                         $model2 = new MoneyReceipt();
                         $model2->max_sl_no = MoneyReceipt::maxSlNo();
@@ -64,6 +66,7 @@ class MoneyReceiptController extends Controller
                         $model2->payment_type = $model->payment_type;
                         $model2->bank_id = $model->bank_id;
                         $model2->cheque_no = $model->cheque_no;
+                        $model2->discount = $discount;
                         $model2->remarks = $model->remarks;
                         $model2->cheque_date = $model->cheque_date;
                         if (!$model2->save()) {
@@ -90,7 +93,7 @@ class MoneyReceiptController extends Controller
                     }
                 }
                 $criteria = new CDbCriteria;
-                $criteria->select = "SUM(amount) as amount, customer_id, date, mr_no, bank_id, cheque_no, cheque_date, remarks, created_by";
+                $criteria->select = "SUM(amount) as amount, sum(discount) as discount, customer_id, date, mr_no, bank_id, cheque_no, cheque_date, remarks, created_by";
                 $criteria->addColumnCondition(['customer_id' => $model->customer_id, 'mr_no' => $model->mr_no]);
                 $criteria->group = 'customer_id, mr_no';
                 $dataMr = MoneyReceipt::model()->findAll($criteria);
@@ -224,7 +227,7 @@ class MoneyReceiptController extends Controller
 
         if (strlen($mr_no) > 0) {
             $criteria = new CDbCriteria;
-            $criteria->select = "SUM(amount) as amount, customer_id, date, mr_no, bank_id, cheque_no, cheque_date, remarks, created_by";
+            $criteria->select = "SUM(amount) as amount, sum(discount) as discount, customer_id, date, mr_no, bank_id, cheque_no, cheque_date, remarks, created_by";
             $criteria->addColumnCondition(['mr_no' => $mr_no]);
             $criteria->group = 'customer_id, mr_no';
             $data = MoneyReceipt::model()->findAll($criteria);

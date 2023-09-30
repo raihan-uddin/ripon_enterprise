@@ -48,6 +48,9 @@ class MoneyReceipt extends CActiveRecord
     public $rem_total_amount;
     public $total_paid_amount;
     public $received_by;
+    public $tmp_amount;
+    public $tmp_discount;
+    public $tmp_invoice_id;
 
     const CASH = 1;
     const CHECK = 2;
@@ -241,7 +244,7 @@ class MoneyReceipt extends CActiveRecord
     public function totalPaidAmountOfThisInvoice($invoice_id)
     {
         $criteria = new CDbCriteria();
-        $criteria->select = " SUM(amount) AS amount";
+        $criteria->select = " SUM(amount+discount) AS amount";
         $criteria->addColumnCondition(['t.invoice_id' => $invoice_id]);
         $data = self::model()->findByAttributes([], $criteria);
         return $data ? $data->amount : 0;
