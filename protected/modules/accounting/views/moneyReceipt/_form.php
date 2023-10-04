@@ -245,6 +245,8 @@ $this->widget('application.components.BreadCrumb', array(
                     $criteriaInv->addColumnCondition(['is_paid' => Invoice::DUE]);
                     if ($sell_id > 0) {
                         $criteriaInv->addColumnCondition(['t.id' => $sell_id]);
+                    } else{
+                        $criteriaInv->addColumnCondition(['t.customer_id' => $id]);
                     }
                     $dataInv = SellOrder::model()->findAll($criteriaInv);
                     if ($dataInv) {
@@ -288,6 +290,11 @@ $this->widget('application.components.BreadCrumb', array(
                                     </td>
                                 </tr>
                                 <?php
+                            }else{
+                                $inv->total_paid = $paid_amount;
+                                $inv->total_due = 0;
+                                $inv->is_paid = 1;
+                                $inv->save();
                             }
                         }
                     } else {
