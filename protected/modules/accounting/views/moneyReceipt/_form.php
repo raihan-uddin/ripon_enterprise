@@ -257,6 +257,11 @@ $this->widget('application.components.BreadCrumb', array(
                             if ($due > 0) {
                                 $invoice_total += $invoice_amount;
                                 $invoice_total_due += $due;
+                                if ($inv->total_due != $due){
+                                    $inv->total_paid = $paid_amount;
+                                    $inv->total_due = $due;
+                                    $inv->save();
+                                }
                                 ?>
                                 <tr class="item">
                                     <td class="text-center sl-no" style="vertical-align: middle;"><?= $i++ ?></td>
