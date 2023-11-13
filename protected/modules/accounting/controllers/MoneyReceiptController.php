@@ -66,7 +66,7 @@ class MoneyReceiptController extends Controller
                         $model2->payment_type = $model->payment_type;
                         $model2->bank_id = $model->bank_id;
                         $model2->cheque_no = $model->cheque_no;
-                        $model2->discount = $discount;
+                        $model2->discount = $discount > 0 ? $discount : 0;
                         $model2->remarks = $model->remarks;
                         $model2->cheque_date = $model->cheque_date;
                         if (!$model2->save()) {

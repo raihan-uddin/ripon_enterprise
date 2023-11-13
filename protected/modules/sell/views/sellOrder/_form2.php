@@ -516,64 +516,86 @@ Yii::app()->clientScript->registerCoreScript("jquery.ui");
     </div>
 
     <div class="card-footer">
-        <?php
-        echo CHtml::ajaxSubmitButton('Update ', CHtml::normalizeUrl(array('/sell/sellOrder/update/id/' . $model->id, 'render' => true)), array(
-            'dataType' => 'json',
-            'type' => 'post',
-            'success' => 'function(data) {
-                $("#ajaxLoader").hide();  
-                    if(data.status=="success"){
-                        $("#formResult").fadeIn();
-                        $("#formResult").html("Data saved successfully.");
-                        toastr.success("Data saved successfully.");
-                        $("#bom-form")[0].reset();
-                        $("#formResult").animate({opacity:1.0},1000).fadeOut("slow");
-                        $("#list").empty();
-                        $("#soReportDialogBox").dialog("open");
-                        $("#AjFlashReportSo").html(data.soReportInfo).show();
-                    }else{
-                        //$("#formResultError").html("Data not saved. Please solve the following errors.");
-                        $.each(data, function(key, val) {
-                            $("#bom-form #"+key+"_em_").html(""+val+"");                                                    
-                            $("#bom-form #"+key+"_em_").show();
-                        });
-                    }       
-                }',
-            'beforeSend' => 'function(){  
-                    let count_item =  $(".item").length; 
-                    let cash_due = $("#SellOrder_cash_due").val();  
-                    let date = $("#SellOrder_date").val();  
-                    let customer_id = $("#SellOrder_customer_id").val();  
-                    let grand_total = $("#SellOrder_grand_total").val();  
-                    if(cash_due == ""){
-                        toastr.error("Please select Cash/Due.");
-                        return false;
-                    }else if(date == ""){
-                        toastr.error("Please insert date.");
-                        return false;
-                    }else if(customer_id == ""){
-                        toastr.error("Please select customer from the list!");
-                        return false;
-                    }else if(count_item <= 0){
-                        toastr.error("Please add materials to list.");
-                        return false;
-                    }else if(grand_total == "" || grand_total <= 0){
-                        toastr.error("Grand total amount is 0");
-                        return false;
-                    }else {                
-                        $("#overlay").fadeIn(300);　   
-                        $("#ajaxLoader").show();
-                    }
-                 }',
-            'error' => 'function(xhr) { 
-                    $("#overlay").fadeOut(300);
-              }',
-            'complete' => 'function() {
-                    $("#overlay").fadeOut(300);
-                 $("#ajaxLoaderReport").hide(); 
-              }',
-        ), array('class' => 'btn btn-primary btn-md'));
-        ?>
+        <div class="row">
+            <div class="col-md-12">
+                <?php
+                $totalMr = MoneyReceipt::model()->totalPaidAmountOfThisInvoice($model->id);
+                if ($totalMr > 0) {
+                    ?>
+                    <div class="alert alert-danger">
+                        You've already collect <?= number_format($totalMr, 2) ?> from this invoice.
+                        <input type="hidden" id="collectedAmount" value="<?= $totalMr ?>">
+                    </div>
+                    <?php
+                }
+                ?>
+            </div>
+            <div class="col-md-12">
+                <?php
+                echo CHtml::ajaxSubmitButton('Update ', CHtml::normalizeUrl(array('/sell/sellOrder/update/id/' . $model->id, 'render' => true)), array(
+                    'dataType' => 'json',
+                    'type' => 'post',
+                    'success' => 'function(data) {
+                        $("#ajaxLoader").hide();  
+                        if(data.status=="success"){
+                            $("#formResult").fadeIn();
+                            $("#formResult").html("Data saved successfully.");
+                            toastr.success("Data saved successfully.");
+                            $("#bom-form")[0].reset();
+                            $("#formResult").animate({opacity:1.0},1000).fadeOut("slow");
+                            $("#list").empty();
+                            $("#soReportDialogBox").dialog("open");
+                            $("#AjFlashReportSo").html(data.soReportInfo).show();
+                        }else{
+                            //$("#formResultError").html("Data not saved. Please solve the following errors.");
+                            $.each(data, function(key, val) {
+                                $("#bom-form #"+key+"_em_").html(""+val+"");                                                    
+                                $("#bom-form #"+key+"_em_").show();
+                            });
+                        }       
+                    }',
+                    'beforeSend' => 'function(){  
+                        let count_item =  $(".item").length; 
+                        let cash_due = $("#SellOrder_cash_due").val();  
+                        let date = $("#SellOrder_date").val();  
+                        let customer_id = $("#SellOrder_customer_id").val();  
+                        let grand_total = $("#SellOrder_grand_total").val();  
+                        let collectedAmount = parseFloat($("#collectedAmount").val()); 
+                        collectedAmount = !isNaN(collectedAmount) ? collectedAmount : 0; 
+                        if(cash_due == ""){
+                            toastr.error("Please select Cash/Due.");
+                            return false;
+                        }else if(date == ""){
+                            toastr.error("Please insert date.");
+                            return false;
+                        }else if(customer_id == ""){
+                            toastr.error("Please select customer from the list!");
+                            return false;
+                        }else if(count_item <= 0){
+                            toastr.error("Please add materials to list.");
+                            return false;
+                        }else if(grand_total == "" || grand_total <= 0){
+                            toastr.error("Grand total amount is 0");
+                            return false;
+                        }else if(collectedAmount > grand_total){
+                            toastr.error("Please delete the collection of this invoice to continue!");
+                            return false;
+                        }else {                
+                            $("#overlay").fadeIn(300);　   
+                            $("#ajaxLoader").show();
+                        }
+                     }',
+                    'error' => 'function(xhr) { 
+                        $("#overlay").fadeOut(300);
+                    }',
+                    'complete' => 'function() {
+                         $("#overlay").fadeOut(300);
+                         $("#ajaxLoaderReport").hide(); 
+                    }',
+                ), array('class' => 'btn btn-primary btn-md'));
+                ?>
+            </div>
+        </div>
 
         <span id="ajaxLoaderMR" class="ajaxLoaderMR" style="display: none;">
             <i class="fa fa-spinner fa-spin fa-2x"></i>
