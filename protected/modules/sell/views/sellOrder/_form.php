@@ -423,7 +423,13 @@ Yii::app()->clientScript->registerCoreScript("jquery.ui");
                                 }).data("ui-autocomplete")._renderItem = function (ul, item) {
                                     return $("<li></li>")
                                         .data("item.autocomplete", item)
-                                        .append(`<a><img style="height: 50px; width: 50px;" src="${item.img}"> ${item.name} <br><i><small>${item.code}</small></i> </a>`)
+                                        .append(`<a>
+                                                    <img style="height: 50px; width: 50px;" src="${item.img}" alt="${item.name}">
+                                                        ${item.name} <br>
+                                                        <i><small>Code: ${item.code}</small></i>,
+                                                        <i><small><b>P.P:</b> ${item.purchasePrice}</small></i>,
+                                                        <i><small>S.P: ${item.sell_price}</small></i>
+                                                </a>`)
                                         .appendTo(ul);
                                 };
 
@@ -510,7 +516,7 @@ Yii::app()->clientScript->registerCoreScript("jquery.ui");
                     </div>
                     <div class="form-group col-xs-12 col-md-2">
                         <?php echo $form->labelEx($model2, 'note'); ?>
-                        <?php echo $form->textArea($model2, 'note', array('maxlength' => 255, 'class' => 'form-control')); ?>
+                        <?php echo $form->textArea($model2, 'note', array('maxlength' => 255, 'class' => 'form-control', 'style' => 'height: 36px;')); ?>
                         <span class="help-block"
                               style="color: red; width: 100%"> <?php echo $form->error($model2, 'note'); ?></span>
                     </div>

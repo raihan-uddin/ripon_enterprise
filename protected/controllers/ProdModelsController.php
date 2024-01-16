@@ -56,6 +56,7 @@ class ProdModelsController extends Controller
                 $label = "$prodInfo->model_name || $code";
                 $id = $prodInfo->id;
                 $name = $prodInfo->model_name;
+                $purchasePrice = $prodInfo->purchase_price;
                 $item_id = $prodInfo->item_id;
                 $brand_id = $prodInfo->brand_id;
                 $unit_id = $prodInfo->unit_id;
@@ -76,6 +77,7 @@ class ProdModelsController extends Controller
                     'brand_id' => $brand_id,
                     'code' => $code,
                     'warranty' => $warranty,
+                    'purchasePrice' => $purchasePrice,
                     'sell_price' => $sellPrice,
                     'unit_id' => $unit_id,
                     'sellDiscount' => $sellDiscount,
@@ -93,6 +95,7 @@ class ProdModelsController extends Controller
                 'brand_id' => '',
                 'code' => '',
                 'warranty' => '',
+                'purchasePrice' => '',
                 'sell_price' => '',
                 'unit_id' => '',
                 'sellDiscount' => '',
@@ -130,6 +133,7 @@ class ProdModelsController extends Controller
                 $label = "$prodInfo->model_name || $code";
                 $id = $prodInfo->id;
                 $name = $prodInfo->model_name;
+                $purchasePrice = $prodInfo->purchase_price;
                 $item_id = $prodInfo->item_id;
                 $brand_id = $prodInfo->brand_id;
                 $unit_id = $prodInfo->unit_id;
@@ -150,6 +154,7 @@ class ProdModelsController extends Controller
                     'brand_id' => $brand_id,
                     'code' => $code,
                     'warranty' => $warranty,
+                    'purchasePrice' => $purchasePrice,
                     'sell_price' => $sellPrice,
                     'unit_id' => $unit_id,
                     'sellDiscount' => $sellDiscount,
@@ -169,6 +174,7 @@ class ProdModelsController extends Controller
                 'warranty' => '',
                 'sell_price' => '',
                 'unit_id' => '',
+                'purchasePrice' => '',
                 'sellDiscount' => '',
                 'img' => $imageWithUrl,
             );

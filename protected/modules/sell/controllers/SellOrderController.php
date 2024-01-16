@@ -185,6 +185,7 @@ class SellOrderController extends Controller
                     $model2->row_total = $_POST['SellOrderDetails']['temp_row_total'][$key];
                     $model2->color = $_POST['SellOrderDetails']['temp_color'][$key];
                     $model2->note = $_POST['SellOrderDetails']['temp_note'][$key];
+                    $model2->warranty = $_POST['SellOrderDetails']['temp_warranty'][$key];
                     $model2->product_sl_no = $product_sl_no;
                     if (!$model2->save()) {
                         var_dump($model2->getErrors());
@@ -255,14 +256,14 @@ class SellOrderController extends Controller
             $criteria = new CDbCriteria();
             $criteria->select = "t.*, pm.model_name, pm.code";
             $criteria->addColumnCondition(['sell_order_id' => $id]);
-        $criteria->join = " INNER JOIN prod_models pm on t.model_id = pm.id ";
-        $criteria->order = "pm.model_name ASC, t.product_sl_no ASC";
-        $this->pageTitle = 'UPDATE ORDER';
-            $this->render('update', array(
-                'model' => $model,
-                'model2' => $model2,
-                'model3' => SellOrderDetails::model()->findAll($criteria),
-            ));
+            $criteria->join = " INNER JOIN prod_models pm on t.model_id = pm.id ";
+            $criteria->order = "pm.model_name ASC, t.product_sl_no ASC";
+            $this->pageTitle = 'UPDATE ORDER';
+                $this->render('update', array(
+                    'model' => $model,
+                    'model2' => $model2,
+                    'model3' => SellOrderDetails::model()->findAll($criteria),
+                ));
         /* } else {
              $status = ['status' => 'danger', 'message' => 'You can not update this order(' . $model->so_no . ') now!'];
              Yii::app()->user->setFlash($status['status'], $status['message']);

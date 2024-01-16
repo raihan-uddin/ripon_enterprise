@@ -249,4 +249,16 @@ class MoneyReceipt extends CActiveRecord
         $data = self::model()->findByAttributes([], $criteria);
         return $data ? $data->amount : 0;
     }
+
+    public function totalPaidAmountAndDiscountOfThisInvoice($invoice_id)
+    {
+        $criteria = new CDbCriteria();
+        $criteria->select = " SUM(COALESCE(amount, 0)) AS amount, SUM(COALESCE(discount, 0)) AS discount";
+        $criteria->addColumnCondition(['t.invoice_id' => $invoice_id]);
+        $data = self::model()->findByAttributes([], $criteria);
+        return [
+            'collection_amt' => $data ?  $data->amount : 0,
+            'collection_disc' => $data ?  $data->discount: 0
+        ];
+    }
 }
