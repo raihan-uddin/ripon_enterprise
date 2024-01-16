@@ -160,7 +160,11 @@
                         $delivery_charge = $data->delivery_charge;
                         $discount_amount = $data->discount_amount;
                         $criteria = new CDbCriteria();
-                        $criteria->select = "pm.model_name, pm.code, pm.image, sum(t.qty) as qty, t.amount, t.note, sum(t.row_total) as row_total, GROUP_CONCAT(product_sl_no ORDER BY product_sl_no SEPARATOR ', ') as product_sl_no, pm.description";
+                        $criteria->select = "pm.model_name, pm.code, pm.image, sum(t.qty) as qty, t.amount, 
+                                            t.note, sum(t.row_total) as row_total, 
+                                            GROUP_CONCAT(product_sl_no ORDER BY product_sl_no SEPARATOR ', ') as product_sl_no, 
+                                            GROUP_CONCAT(t.warranty ORDER BY t.warranty SEPARATOR ', ') as warranty,
+                                            pm.description";
                         $criteria->join = " INNER JOIN prod_models pm on t.model_id = pm.id ";
                         $criteria->addColumnCondition(['t.sell_order_id' => $data->id]);
                         $criteria->group = "pm.id";
@@ -181,6 +185,14 @@
                                         }
                                         if (strlen($dt->product_sl_no) > 0) {
                                             echo "<br><b>SL:</b>$dt->product_sl_no";
+                                        }
+                                        if (strlen($dt->warranty) > 0) {
+                                            $dataArrayWarranty = explode(', ', $dt->warranty);
+                                            $dataArrayWarrantyUnique = array_unique($dataArrayWarranty);
+                                            $dataArrayWarrantyUnique = array_values($dataArrayWarrantyUnique);
+//                                            print_r($dataArrayWarrantyUnique);
+                                            $warranty =  implode(', ', $dataArrayWarrantyUnique);
+                                            echo "<br><b>Warranty: </b> <i>$warranty Month</i>";
                                         }
                                         ?>
                                     </td>
@@ -273,14 +285,15 @@
                                     $prev_collection = $moneyReceipt ? $moneyReceipt->amount : 0;
 
                                     $criteriaMr1 = new CDbCriteria();
-                                    $criteriaMr1->select = "SUM(amount + discount) as amount";
+                                    $criteriaMr1->select = "SUM(amount) as amount, SUM(discount) as discount";
                                     $criteriaMr1->addColumnCondition(['t.customer_id' => $data->customer_id, 'invoice_id' => $data->id]);
                                     $moneyReceipt1 = MoneyReceipt::model()->findByAttributes([], $criteriaMr1);
                                     $current_collection = $moneyReceipt1 ? $moneyReceipt1->amount : 0;
+                                    $current_collection_discount = $moneyReceipt1 ? $moneyReceipt1->discount : 0;
 
                                     $previous_due_amount = $prev_sell_value - $prev_collection;
 
-                                    $current_due_amount = $previous_due_amount + $data->grand_total - $current_collection;
+                                    $current_due_amount = $previous_due_amount + $data->grand_total - $current_collection - $current_collection_discount;
                                     ?>
                                     TK <?= number_format($previous_due_amount, 2) ?></td>
                             </tr>
@@ -291,6 +304,14 @@
                                 </td>
                                 <td style="text-align: right; border: none;">
                                     TK <?= number_format($current_collection, 2) ?></td>
+                            </tr>
+                            <tr>
+                                <td colspan="2" style="border: none;"></td>
+                                <td colspan="2" style="border: none;">
+                                    Cash Discount
+                                </td>
+                                <td style="text-align: right; border: none;">
+                                    TK (-<?= number_format($current_collection_discount, 2) ?>)</td>
                             </tr>
                             <tr style="font-weight: bold;">
                                 <td colspan="2" style="border: none;"></td>
