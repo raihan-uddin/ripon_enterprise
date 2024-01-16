@@ -207,6 +207,30 @@ class ProdModels extends CActiveRecord
     }
 
 
+    public function updateProductPrice($id, $sellPrice = 0, $purchasePrice = 0)
+    {
+        $data = self::model()->findByPk($id);
+        if ($data) {
+            $changed = false;
+            if ($sellPrice != $data->sell_price && $sellPrice > 0) {
+                $data->sell_price = $sellPrice;
+                $changed = true;
+                $sp = new SellPrice();
+                $sp->model_id = $data->id;
+                $sp->sell_price = $data->sell_price;
+                $sp->is_active = SellPrice::ACTIVE;
+                $sp->save();
+            }
+            if ($purchasePrice != $data->sell_price && $purchasePrice > 0) {
+                $data->purchase_price = $purchasePrice;
+                $changed = true;
+            }
+            if ($changed) {
+                $data->save();
+            }
+        }
+    }
+
     public function barcodeGenerator($code)
     {
         //$link = '<form target="_blank" action="' . Yii::app()->request->baseUrl . '/myBarCodeGen/html/BCGupca.php" method="post">';

@@ -114,6 +114,8 @@ class SellOrderController extends Controller
                             }
                         }
                     }
+                    ProdModels::model()->updateProductPrice($model2->model_id, $model2->amount);
+
                 }
                 echo CJSON::encode(array(
                     'status' => 'success',
@@ -191,6 +193,9 @@ class SellOrderController extends Controller
                         var_dump($model2->getErrors());
                         exit;
                     }
+
+                    ProdModels::model()->updateProductPrice($model2->model_id, $model2->amount);
+
                     $details_id_arr[] = $model2->id;
                 }
                 if (count($details_id_arr) > 0) {
