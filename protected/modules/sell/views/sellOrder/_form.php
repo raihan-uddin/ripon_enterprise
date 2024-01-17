@@ -407,11 +407,22 @@ Yii::app()->clientScript->registerCoreScript("jquery.ui");
                                     source: function (request, response) {
                                         var search = request.term;
                                         $.post('<?php echo Yii::app()->baseUrl ?>/index.php/prodModels/Jquery_showprodSearch', {
-                                                "q": search,
-                                            },
-                                            function (data) {
-                                                response(data);
-                                            }, "json");
+                                            "q": search,
+                                        }, function (data) {
+                                            response(data);
+
+                                            // Check if there's only one item and trigger select event
+                                            if (data.length === 1 && data[0].id) {
+                                                $('#model_id_text').val(data[0].value);
+                                                $('#SellOrderDetails_model_id').val(data[0].id);
+                                                $('#SellOrderDetails_amount').val(data[0].sell_price);
+                                                // Trigger select event
+                                                $('#model_id_text').autocomplete('option', 'select').call($('#model_id_text')[0], null, {
+                                                    item: data[0]
+                                                });
+                                                showPurchasePrice(data[0].purchasePrice);
+                                            }
+                                        }, "json");
                                     },
                                     minLength: 1,
                                     delay: 700,
@@ -419,21 +430,35 @@ Yii::app()->clientScript->registerCoreScript("jquery.ui");
                                         $('#model_id_text').val(ui.item.value);
                                         $('#SellOrderDetails_model_id').val(ui.item.id);
                                         $('#SellOrderDetails_amount').val(ui.item.sell_price);
+                                        showPurchasePrice(ui.item.purchasePrice);
+
+                                        // Move cursor to the next visible input field
+                                        var $form = $('#model_id_text').closest('form');
+                                        var $inputs = $form.find(':input:visible:not([disabled])');
+                                        var currentIndex = $inputs.index($('#model_id_text'));
+                                        $inputs.eq(currentIndex + 1).focus();
                                     }
                                 }).data("ui-autocomplete")._renderItem = function (ul, item) {
-                                    return $("<li></li>")
+                                    // Use Bootstrap styling for the autocomplete results
+                                    var listItem = $("<li class='list-group-item p-2'></li>")
                                         .data("item.autocomplete", item)
-                                        .append(`<a>
-                                                    <img style="height: 50px; width: 50px;" src="${item.img}" alt="${item.name}">
-                                                        ${item.name} <br>
-                                                        <i><small>Code: ${item.code}</small></i>,
-                                                        <i><small><b>P.P:</b> ${item.purchasePrice}</small></i>,
-                                                        <i><small>S.P: ${item.sell_price}</small></i>
-                                                </a>`)
-                                        .appendTo(ul);
-                                };
+                                        .append(`
+                                        <div class="row align-items-center">
+                                            <div class="col-10 0">
+                                                <p class="m-1">${item.name}</p>
+                                                <p class="m-1">
+                                                    <small><strong>Code:</strong> ${item.code}</small>,
+                                                    <small><strong>Purchase Price:</strong> ${item.purchasePrice}</small>,
+                                                    <small><strong>Selling Price:</strong> ${item.sell_price}</small>
+                                                </p>
+                                            </div>
+                                        </div>`);
 
+                                    return listItem.appendTo(ul);
+                                };
                             });
+
+
                         </script>
                     </div>
                     <div class="form-group col-sm-12 col-md-3">
@@ -456,12 +481,22 @@ Yii::app()->clientScript->registerCoreScript("jquery.ui");
                                     source: function (request, response) {
                                         var search = request.term;
                                         $.post('<?php echo Yii::app()->baseUrl ?>/index.php/inventory/inventory/Jquery_showprodSlNoSearch', {
-                                                "q": search,
-                                                "model_id": $('#SellOrderDetails_model_id').val(),
-                                            },
-                                            function (data) {
-                                                response(data);
-                                            }, "json");
+                                            "q": search,
+                                            "model_id": $('#SellOrderDetails_model_id').val(),
+                                        }, function (data) {
+                                            response(data);
+
+                                            // Check if there's only one item and trigger select event
+                                            if (data.length === 1 && data[0].id) {
+                                                $('#model_id_text').val(data[0].label);
+                                                $('#product_sl_no').val(data[0].product_sl_no);
+                                                $('#SellOrderDetails_model_id').val(data[0].id);
+                                                $('#SellOrderDetails_amount').val(data[0].sell_price);
+                                                $('#SellOrderDetails_qty').val(1);
+                                                $('#SellOrderDetails_row_total').val(data[0].sell_price);
+                                                showPurchasePrice(data[0].purchasePrice);
+                                            }
+                                        }, "json");
                                     },
                                     minLength: 1,
                                     delay: 700,
@@ -473,15 +508,34 @@ Yii::app()->clientScript->registerCoreScript("jquery.ui");
                                         $('#SellOrderDetails_qty').val(1);
                                         $('#SellOrderDetails_row_total').val(ui.item.sell_price);
                                         // $('.product_unit_text').html($('#Inventory_unit_id option:selected').text());
+                                        showPurchasePrice(ui.item.purchasePrice);
+
+                                        // Move cursor to the next visible input field
+                                        var $form = $('#product_sl_no').closest('form');
+                                        var $inputs = $form.find(':input:visible:not([disabled])');
+                                        var currentIndex = $inputs.index($('#product_sl_no'));
+                                        $inputs.eq(currentIndex + 1).focus();
                                     }
                                 }).data("ui-autocomplete")._renderItem = function (ul, item) {
-                                    return $("<li></li>")
+                                    var listItem = $("<li class='list-group-item p-2'></li>")
                                         .data("item.autocomplete", item)
-                                        .append(`<a><img style="height: 50px; width: 50px;" src="${item.img}"> ${item.name} <br><i><small>${item.product_sl_no}</small></i> </a>`)
-                                        .appendTo(ul);
-                                };
+                                        .append(`
+                                        <div class="row align-items-center">
+                                            <div class="col-12">
+                                                <p class="m-1">${item.product_sl_no}</p>
+                                                <p class="mb-0" style="font-size: 10px;">
+                                                    <small><strong>Name:</strong> ${item.name}</small>, <br>
+                                                    <small><strong>Code:</strong> ${item.code}</small>,
+                                                    <small><strong>Sell Price:</strong> ${item.sell_price}</small>,
+                                                    <small><strong>Purchase Price:</strong> ${item.purchasePrice}</small>,
+                                                </p>
+                                            </div>
+                                        </div>`);
 
+                                    return listItem.appendTo(ul);
+                                };
                             });
+
                         </script>
                     </div>
                     <div class="form-group col-xs-12 col-md-2">
@@ -493,9 +547,12 @@ Yii::app()->clientScript->registerCoreScript("jquery.ui");
                     <div class="form-group col-xs-12 col-md-2">
                         <?php echo $form->labelEx($model2, 'amount'); ?>
                         <?php echo $form->textField($model2, 'amount', array('maxlength' => 255, 'class' => 'form-control qty-amount')); ?>
-                        <span class="help-block"
-                              style="color: red; width: 100%"> <?php echo $form->error($model2, 'amount'); ?></span>
+                        <!-- Display Costing Amount without margin and padding -->
+                        <span class="help-block costing-amount" style="font-size: 12px; color: #333; margin: 0; padding: 0; width: 100%"></span>
+                        <span class="help-block" style="color: red; width: 100%"> <?php echo $form->error($model2, 'amount'); ?></span>
                     </div>
+
+
                     <div class="form-group col-xs-12 col-md-2">
                         <?php echo $form->labelEx($model2, 'row_total'); ?>
                         <?php echo $form->textField($model2, 'row_total', array('maxlength' => 255, 'class' => 'form-control', 'readonly' => true)); ?>
@@ -778,6 +835,7 @@ Yii::app()->clientScript->registerCoreScript("jquery.ui");
         $("#SellOrderDetails_model_id").val('');
         $("#SellOrderDetails_warranty").val('');
         resetProductSlNo();
+        showPurchasePrice(0);
     }
 
     function resetProductSlNo() {
@@ -811,6 +869,7 @@ Yii::app()->clientScript->registerCoreScript("jquery.ui");
         $("#SellOrderDetails_color").val('');
         $("#SellOrderDetails_note").val('');
         $("#SellOrderDetails_warranty").val('');
+        showPurchasePrice(0);
     }
 
     function calculateTotal() {
@@ -866,6 +925,13 @@ Yii::app()->clientScript->registerCoreScript("jquery.ui");
             return false;
         }
     });
+
+    function showPurchasePrice(purchasePrice = 0) {
+        if (purchasePrice > 0)
+            $('.costing-amount').html('<span style="color: green;">P.P: <b>' + parseFloat(purchasePrice).toFixed(2) + '</b></span>');
+        else
+            $('.costing-amount').html('')
+    }
 
 </script>
 
