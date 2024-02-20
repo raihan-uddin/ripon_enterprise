@@ -55,49 +55,7 @@ $form = $this->beginWidget('CActiveForm', array(
                     <span class="help-block"
                           style="color: red; width: 100%"> <?php echo $form->error($model, 't_type'); ?></span>
                 </div>
-                <div class="form-group row" style="display: none;">
-                    <?php echo $form->labelEx($model, 'store_id', ['class' => 'col-sm-4 col-form-label']); ?>
-                    <div class="col-sm-8">
-                        <?php echo $form->dropDownList(
-                            $model, 'store_id', CHtml::listData(Stores::model()->findAll(array('order' => 'name ASC')), 'id', 'name'), array(
-                            'prompt' => 'Select',
-                            'class' => 'form-control',
-                            'ajax' => array(
-                                'type' => 'POST',
-                                'dataType' => 'json',
-                                'url' => CController::createUrl('/inventory/location/subCatOfThisCat'),
-                                'success' => 'function(data) {
-                                        $("#Inventory_location_id").html(data.subCatList);
-                                 }',
-                                'data' => array(
-                                    'store_id' => 'js:jQuery("#Inventory_store_id").val()',
-                                ),
-                                'beforeSend' => 'function(){
-                                document.getElementById("Inventory_location_id").style.background="url(' . Yii::app()->theme->baseUrl . '/images/ajax-loader.gif) no-repeat #FFFFFF 80% 1px";   
-                         }',
-                                'complete' => 'function(){
-                            document.getElementById("Inventory_location_id").style.background="url(' . Yii::app()->theme->baseUrl . '/images/downDrop.png) no-repeat #FFFFFF 98% 2px"; 
-                        }',
-                            ),
-                        ));
-                        ?>
-                    </div>
-                    <span class="help-block"
-                          style="color: red; width: 100%"> <?php echo $form->error($model, 'store_id'); ?></span>
-                </div>
-                <div class="form-group row" style="display: none;">
-                    <?php echo $form->labelEx($model, 'location_id', ['class' => 'col-sm-4 col-form-label']); ?>
-                    <div class="col-sm-8">
-                        <?php echo $form->dropDownList(
-                            $model, 'location_id', CHtml::listData(Location::model()->findAll(array('order' => 'name ASC')), 'id', 'name'), array(
-                            'prompt' => 'Select',
-                            'class' => 'form-control',
-                        ));
-                        ?>
-                    </div>
-                    <span class="help-block"
-                          style="color: red; width: 100%"> <?php echo $form->error($model, 'location_id'); ?></span>
-                </div>
+
                 <div class="form-group row">
                     <?php echo $form->labelEx($model, 'remarks', ['class' => 'col-sm-4 col-form-label']); ?>
                     <div class="col-sm-8">
@@ -158,8 +116,6 @@ $form = $this->beginWidget('CActiveForm', array(
                                                 if ($("#Inventory_t_type").val() == <?=  Inventory::STOCK_OUT ?>) {
                                                     $.post('<?php echo Yii::app()->baseUrl ?>/index.php/inventory/inventory/Jquery_getStockQty', {
                                                         model_id: ui.item.id,
-                                                        store_id: $("#Inventory_store_id").val(),
-                                                        location_id: $("#Inventory_location_id").val()
                                                     }, function (response) {
                                                         $("#Inventory_closing_stock").val(response);
                                                     });
@@ -206,8 +162,6 @@ $form = $this->beginWidget('CActiveForm', array(
                                                 if ($("#Inventory_t_type").val() == <?=  Inventory::STOCK_OUT ?>) {
                                                     $.post('<?php echo Yii::app()->baseUrl ?>/index.php/inventory/inventory/Jquery_getStockQty', {
                                                         model_id: ui.item.id,
-                                                        store_id: $("#Inventory_store_id").val(),
-                                                        location_id: $("#Inventory_location_id").val()
                                                     }, function (response) {
                                                         $("#Inventory_closing_stock").val(response);
                                                     });
@@ -253,8 +207,6 @@ $form = $this->beginWidget('CActiveForm', array(
                                                 if ($("#Inventory_t_type").val() == <?=  Inventory::STOCK_OUT ?>) {
                                                     $.post('<?php echo Yii::app()->baseUrl ?>/index.php/inventory/inventory/Jquery_getStockQty', {
                                                         model_id: ui.item.id,
-                                                        store_id: $("#Inventory_store_id").val(),
-                                                        location_id: $("#Inventory_location_id").val()
                                                     }, function (response) {
                                                         $("#Inventory_closing_stock").val(response);
                                                     });

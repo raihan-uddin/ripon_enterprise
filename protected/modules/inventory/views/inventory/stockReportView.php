@@ -1,3 +1,12 @@
+<?php
+/**
+ * @var string $message
+ * @var string $startDate
+ * @var string $endDate
+ *
+ */
+?>
+
 <style>
     .summaryTab {
         float: left;
@@ -30,7 +39,6 @@
 
     .final-result .sticky {
         position: sticky;
-        position: -webkit-sticky;
         top: 0;
         background: white;
     }
@@ -39,6 +47,11 @@
         background: #dedede;
         transition: background-color 100ms;
     }
+
+    table tr {
+        transition: background-color 0.3s; /* Add transition for smooth effect */
+    }
+
 
 </style>
 
@@ -87,7 +100,8 @@ echo "</div>";
            id="table-1">
         <thead>
         <tr>
-            <td colspan="10" style="font-size:16px; font-weight:bold; text-align:center"><?php echo $message; ?></td>
+            <td colspan="10" style="font-size:16px; font-weight:bold; text-align:center">
+                <?php echo $message; ?></td>
         </tr>
         <tr class="titlesTr sticky">
             <th style="width: 2%; box-shadow: 0px 0px 0px 1px black inset;">SL</th>
@@ -111,6 +125,7 @@ echo "</div>";
         $sl = 1;
         $rowFound = false;
         $groundTotal = 0;
+        /** @var mixed $data */
         foreach ($data as $dmr) {
             if ($dmr->opening_stock != 0 || $dmr->stock_in != 0 || $dmr->stock_out) {
                 $closing = (($dmr->opening_stock + $dmr->stock_in) - $dmr->stock_out);
@@ -137,10 +152,18 @@ echo "</div>";
                     </td>
 
                     <td style="text-align: center;"><?php echo $dmr->opening_stock; ?></td>
-                    <td style="text-align: center;"><?php echo $dmr->stock_in; ?></td>
-                    <td style="text-align: center;"><?php echo $dmr->stock_out; ?></td>
+                    <td style="text-align: center;"><a href="#" onclick="currentStockInPreview(
+                        <?= $dmr->model_id > 0 ? $dmr->model_id : 0 ?>,
+                        <?= strtotime($startDate) ?>,
+                        <?= strtotime($endDate) ?> )"
+                        ><?php echo $dmr->stock_in; ?></a></td>
+                    <td style="text-align: center;"><a href="#" onclick="currentStockOutPreview(
+                        <?= $dmr->model_id > 0 ? $dmr->model_id : 0 ?>,
+                        <?= strtotime($startDate) ?>,
+                        <?= strtotime($endDate) ?> )"
+                        ><?php echo $dmr->stock_out; ?></a></td>
                     <td style="text-align: center;"><?php echo $closing; ?></td>
-                    <td style="text-align: center;"><?php echo is_numeric($dmr->sell_price)  ?  number_format($dmr->sell_price, 2) : ''; ?></td>
+                    <td style="text-align: center;"><?php echo is_numeric($dmr->sell_price) ? number_format($dmr->sell_price, 2) : ''; ?></td>
                     <td style="text-align: right;"><?php echo is_numeric($stockValue) ? number_format($stockValue, 2) : ''; ?></td>
                 </tr>
                 <?php
@@ -217,8 +240,34 @@ echo "</div>";
     });
 
 
-    function currentStockPreview(product_id) {
-        var URL = '<?php echo Yii::app()->createUrl('inventory/inventory/currentStockReportBatchWiseView'); ?>?product_id=' + product_id;
+    function currentStockPreview(product_id, start_date, end_date) {
+        var URL = '<?php echo Yii::app()->createUrl('inventory/inventory/currentStockReportBatchWiseView'); ?>?product_id=' + product_id
+        var day = new Date();
+        var id = day.getTime();
+        var w = 900;
+        var h = 600;
+        var scrl = 1;
+        var winl = (screen.width - w) / 2;
+        var wint = (screen.height - h) / 2;
+        winprops = 'height=' + h + ',width=' + w + ',top=' + wint + ',left=' + winl + ',scrollbars=' + scrl + ',toolbar=0,location=0,statusbar=0,menubar=0,resizable=0';
+        eval("page" + id + " = window.open(URL, '" + id + "', winprops);");
+    }
+
+    function currentStockOutPreview(product_id, start_date, end_date) {
+        var URL = '<?php echo Yii::app()->createUrl('inventory/inventory/currentStockOutReportBatchWiseView'); ?>?product_id=' + product_id + '&start_date=' + start_date + '&end_date=' + end_date;
+        var day = new Date();
+        var id = day.getTime();
+        var w = 900;
+        var h = 600;
+        var scrl = 1;
+        var winl = (screen.width - w) / 2;
+        var wint = (screen.height - h) / 2;
+        winprops = 'height=' + h + ',width=' + w + ',top=' + wint + ',left=' + winl + ',scrollbars=' + scrl + ',toolbar=0,location=0,statusbar=0,menubar=0,resizable=0';
+        eval("page" + id + " = window.open(URL, '" + id + "', winprops);");
+    }
+
+    function currentStockInPreview(product_id, start_date, end_date) {
+        var URL = '<?php echo Yii::app()->createUrl('inventory/inventory/currentStockInReportBatchWiseView'); ?>?product_id=' + product_id + '&start_date=' + start_date + '&end_date=' + end_date;
         var day = new Date();
         var id = day.getTime();
         var w = 900;

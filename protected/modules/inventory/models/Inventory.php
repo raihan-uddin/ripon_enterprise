@@ -8,8 +8,6 @@
  * @property integer $sl_no
  * @property string $date
  * @property string $challan_no
- * @property integer $store_id
- * @property integer $location_id
  * @property integer $model_id
  * @property double $stock_in
  * @property double $stock_out
@@ -90,12 +88,12 @@ class Inventory extends CActiveRecord
         // will receive user inputs.
         return array(
             array('date, model_id, stock_status', 'required'),
-            array('sl_no, store_id, location_id, model_id, stock_status, source_id, create_by, update_by, warranty', 'numerical', 'integerOnly' => true),
+            array('sl_no, model_id, stock_status, source_id, create_by, update_by, warranty', 'numerical', 'integerOnly' => true),
             array('stock_in, stock_out, sell_price, purchase_price, row_total, master_id, source_id', 'numerical'),
             array('challan_no, remarks, product_sl_no', 'length', 'max' => 255),
             array('date, create_time, update_time', 'safe'),
             // The following rule is used by search().
-            array('id, sl_no, date, challan_no, row_total, store_id, location_id, master_id, source_id, product_sl_no, model_id, stock_in, warranty, stock_out, sell_price, purchase_price, stock_status, source_id, product_sl_no, remarks, create_time, create_by, update_time, update_by', 'safe', 'on' => 'search'),
+            array('id, sl_no, date, challan_no, row_total, master_id, source_id, product_sl_no, model_id, stock_in, warranty, stock_out, sell_price, purchase_price, stock_status, source_id, product_sl_no, remarks, create_time, create_by, update_time, update_by', 'safe', 'on' => 'search'),
         );
     }
 
@@ -122,8 +120,6 @@ class Inventory extends CActiveRecord
             't_type' => 'Trx. Type',
             'date' => 'Date',
             'challan_no' => 'Challan No',
-            'store_id' => 'Store',
-            'location_id' => 'Location',
             'model_id' => 'Product',
             'stock_in' => 'Stock In',
             'stock_out' => 'Stock Out',
@@ -143,17 +139,12 @@ class Inventory extends CActiveRecord
         );
     }
 
-    public function closingStock($model_id, $store_id = null, $location_id = null, $product_sl_no = null)
+    public function closingStock($model_id, $product_sl_no = null)
     {
         $criteria = new CDbCriteria();
         $criteria->select = "SUM(stock_in) AS stock_in, sum(stock_out) AS stock_out";
         $criteria->addColumnCondition(['model_id' => $model_id]);
-        if ($store_id > 0) {
-            $criteria->addColumnCondition(['store_id' => $store_id]);
-        }
-        if ($location_id > 0) {
-            $criteria->addColumnCondition(['location_id' => $location_id]);
-        }
+
         if ($product_sl_no && strlen($product_sl_no) > 0) {
             $criteria->addColumnCondition(['t.product_sl_no' => $product_sl_no]);
         }
@@ -195,8 +186,6 @@ class Inventory extends CActiveRecord
         $criteria->compare('sl_no', $this->sl_no);
         $criteria->compare('date', $this->date, true);
         $criteria->compare('challan_no', $this->challan_no, true);
-        $criteria->compare('store_id', $this->store_id);
-        $criteria->compare('location_id', $this->location_id);
         $criteria->compare('stock_in', $this->stock_in);
         $criteria->compare('stock_out', $this->stock_out);
         $criteria->compare('sell_price', $this->sell_price);
@@ -252,9 +241,9 @@ class Inventory extends CActiveRecord
         if ($value == self::MANUAL_ENTRY)
             $badge = "<span class='badge badge-info'>MANUAL ENTRY</span>";
         else if ($value == self::PURCHASE_RECEIVE)
-            $badge = "<span class='badge badge-info'>PURCHASE RECEIVE</span>";
+            $badge = "<span class='badge badge-info'>PURCHASE</span>";
         else if ($value == self::SALES_DELIVERY)
-            $badge = "<span class='badge badge-info'>SALES DELIVERY</span>";
+            $badge = "<span class='badge badge-info'>SALES</span>";
         else if ($value == self::JOB_CARD_ISSUE)
             $badge = "<span class='badge badge-info'>JC ISSUE</span>";
         else if ($value == self::PRODUCTION)

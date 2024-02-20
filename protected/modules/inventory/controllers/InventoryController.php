@@ -69,8 +69,6 @@ class InventoryController extends Controller
                     $model2->model_id = $model_id;
                     $model2->date = $_POST['Inventory']['date'];
                     $model2->product_sl_no = $_POST['Inventory']['temp_product_sl_no'][$key];
-                    $model2->store_id = $_POST['Inventory']['store_id'];
-                    $model2->location_id = $_POST['Inventory']['location_id'];
                     if ($t_type == Inventory::STOCK_IN) {
                         $model2->stock_in = $_POST['Inventory']['temp_stock_in'][$key] > 0 ? $_POST['Inventory']['temp_stock_in'][$key] : $_POST['Inventory']['temp_stock_out'][$key];
                     } else {
@@ -192,9 +190,7 @@ class InventoryController extends Controller
     public function actionJquery_getStockQty()
     {
         $model_id = isset($_POST['model_id']) ? $_POST['model_id'] : 0;
-        $store_id = isset($_POST['store_id']) ? $_POST['store_id'] : 0;
-        $location_id = isset($_POST['location_id']) ? $_POST['location_id'] : 0;
-        $stock = Inventory::model()->closingStock($model_id, $store_id, $location_id);
+        $stock = Inventory::model()->closingStock($model_id);
         echo json_encode($stock);
     }
 
@@ -329,6 +325,8 @@ class InventoryController extends Controller
         }
         echo $this->renderPartial('stockReportView', array(
             'data' => $data,
+            'startDate' => $dateFrom,
+            'endDate' => $dateTo,
             'message' => $message,
         ), true, true);
         Yii::app()->end();
@@ -349,6 +347,55 @@ class InventoryController extends Controller
 
         echo $this->renderPartial('currentStockReportBatchWiseView', array(
             'model_id' => $model_id,
+            'message' => $message
+        ), true, true);
+        Yii::app()->end();
+    }
+
+    public function actionCurrentStockOutReportBatchWiseView()
+    {
+        date_default_timezone_set('Asia/Dhaka');
+
+        $data = '';
+        $condition = '';
+        if ($_GET['product_id'] != "") {
+            $message = "";
+        } else {
+            $message = "<div class='flash-error'>Please select a product!</div>";
+        }
+        $start_date = $_GET['start_date'];
+        $end_date = $_GET['end_date'];
+        $model_id = $_GET['product_id'];
+
+        echo $this->renderPartial('currentStockOutReportBatchWiseView', array(
+            'model_id' => $model_id,
+            'start_date' => $start_date,
+            'end_date' => $end_date,
+            'message' => $message
+        ), true, true);
+        Yii::app()->end();
+    }
+
+
+    public function actionCurrentStockInReportBatchWiseView()
+    {
+        date_default_timezone_set('Asia/Dhaka');
+
+        $data = '';
+        $condition = '';
+        if ($_GET['product_id'] != "") {
+            $message = "";
+        } else {
+            $message = "<div class='flash-error'>Please select a product!</div>";
+        }
+        $start_date = $_GET['start_date'];
+        $end_date = $_GET['end_date'];
+        $model_id = $_GET['product_id'];
+
+        echo $this->renderPartial('currentStockInReportBatchWiseView', array(
+            'model_id' => $model_id,
+            'start_date' => $start_date,
+            'end_date' => $end_date,
             'message' => $message
         ), true, true);
         Yii::app()->end();

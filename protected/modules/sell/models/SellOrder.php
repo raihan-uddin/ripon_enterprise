@@ -118,8 +118,7 @@ class SellOrder extends CActiveRecord
         // NOTE: you may need to adjust the relation name and the related
         // class name for the relations automatically generated below.
         return array(
-            'customer' => array(self::BELONGS_TO, 'Customer', 'customer_id'),
-
+            'customer' => array(self::BELONGS_TO, 'Customers', 'customer_id'),
         );
     }
 
