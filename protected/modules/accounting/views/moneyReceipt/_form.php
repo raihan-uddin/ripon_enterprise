@@ -508,6 +508,7 @@ $this->widget('application.components.BreadCrumb', array(
             $(this).addClass("is-invalid");
         }
         calculateTotal();
+        calculateRemainingAMount();
     });
 
     function calculateTotal() {
@@ -520,12 +521,6 @@ $this->widget('application.components.BreadCrumb', array(
         $('#MoneyReceipt_total_paid_amount').val(amount_total);
         // $('#MoneyReceipt_collected_amt').val(amount_total);
 
-        let currentDue = $("#MoneyReceipt_invoice_total_due").val();
-        let currentPayment = $("#MoneyReceipt_total_paid_amount").val();
-        let currentDiscount = $("#MoneyReceipt_total_discount_amount").val();
-        let rem_amount = currentDue - (currentPayment + currentDiscount);
-        $('#MoneyReceipt_rem_total_amount').val(rem_amount);
-
         let dis_amount = 0;
         $(".discount").each(function () {
             var discount = parseFloat($(this).val());
@@ -533,6 +528,18 @@ $this->widget('application.components.BreadCrumb', array(
             dis_amount += discount;
         });
         $('#MoneyReceipt_total_discount_amount').val(dis_amount);
+    }
+
+    function calculateRemainingAMount(){
+        let currentDue = parseFloat($("#MoneyReceipt_invoice_total_due").val());
+        let currentPayment = parseFloat($("#MoneyReceipt_total_paid_amount").val());
+        let currentDiscount = parseFloat($("#MoneyReceipt_total_discount_amount").val());
+        currentDue = isNaN(currentDue) ? 0 : currentDue;
+        currentPayment = isNaN(currentPayment) ? 0 : currentPayment;
+        currentDiscount = isNaN(currentDiscount) ? 0 : currentDiscount;
+        let rem_amount = currentDue - (currentPayment + currentDiscount);
+        console.log("currentDue", currentDue, "currentPayment", currentPayment, "currentDiscount", currentDiscount, "rem_amount", rem_amount);
+        $('#MoneyReceipt_rem_total_amount').val(rem_amount);
     }
 
     $("#list").on("click", ".dlt", function () {
@@ -570,8 +577,6 @@ $this->widget('application.components.BreadCrumb', array(
             // You can also clear the input field or take any other action as needed
             input.value = '';
         }
-
-        console.log("value", value);
         distributeValuesIntoAmounts(value);
     }
 
@@ -594,12 +599,12 @@ $this->widget('application.components.BreadCrumb', array(
             $(this).closest('tr').find('.amount').trigger('keyup');
             customerCurrentDueAmount += due;
         });
-        console.log("collectedAmt", amt , "customerCurrentDueAmount", customerCurrentDueAmount);
         if(amt > customerCurrentDueAmount){
             toastr.error("Collected amount is greater than customer due amount.");
             $("#MoneyReceipt_collected_amt").val("");
         }
         calculateTotal();
+        calculateRemainingAMount();
     }
 </script>
 
