@@ -51,6 +51,8 @@ class MoneyReceipt extends CActiveRecord
     public $tmp_amount;
     public $tmp_discount;
     public $tmp_invoice_id;
+    public $total_discount_amount;
+    public $collected_amt;
 
     const CASH = 1;
     const CHECK = 2;

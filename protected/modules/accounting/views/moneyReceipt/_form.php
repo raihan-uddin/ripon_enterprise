@@ -131,6 +131,20 @@ $this->widget('application.components.BreadCrumb', array(
                       style="color: red; width: 100%"> <?php echo $form->error($model, 'remarks'); ?></span>
             </div>
 
+            <div class="form-group col-sm-12 col-md-3" style="">
+                <?php echo $form->labelEx($model, 'collected_amt'); ?>
+                <div class="input-group" data-target-input="nearest">
+                    <?php echo $form->textField($model, 'collected_amt', array('class' => 'form-control', 'oninput' => 'validatePositiveNumber(this)')); ?>
+                    <div class="input-group-append ">
+                        <div class="input-group-text">
+                            <i class="fa fa-money"></i>
+                        </div>
+                    </div>
+                </div>
+                <span class="help-block"
+                      style="color: red; width: 100%"> <?php echo $form->error($model, 'collected_amt'); ?></span>
+            </div>
+
             <div class="form-group col-sm-12 col-md-2 bank online" style="display: none;">
                 <?php echo $form->labelEx($model, 'bank_id'); ?>
                 <div class="input-group" data-target-input="nearest">
@@ -319,6 +333,9 @@ $this->widget('application.components.BreadCrumb', array(
                             <?php echo $form->textField($model, 'total_paid_amount[]', array('class' => 'form-control  text-right', 'readonly' => true)); ?>
                         </th>
                         <th style="vertical-align: middle;">
+                            <?php echo $form->textField($model, 'total_discount_amount[]', array('class' => 'form-control  text-right', 'readonly' => true)); ?>
+                        </th>
+                        <th style="vertical-align: middle;">
                             <?php echo $form->textField($model, 'rem_total_amount[]', array('class' => 'form-control  text-right', 'readonly' => true)); ?>
                         </th>
                         <th style="vertical-align: middle;"></th>
@@ -501,14 +518,21 @@ $this->widget('application.components.BreadCrumb', array(
             amount_total += amount;
         });
         $('#MoneyReceipt_total_paid_amount').val(amount_total);
+        // $('#MoneyReceipt_collected_amt').val(amount_total);
 
-        let rem_amount = 0;
-        $(".rem-amount").each(function () {
-            var rem_qty_total = parseFloat($(this).val());
-            rem_qty_total = isNaN(rem_qty_total) ? 0 : rem_qty_total;
-            rem_amount += rem_qty_total;
-        });
+        let currentDue = $("#MoneyReceipt_invoice_total_due").val();
+        let currentPayment = $("#MoneyReceipt_total_paid_amount").val();
+        let currentDiscount = $("#MoneyReceipt_total_discount_amount").val();
+        let rem_amount = currentDue - (currentPayment + currentDiscount);
         $('#MoneyReceipt_rem_total_amount').val(rem_amount);
+
+        let dis_amount = 0;
+        $(".discount").each(function () {
+            var discount = parseFloat($(this).val());
+            discount = isNaN(discount) ? 0 : discount;
+            dis_amount += discount;
+        });
+        $('#MoneyReceipt_total_discount_amount').val(dis_amount);
     }
 
     $("#list").on("click", ".dlt", function () {
@@ -523,6 +547,59 @@ $this->widget('application.components.BreadCrumb', array(
         $("#MoneyReceipt_bank_id").val("");
         $("#MoneyReceipt_cheque_no").val("");
         $("#MoneyReceipt_cheque_date").val("");
+    }
+
+    function validatePositiveNumber(input) {
+        // Get the input value
+        var value = input.value;
+
+        // Remove leading zeros
+        value = value.replace(/^0+/, '');
+
+        // Remove non-digit characters except dot
+        value = value.replace(/[^\d.]/g, '');
+
+        // Remove extra dots
+        value = value.replace(/(\..*)\./g, '$1');
+
+        // Update the input value
+        input.value = value;
+
+        // Check if the value is a positive number
+        if (parseFloat(value) < 0 || isNaN(parseFloat(value))) {
+            // You can also clear the input field or take any other action as needed
+            input.value = '';
+        }
+
+        console.log("value", value);
+        distributeValuesIntoAmounts(value);
+    }
+
+    function distributeValuesIntoAmounts(collectedAmt) {
+        let amt = parseFloat(collectedAmt);
+        let customerCurrentDueAmount = 0;
+        $(".due-amount").each(function () {
+            let due = parseFloat($(this).val());
+            let discount = parseFloat($(this).closest('tr').find('.discount').val());
+            due = isNaN(due) ? 0 : due;
+            discount = isNaN(discount) ? 0 : discount;
+            let rem = due - (discount);
+            if (collectedAmt >= rem) {
+                $(this).closest('tr').find('.amount').val(rem).change();
+                collectedAmt = collectedAmt - rem;
+            } else {
+                $(this).closest('tr').find('.amount').val(collectedAmt).change();
+                collectedAmt = 0;
+            }
+            $(this).closest('tr').find('.amount').trigger('keyup');
+            customerCurrentDueAmount += due;
+        });
+        console.log("collectedAmt", amt , "customerCurrentDueAmount", customerCurrentDueAmount);
+        if(amt > customerCurrentDueAmount){
+            toastr.error("Collected amount is greater than customer due amount.");
+            $("#MoneyReceipt_collected_amt").val("");
+        }
+        calculateTotal();
     }
 </script>
 
