@@ -538,7 +538,6 @@ $this->widget('application.components.BreadCrumb', array(
         currentPayment = isNaN(currentPayment) ? 0 : currentPayment;
         currentDiscount = isNaN(currentDiscount) ? 0 : currentDiscount;
         let rem_amount = currentDue - (currentPayment + currentDiscount);
-        console.log("currentDue", currentDue, "currentPayment", currentPayment, "currentDiscount", currentDiscount, "rem_amount", rem_amount);
         $('#MoneyReceipt_rem_total_amount').val(rem_amount);
     }
 
@@ -596,8 +595,10 @@ $this->widget('application.components.BreadCrumb', array(
                 $(this).closest('tr').find('.amount').val(collectedAmt).change();
                 collectedAmt = 0;
             }
-            $(this).closest('tr').find('.amount').trigger('keyup');
-            customerCurrentDueAmount += due;
+            if (collectedAmt > 0) {
+                $(this).closest('tr').find('.amount').trigger('keyup');
+                customerCurrentDueAmount += due;
+            }
         });
         if(amt > customerCurrentDueAmount){
             toastr.error("Collected amount is greater than customer due amount.");
