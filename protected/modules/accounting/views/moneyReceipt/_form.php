@@ -595,9 +595,7 @@ $this->widget('application.components.BreadCrumb', array(
                 $(this).closest('tr').find('.amount').val(collectedAmt).change();
                 collectedAmt = 0;
             }
-            if(collectedAmt > 0){
-                $(this).closest('tr').find('.amount').trigger('keyup');
-            }
+            $(this).closest('tr').find('.amount').trigger('keyup');
             customerCurrentDueAmount += due;
         });
         if(amt > customerCurrentDueAmount){
