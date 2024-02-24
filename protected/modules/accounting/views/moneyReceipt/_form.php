@@ -595,10 +595,10 @@ $this->widget('application.components.BreadCrumb', array(
                 $(this).closest('tr').find('.amount').val(collectedAmt).change();
                 collectedAmt = 0;
             }
-            if (collectedAmt > 0) {
+            if(collectedAmt > 0){
                 $(this).closest('tr').find('.amount').trigger('keyup');
-                customerCurrentDueAmount += due;
             }
+            customerCurrentDueAmount += due;
         });
         if(amt > customerCurrentDueAmount){
             toastr.error("Collected amount is greater than customer due amount.");
