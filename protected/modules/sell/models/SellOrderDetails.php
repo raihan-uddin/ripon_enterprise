@@ -10,6 +10,7 @@
  * @property double $qty
  * @property double $amount
  * @property double $row_total
+ * @property double $costing
  * @property integer $is_delivery_done
  * @property integer $is_invoice_done
  * @property integer $created_by
@@ -28,6 +29,7 @@ class SellOrderDetails extends CActiveRecord
     public $code;
     public $image;
     public $description;
+    public $pp;
 
     const DELIVERY_DONE = 1;
     const DELIVERY_NOT_DONE = 0;
@@ -50,10 +52,10 @@ class SellOrderDetails extends CActiveRecord
 		return array(
             array('sell_order_id, model_id, qty, amount, row_total', 'required'),
             array('sell_order_id, model_id, is_delivery_done, is_invoice_done, created_by, updated_by, warranty', 'numerical', 'integerOnly' => true),
-            array('qty, amount, row_total', 'numerical'),
+            array('qty, amount, row_total, costing', 'numerical'),
             array('created_at, updated_at, color, note, product_sl_no', 'safe'),
             // The following rule is used by search().
-            array('id, sell_order_id, model_id, qty, note, product_sl_no, amount, row_total, is_delivery_done, warranty, color, is_invoice_done, created_by, created_at, updated_by, updated_at', 'safe', 'on' => 'search'),
+            array('id, sell_order_id, model_id, qty, note, product_sl_no, amount, row_total, is_delivery_done, warranty, color, is_invoice_done, created_by, created_at, updated_by, updated_at, costing', 'safe', 'on' => 'search'),
         );
 	}
 
@@ -88,6 +90,7 @@ class SellOrderDetails extends CActiveRecord
             'created_at' => 'Created At',
             'updated_by' => 'Updated By',
             'updated_at' => 'Updated At',
+            'costing' => 'Costing',
             'warranty' => 'Warranty (Mon.)',
         );
 	}
@@ -126,6 +129,7 @@ class SellOrderDetails extends CActiveRecord
 		$criteria->compare('updated_by',$this->updated_by);
         $criteria->compare('updated_at', $this->updated_at, true);
         $criteria->compare('note', $this->note, true);
+        $criteria->compare('costing', $this->costing, true);
 
         return new CActiveDataProvider($this, array(
             'criteria' => $criteria,

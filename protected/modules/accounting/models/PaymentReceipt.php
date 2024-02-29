@@ -240,10 +240,14 @@ class PaymentReceipt extends CActiveRecord
     public function totalPaidAmountOfThisOrder($order_id)
     {
         $criteria = new CDbCriteria();
-        $criteria->select = " SUM(amount) AS amount";
+        $criteria->select = "CAST(SUM(COALESCE(amount, 0) + COALESCE(discount, 0)) AS DECIMAL(10,2)) AS amount";
         $criteria->addColumnCondition(['t.order_id' => $order_id]);
         $data = self::model()->findByAttributes([], $criteria);
-        return $data ? $data->amount : 0;
+        $prAmount = 0;
+        if ($data)
+            if ($data->amount)
+                $prAmount = $data->amount;
+        return $prAmount;
     }
 
 }

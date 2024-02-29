@@ -199,9 +199,20 @@ if (Yii::app()->user->checkAccess('Accounting.MoneyReceipt.VoucherPreview')) {
                 'updated_by',
                 'updated_at',
                 */
-                /*array(
+                array
+                (
+                    'header' => 'Options',
+                    'template' => '{delete}',
                     'class' => 'CButtonColumn',
-                ),*/
+                    'htmlOptions' => ['style' => 'width: 200px', 'class' => 'text-center'],
+                    'buttons' => array(
+                        'delete' => array(
+                            'label' => '<i class="fa fa-trash fa-2x" style="color: red;"></i>&nbsp;&nbsp;',
+                            'imageUrl' => false,
+                            'options' => array('rel' => 'tooltip', 'data-toggle' => 'tooltip', 'title' => Yii::t('app', 'Delete')),
+                        ),
+                    )
+                ),
             ),
         )); ?>
     </div>

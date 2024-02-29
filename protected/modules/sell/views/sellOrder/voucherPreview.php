@@ -183,10 +183,10 @@
                                         if ($dt->note) {
                                             echo "<br>" . nl2br($dt->note);
                                         }
-                                        if (strlen($dt->product_sl_no) > 0) {
+                                        if (strlen($dt->product_sl_no ?? '') > 0) {
                                             echo "<br><b>SL:</b>$dt->product_sl_no";
                                         }
-                                        if (strlen($dt->warranty) > 0) {
+                                        if (strlen((string)$dt->warranty) > 0) {
                                             $dataArrayWarranty = explode(', ', $dt->warranty);
                                             $dataArrayWarrantyUnique = array_unique($dataArrayWarranty);
                                             $dataArrayWarrantyUnique = array_values($dataArrayWarrantyUnique);
@@ -289,6 +289,7 @@
                                     $criteriaMr1->addColumnCondition(['t.customer_id' => $data->customer_id, 'invoice_id' => $data->id]);
                                     $moneyReceipt1 = MoneyReceipt::model()->findByAttributes([], $criteriaMr1);
                                     $current_collection = $moneyReceipt1 ? $moneyReceipt1->amount : 0;
+                                    $current_collection = $current_collection > 0 ? $current_collection : 0;
                                     $current_collection_discount = $moneyReceipt1 ? $moneyReceipt1->discount : 0;
 
                                     $previous_due_amount = $prev_sell_value - $prev_collection;
@@ -311,7 +312,7 @@
                                     Cash Discount
                                 </td>
                                 <td style="text-align: right; border: none;">
-                                    TK (-<?= number_format($current_collection_discount, 2) ?>)</td>
+                                    TK (-<?= number_format($current_collection_discount > 0 ? $current_collection_discount : 0, 2) ?>)</td>
                             </tr>
                             <tr style="font-weight: bold;">
                                 <td colspan="2" style="border: none;"></td>

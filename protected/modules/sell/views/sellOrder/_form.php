@@ -295,6 +295,9 @@ Yii::app()->clientScript->registerCoreScript("jquery.ui");
                             </div>
                             <?php echo $form->textField($model, 'grand_total', array('maxlength' => 255, 'class' => 'form-control', 'placeholder' => '0', "aria-label" => "0", "aria-describedby" => "basic-addon4", 'readonly' => true)); ?>
                         </div>
+                        <span class="help-block current-costing-amount"
+                              style="font-size: 12px; color: #333; margin: 0; padding: 0; width: 100%"></span>
+                        <i class="fa fa-eye eye-icon" style="cursor: pointer;"></i>
                     </div>
                     <span class="help-block"
                           style="color: red; width: 100%"> <?php echo $form->error($model, 'grand_total'); ?></span>
@@ -421,6 +424,7 @@ Yii::app()->clientScript->registerCoreScript("jquery.ui");
                                                     item: data[0]
                                                 });
                                                 showPurchasePrice(data[0].purchasePrice);
+                                                showCurrentStock(data[0].stock);
                                             }
                                         }, "json");
                                     },
@@ -431,6 +435,7 @@ Yii::app()->clientScript->registerCoreScript("jquery.ui");
                                         $('#SellOrderDetails_model_id').val(ui.item.id);
                                         $('#SellOrderDetails_amount').val(ui.item.sell_price);
                                         showPurchasePrice(ui.item.purchasePrice);
+                                        showCurrentStock(ui.item.stock);
 
                                         // Move cursor to the next visible input field
                                         var $form = $('#model_id_text').closest('form');
@@ -450,6 +455,7 @@ Yii::app()->clientScript->registerCoreScript("jquery.ui");
                                                     <small><strong>Code:</strong> ${item.code}</small>,
                                                     <small><strong>Purchase Price:</strong> ${item.purchasePrice}</small>,
                                                     <small><strong>Selling Price:</strong> ${item.sell_price}</small>
+                                                    <small><strong>Stock:</strong> ${item.stock}</small>
                                                 </p>
                                             </div>
                                         </div>`);
@@ -495,6 +501,7 @@ Yii::app()->clientScript->registerCoreScript("jquery.ui");
                                                 $('#SellOrderDetails_qty').val(1);
                                                 $('#SellOrderDetails_row_total').val(data[0].sell_price);
                                                 showPurchasePrice(data[0].purchasePrice);
+                                                showCurrentStock(data[0].stock);
                                             }
                                         }, "json");
                                     },
@@ -509,6 +516,7 @@ Yii::app()->clientScript->registerCoreScript("jquery.ui");
                                         $('#SellOrderDetails_row_total').val(ui.item.sell_price);
                                         // $('.product_unit_text').html($('#Inventory_unit_id option:selected').text());
                                         showPurchasePrice(ui.item.purchasePrice);
+                                        showCurrentStock(ui.item.stock);
 
                                         // Move cursor to the next visible input field
                                         var $form = $('#product_sl_no').closest('form');
@@ -528,6 +536,7 @@ Yii::app()->clientScript->registerCoreScript("jquery.ui");
                                                     <small><strong>Code:</strong> ${item.code}</small>,
                                                     <small><strong>Sell Price:</strong> ${item.sell_price}</small>,
                                                     <small><strong>Purchase Price:</strong> ${item.purchasePrice}</small>,
+                                                    <small><strong>Stock:</strong> ${item.stock}</small>
                                                 </p>
                                             </div>
                                         </div>`);
@@ -541,6 +550,9 @@ Yii::app()->clientScript->registerCoreScript("jquery.ui");
                     <div class="form-group col-xs-12 col-md-2">
                         <?php echo $form->labelEx($model2, 'qty'); ?>
                         <?php echo $form->textField($model2, 'qty', array('maxlength' => 255, 'class' => 'form-control qty-amount')); ?>
+                        <!-- Display Stock without margin and padding -->
+                        <span class="help-block current-stock"
+                              style="font-size: 12px; color: #333; margin: 0; padding: 0; width: 100%"></span>
                         <span class="help-block"
                               style="color: red; width: 100%"> <?php echo $form->error($model2, 'qty'); ?></span>
                     </div>
@@ -548,8 +560,11 @@ Yii::app()->clientScript->registerCoreScript("jquery.ui");
                         <?php echo $form->labelEx($model2, 'amount'); ?>
                         <?php echo $form->textField($model2, 'amount', array('maxlength' => 255, 'class' => 'form-control qty-amount')); ?>
                         <!-- Display Costing Amount without margin and padding -->
-                        <span class="help-block costing-amount" style="font-size: 12px; color: #333; margin: 0; padding: 0; width: 100%"></span>
-                        <span class="help-block" style="color: red; width: 100%"> <?php echo $form->error($model2, 'amount'); ?></span>
+                        <?php echo $form->hiddenField($model2, 'pp', array('maxlength' => 255, 'class' => 'form-control pp')); ?>
+                        <span class="help-block costing-amount"
+                              style="font-size: 12px; color: #333; margin: 0; padding: 0; width: 100%"></span>
+                        <span class="help-block"
+                              style="color: red; width: 100%"> <?php echo $form->error($model2, 'amount'); ?></span>
                     </div>
 
 
@@ -733,28 +748,27 @@ Yii::app()->clientScript->registerCoreScript("jquery.ui");
     function addToList() {
         let model_id = $("#SellOrderDetails_model_id").val();
         let model_id_text = $("#model_id_text").val();
-        let unit_price = $("#SellOrderDetails_amount").val();
+        let unit_price = parseFloat($("#SellOrderDetails_amount").val());
+        unit_price = unit_price > 0 ? unit_price : 0;
+
         let note = $("#SellOrderDetails_note").val();
         let product_sl_no = $("#product_sl_no").val();
         let qty = $("#SellOrderDetails_qty").val();
         let row_total = $("#SellOrderDetails_row_total").val();
         let color = $("#SellOrderDetails_color").val();
         let warranty = $("#SellOrderDetails_warranty").val();
+        let pp = parseFloat($("#SellOrderDetails_pp").val());
+        pp = pp > 0 ? pp : 0;
         let isproductpresent = false;
         let temp_codearray = document.getElementsByName("SellOrderDetails[temp_model_id][]");
         let temp_sl_array = document.getElementsByName("SellOrderDetails[temp_product_sl_no][]");
+        if (unit_price <= pp) {
+            toastr.warning("Selling price must be greater than purchase price!");
+            toastr.error("Please change the selling price or change the purchase price of the product!");
+            return false;
+        }
 
-        /*if (temp_codearray.length > 0) {
-            for (let l = 0; l < temp_codearray.length; l++) {
-                var code = temp_codearray[l].value;
-                if (code == model_id) {
-                    isproductpresent = true;
-                    break;
-                }
-            }
-        }*/
         if (product_sl_no.length > 0) {
-            // console.log("length found");
             for (let l = 0; l < temp_sl_array.length; l++) {
                 let code = temp_sl_array[l].value;
                 if (code === product_sl_no) {
@@ -762,7 +776,6 @@ Yii::app()->clientScript->registerCoreScript("jquery.ui");
                     break;
                 }
             }
-            // console.log(isproductpresent);
         }
 
 
@@ -794,6 +807,7 @@ Yii::app()->clientScript->registerCoreScript("jquery.ui");
                     <td class="text-center">
                         ${row_total}
                         <input type="hidden" class="form-control text-center" value="${qty}" name="SellOrderDetails[temp_qty][]">
+                        <input type="hidden" class="form-control text-center temp-costing" value="${pp}" name="SellOrderDetails[temp_pp][]">
                         <input type="hidden" class="form-control text-center" value="${warranty}" name="SellOrderDetails[temp_warranty][]">
                         <input type="hidden" class="form-control text-center" value="${product_sl_no}" name="SellOrderDetails[temp_product_sl_no][]">
                         <input type="hidden" class="form-control text-center" value="${note}" name="SellOrderDetails[temp_note][]">
@@ -915,7 +929,50 @@ Yii::app()->clientScript->registerCoreScript("jquery.ui");
         let grand_total = (delivery_charge + total_amount + vat_amount) - discount_amount;
 
         $("#SellOrder_grand_total").val((grand_total).toFixed(2));
+
+        lossAlert();
     }
+
+    function calculateTotalCosting() {
+        let total_costing = 0;
+        if ($(".temp-costing").length > 0) {
+            $(".temp-costing").each(function () {
+                total_costing += parseFloat($(this).val());
+            });
+        }
+        $(".current-costing-amount").html('<span style="color: green;">Costing: <b>' + parseFloat(total_costing).toFixed(2) + '</b></span>');
+        return total_costing;
+    }
+
+
+    function lossAlert(){
+        calculateTotalCosting();
+        let total_costing = calculateTotalCosting();
+        let grand_total = parseFloat($("#SellOrder_grand_total").val());
+        grand_total = grand_total > 0 ? grand_total : 0;
+
+        let loss = parseFloat(grand_total - total_costing);
+        if(loss < 0){
+            toastr.error("You are going to loss " + parseFloat(loss).toFixed(2) + " BDT from this invoice!");
+        }
+
+    }
+
+    document.addEventListener('DOMContentLoaded', function () {
+        var eyeIcon = document.querySelector('.eye-icon');
+        var helpBlock = document.querySelector('.current-costing-amount');
+
+        // Initially hide the help block
+        helpBlock.style.display = 'none';
+
+        eyeIcon.addEventListener('click', function () {
+            if (helpBlock.style.display === 'none') {
+                helpBlock.style.display = 'block';
+            } else {
+                helpBlock.style.display = 'none';
+            }
+        });
+    });
 
     $(document).keypress(function (event) {
         let keycode = (event.keyCode ? event.keyCode : event.which);
@@ -930,9 +987,16 @@ Yii::app()->clientScript->registerCoreScript("jquery.ui");
         if (purchasePrice > 0)
             $('.costing-amount').html('<span style="color: green;">P.P: <b>' + parseFloat(purchasePrice).toFixed(2) + '</b></span>');
         else
-            $('.costing-amount').html('')
+            $('.costing-amount').html('');
+        $("#SellOrderDetails_pp").val(purchasePrice);
     }
 
+    function showCurrentStock(stock = 0) {
+        if (stock >= 0)
+            $('.current-stock').html('<span style="color: green;">Stock: <b>' + parseFloat(stock).toFixed(2) + '</b></span>');
+        else
+            $('.current-stock').html('<span style="color: red;">Stock: <b>' + parseFloat(stock).toFixed(2) + '</b></span>');
+    }
 </script>
 
 <?php $this->endWidget(); ?>

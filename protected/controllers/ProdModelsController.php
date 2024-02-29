@@ -35,22 +35,29 @@ class ProdModelsController extends Controller
         $item_id_excluded = isset($_POST['item_id_excluded']) ? trim($_POST['item_id_excluded']) : false;
 
         $criteria2 = new CDbCriteria();
-        $criteria2->compare('model_name', $search_prodName, true);
-        $criteria2->compare('code', $search_prodName, true, "OR");
+        $criteria2->compare('t.model_name', $search_prodName, true);
+        $criteria2->compare('t.code', $search_prodName, true, "OR");
 
         $criteria = new CDbCriteria();
         $criteria->mergeWith($criteria2);
         if (count($item_id) > 0) {
             if (!$item_id_excluded)
-                $criteria->addInCondition('item_id', $item_id);
+                $criteria->addInCondition('t.item_id', $item_id);
             else
-                $criteria->addNotInCondition('item_id', $item_id);
+                $criteria->addNotInCondition('t.item_id', $item_id);
         }
-        $criteria->order = "model_name asc";
+        $criteria->order = "t.model_name asc";
         $criteria->limit = 20;
         $prodInfos = ProdModels::model()->findAll($criteria);
         if ($prodInfos) {
             foreach ($prodInfos as $prodInfo) {
+                if ($prodInfo->stockable) {
+                    $stock = Inventory::model()->closingStock($prodInfo->id);
+                } else {
+                    $stock = 0;
+                }
+                $stock = Inventory::model()->closingStock($prodInfo->id);
+
                 $code = $prodInfo->code;
                 $value = "$prodInfo->model_name || $code";
                 $label = "$prodInfo->model_name || $code";
@@ -82,6 +89,7 @@ class ProdModelsController extends Controller
                     'unit_id' => $unit_id,
                     'sellDiscount' => $sellDiscount,
                     'img' => $imageWithUrl,
+                    'stock' => $stock,
                 );
             }
         } else {
@@ -100,6 +108,7 @@ class ProdModelsController extends Controller
                 'unit_id' => '',
                 'sellDiscount' => '',
                 'img' => $imageWithUrl,
+                'stock' => '',
             );
         }
         echo json_encode($results);
@@ -128,6 +137,11 @@ class ProdModelsController extends Controller
         $prodInfos = ProdModels::model()->findAll($criteria);
         if ($prodInfos) {
             foreach ($prodInfos as $prodInfo) {
+                if ($prodInfo->stockable) {
+                    $stock = Inventory::model()->closingStock($prodInfo->id);
+                } else {
+                    $stock = 0;
+                }
                 $code = $prodInfo->code;
                 $value = "$prodInfo->model_name || $code";
                 $label = "$prodInfo->model_name || $code";
@@ -159,6 +173,7 @@ class ProdModelsController extends Controller
                     'unit_id' => $unit_id,
                     'sellDiscount' => $sellDiscount,
                     'img' => $imageWithUrl,
+                    'stock' => $stock,
                 );
             }
         } else {
@@ -177,6 +192,7 @@ class ProdModelsController extends Controller
                 'purchasePrice' => '',
                 'sellDiscount' => '',
                 'img' => $imageWithUrl,
+                'stock' => '',
             );
         }
         echo json_encode($results);

@@ -129,6 +129,7 @@ class PurchaseOrder extends CActiveRecord
             'bill_to' => 'Bill To',
             'ship_to' => 'Ship To',
             'exp_receive_date' => 'Exp. Rcv. Date',
+            'order_note' => 'Order Note',
         );
     }
 

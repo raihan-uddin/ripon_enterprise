@@ -138,7 +138,23 @@ class PaymentReceiptController extends Controller
      */
     public function actionDelete($id)
     {
-        $this->loadModel($id)->delete();
+        $data = $this->loadModel($id);
+        if ($data) {
+            $orderId = $data->order_id;
+            $invoice = PurchaseOrder::model()->findByPk($orderId);
+            if (!$invoice)
+                throw new CHttpException(404, 'The requested page does not exist.');
+
+            if (!$this->loadModel($id)->delete())
+                throw new CHttpException(404, 'The requested page does not exist.');
+
+            $currentCollection = PaymentReceipt::model()->totalPaidAmountOfThisOrder($orderId);
+
+            if ($invoice) {
+                $invoice->is_paid = $currentCollection >= $invoice->grand_total ? PurchaseOrder::PAID : PurchaseOrder::DUE;
+                $invoice->save();
+            }
+        }
 
         // if AJAX request (triggered by deletion via admin grid view), we should not redirect the browser
         if (!isset($_GET['ajax']))

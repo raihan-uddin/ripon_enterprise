@@ -66,7 +66,8 @@ if (Yii::app()->user->checkAccess('Sell.Order.VoucherPreview')) {
                             <span class="input-group-text"
                                   id="basic-addon1">SO No</span>
                         </div>
-                        <?php echo $form->textField($model, 'so_no', array('maxlength' => 255, 'class' => 'form-control', "aria-describedby" => "basic-addon1")); ?>
+                        <?php /** @var mixed $model */
+                        echo $form->textField($model, 'so_no', array('maxlength' => 255, 'class' => 'form-control', "aria-describedby" => "basic-addon1")); ?>
                     </div>
                     <span class="help-block"
                           style="color: red; width: 100%"> <?php echo $form->error($model, 'so_no'); ?></span>

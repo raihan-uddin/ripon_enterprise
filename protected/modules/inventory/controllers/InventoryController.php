@@ -271,6 +271,7 @@ class InventoryController extends Controller
                 'sell_price' => '',
                 'unit_id' => '',
                 'sellDiscount' => '',
+                'stock' => '',
                 'img' => $imageWithUrl,
             );
         }

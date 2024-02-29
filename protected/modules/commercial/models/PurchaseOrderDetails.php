@@ -81,6 +81,9 @@ class PurchaseOrderDetails extends CActiveRecord
             'updated_by' => 'Updated By',
             'updated_at' => 'Updated At',
             'note' => 'Note',
+            'product_sl_no' => 'Product Sl No',
+            'warranty' => 'Warranty (Mon.)',
+            'amount' => 'Unit Price'
         );
     }
 

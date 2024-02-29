@@ -36,6 +36,8 @@
  * @property string $order_note
  * @property double $total_paid
  * @property double $total_due
+ * @property double $costing
+ * @property boolean $is_paid
  */
 class SellOrder extends CActiveRecord
 {
@@ -47,6 +49,7 @@ class SellOrder extends CActiveRecord
     public $print_type;
     public $company_name;
     public $customer_code;
+    public $pp;
 
     const INVOICE_DONE = 1;
     const INVOICE_NOT_DONE = 0;
@@ -80,6 +83,9 @@ class SellOrder extends CActiveRecord
     const PRODUCTION_ORDER_PRINT = 2;
     const ORDER_BOM = 3;
 
+    const PAID = 1;
+    const DUE = 0;
+
     /**
      * @return string the associated database table name
      */
@@ -98,7 +104,7 @@ class SellOrder extends CActiveRecord
         return array(
             array('max_sl_no, cash_due, so_no, date, customer_id, discount_percentage, discount_amount, grand_total, order_type', 'required'),
             array('grand_total, discount_amount, discount_percentage, vat_percentage, vat_amount, job_max_sl_no, 
-            total_amount, is_all_issue_done, is_all_production_done, is_paid, total_paid, total_due, delivery_charge', 'numerical'),
+            total_amount, is_all_issue_done, is_all_production_done, is_paid, total_paid, total_due, delivery_charge, costing', 'numerical'),
             array('max_sl_no, cash_due, customer_id, is_invoice_done, bom_complete, is_job_card_done, is_delivery_done, 
             is_partial_delivery, is_partial_invoice, created_by, updated_by', 'numerical', 'integerOnly' => true),
             array('created_at, updated_at, date, exp_delivery_date, so_no, job_no, job_card_date, order_note', 'safe'),
@@ -106,7 +112,7 @@ class SellOrder extends CActiveRecord
             array('id, date, cash_due, exp_delivery_date, max_sl_no, vat_percentage, so_no, customer_id, discount_percentage, bom_complete, 
             discount_amount, grand_total, is_invoice_done, is_job_card_done, is_delivery_done, is_partial_delivery, is_partial_invoice, created_by, 
             created_at, updated_by, updated_at, job_max_sl_no, job_no, job_card_date, total_amount, order_type, total_paid, total_due, delivery_charge,
-            order_note, is_all_issue_done, is_all_production_done, is_paid', 'safe', 'on' => 'search'),
+            order_note, is_all_issue_done, is_all_production_done, is_paid, costing', 'safe', 'on' => 'search'),
         );
     }
 
@@ -159,6 +165,11 @@ class SellOrder extends CActiveRecord
             'is_all_issue_done' => 'Issue Done?',
             'is_paid' => 'Paid?',
             'is_all_production_done' => 'Production Done?',
+            'total_amount' => 'Total Amount',
+            'total_paid' => 'Total Paid',
+            'total_due' => 'Total Due',
+            'delivery_charge' => 'Delivery Charge',
+            'costing' => 'Costing',
         );
     }
 
@@ -249,6 +260,7 @@ class SellOrder extends CActiveRecord
         $criteria->compare('updated_at', $this->updated_at, true);
         $criteria->compare('total_amount', $this->total_amount, true);
         $criteria->compare('order_note', $this->order_note, true);
+        $criteria->compare('costing', $this->costing, true);
 
         return new CActiveDataProvider($this, array(
             'criteria' => $criteria,
@@ -306,6 +318,7 @@ class SellOrder extends CActiveRecord
         $criteria->compare('updated_at', $this->updated_at, true);
         $criteria->compare('total_amount', $this->total_amount, true);
         $criteria->compare('order_note', $this->order_note, true);
+        $criteria->compare('costing', $this->costing, true);
 
         return new CActiveDataProvider($this, array(
             'criteria' => $criteria,
@@ -362,6 +375,7 @@ class SellOrder extends CActiveRecord
         $criteria->compare('updated_at', $this->updated_at, true);
         $criteria->compare('total_amount', $this->total_amount, true);
         $criteria->compare('order_note', $this->order_note, true);
+        $criteria->compare('costing', $this->costing, true);
 
         return new CActiveDataProvider($this, array(
             'criteria' => $criteria,

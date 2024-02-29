@@ -152,6 +152,7 @@ class Inventory extends CActiveRecord
         return $data ? ($data->stock_in - $data->stock_out) : 0;
     }
 
+
     /**
      * Retrieves a list of models based on the current search/filter conditions.
      *
@@ -228,10 +229,10 @@ class Inventory extends CActiveRecord
     {
         return array(
             array('id' => self::MANUAL_ENTRY, 'title' => 'MANUAL ENTRY'),
-            array('id' => self::PURCHASE_RECEIVE, 'title' => 'PURCHASE RECEIVE'),
-            array('id' => self::SALES_DELIVERY, 'title' => 'SALES DELIVERY'),
-            array('id' => self::JOB_CARD_ISSUE, 'title' => 'JC ISSUE'),
-            array('id' => self::PRODUCTION, 'title' => 'PRODUCTION'),
+            array('id' => self::PURCHASE_RECEIVE, 'title' => 'PURCHASE'),
+            array('id' => self::SALES_DELIVERY, 'title' => 'SALES'),
+//            array('id' => self::JOB_CARD_ISSUE, 'title' => 'JC ISSUE'),
+//            array('id' => self::PRODUCTION, 'title' => 'PRODUCTION'),
         );
     }
 

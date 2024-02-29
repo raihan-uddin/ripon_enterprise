@@ -47,31 +47,26 @@ class PurchaseOrderController extends Controller
         }
 
         if (isset($_POST['PurchaseOrder'], $_POST['PurchaseOrderDetails'])) {
+
+            // Begin transaction
+            $transaction = Yii::app()->db->beginTransaction();
+
             $model->attributes = $_POST['PurchaseOrder'];
             $model->max_sl_no = PurchaseOrder::maxSlNo();
             $model->discount_percentage = 0;
-            $model->po_no = date('y') . "-" . date('m') . str_pad($model->max_sl_no, 5, "0", STR_PAD_LEFT);
-            if ($model->order_type == PurchaseOrder::PURCHASE_RECEIVE) {
-                $model->is_all_received = PurchaseOrder::ALL_RECEIVED;
-            }
-            if ($model->save()) {
-                $rcv_id = $challan_no = $sl_no = NULL;
-                if ($model->order_type == PurchaseOrder::PURCHASE_RECEIVE) {
-                    $rcv_max_sl_no = ReceivePurchase::maxSlNo();
-                    $modelRcv = new ReceivePurchase();
-                    $modelRcv->max_sl_no = $rcv_max_sl_no;
-                    $modelRcv->receive_no = date('y') . date('m') . str_pad($modelRcv->max_sl_no, 5, "0", STR_PAD_LEFT);
-                    $modelRcv->date = $model->date;
-                    $modelRcv->supplier_id = $model->supplier_id;
-                    $modelRcv->purchase_order_id = $model->id;
-                    $modelRcv->rcv_amount = $model->grand_total;
-                    if ($modelRcv->save()) {
-                        $rcv_id = $modelRcv->id;
-                        $sl_no = Inventory::maxSlNo();
-                        $challan_no = "RCV-" . str_pad($sl_no, 6, '0', STR_PAD_LEFT);
-                    }
+            $model->po_no = "PO" . date('y') . "-" . date('m') . str_pad($model->max_sl_no, 5, "0", STR_PAD_LEFT);
+            $model->is_all_received = PurchaseOrder::ALL_RECEIVED;
+            try {
+                if (!$model->save()) {
+                    $error = CActiveForm::validate($model);
+                    if ($error != '[]')
+                        echo $error;
+                    Yii::app()->end();
                 }
+                $sl_no = Inventory::maxSlNo();
+                $challan_no = "PUR-" . str_pad($sl_no, 6, '0', STR_PAD_LEFT);
                 foreach ($_POST['PurchaseOrderDetails']['temp_model_id'] as $key => $model_id) {
+                    $product = ProdModels::model()->findByPk($model_id);
                     $model2 = new PurchaseOrderDetails();
                     $model2->order_id = $model->id;
                     $model2->model_id = $model_id;
@@ -80,48 +75,38 @@ class PurchaseOrderController extends Controller
                     $model2->row_total = $_POST['PurchaseOrderDetails']['temp_row_total'][$key];
                     $model2->product_sl_no = $_POST['PurchaseOrderDetails']['temp_product_sl_no'][$key];
                     $model2->note = $_POST['PurchaseOrderDetails']['temp_note'][$key];
-                    if ($model->order_type == PurchaseOrder::PURCHASE_RECEIVE) {
-                        $model2->is_all_received = PurchaseOrder::ALL_RECEIVED;
-                    }
-                    if ($model2->save()) {
-                        if ($rcv_id > 0) {
-                            $modelRcvD = new ReceivePurchaseDetails();
-                            $modelRcvD->receive_purchase_id = $rcv_id;
-                            $modelRcvD->model_id = $model_id;
-                            $modelRcvD->unit_price = $model2->unit_price;
-                            $modelRcvD->qty = $model2->qty;
-                            $modelRcvD->row_total = $model2->row_total;
-                            $modelRcvD->product_sl_no = $model2->product_sl_no;
-                            if ($modelRcvD->save()) {
-
-                                $inv = new Inventory();
-                                $inv->model_id = $model_id;
-                                $inv->date = $model->date;
-                                $inv->sl_no = $sl_no;
-                                $inv->challan_no = $challan_no;
-                                $inv->store_id = $model->store_id;
-                                $inv->location_id = $model->location_id;
-                                $inv->stock_in = $model2->qty;
-                                $inv->sell_price = $model2->unit_price;
-                                $inv->row_total = $model2->row_total;
-                                $inv->purchase_price = $model2->unit_price;
-                                $inv->product_sl_no = $model2->product_sl_no;
-                                $inv->stock_status = Inventory::PURCHASE_RECEIVE;
-                                $inv->source_id = $modelRcvD->id;
-                                $inv->master_id = $model->id;
-                                $inv->remarks = $model2->note;
-                                $inv->save();
-                            }
-                        }
-                    } else {
+                    $model2->is_all_received = PurchaseOrder::ALL_RECEIVED;
+                    if (!$model2->save()) {
                         var_dump($model2->getErrors());
-                        exit;
+                        throw new Exception('Error in saving Purchase Order Details!');
                     }
+                        $inv = new Inventory();
+                        $inv->model_id = $model_id;
+                        $inv->date = $model->date;
+                        $inv->sl_no = $sl_no;
+                        $inv->challan_no = $challan_no;
+                        $inv->store_id = $model->store_id;
+                        $inv->location_id = $model->location_id;
+                        $inv->stock_in = $model2->qty;
+                        $inv->sell_price = $product->sell_price;
+                        $inv->purchase_price = $model2->unit_price;
+                        $inv->row_total = $model2->row_total;
+                        $inv->product_sl_no = $model2->product_sl_no;
+                        $inv->stock_status = Inventory::PURCHASE_RECEIVE;
+                        $inv->source_id = $model2->id;
+                        $inv->master_id = $model->id;
+                        $inv->remarks = $model2->note;
+                        if(!$inv->save()){
+                            throw new Exception('Error in saving Inventory!');
+                        }
                 }
 
                 if ($model->cash_due == Lookup::CASH) {
                     $model->is_paid = PurchaseOrder::PAID;
-                    $model->save();
+                    if(!$model->save()){
+                        throw new Exception('Error in saving Purchase Order paid/due!');
+                    }
+
                     $payment = new PaymentReceipt();
                     $payment->date = $model->date;
                     $payment->payment_type = PaymentReceipt::CASH;
@@ -131,27 +116,28 @@ class PurchaseOrderController extends Controller
                     $payment->pr_no = "PR-" . date('y') . "-" . date('m') . "-" . str_pad($model->max_sl_no, 5, "0", STR_PAD_LEFT);
                     $payment->payment_type = Lookup::PAYMENT_CASH;
                     $payment->amount = $model->grand_total;
-                    if (!$payment->save()) {
-                        var_dump($payment->getErrors());
-                        exit;
+                    if(!$payment->save()){
+                        throw new Exception('Error in saving Payment Receipt!');
                     }
                 }
-                if ($model->order_type == PurchaseOrder::PURCHASE_RECEIVE) {
-                    $model->is_all_received = PurchaseOrder::ALL_RECEIVED;
-                    $model->save();
-                }
+                $transaction->commit();
                 $data = $model;
                 echo CJSON::encode(array(
                     'status' => 'success',
                     'soReportInfo' => $this->renderPartial('voucherPreview', array('data' => $data, 'new' => true), true, true), //
                 ));
                 Yii::app()->end();
-            } else {
-                $error = CActiveForm::validate($model);
-                if ($error != '[]')
-                    echo $error;
-                Yii::app()->end();
+            } catch (Exception $e) {
+                // Rollback transaction if an error occurred
+                $transaction->rollback();
+
+                // Return JSON response with error message
+                echo CJSON::encode(array(
+                    'status' => 'error',
+                    'message' => $e->getMessage(),
+                ));
             }
+
         }
         $this->pageTitle = 'CREATE PO';
         $this->render('create', array(
@@ -187,20 +173,20 @@ class PurchaseOrderController extends Controller
         }
         if (isset($_POST['PurchaseOrder'], $_POST['PurchaseOrderDetails'])) {
             $model->attributes = $_POST['PurchaseOrder'];
-            if ($model->save()) {
-
-                $modelRcv = ReceivePurchase::model()->findByAttributes(['purchase_order_id' => $id]);
-                $modelRcv->rcv_amount = $model->grand_total;
-                $rcv_id = $challan_no = $sl_no = NULL;
-                if ($modelRcv->save()) {
-                    $rcv_id = $modelRcv->id;
-                    $sl_no = Inventory::maxSlNo();
-                    $challan_no = "RCV-" . str_pad($sl_no, 6, '0', STR_PAD_LEFT);
+            // Begin transaction
+            $transaction = Yii::app()->db->beginTransaction();
+            try {
+                if (!$model->save()) {
+                    $error = CActiveForm::validate($model);
+                    if ($error != '[]')
+                        echo $error;
+                    Yii::app()->end();
                 }
-
-
+                $sl_no = Inventory::maxSlNo();
+                $challan_no = "PUR-" . str_pad($sl_no, 6, '0', STR_PAD_LEFT);
                 $details_id_arr = [];
                 foreach ($_POST['PurchaseOrderDetails']['temp_model_id'] as $key => $model_id) {
+                    $product = ProdModels::model()->findByPk($model_id);
                     $product_sl_no = $_POST['PurchaseOrderDetails']['temp_product_sl_no'][$key];
                     $criteria = new CDbCriteria();
                     $criteria->addColumnCondition(['order_id' => $id, 'model_id' => $model_id, 'product_sl_no' => $product_sl_no]);
@@ -215,46 +201,32 @@ class PurchaseOrderController extends Controller
                     $model2->row_total = $_POST['PurchaseOrderDetails']['temp_row_total'][$key];
                     $model2->note = $_POST['PurchaseOrderDetails']['temp_note'][$key];
                     if ($model2->save()) {
-
-                        $criteriaRcvD = new CDbCriteria();
-                        $criteriaRcvD->addColumnCondition(['receive_purchase_id' => $rcv_id, 'model_id' => $model_id, 'product_sl_no' => $product_sl_no]);
-                        $modelRcvD = PurchaseOrderDetails::model()->findByAttributes([], $criteriaRcvD);
-                        if (!$modelRcvD)
-                            $modelRcvD = new ReceivePurchaseDetails();
-                        $modelRcvD->receive_purchase_id = $rcv_id;
-                        $modelRcvD->model_id = $model_id;
-                        $modelRcvD->unit_price = $model2->unit_price;
-                        $modelRcvD->qty = $model2->qty;
-                        $modelRcvD->row_total = $model2->row_total;
-                        $modelRcvD->product_sl_no = $model2->product_sl_no;
-                        if ($modelRcvD->save()) {
-
-                            $criteriaInv = new CDbCriteria();
-                            $criteriaInv->addColumnCondition(['receive_purchase_id' => $rcv_id, 'model_id' => $model_id, 'product_sl_no' => $product_sl_no]);
-                            $inv = Inventory::model()->findByAttributes([], $criteriaInv);
-                            if (!$inv)
-                                $inv = new Inventory();
-                            $inv->model_id = $model_id;
-                            $inv->date = $model->date;
-                            $inv->sl_no = $sl_no;
-                            $inv->challan_no = $challan_no;
-                            $inv->store_id = $model->store_id;
-                            $inv->location_id = $model->location_id;
-                            $inv->stock_in = $model2->qty;
-                            $inv->sell_price = $model2->unit_price;
-                            $inv->row_total = $model2->row_total;
-                            $inv->purchase_price = $model2->unit_price;
-                            $inv->product_sl_no = $model2->product_sl_no;
-                            $inv->stock_status = Inventory::PURCHASE_RECEIVE;
-                            $inv->source_id = $modelRcvD->id;
-                            $inv->master_id = $model->id;
-                            $inv->remarks = $model2->note;
-                            $inv->save();
+                        $criteriaInv = new CDbCriteria();
+                        $criteriaInv->addColumnCondition(['source_id' => $model2->id, 'model_id' => $model_id, 'product_sl_no' => $product_sl_no]);
+                        $inv = Inventory::model()->findByAttributes([], $criteriaInv);
+                        if (!$inv)
+                            $inv = new Inventory();
+                        else {
+                            $challan_no = $inv->challan_no;
+                            $sl_no = $inv->sl_no;
                         }
+                        $inv->model_id = $model_id;
+                        $inv->date = $model->date;
+                        $inv->sl_no = $sl_no;
+                        $inv->challan_no = $challan_no;
+                        $inv->store_id = $model->store_id;
+                        $inv->location_id = $model->location_id;
+                        $inv->stock_in = $model2->qty;
+                        $inv->sell_price = $product->sell_price;
+                        $inv->row_total = $model2->row_total;
+                        $inv->purchase_price = $model2->unit_price;
+                        $inv->product_sl_no = $model2->product_sl_no;
+                        $inv->stock_status = Inventory::PURCHASE_RECEIVE;
+                        $inv->source_id = $model2->id;
+                        $inv->master_id = $model->id;
+                        $inv->remarks = $model2->note;
+                        $inv->save();
 
-                    } else {
-                        var_dump($model2->getErrors());
-                        exit;
                     }
                     $details_id_arr[] = $model2->id;
                 }
@@ -263,42 +235,44 @@ class PurchaseOrderController extends Controller
                     $criteriaDel->addNotInCondition('id', $details_id_arr);
                     $criteriaDel->addColumnCondition(['order_id' => $id]);
                     PurchaseOrderDetails::model()->deleteAll($criteriaDel);
+
+                    $criteriaInvDel = new CDbCriteria;
+                    $criteriaInvDel->addNotInCondition('source_id', $details_id_arr);
+                    $criteriaInvDel->addColumnCondition(['master_id' => $id]);
+                    Inventory::model()->deleteAll($criteriaInvDel);
                 }
 
-
+                $transaction->commit();
                 echo CJSON::encode(array(
                     'status' => 'success',
                     'soReportInfo' => $this->renderPartial('voucherPreview', array('data' => $model, 'new' => true), true, true), //
                 ));
                 Yii::app()->end();
-            } else {
-                $error = CActiveForm::validate($model);
-                if ($error != '[]')
-                    echo $error;
-                Yii::app()->end();
+
+            } catch (Exception $e) {
+                // Rollback transaction if an error occurred
+                $transaction->rollback();
+
+                // Return JSON response with error message
+                echo CJSON::encode(array(
+                    'status' => 'error',
+                    'message' => $e->getMessage(),
+                ));
             }
         }
 
-        $pr = PaymentReceipt::model()->findByAttributes(['supplier_id' => $model->supplier_id, 'order_id' => $id]);
-        $rcv = ReceivePurchase::model()->findByAttributes(['purchase_order_id' => $id]);
-        if (!$pr && !$rcv && $model->cash_due == Lookup::DUE) {
 
-            $criteria = new CDbCriteria();
-            $criteria->select = "t.*, pm.model_name, pm.code";
-            $criteria->addColumnCondition(['order_id' => $id]);
-            $criteria->join = " INNER JOIN prod_models pm on t.model_id = pm.id ";
-            $criteria->order = "pm.model_name ASC";
-            $this->pageTitle = 'UPDATE ORDER';
-            $this->render('update', array(
-                'model' => $model,
-                'model2' => $model2,
-                'model3' => PurchaseOrderDetails::model()->findAll($criteria),
-            ));
-        } else {
-            $status = ['status' => 'danger', 'message' => 'You can not update this order(' . $model->po_no . ') now!'];
-            Yii::app()->user->setFlash($status['status'], $status['message']);
-            $this->redirect(isset($_POST['returnUrl']) ? $_POST['returnUrl'] : array('admin'));
-        }
+        $criteria = new CDbCriteria();
+        $criteria->select = "t.*, pm.model_name, pm.code";
+        $criteria->addColumnCondition(['order_id' => $id]);
+        $criteria->join = " INNER JOIN prod_models pm on t.model_id = pm.id ";
+        $criteria->order = "pm.model_name ASC";
+        $this->pageTitle = 'UPDATE ORDER';
+        $this->render('update', array(
+            'model' => $model,
+            'model2' => $model2,
+            'model3' => PurchaseOrderDetails::model()->findAll($criteria),
+        ));
     }
 
     /**
@@ -324,12 +298,26 @@ class PurchaseOrderController extends Controller
     public function actionDelete($id)
     {
         $model = $this->loadModel($id);
-        $pr = PaymentReceipt::model()->findByAttributes(['supplier_id' => $model->supplier_id, 'order_id' => $id]);
-        $rcv = ReceivePurchase::model()->findByAttributes(['purchase_order_id' => $id]);
-        if (!$pr && !$rcv)
+        $pr = PaymentReceipt::model()->findAllByAttributes(['supplier_id' => $model->supplier_id, 'order_id' => $id]);
+        $inv = Inventory::model()->findAllByAttributes(['master_id' => $id, 'stock_status' => Inventory::PURCHASE_RECEIVE]);
+        // need to delete all the PaymentReceipt & Inventory also use db transaction & try catch
+        // Begin transaction
+        $transaction = Yii::app()->db->beginTransaction();
+        try {
+            foreach ($pr as $p) {
+                $p->delete();
+            }
+            foreach ($inv as $i) {
+                $i->delete();
+            }
             $model->delete();
 
-        // if AJAX request (triggered by deletion via admin grid view), we should not redirect the browser
+            $transaction->commit();
+        } catch (Exception $e) {
+            // Rollback transaction if an error occurred
+            $transaction->rollback();
+        }
+
         if (!isset($_GET['ajax']))
             $this->redirect(isset($_POST['returnUrl']) ? $_POST['returnUrl'] : array('admin'));
     }

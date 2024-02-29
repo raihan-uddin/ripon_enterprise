@@ -1,4 +1,7 @@
 <?php
+/** @var mixed $model */
+/** @var mixed $model2 */
+/** @var mixed $model3 */
 $this->widget('application.components.BreadCrumb', array(
     'crumbs' => array(
         array('name' => 'Purchase', 'url' => array('admin')),
@@ -538,7 +541,7 @@ Yii::app()->clientScript->registerCoreScript("jquery.ui");
                                     <td class="text-center"><?= $m3->unit_price ?></td>
                                     <td class="text-center"><?= $m3->qty ?></td>
                                     <td class="text-center">
-                                        <?= $m3->row_total ?>
+                                        <?= round($m3->row_total, 2) ?>
                                         <input type="hidden" class="form-control text-center" value="<?= $m3->qty ?>"
                                                name=PurchaseOrderDetails[temp_qty][]"">
                                         <input type="hidden" class="form-control text-center" value="<?= $m3->note ?>"
@@ -579,11 +582,26 @@ Yii::app()->clientScript->registerCoreScript("jquery.ui");
     </div>
 
     <div class="card-footer">
-        <?php
-        echo CHtml::ajaxSubmitButton('Save', CHtml::normalizeUrl(array('/commercial/purchaseOrder/update/id/' . $model->id, 'render' => true)), array(
-            'dataType' => 'json',
-            'type' => 'post',
-            'success' => 'function(data) {
+        <div class="row">
+            <div class="col-md-12">
+                <?php
+                $totalPr = PaymentReceipt::model()->totalPaidAmountOfThisOrder($model->id);
+                if ($totalPr > 0) {
+                    ?>
+                    <div class="alert alert-danger">
+                        You've already paid <?= number_format($totalPr, 2) ?> for this invoice.
+                        <input type="hidden" id="paidAmount" value="<?= $totalPr ?>">
+                    </div>
+                    <?php
+                }
+                ?>
+            </div>
+            <div class="col-md-12">
+                <?php
+                echo CHtml::ajaxSubmitButton('Save', CHtml::normalizeUrl(array('/commercial/purchaseOrder/update/id/' . $model->id, 'render' => true)), array(
+                    'dataType' => 'json',
+                    'type' => 'post',
+                    'success' => 'function(data) {
                 $("#ajaxLoader").hide();  
                     if(data.status=="success"){
                         $("#formResult").fadeIn();
@@ -602,7 +620,7 @@ Yii::app()->clientScript->registerCoreScript("jquery.ui");
                         });
                     }       
                 }',
-            'beforeSend' => 'function(){  
+                    'beforeSend' => 'function(){  
                     let count_item =  $(".item").length; 
                     let cash_due = $("#PurchaseOrder_cash_due").val();  
                     let date = $("#PurchaseOrder_date").val();  
@@ -628,111 +646,115 @@ Yii::app()->clientScript->registerCoreScript("jquery.ui");
                         $("#ajaxLoader").show();
                     }
                  }',
-            'error' => 'function(xhr) { 
+                    'error' => 'function(xhr) { 
                     $("#overlay").fadeOut(300);
               }',
-            'complete' => 'function() {
+                    'complete' => 'function() {
                     $("#overlay").fadeOut(300);
                  $("#ajaxLoaderReport").hide(); 
               }',
-        ), array('class' => 'btn btn-primary btn-md'));
-        ?>
+                ), array('class' => 'btn btn-primary btn-md'));
+                ?>
 
-        <span id="ajaxLoaderMR" class="ajaxLoaderMR" style="display: none;">
+                <span id="ajaxLoaderMR" class="ajaxLoaderMR" style="display: none;">
             <i class="fa fa-spinner fa-spin fa-2x"></i>
         </span>
 
-        <div id="formResult" class="ajaxTargetDiv"></div>
-        <div id="formResultError" class="ajaxTargetDivErr"></div>
+                <div id="formResult" class="ajaxTargetDiv"></div>
+                <div id="formResultError" class="ajaxTargetDivErr"></div>
+            </div>
+        </div>
     </div>
-</div>
-<div id="overlay">
-    <div class="cv-spinner">
-        <span class="spinner"></span>
+    <div id="overlay">
+        <div class="cv-spinner">
+            <span class="spinner"></span>
+        </div>
     </div>
-</div>
-<script>
-    var picker = new Lightpick({
-        field: document.getElementById('entry_date'),
-        minDate: moment(),
-        onSelect: function (date) {
-            document.getElementById('PurchaseOrder_date').value = date.format('YYYY-MM-DD');
-        }
-    });
-    var picker2 = new Lightpick({
-        field: document.getElementById('PurchaseOrder_exp_receive_date'),
-        minDate: moment(),
-        onSelect: function (date) {
-            document.getElementById('PurchaseOrder_exp_receive_date').value = date.format('YYYY-MM-DD');
-            document.getElementById('PurchaseOrder_exp_receive_date').value = date.format('YYYY-MM-DD');
-        }
-    });
-
-    $(document).ready(function () {
-        $(".qty-amount").keyup(function () {
-            var $this = $(this);
-            $this.val($this.val().replace(/[^\d.]/g, ''));
+    <script>
+        var picker = new Lightpick({
+            field: document.getElementById('entry_date'),
+            minDate: moment(),
+            onSelect: function (date) {
+                document.getElementById('PurchaseOrder_date').value = date.format('YYYY-MM-DD');
+            }
+        });
+        var picker2 = new Lightpick({
+            field: document.getElementById('PurchaseOrder_exp_receive_date'),
+            minDate: moment(),
+            onSelect: function (date) {
+                document.getElementById('PurchaseOrder_exp_receive_date').value = date.format('YYYY-MM-DD');
+                document.getElementById('PurchaseOrder_exp_receive_date').value = date.format('YYYY-MM-DD');
+            }
         });
 
-        $(".qty-amount").on("keydown keyup", function () {
-            let amount = parseFloat($("#PurchaseOrderDetails_amount").val());
-            let qty = parseFloat($("#PurchaseOrderDetails_qty").val());
-            amount = amount > 0 ? amount : 0;
-            qty = qty > 0 ? qty : 0;
+        $(document).ready(function () {
+            $(".qty-amount").keyup(function () {
+                var $this = $(this);
+                $this.val($this.val().replace(/[^\d.]/g, ''));
+            });
 
-            $("#PurchaseOrderDetails_row_total").val((amount * qty).toFixed(2));
-        });
-        $("#PurchaseOrder_vat_percentage").on("keydown keyup", function () {
-            calculateVat();
-        });
-    });
+            $(".qty-amount").on("keydown keyup", function () {
+                let amount = parseFloat($("#PurchaseOrderDetails_amount").val());
+                let qty = parseFloat($("#PurchaseOrderDetails_qty").val());
+                amount = amount > 0 ? amount : 0;
+                qty = qty > 0 ? qty : 0;
 
-    function addToList() {
-        let model_id = $("#PurchaseOrderDetails_model_id").val();
-        let model_id_text = $("#model_id_text").val();
-        let unit_price = $("#PurchaseOrderDetails_amount").val();
-        let note = $("#PurchaseOrderDetails_note").val();
-        let qty = $("#PurchaseOrderDetails_qty").val();
-        let row_total = $("#PurchaseOrderDetails_row_total").val();
-        let isproductpresent = false;
-        let temp_codearray = document.getElementsByName("PurchaseOrderDetails[temp_model_id][]");
-        if (temp_codearray.length > 0) {
-            for (let l = 0; l < temp_codearray.length; l++) {
-                var code = temp_codearray[l].value;
-                if (code == model_id) {
-                    isproductpresent = true;
-                    break;
+                $("#PurchaseOrderDetails_row_total").val((amount * qty).toFixed(2));
+            });
+            $("#PurchaseOrder_vat_percentage").on("keydown keyup", function () {
+                calculateVat();
+            });
+        });
+
+        function addToList() {
+            let model_id = $("#PurchaseOrderDetails_model_id").val();
+            let model_id_text = $("#model_id_text").val();
+            let unit_price = $("#PurchaseOrderDetails_amount").val();
+            let note = $("#PurchaseOrderDetails_note").val();
+            let qty = $("#PurchaseOrderDetails_qty").val();
+            let product_sl_no = $("#PurchaseOrderDetails_product_sl_no").val();
+            let row_total = $("#PurchaseOrderDetails_row_total").val();
+            let isproductpresent = false;
+            let temp_codearray = document.getElementsByName("PurchaseOrderDetails[temp_model_id][]");
+            if (temp_codearray.length > 0) {
+                for (let l = 0; l < temp_codearray.length; l++) {
+                    var code = temp_codearray[l].value;
+                    if (code == model_id) {
+                        isproductpresent = true;
+                        break;
+                    }
                 }
             }
-        }
 
 
-        if (model_id == "" || model_id_text == "") {
-            toastr.error("Please select materials");
-            return false;
-        } else if (isproductpresent == true) {
-            toastr.error(model_id_text + " is already on the list! Please add another!");
-            return false;
-        } else if (unit_price == "") {
-            toastr.error("Please insert unit price");
-            return false;
-        } else if (qty == "" || qty == 0) {
-            toastr.error("Please enter qty");
-            return false;
-        } else if (row_total == "" || row_total == 0) {
-            toastr.error("Please enter qty & amount!");
-            return false;
-        } else {
-            $("#list tbody").append(`
+            if (model_id == "" || model_id_text == "") {
+                toastr.error("Please select materials");
+                return false;
+            } else if (isproductpresent == true) {
+                toastr.error(model_id_text + " is already on the list! Please add another!");
+                return false;
+            } else if (unit_price == "") {
+                toastr.error("Please insert unit price");
+                return false;
+            } else if (qty == "" || qty == 0) {
+                toastr.error("Please enter qty");
+                return false;
+            } else if (row_total == "" || row_total == 0) {
+                toastr.error("Please enter qty & amount!");
+                return false;
+            } else {
+                $("#list tbody").append(`
                 <tr class="item">
                     <td>${model_id_text}</td>
+                    <td class="text-center">${product_sl_no}</td>
                     <td class="text-center">${note}</td>
                     <td class="text-center">${unit_price}</td>
                     <td class="text-center">${qty}</td>
-                    <td class="text-center">
+                     <td class="text-center">
                         ${row_total}
-                        <input type="hidden" class="form-control text-center" value="${qty}" name=PurchaseOrderDetails[temp_qty][]"">
-                        <input type="hidden" class="form-control text-center" value="${note}" name=PurchaseOrderDetails[temp_note][]"">
+                        <input type="hidden" class="form-control text-center" value="${qty}" name="PurchaseOrderDetails[temp_qty][]">
+                        <input type="hidden" class="form-control text-center" value="${product_sl_no}" name="PurchaseOrderDetails[temp_product_sl_no][]">
+                        <input type="hidden" class="form-control text-center" value="${note}" name="PurchaseOrderDetails[temp_note][]">
                         <input type="hidden" class="form-control" value="${model_id}" name="PurchaseOrderDetails[temp_model_id][]" >
                         <input type="hidden" class="form-control" value="${unit_price}" name="PurchaseOrderDetails[temp_unit_price][]" >
                         <input type="hidden" class="form-control row-total" value="${row_total}" name="PurchaseOrderDetails[temp_row_total][]" >
@@ -742,68 +764,68 @@ Yii::app()->clientScript->registerCoreScript("jquery.ui");
                     </td>
                 </tr>
                 `);
-            calculateTotal();
-            clearDynamicItem();
+                calculateTotal();
+                clearDynamicItem();
+            }
         }
-    }
 
-    $("#list").on("click", ".dlt", function () {
-        $(this).closest("tr").remove();
-        calculateTotal();
-    });
-
-
-    function calculateVat() {
-        let total_amount = parseFloat($("#PurchaseOrder_total_amount").val());
-        let vat_p = parseFloat($("#PurchaseOrder_vat_percentage").val());
-        total_amount = total_amount > 0 ? total_amount : 0;
-        vat_p = vat_p > 0 ? vat_p : 0;
-        let vat = parseFloat(((vat_p / 100) * total_amount));
-        let grand_total = parseFloat(total_amount + vat);
-        $("#PurchaseOrder_vat_amount").val(vat.toFixed(2));
-        $("#PurchaseOrder_grand_total").val(grand_total.toFixed(2));
-    }
-
-    function clearDynamicItem() {
-        $("#PurchaseOrderDetails_model_id").val('');
-        $("#model_id_text").val('');
-        $("#PurchaseOrderDetails_amount").val('');
-        $("#PurchaseOrderDetails_row_total").val('');
-        $("#PurchaseOrderDetails_qty").val('');
-        $("#PurchaseOrderDetails_color").val('');
-        $("#PurchaseOrderDetails_note").val('');
-    }
-
-    function calculateTotal() {
-        let item_count = $(".item").length;
-
-        let total = 0;
-        $('.row-total').each(function () {
-            total += parseFloat($(this).val());
+        $("#list").on("click", ".dlt", function () {
+            $(this).closest("tr").remove();
+            calculateTotal();
         });
 
-        $("#PurchaseOrder_total_amount").val(total.toFixed(2)).change();
-        $("#PurchaseOrder_item_count").val(item_count);
-        calculateVat();
-    }
-</script>
 
-<?php $this->endWidget(); ?>
+        function calculateVat() {
+            let total_amount = parseFloat($("#PurchaseOrder_total_amount").val());
+            let vat_p = parseFloat($("#PurchaseOrder_vat_percentage").val());
+            total_amount = total_amount > 0 ? total_amount : 0;
+            vat_p = vat_p > 0 ? vat_p : 0;
+            let vat = parseFloat(((vat_p / 100) * total_amount));
+            let grand_total = parseFloat(total_amount + vat);
+            $("#PurchaseOrder_vat_amount").val(vat.toFixed(2));
+            $("#PurchaseOrder_grand_total").val(grand_total.toFixed(2));
+        }
+
+        function clearDynamicItem() {
+            $("#PurchaseOrderDetails_model_id").val('');
+            $("#model_id_text").val('');
+            $("#PurchaseOrderDetails_amount").val('');
+            $("#PurchaseOrderDetails_row_total").val('');
+            $("#PurchaseOrderDetails_qty").val('');
+            $("#PurchaseOrderDetails_color").val('');
+            $("#PurchaseOrderDetails_note").val('');
+        }
+
+        function calculateTotal() {
+            let item_count = $(".item").length;
+
+            let total = 0;
+            $('.row-total').each(function () {
+                total += parseFloat($(this).val());
+            });
+
+            $("#PurchaseOrder_total_amount").val(total.toFixed(2)).change();
+            $("#PurchaseOrder_item_count").val(item_count);
+            calculateVat();
+        }
+    </script>
+
+    <?php $this->endWidget(); ?>
 
 
 
-<?php
-$this->beginWidget('zii.widgets.jui.CJuiDialog', array(
-    'id' => 'soReportDialogBox',
-    'options' => array(
-        'title' => 'ORDER VOUCHER PREVIEW',
-        'autoOpen' => false,
-        'modal' => true,
-        'width' => 1030,
-        'resizable' => false,
-    ),
-));
-?>
-<div id='AjFlashReportSo' style="display:none;"></div>
-<?php $this->endWidget(); ?>
+    <?php
+    $this->beginWidget('zii.widgets.jui.CJuiDialog', array(
+        'id' => 'soReportDialogBox',
+        'options' => array(
+            'title' => 'ORDER VOUCHER PREVIEW',
+            'autoOpen' => false,
+            'modal' => true,
+            'width' => 1030,
+            'resizable' => false,
+        ),
+    ));
+    ?>
+    <div id='AjFlashReportSo' style="display:none;"></div>
+    <?php $this->endWidget(); ?>
 

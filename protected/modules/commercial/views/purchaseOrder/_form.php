@@ -466,10 +466,23 @@ Yii::app()->clientScript->registerCoreScript("jquery.ui");
                                         $('#product_unit_text').html($('#PurchaseOrderDetails_unit_id option:selected').text());
                                     }
                                 }).data("ui-autocomplete")._renderItem = function (ul, item) {
-                                    return $("<li></li>")
+                                    // Use Bootstrap styling for the autocomplete results
+                                    var listItem = $("<li class='list-group-item p-2'></li>")
                                         .data("item.autocomplete", item)
-                                        .append(`<a><img style="height: 50px; width: 50px;" src="${item.img}"> ${item.name} <br><i><small>${item.code}</small></i> </a>`)
-                                        .appendTo(ul);
+                                        .append(`
+                                        <div class="row align-items-center">
+                                            <div class="col-10 0">
+                                                <p class="m-1">${item.name}</p>
+                                                <p class="m-1">
+                                                    <small><strong>Code:</strong> ${item.code}</small>,
+                                                    <small><strong>Purchase Price:</strong> ${item.purchasePrice}</small>,
+                                                    <small><strong>Selling Price:</strong> ${item.sell_price}</small>
+                                                    <small><strong>Stock:</strong> ${item.stock}</small>
+                                                </p>
+                                            </div>
+                                        </div>`);
+
+                                    return listItem.appendTo(ul);
                                 };
 
                             });
