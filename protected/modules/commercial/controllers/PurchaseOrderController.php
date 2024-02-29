@@ -80,30 +80,30 @@ class PurchaseOrderController extends Controller
                         var_dump($model2->getErrors());
                         throw new Exception('Error in saving Purchase Order Details!');
                     }
-                        $inv = new Inventory();
-                        $inv->model_id = $model_id;
-                        $inv->date = $model->date;
-                        $inv->sl_no = $sl_no;
-                        $inv->challan_no = $challan_no;
-                        $inv->store_id = $model->store_id;
-                        $inv->location_id = $model->location_id;
-                        $inv->stock_in = $model2->qty;
-                        $inv->sell_price = $product->sell_price;
-                        $inv->purchase_price = $model2->unit_price;
-                        $inv->row_total = $model2->row_total;
-                        $inv->product_sl_no = $model2->product_sl_no;
-                        $inv->stock_status = Inventory::PURCHASE_RECEIVE;
-                        $inv->source_id = $model2->id;
-                        $inv->master_id = $model->id;
-                        $inv->remarks = $model2->note;
-                        if(!$inv->save()){
-                            throw new Exception('Error in saving Inventory!');
-                        }
+                    $inv = new Inventory();
+                    $inv->model_id = $model_id;
+                    $inv->date = $model->date;
+                    $inv->sl_no = $sl_no;
+                    $inv->challan_no = $challan_no;
+                    $inv->store_id = $model->store_id;
+                    $inv->location_id = $model->location_id;
+                    $inv->stock_in = $model2->qty;
+                    $inv->sell_price = $product->sell_price;
+                    $inv->purchase_price = $model2->unit_price;
+                    $inv->row_total = $model2->row_total;
+                    $inv->product_sl_no = $model2->product_sl_no;
+                    $inv->stock_status = Inventory::PURCHASE_RECEIVE;
+                    $inv->source_id = $model2->id;
+                    $inv->master_id = $model->id;
+                    $inv->remarks = $model2->note;
+                    if (!$inv->save()) {
+                        throw new Exception('Error in saving Inventory!');
+                    }
                 }
 
                 if ($model->cash_due == Lookup::CASH) {
                     $model->is_paid = PurchaseOrder::PAID;
-                    if(!$model->save()){
+                    if (!$model->save()) {
                         throw new Exception('Error in saving Purchase Order paid/due!');
                     }
 
@@ -116,7 +116,7 @@ class PurchaseOrderController extends Controller
                     $payment->pr_no = "PR-" . date('y') . "-" . date('m') . "-" . str_pad($model->max_sl_no, 5, "0", STR_PAD_LEFT);
                     $payment->payment_type = Lookup::PAYMENT_CASH;
                     $payment->amount = $model->grand_total;
-                    if(!$payment->save()){
+                    if (!$payment->save()) {
                         throw new Exception('Error in saving Payment Receipt!');
                     }
                 }
@@ -172,7 +172,22 @@ class PurchaseOrderController extends Controller
             Yii::app()->clientScript->scriptMap['jquery.js'] = false;
         }
         if (isset($_POST['PurchaseOrder'], $_POST['PurchaseOrderDetails'])) {
+            $currentInvoiceValue = $_POST['PurchaseOrder']['grand_total'];
+            $currentInvoicePaid = PaymentReceipt::model()->totalPaidAmountOfThisOrder($id);
+            if ($currentInvoiceValue < $currentInvoicePaid) {
+                $message = 'The total amount paid (BDT' . $currentInvoicePaid . ') is greater than the invoice total (BDT' . $currentInvoiceValue . '). Please review your payment details.';
+                echo CJSON::encode(array(
+                    'status' => 'error',
+                    'message' => $message,
+                ));
+                Yii::app()->end();
+            }
             $model->attributes = $_POST['PurchaseOrder'];
+            if ($currentInvoicePaid >= $currentInvoiceValue) {
+                $model->is_paid = PurchaseOrder::PAID;
+            } else {
+                $model->is_paid = PurchaseOrder::DUE;
+            }
             // Begin transaction
             $transaction = Yii::app()->db->beginTransaction();
             try {

@@ -597,62 +597,69 @@ Yii::app()->clientScript->registerCoreScript("jquery.ui");
                 ?>
             </div>
             <div class="col-md-12">
+                <div id="formResult" class="ajaxTargetDiv"></div>
+                <div id="formResultError" class="ajaxTargetDivErr alert alert-danger  d-none" role="alert">
+                </div>
+            </div>
+            <div class="col-md-12">
                 <?php
                 echo CHtml::ajaxSubmitButton('Save', CHtml::normalizeUrl(array('/commercial/purchaseOrder/update/id/' . $model->id, 'render' => true)), array(
                     'dataType' => 'json',
                     'type' => 'post',
                     'success' => 'function(data) {
-                $("#ajaxLoader").hide();  
-                    if(data.status=="success"){
-                        $("#formResult").fadeIn();
-                        $("#formResult").html("Data saved successfully.");
-                        toastr.success("Data saved successfully.");
-                        $("#bom-form")[0].reset();
-                        $("#formResult").animate({opacity:1.0},1000).fadeOut("slow");
-                        $("#list").empty();
-                        $("#soReportDialogBox").dialog("open");
-                        $("#AjFlashReportSo").html(data.soReportInfo).show();
-                    }else{
-                        //$("#formResultError").html("Data not saved. Please solve the following errors.");
-                        $.each(data, function(key, val) {
-                            $("#bom-form #"+key+"_em_").html(""+val+"");                                                    
-                            $("#bom-form #"+key+"_em_").show();
-                        });
-                    }       
-                }',
+                        $("#ajaxLoader").hide();  
+                        if(data.status=="success"){
+                            $("#formResult").fadeIn();
+                            $("#formResult").html("Data saved successfully.");
+                            toastr.success("Data saved successfully.");
+                            $("#bom-form")[0].reset();
+                            $("#formResult").animate({opacity:1.0},1000).fadeOut("slow");
+                            $("#list").empty();
+                            $("#soReportDialogBox").dialog("open");
+                            $("#AjFlashReportSo").html(data.soReportInfo).show();
+                        }else{
+                            $("#formResultError").html(data.message).removeClass("d-none");
+                            $.each(data, function(key, val) {
+                                $("#bom-form #"+key+"_em_").html(""+val+"");                                                    
+                                $("#bom-form #"+key+"_em_").show();
+                            });
+                        }       
+                    }',
                     'beforeSend' => 'function(){  
-                    let count_item =  $(".item").length; 
-                    let cash_due = $("#PurchaseOrder_cash_due").val();  
-                    let date = $("#PurchaseOrder_date").val();  
-                    let customer_id = $("#PurchaseOrder_supplier_id").val();  
-                    let grand_total = $("#PurchaseOrder_grand_total").val();  
-                    if(cash_due == ""){
-                        toastr.error("Please select Cash/Due.");
-                        return false;
-                    }else if(date == ""){
-                        toastr.error("Please insert date.");
-                        return false;
-                    }else if(customer_id == ""){
-                        toastr.error("Please select supplier from the list!");
-                        return false;
-                    }else if(count_item <= 0){
-                        toastr.error("Please add material to list.");
-                        return false;
-                    }else if(grand_total == "" || grand_total <= 0){
-                        toastr.error("Grand total amount is 0");
-                        return false;
-                    }else {                
-                        $("#overlay").fadeIn(300);　   
-                        $("#ajaxLoader").show();
-                    }
-                 }',
+                         $("#formResultError").addClass("d-none");
+
+                        let count_item =  $(".item").length; 
+                        let cash_due = $("#PurchaseOrder_cash_due").val();  
+                        let date = $("#PurchaseOrder_date").val();  
+                        let customer_id = $("#PurchaseOrder_supplier_id").val();  
+                        let grand_total = $("#PurchaseOrder_grand_total").val();  
+                        if(cash_due == ""){
+                            toastr.error("Please select Cash/Due.");
+                            return false;
+                        }else if(date == ""){
+                            toastr.error("Please insert date.");
+                            return false;
+                        }else if(customer_id == ""){
+                            toastr.error("Please select supplier from the list!");
+                            return false;
+                        }else if(count_item <= 0){
+                            toastr.error("Please add material to list.");
+                            return false;
+                        }else if(grand_total == "" || grand_total <= 0){
+                            toastr.error("Grand total amount is 0");
+                            return false;
+                        }else {                
+                            $("#overlay").fadeIn(300);　   
+                            $("#ajaxLoader").show();
+                        }
+                     }',
                     'error' => 'function(xhr) { 
-                    $("#overlay").fadeOut(300);
-              }',
+                         $("#overlay").fadeOut(300);
+                    }',
                     'complete' => 'function() {
-                    $("#overlay").fadeOut(300);
-                 $("#ajaxLoaderReport").hide(); 
-              }',
+                        $("#overlay").fadeOut(300);
+                        $("#ajaxLoaderReport").hide(); 
+                    }',
                 ), array('class' => 'btn btn-primary btn-md'));
                 ?>
 
@@ -660,8 +667,7 @@ Yii::app()->clientScript->registerCoreScript("jquery.ui");
             <i class="fa fa-spinner fa-spin fa-2x"></i>
         </span>
 
-                <div id="formResult" class="ajaxTargetDiv"></div>
-                <div id="formResultError" class="ajaxTargetDivErr"></div>
+
             </div>
         </div>
     </div>
