@@ -699,8 +699,12 @@ Yii::app()->clientScript->registerCoreScript("jquery.ui");
             <i class="fa fa-spinner fa-spin fa-2x"></i>
         </span>
 
-        <div id="formResult" class="ajaxTargetDiv"></div>
-        <div id="formResultError" class="ajaxTargetDivErr"></div>
+
+        <div class="col-md-12">
+            <div id="formResult" class="ajaxTargetDiv"></div>
+            <div id="formResultError" class="ajaxTargetDivErr alert alert-danger  d-none" role="alert">
+            </div>
+        </div>
     </div>
 </div>
 <div id="overlay">
@@ -802,11 +806,11 @@ Yii::app()->clientScript->registerCoreScript("jquery.ui");
                     <td class="text-center">${warranty}</td>
                     <td class="text-center">${note}</td>
                     <td class="text-center" style="display: none;">${color}</td>
-                    <td class="text-center">${unit_price}</td>
                     <td class="text-center">${qty}</td>
+                    <td class="text-center">${unit_price}</td>
                     <td class="text-center">
                         ${row_total}
-                        <input type="hidden" class="form-control text-center" value="${qty}" name="SellOrderDetails[temp_qty][]">
+                        <input type="hidden" class="form-control text-center temp_qty" value="${qty}" name="SellOrderDetails[temp_qty][]">
                         <input type="hidden" class="form-control text-center temp-costing" value="${pp}" name="SellOrderDetails[temp_pp][]">
                         <input type="hidden" class="form-control text-center" value="${warranty}" name="SellOrderDetails[temp_warranty][]">
                         <input type="hidden" class="form-control text-center" value="${product_sl_no}" name="SellOrderDetails[temp_product_sl_no][]">
@@ -937,23 +941,35 @@ Yii::app()->clientScript->registerCoreScript("jquery.ui");
         let total_costing = 0;
         if ($(".temp-costing").length > 0) {
             $(".temp-costing").each(function () {
-                total_costing += parseFloat($(this).val());
+                let qty = parseFloat($(this).closest("tr").find(".temp_qty").val());
+                let pp = parseFloat($(this).val());
+                qty = isNaN(qty) ? 0 : qty;
+                pp = isNaN(pp) ? 0 : pp;
+
+                console.log(`Qty: ${qty}, PP: ${pp}`);
+                total_costing += qty * pp;
             });
         }
+        console.log(total_costing);
         $(".current-costing-amount").html('<span style="color: green;">Costing: <b>' + parseFloat(total_costing).toFixed(2) + '</b></span>');
         return total_costing;
     }
 
 
-    function lossAlert(){
+    function lossAlert() {
         calculateTotalCosting();
         let total_costing = calculateTotalCosting();
         let grand_total = parseFloat($("#SellOrder_grand_total").val());
         grand_total = grand_total > 0 ? grand_total : 0;
 
         let loss = parseFloat(grand_total - total_costing);
-        if(loss < 0){
-            toastr.error("You are going to loss " + parseFloat(loss).toFixed(2) + " BDT from this invoice!");
+        if (loss < 0) {
+            // let message =   "You are going to loss " + parseFloat(loss).toFixed(2) + " BDT from this invoice!";
+            let message = `You are going to loss ${parseFloat(loss).toFixed(2)} BDT from this invoice!`;
+            toastr.error(message);
+            $("#formResultError").html(message).removeClass("d-none");
+        } else {
+            $("#formResultError").html("").addClass("d-none");
         }
 
     }

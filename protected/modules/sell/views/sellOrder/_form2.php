@@ -577,7 +577,7 @@ Yii::app()->clientScript->registerCoreScript("jquery.ui");
                                     <td class="text-center"><?= $m3->amount ?></td>
                                     <td class="text-center">
                                         <?= $m3->row_total ?>
-                                        <input type="hidden" class="form-control text-center" value="<?= $m3->qty ?>"
+                                        <input type="hidden" class="form-control text-center temp_qty" value="<?= $m3->qty ?>"
                                                name=SellOrderDetails[temp_qty][]">
                                         <input type="hidden" class="form-control text-center temp-costing"
                                                value="<?= round(($m3->costing / $m3->qty), 2) ?>"
