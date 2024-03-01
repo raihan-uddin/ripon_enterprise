@@ -186,12 +186,12 @@ if (Yii::app()->user->checkAccess('Sell.Order.VoucherPreview')) {
             'pagerCssClass' => 'col-sm-12 col-md-7 pager',
             'columns' => array(
                 'id',
-                /*array(
+                array(
                     'name' => 'order_type',
                     'value' => 'SellOrder::model()->orderType($data->order_type)',
                     'type' => 'raw',
-                    'filter' => [SellOrder::NEW_ORDER => 'NEW ORDER', SellOrder::REPAIR_ORDER => 'REPLACE ORDER']
-                ),*/
+                    'filter' => [SellOrder::NEW_ORDER => 'NEW ORDER', SellOrder::REPAIR_ORDER => 'QUOTATION']
+                ),
                 array(
                     'name' => 'date',
                     'htmlOptions' => ['class' => 'text-center']
