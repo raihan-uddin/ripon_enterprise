@@ -74,6 +74,7 @@
     <div class="card-body">
         <div style="width: 100%">
             <?php
+            /** @var mixed $data */
             if ($data) {
             echo "<div class='printBtn' style='float: left; clear:right; width: 10%;'>";
             $this->widget('ext.mPrint.mPrint', array(
@@ -183,9 +184,10 @@
                                         if ($dt->note) {
                                             echo "<br>" . nl2br($dt->note);
                                         }
-                                        if (strlen($dt->product_sl_no ?? '') > 0) {
+                                        if (isset($dt->product_sl_no) && strlen($dt->product_sl_no) > 0) {
                                             echo "<br><b>SL:</b>$dt->product_sl_no";
                                         }
+
                                         if (strlen((string)$dt->warranty) > 0) {
                                             $dataArrayWarranty = explode(', ', $dt->warranty);
                                             $dataArrayWarrantyUnique = array_unique($dataArrayWarranty);
