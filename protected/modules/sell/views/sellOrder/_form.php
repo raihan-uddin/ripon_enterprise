@@ -636,11 +636,12 @@ Yii::app()->clientScript->registerCoreScript("jquery.ui");
     </div>
 
     <div class="card-footer">
-        <?php
-        echo CHtml::ajaxSubmitButton('Save', CHtml::normalizeUrl(array('/sell/sellOrder/create', 'render' => true)), array(
-            'dataType' => 'json',
-            'type' => 'post',
-            'success' => 'function(data) {
+        <div class="col-md-12">
+            <?php
+            echo CHtml::ajaxSubmitButton('Save', CHtml::normalizeUrl(array('/sell/sellOrder/create', 'render' => true)), array(
+                'dataType' => 'json',
+                'type' => 'post',
+                'success' => 'function(data) {
                 $("#ajaxLoader").hide();  
                     if(data.status=="success"){
                         $("#formResult").fadeIn();
@@ -659,7 +660,7 @@ Yii::app()->clientScript->registerCoreScript("jquery.ui");
                         });
                     }       
                 }',
-            'beforeSend' => 'function(){  
+                'beforeSend' => 'function(){  
                     let count_item =  $(".item").length; 
                     let cash_due = $("#SellOrder_cash_due").val();  
                     let date = $("#SellOrder_date").val();  
@@ -685,22 +686,20 @@ Yii::app()->clientScript->registerCoreScript("jquery.ui");
                         $("#ajaxLoader").show();
                     }
                  }',
-            'error' => 'function(xhr) { 
+                'error' => 'function(xhr) { 
                     $("#overlay").fadeOut(300);
               }',
-            'complete' => 'function() {
+                'complete' => 'function() {
                     $("#overlay").fadeOut(300);
                  $("#ajaxLoaderReport").hide(); 
               }',
-        ), array('class' => 'btn btn-primary btn-md'));
-        ?>
-
-        <span id="ajaxLoaderMR" class="ajaxLoaderMR" style="display: none;">
-            <i class="fa fa-spinner fa-spin fa-2x"></i>
-        </span>
-
-
-        <div class="col-md-12">
+            ), array('class' => 'btn btn-primary btn-md'));
+            ?>
+        </div>
+        <div class="col-md-12 mt-1">
+            <span id="ajaxLoaderMR" class="ajaxLoaderMR" style="display: none;">
+                <i class="fa fa-spinner fa-spin fa-2x"></i>
+            </span>
             <div id="formResult" class="ajaxTargetDiv"></div>
             <div id="formResultError" class="ajaxTargetDivErr alert alert-danger  d-none" role="alert">
             </div>
@@ -766,11 +765,11 @@ Yii::app()->clientScript->registerCoreScript("jquery.ui");
         let isproductpresent = false;
         let temp_codearray = document.getElementsByName("SellOrderDetails[temp_model_id][]");
         let temp_sl_array = document.getElementsByName("SellOrderDetails[temp_product_sl_no][]");
-        if (unit_price <= pp) {
+        /*if (unit_price <= pp) {
             toastr.warning("Selling price must be greater than purchase price!");
             toastr.error("Please change the selling price or change the purchase price of the product!");
             return false;
-        }
+        }*/
 
         if (product_sl_no.length > 0) {
             for (let l = 0; l < temp_sl_array.length; l++) {

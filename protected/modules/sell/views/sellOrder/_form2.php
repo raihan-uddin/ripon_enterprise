@@ -771,11 +771,6 @@ Yii::app()->clientScript->registerCoreScript("jquery.ui");
         let temp_codearray = document.getElementsByName("SellOrderDetails[temp_model_id][]");
         let temp_sl_array = document.getElementsByName("SellOrderDetails[temp_product_sl_no][]");
 
-        if (unit_price <= pp) {
-            toastr.warning("Selling price must be greater than purchase price!");
-            toastr.error("Please change the selling price or change the purchase price of the product!");
-            return false;
-        }
 
         if (product_sl_no.length > 0) {
             for (let l = 0; l < temp_sl_array.length; l++) {
