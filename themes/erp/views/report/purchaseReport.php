@@ -8,8 +8,8 @@
 $this->widget('application.components.BreadCrumb', array(
     'crumbs' => array(
         array('name' => 'Report', 'url' => array('')),
-        array('name' => 'Sell', 'url' => array('')),
-        array('name' => 'Customer Ledger',),
+        array('name' => 'Purchase', 'url' => array('')),
+        array('name' => 'Purchase Report',),
     ),
 //    'delimiter' => ' &rarr; ',
 ));
@@ -21,7 +21,7 @@ $form = $this->beginWidget('CActiveForm', array(
 ?>
 <div class="card card-primary">
     <div class="card-header">
-        <h3 class="card-title">Search Conditions (CUSTOMER LEDGER)</h3>
+        <h3 class="card-title">Search Conditions (PURCHASE REPORT)</h3>
         <div class="card-tools">
             <button type="button" class="btn btn-tool" data-card-widget="collapse">
                 <i class="fa fa-minus"></i>
@@ -65,10 +65,10 @@ $form = $this->beginWidget('CActiveForm', array(
 
             <div class="col-sm-12 col-md-2">
                 <div class="form-group" style="">
-                    <?php echo $form->labelEx($model, 'customer_id', ['class' => 'col-form-label']); ?>
-                    <div class="input-group" id="customer_id" data-target-input="nearest">
-                        <input type="text" id="customer_id_text" class="form-control">
-                        <?php echo $form->hiddenField($model, 'customer_id', array('class' => 'form-control',)); ?>
+                    <?php echo $form->labelEx($model, 'supplier_id', ['class' => 'col-form-label']); ?>
+                    <div class="input-group" id="supplier_id" data-target-input="nearest">
+                        <input type="text" id="supplier_id_text" class="form-control">
+                        <?php echo $form->hiddenField($model, 'supplier_id', array('class' => 'form-control',)); ?>
                         <div class="input-group-append" onclick="clearProduct()">
                             <div class="input-group-text"><i class="fa fa-refresh"></i></div>
                         </div>
@@ -77,10 +77,10 @@ $form = $this->beginWidget('CActiveForm', array(
                           style="color: red; width: 100%"> <?php echo $form->error($model, 'customer_id'); ?></span>
                     <script>
                         $(document).ready(function () {
-                            $('#customer_id_text').autocomplete({
+                            $('#supplier_id_text').autocomplete({
                                 source: function (request, response) {
                                     var search = request.term;
-                                    $.post('<?php echo Yii::app()->baseUrl ?>/index.php/crm/customers/Jquery_customerSearch', {
+                                    $.post('<?php echo Yii::app()->baseUrl ?>/index.php/commercial/suppliers/jquery_supplierSearch', {
                                             "q": search,
                                         },
                                         function (data) {
@@ -89,16 +89,45 @@ $form = $this->beginWidget('CActiveForm', array(
                                 },
                                 minLength: 1,
                                 select: function (event, ui) {
-                                    $('#customer_id_text').val(ui.item.value);
-                                    $('#Inventory_customer_id').val(ui.item.id);
+                                    $('#supplier_id_text').val(ui.item.value);
+                                    $('#Inventory_supplier_id').val(ui.item.id);
                                 }
-                            }).data("ui-autocomplete")._renderItem = function (ul, item) {
-                                return $("<li></li>")
-                                    .data("item.autocomplete", item)
-                                    .append(`<a> ${item.name} <small><br>ID: ${item.id} <br> Contact:  ${item.contact_no}</small></a>`)
-                                    .appendTo(ul);
-                            };
+                            })
+                        });
+                    </script>
+                </div>
+            </div>
 
+            <div class="col-sm-12 col-md-2">
+                <div class="form-group" style="">
+                    <?php echo $form->labelEx($model, 'created_by', ['class' => 'col-form-label']); ?>
+                    <div class="input-group" id="created_by" data-target-input="nearest">
+                        <input type="text" id="created_by_text" class="form-control">
+                        <?php echo $form->hiddenField($model, 'created_by', array('class' => 'form-control',)); ?>
+                        <div class="input-group-append" onclick="clearUser()">
+                            <div class="input-group-text"><i class="fa fa-refresh"></i></div>
+                        </div>
+                    </div>
+                    <span class="help-block"
+                          style="color: red; width: 100%"> <?php echo $form->error($model, 'created_by'); ?></span>
+                    <script>
+                        $(document).ready(function () {
+                            $('#created_by_text').autocomplete({
+                                source: function (request, response) {
+                                    var search = request.term;
+                                    $.post('<?php echo Yii::app()->baseUrl ?>/index.php/users/jquery_userSearch', {
+                                            "q": search,
+                                        },
+                                        function (data) {
+                                            response(data);
+                                        }, "json");
+                                },
+                                minLength: 1,
+                                select: function (event, ui) {
+                                    $('#created_by_text').val(ui.item.value);
+                                    $('#Inventory_created_by').val(ui.item.id);
+                                }
+                            })
                         });
                     </script>
                 </div>
@@ -110,13 +139,10 @@ $form = $this->beginWidget('CActiveForm', array(
         echo CHtml::submitButton('Search', array(
                 'ajax' => array(
                     'type' => 'POST',
-                    'url' => CController::createUrl('/report/customerLedgerView'),
+                    'url' => CController::createUrl('/report/purchaseReportView'),
                     'beforeSend' => 'function(){
                                 if($("#Inventory_date_from").val()=="" || $("#Inventory_date_to").val()==""){
                                     toastr.error("Warning! Please select date range!");
-                                    return false;
-                                }else if($("#Inventory_customer_id").val()==""){
-                                    toastr.error("Warning! Please select customer!");
                                     return false;
                                 }else{
                                     $(".ajaxLoaderResultView").show();
@@ -192,11 +218,17 @@ $form = $this->beginWidget('CActiveForm', array(
         $("#Inventory_date_from").val("");
         $("#Inventory_date_to").val("");
         clearProduct();
+        clearUser();
     });
 
     function clearProduct() {
         $("#customer_id_text").val("");
         $("#Inventory_customer_id").val("");
+    }
+
+    function clearUser() {
+        $("#created_by_text").val("");
+        $("#Inventory_created_by").val("");
     }
 </script>
 

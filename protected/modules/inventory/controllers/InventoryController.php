@@ -297,6 +297,7 @@ class InventoryController extends Controller
         $dateFrom = $_POST['Inventory']['date_from'];
         $dateTo = $_POST['Inventory']['date_to'];
         $model_id = $_POST['Inventory']['model_id'];
+        $manufacturer_id = $_POST['Inventory']['manufacturer_id'];
 
         $message = "";
         $data = "";
@@ -315,6 +316,9 @@ class InventoryController extends Controller
 
             if ($model_id > 0) {
                 $criteria->addColumnCondition(['t.id' => $model_id]);
+            }
+            if ($manufacturer_id > 0) {
+                $criteria->addColumnCondition(['t.manufacturer_id' => $manufacturer_id]);
             }
 
             $criteria->join = " LEFT JOIN inventory inv  on inv.model_id = t.id ";

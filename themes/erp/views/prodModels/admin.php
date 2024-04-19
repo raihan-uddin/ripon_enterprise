@@ -3,6 +3,7 @@ $this->widget('application.components.BreadCrumb', array(
     'crumbs' => array(
         array('name' => 'Inventory', 'url' => array('')),
         array('name' => 'Config', 'url' => array('admin')),
+        array('name' => 'Product Setup', 'url' => array('admin')),
         array('name' => 'Manage Products'),
     ),
 //    'delimiter' => ' &rarr; ',
@@ -105,6 +106,11 @@ endforeach;
                     'name' => 'unit_id',
                     'value' => 'Units::model()->unitLabel($data->unit_id)',
                     'filter' => CHtml::listData(Units::model()->findAll(), 'id', 'label'),
+                ),
+                array(
+                    'name' => 'manufacturer_id',
+                    'value' => 'Company::model()->nameOfThis($data->manufacturer_id)',
+                    'filter' => CHtml::listData(Company::model()->findAll(), 'id', 'name'),
                 ),
                 'sell_price',
                 'purchase_price',

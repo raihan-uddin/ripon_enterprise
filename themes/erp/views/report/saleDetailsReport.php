@@ -7,7 +7,8 @@
 <?php
 $this->widget('application.components.BreadCrumb', array(
     'crumbs' => array(
-        array('name' => 'Reports', 'url' => array('')),
+        array('name' => 'Report', 'url' => array('')),
+        array('name' => 'Sales', 'url' => array('')),
         array('name' => 'Sales Details Report',),
     ),
 //    'delimiter' => ' &rarr; ',
@@ -99,6 +100,25 @@ $form = $this->beginWidget('CActiveForm', array(
 
                         });
                     </script>
+                </div>
+            </div>
+            <div class="col-sm-12 col-md-2">
+                <div class="form-group" style="">
+                    <?php echo $form->labelEx($model, 'manufacturer_id', ['class' => 'col-form-label']); ?>
+                    <div class="input-group" id="manufacturer_id" data-target-input="nearest">
+                        <?php
+                        echo $form->dropDownList(
+                            $model, 'manufacturer_id', CHtml::listData(Company::model()->findAll(array('order' => 'name ASC')), 'id', 'name'), array(
+                            'prompt' => 'Select',
+                            'class' => 'form-control',
+                        ));
+                        ?>
+                        <!--                        <div class="input-group-append">-->
+                        <!--                            <div class="input-group-text"><i class="fa fa-calendar"></i></div>-->
+                        <!--                        </div>-->
+                    </div>
+                    <span class="help-block"
+                          style="color: red; width: 100%"> <?php echo $form->error($model, 'manufacturer_id'); ?></span>
                 </div>
             </div>
             <div class="col-sm-12 col-md-2">

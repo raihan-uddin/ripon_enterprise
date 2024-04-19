@@ -2,7 +2,8 @@
 $this->widget('application.components.BreadCrumb', array(
     'crumbs' => array(
         array('name' => 'Inventory', 'url' => array('')),
-        array('name' => 'Product', 'url' => array('admin')),
+        array('name' => 'Config', 'url' => array('admin')),
+        array('name' => 'Product Setup', 'url' => array('admin')),
         array('name' => 'Add Product'),
     ),
 //    'delimiter' => ' &rarr; ',
@@ -114,11 +115,11 @@ $form = $this->beginWidget('CActiveForm', array(
                                         'type' => 'post',
                                         'dataType' => 'json',
                                         'beforeSend' => "function(){
-    $('.ajaxLoaderFormLoad').show();
-    }",
+                                            $('.ajaxLoaderFormLoad').show();
+                                        }",
                                         'complete' => "function(){
-    $('.ajaxLoaderFormLoad').hide();
-    }",
+                                            $('.ajaxLoaderFormLoad').hide();
+                                        }",
                                         'success' => "function(data){
                                         if (data.status == 'failure')
                                         {
@@ -132,7 +133,7 @@ $form = $this->beginWidget('CActiveForm', array(
                                             setTimeout(\"$('#dialogAddProdItem').dialog('close') \",1000);
                                             $('#ProdModels_item_id').append('<option selected value='+data.value+'>'+data.label+'</option>');
                                         }
-                                                                }",
+                                    }",
                                     ))
                                     ?>
                                     return false;
@@ -361,6 +362,19 @@ $form = $this->beginWidget('CActiveForm', array(
                 <?php
                 echo $form->dropDownList(
                     $model, 'stockable', [1 => 'YES', 0 => 'NO'], array(
+                    'prompt' => 'Select',
+                    'class' => 'form-control',
+                ));
+                ?>
+                <span class="help-block"
+                      style="color: red; width: 100%"> <?php echo $form->error($model, 'stockable'); ?></span>
+            </div>
+
+            <div class="form-group col-sm-12 col-md-6 col-lg-4">
+                <?php echo $form->labelEx($model, 'manufacturer_id'); ?>
+                <?php
+                echo $form->dropDownList(
+                    $model, 'manufacturer_id', CHtml::listData(Company::model()->findAll(array('order' => 'name ASC')), 'id', 'name'), array(
                     'prompt' => 'Select',
                     'class' => 'form-control',
                 ));

@@ -97,8 +97,6 @@ echo "</div>";
             <th style="box-shadow: 0px 0px 0px 1px black inset;">Customer</th>
             <th style="width: 10%;box-shadow: 0px 0px 0px 1px black inset;">Discount</th>
             <th style="width: 10%;box-shadow: 0px 0px 0px 1px black inset;">Amount</th>
-            <th style="width: 10%;box-shadow: 0px 0px 0px 1px black inset;">N.I</th>
-            <th style="width: 10%;box-shadow: 0px 0px 0px 1px black inset;">Due</th>
         </tr>
         </thead>
         <tbody>
@@ -112,23 +110,17 @@ echo "</div>";
         <?php
         if ($data) {
             foreach ($data as $dmr) {
-                $row_closing_discount += $dmr->discount_amount;
+                $row_closing_discount += $dmr->discount;
                 $row_closing += $dmr->grand_total;
-                $netIncome = $dmr->grand_total - $dmr->costing;
                 $rowFound = true;
-
-                $net_income_total += $netIncome;
-                $total_due += $dmr->total_due;
                 ?>
                 <tr>
                     <td style="text-align: center;"><?php echo $sl++; ?></td>
                     <td style="text-align: center;"><?php echo $dmr->date; ?></td>
                     <td style="text-align: center;" class="invoiceDetails"><?php echo $dmr->id; ?></td>
-                    <td style="text-align: left;"><?php echo sprintf("%s | %s", $dmr->customer_name, $dmr->contact_no); ?></td>
-                    <td style="text-align: right;"><?php echo number_format($dmr->discount_amount, 2); ?></td>
+                    <td style="text-align: left;"><?php echo sprintf("%s | %s", $dmr->company_name, $dmr->contact_no); ?></td>
+                    <td style="text-align: right;"><?php echo number_format($dmr->discount, 2); ?></td>
                     <td style="text-align: right;"><?php echo number_format($dmr->grand_total, 2); ?></td>
-                    <td style="text-align: right;"><?php echo number_format($netIncome, 2); ?></td>
-                    <td style="text-align: right;"><?php echo number_format($dmr->total_due, 2); ?></td>
                 </tr>
                 <?php
 
@@ -139,9 +131,7 @@ echo "</div>";
         <tr>
             <th style="text-align: right;" colspan="4">Ground Total</th>
             <th style="text-align: right;"><?= number_format($row_closing_discount, 2) ?></th>
-            <th style="text-align: right;"><?= number_format($row_closing, 2) ?></th>
-            <th style="text-align: right;"><?= number_format($net_income_total, 2) ?></th>
-            <th style="text-align: right;"><?= number_format($total_due, 2) ?></th>
+            <th style="text-align: right;"><?= number_format($row_closing, 2) ?></th>=
         </tr>
 
         </tbody>
@@ -222,7 +212,7 @@ echo "</div>";
         var $this = $(this);
         $this.html('<i class="fa fa-spinner fa-spin"></i>');
         $.ajax({
-            url: '<?= Yii::app()->createUrl("report/saleInvoiceDetailsPreview") ?>',
+            url: '<?= Yii::app()->createUrl("report/purchaseInvoiceDetailsPreview") ?>',
             type: 'POST',
             data: {
                 invoiceId: invoiceId

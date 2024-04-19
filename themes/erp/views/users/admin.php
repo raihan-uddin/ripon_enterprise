@@ -1,7 +1,7 @@
 <?php
 $this->widget('application.components.BreadCrumb', array(
     'crumbs' => array(
-        array('name' => 'Software', 'url' => array('')),
+        array('name' => 'Common', 'url' => array('')),
         array('name' => 'User', 'url' => array('admin')),
         array('name' => 'Admin'),
     ),

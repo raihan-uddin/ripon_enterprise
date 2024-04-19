@@ -16,7 +16,10 @@ class ReportController extends RController
     public function filters()
     {
         return array(
-            'rights', // perform access control for CRUD operations
+            'rights
+            -purchaseInvoiceDetailsPreview
+            -saleInvoiceDetailsPreview
+            ', // perform access control for CRUD operations
         );
     }
 
@@ -519,6 +522,7 @@ class ReportController extends RController
         $model_id = $_POST['Inventory']['model_id'];
         $customer_id = $_POST['Inventory']['customer_id'];
         $created_by = $_POST['Inventory']['created_by'];
+        $manufacturer_id = $_POST['Inventory']['manufacturer_id'];
 
         $message = "";
         $data = NULL;
@@ -537,6 +541,9 @@ class ReportController extends RController
             }
             if ($created_by > 0) {
                 $criteria->addColumnCondition(['t.created_by' => $created_by]);
+            }
+            if ($manufacturer_id > 0) {
+                $criteria->addColumnCondition(['p.manufacturer_id' => $manufacturer_id]);
             }
             $criteria->join .= " INNER JOIN sell_order_details sod on t.id = sod.sell_order_id ";
             $criteria->join .= " INNER JOIN prod_models p on sod.model_id = p.id ";
@@ -579,5 +586,114 @@ class ReportController extends RController
         } else {
             echo '<div class="alert alert-danger" role="alert">Please select sales invoice no!</div>';
         }
+    }
+
+    public function actionPurchaseReport()
+    {
+        $model = new Inventory();
+        $this->pageTitle = 'PURCHASE REPORT';
+        $this->render('purchaseReport', array('model' => $model));
+    }
+
+    public function actionPurchaseReportView()
+    {
+        if (Yii::app()->request->isAjaxRequest) {
+            Yii::app()->clientScript->scriptMap['jquery.js'] = false;
+        }
+
+        date_default_timezone_set("Asia/Dhaka");
+        $dateFrom = $_POST['Inventory']['date_from'];
+        $dateTo = $_POST['Inventory']['date_to'];
+        $supplier_id = $_POST['Inventory']['supplier_id'];
+        $created_by = $_POST['Inventory']['created_by'];
+
+        $message = "";
+        $data = NULL;
+
+        if ($dateFrom != "" && $dateTo != '') {
+            $message .= "<br>  Date: " . date('d/m/Y', strtotime($dateFrom)) . "-" . date('d/m/Y', strtotime($dateTo));
+
+            $criteria = new CDbCriteria();
+            $criteria->addBetweenCondition('t.date', $dateFrom, $dateTo);
+            if ($supplier_id > 0) {
+                $criteria->addColumnCondition(['t.supplier_id' => $supplier_id]);
+            }
+            if ($created_by > 0) {
+                $criteria->addColumnCondition(['t.created_by' => $created_by]);
+            }
+            $criteria->join .= " INNER JOIN suppliers c on t.supplier_id = c.id ";
+            $criteria->select = "t.*, c.company_name as company_name, c.company_contact_no as contact_no";
+            $criteria->order = 't.date asc';
+            $data = PurchaseOrder::model()->findAll($criteria);
+        }
+        echo $this->renderPartial('purchaseReportView', array(
+            'data' => $data,
+            'message' => $message,
+        ), true, true);
+        Yii::app()->end();
+    }
+
+    public function actionPurchaseInvoiceDetailsPreview(){
+        $invoiceId = $_POST['invoiceId'];
+
+        if (Yii::app()->request->isAjaxRequest) {
+            Yii::app()->clientScript->scriptMap['jquery.js'] = false;
+        }
+
+        if ($invoiceId) {
+            $criteria = new CDbCriteria;
+            $criteria->addColumnCondition(['id' => $invoiceId]);
+            $data = PurchaseOrder::model()->findByAttributes([], $criteria);
+
+            if ($data) {
+                echo $this->renderPartial("application.modules.commercial.views.purchaseOrder.voucherPreview", array('data' => $data, ), true, true);
+            } else {
+                header('Content-type: application/json');
+                echo CJSON::encode(array(
+                    'status' => 'error',
+                ));
+            }
+            Yii::app()->end();
+        } else {
+            echo '<div class="alert alert-danger" role="alert">Please select purchase invoice no!</div>';
+        }
+    }
+
+    public function actionSlowMovingProductReport()
+    {
+        $model = new Inventory();
+        $this->pageTitle = 'SLOW MOVING PRODUCT REPORT';
+        $this->render('slowMovingProductReport', array('model' => $model));
+    }
+
+    // product that are less sold or not sold on a specific date range but on in my stock are slow moving product
+    public function actionSlowMovingProductReportView()
+    {
+        if (Yii::app()->request->isAjaxRequest) {
+            Yii::app()->clientScript->scriptMap['jquery.js'] = false;
+        }
+
+        date_default_timezone_set("Asia/Dhaka");
+        $dateFrom = $_POST['Inventory']['date_from'];
+        $dateTo = $_POST['Inventory']['date_to'];
+
+        $message = "";
+        $data = NULL;
+
+        if ($dateFrom != "" && $dateTo != '') {
+            $message .= "<br>  Date: " . date('d/m/Y', strtotime($dateFrom)) . "-" . date('d/m/Y', strtotime($dateTo));
+
+            $sql = "SELECT p.id, p.model_name, p.code, p.purchase_price, p.sell_price, p.qty, p.qty_sold, p.qty_sold_amount, p.qty_sold_costing, p.qty_sold_profit, p.qty_sold_profit_percent, p.qty_sold_date
+                    FROM prod_models p
+                    WHERE p.qty > 0 AND p.qty_sold = 0
+                    ORDER BY p.id ASC;";
+            $command = Yii::app()->db->createCommand($sql);
+            $data = $command->queryAll();
+        }
+        echo $this->renderPartial('slowMovingProductReportView', array(
+            'data' => $data,
+            'message' => $message,
+        ), true, true);
+        Yii::app()->end();
     }
 }

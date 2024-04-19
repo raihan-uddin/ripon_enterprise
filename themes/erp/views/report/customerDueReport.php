@@ -7,9 +7,9 @@
 <?php
 $this->widget('application.components.BreadCrumb', array(
     'crumbs' => array(
+        array('name' => 'Report', 'url' => array('')),
         array('name' => 'Sell', 'url' => array('')),
-        array('name' => 'Reports', 'url' => array('')),
-        array('name' => 'Customer DUE REPORT',),
+        array('name' => 'Customer Due Report',),
     ),
 //    'delimiter' => ' &rarr; ',
 ));

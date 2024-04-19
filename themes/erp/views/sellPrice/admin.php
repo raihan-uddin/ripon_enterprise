@@ -1,4 +1,16 @@
 <?php
+$this->widget('application.components.BreadCrumb', array(
+    'crumbs' => array(
+        array('name' => 'Inventory', 'url' => array('')),
+        array('name' => 'Config', 'url' => array('admin')),
+        array('name' => 'Manage Product', 'url' => array('admin')),
+        array('name' => 'Manage Sell Price'),
+    ),
+//    'delimiter' => ' &rarr; ',
+));
+?>
+
+<?php
 Yii::app()->clientScript->registerScript('search', "
 $('.search-button').click(function(){
 	$('.search-form').toggle();
@@ -44,7 +56,6 @@ endforeach;
     <div class="card-body">
 
         <?php
-        $empList = CHtml::listData(Employees::model()->findAll(['order' => 'full_name ASC']), "id", "full_name");
         $this->widget('ext.groupgridview.GroupGridView', array(
             'id' => 'sell-price-grid',
             'dataProvider' => $model->search(),
@@ -92,17 +103,9 @@ endforeach;
                     'value' => 'SellPrice::model()->statusColor($data->is_active)',
                     'filter' => Lookup::items('is_active'),
                 ),
-                array(
-                    'name' => 'add_by',
-                    'value' => 'CHtml::encode(Users::model()->fullNameOfThis($data->add_by))',
-                    'filter' => $empList,
-                ),
+
                 'add_time',
-                array(
-                    'name' => 'update_by',
-                    'value' => 'CHtml::encode(Users::model()->fullNameOfThis($data->update_by))',
-                    'filter' => $empList,
-                ),
+
                 'update_time',
                 array
                 (

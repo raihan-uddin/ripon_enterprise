@@ -46,6 +46,7 @@ class PurchaseOrder extends CActiveRecord
     public $unit_id;
     public $so_no;
     public $invoice_no;
+    public $company_name;
 
     const PURCHASE = 1;
     const PURCHASE_RECEIVE = 2;

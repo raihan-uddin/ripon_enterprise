@@ -3,7 +3,7 @@ $this->widget('application.components.BreadCrumb', array(
     'crumbs' => array(
         array('name' => 'Inventory', 'url' => array('')),
         array('name' => 'Config', 'url' => array('admin')),
-        array('name' => 'Product Category'),
+        array('name' => 'Company'),
     ),
 //    'delimiter' => ' &rarr; ',
 ));
@@ -43,7 +43,7 @@ endforeach;
     <div id="statusMsg"></div>
     <div class="card card-primary">
         <div class="card-header">
-            <h3 class="card-title">Manage Categories</h3>
+            <h3 class="card-title">Manage Companies</h3>
 
             <div class="card-tools">
                 <button type="button" class="btn btn-tool" data-card-widget="collapse">
@@ -89,11 +89,12 @@ endforeach;
                 'pagerCssClass' => 'col-sm-12 col-md-7 pager',
                 'emptyText' => "<div class='alert alert-warning text-center' role='alert'><i class='icon fa fa-exclamation-triangle'></i>No results found.</div>",
                 'columns' => array(
-                    'item_name',
+                    'id',
+                    'name',
                     array
                     (
                         'header' => 'Options',
-                        'template' => '{update}{delete}', // {delete}
+                        'template' => '{update}', // {delete}
                         'class' => 'CButtonColumn',
                         'htmlOptions' => ['style' => 'width: 100px'],
                         'buttons' => array(

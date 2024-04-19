@@ -89,6 +89,18 @@ $form = $this->beginWidget('CActiveForm', array(
                       style="color: red; width: 100%"> <?php echo $form->error($model, 'unit_id'); ?></span>
             </div>
 
+            <div class="form-group col-sm-12 col-md-6 col-lg-4">
+                <?php echo $form->labelEx($model, 'manufacturer_id'); ?>
+                <?php
+                echo $form->dropDownList(
+                    $model, 'manufacturer_id', CHtml::listData(Company::model()->findAll(array('order' => 'name ASC')), 'id', 'name'), array(
+                    'prompt' => 'Select',
+                    'class' => 'form-control',
+                ));
+                ?>
+                <span class="help-block"
+                      style="color: red; width: 100%"> <?php echo $form->error($model, 'stockable'); ?></span>
+            </div>
 
             <div class="form-group col-xs-12 col-sm-6 col-lg-4">
                 <?php echo $form->labelEx($model, 'min_order_qty'); ?>

@@ -51,6 +51,7 @@ class Inventory extends CActiveRecord
     public $image;
     public $stock;
     public $closing_stock;
+    public $manufacturer_id;
 
     public static function maxSlNo()
     {
@@ -136,6 +137,7 @@ class Inventory extends CActiveRecord
             'warranty' => 'Warranty',
             'customer_id' => 'Customer',
             'supplier_id' => 'Supplier',
+            'manufacturer_id' => 'Company',
         );
     }
 

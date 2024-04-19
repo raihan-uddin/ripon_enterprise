@@ -75,7 +75,7 @@ class ProdModels extends CActiveRecord
         // will receive user inputs.
         return array(
             array('item_id, brand_id, model_name, code, unit_id', 'required'),
-            array('item_id, brand_id, unit_id, stockable', 'numerical', 'integerOnly' => true),
+            array('item_id, brand_id, unit_id, stockable, manufacturer_id', 'numerical', 'integerOnly' => true),
             array('sell_price, purchase_price', 'numerical'),
             array('model_name, code, min_order_qty', 'length', 'max' => 255),
             array('warranty', 'numerical'),
@@ -84,7 +84,7 @@ class ProdModels extends CActiveRecord
             array('features, description', 'safe'),
             // The following rule is used by search().
             // Please remove those attributes that should not be searched.
-            array('min_order_qty, id, item_id, brand_id, model_name, features, stockable, warranty, description,  purchase_price, sell_price', 'safe', 'on' => 'search'),
+            array('min_order_qty, id, item_id, brand_id, model_name, manufacturer_id, features, stockable, warranty, description,  purchase_price, sell_price', 'safe', 'on' => 'search'),
         );
     }
 
@@ -119,6 +119,7 @@ class ProdModels extends CActiveRecord
             'purchase_price' => 'Purchase Price',
             'sell_price' => 'Sell Price',
             'stockable' => 'Stock Maintain?',
+            'manufacturer_id' => 'Company',
         );
     }
 
@@ -255,6 +256,7 @@ class ProdModels extends CActiveRecord
 
         $criteria->compare('item_id', $this->item_id);
         $criteria->compare('brand_id', $this->brand_id);
+        $criteria->compare('manufacturer_id', $this->manufacturer_id);
         $criteria->compare('model_name', $this->model_name, true);
         $criteria->compare('code', $this->code, true);
         $criteria->compare('min_order_qty', $this->min_order_qty, true);
