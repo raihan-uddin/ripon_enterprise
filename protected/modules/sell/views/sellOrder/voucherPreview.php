@@ -75,6 +75,12 @@
         <div style="width: 100%">
             <?php
             /** @var mixed $data */
+            $showProfitLossSummary = isset($show_profit) ? $show_profit : false;
+            $footerRowSpan = 6;
+            $footerColspan = 5;
+            if ($showProfitLossSummary) {
+                $footerColspan = 6;
+            }
             if ($data) {
             echo "<div class='printBtn' style='float: left; clear:right; width: 10%;'>";
             $this->widget('ext.mPrint.mPrint', array(
@@ -105,12 +111,12 @@
                         <?php
                         if (isset($preview_type)) {
                             if ($preview_type == SellOrder::NORMAL_PAD_PRINT) {
-                                $this->renderPartial('pad_header');
+                                $this->renderPartial('application.modules.sell.views.sellOrder.pad_header');
                             } else {
-                                $this->renderPartial('without_pad_header');
+                                $this->renderPartial('application.modules.sell.views.sellOrder.without_pad_header');
                             }
                         } else {
-                            $this->renderPartial('without_pad_header');
+                            $this->renderPartial('application.modules.sell.views.sellOrder.without_pad_header');
                         }
                         ?>
                         <div style="width: 100%; float: left; clear: right; margin-bottom: 10px;">
@@ -141,6 +147,15 @@
                                 <b>Invoice No:</b>
                                 <?= "$data->so_no" ?>
                                 <br>
+                                <?php
+                                if ($showProfitLossSummary) {
+                                    ?>
+                                    <span style="border: 1px solid black; padding: 8px;">
+                                    <b style="font-size: 20px;">P/L: <span id="profitLossText"></span></b>
+                                            </span>
+                                    <?php
+                                }
+                                ?>
                             </div>
                         </div>
                     </div>
@@ -153,6 +168,13 @@
                             <td style="text-align: center;  width: 10%;">Qty</td>
                             <td style="text-align: center;  width: 10%;">Price</td>
                             <td style="text-align: center; width: 15%;">Total</td>
+                            <?php
+                            if ($showProfitLossSummary) {
+                                ?>
+                                <td style="text-align: center; width: 10%;">N.I</td>
+                                <?php
+                            }
+                            ?>
                         </tr>
                         <tbody>
                         <?php
@@ -161,8 +183,8 @@
                         $delivery_charge = $data->delivery_charge;
                         $discount_amount = $data->discount_amount;
                         $criteria = new CDbCriteria();
-                        $criteria->select = "pm.model_name, pm.code, pm.image, sum(t.qty) as qty, t.amount, 
-                                            t.note, sum(t.row_total) as row_total, 
+                        $criteria->select = "pm.model_name, pm.code, pm.image, sum(t.qty) as qty, t.amount,
+                                            t.note, sum(t.row_total) as row_total,  sum(costing) as costing,
                                             GROUP_CONCAT(product_sl_no ORDER BY product_sl_no SEPARATOR ', ') as product_sl_no, 
                                             GROUP_CONCAT(t.warranty ORDER BY t.warranty SEPARATOR ', ') as warranty,
                                             pm.description";
@@ -172,6 +194,7 @@
                         $criteria->order = "pm.item_id DESC, pm.model_name ASC";
                         $data2 = SellOrderDetails::model()->findAll($criteria);
                         $row_total = 0;
+                        $totalCosting = 0;
                         if ($data2) {
                             $i = 1;
                             foreach ($data2 as $dt) {
@@ -193,7 +216,7 @@
                                             $dataArrayWarrantyUnique = array_unique($dataArrayWarranty);
                                             $dataArrayWarrantyUnique = array_values($dataArrayWarrantyUnique);
 //                                            print_r($dataArrayWarrantyUnique);
-                                            $warranty =  implode(', ', $dataArrayWarrantyUnique);
+                                            $warranty = implode(', ', $dataArrayWarrantyUnique);
                                             echo "<br><b>Warranty: </b> <i>$warranty Month</i>";
                                         }
                                         ?>
@@ -202,9 +225,22 @@
                                     <td style="text-align: center;"><?= number_format($dt->qty) ?></td>
                                     <td style="text-align: right;"> TK <?= number_format($dt->amount, 2) ?></td>
                                     <td style="text-align: right;"> TK <?= number_format($dt->row_total, 2) ?></td>
+                                    <?php
+                                    if ($showProfitLossSummary) {
+                                        $netIncome = $dt->row_total - $dt->costing;
+                                        ?>
+                                        <td style="text-align: right;"> TK <?= number_format($netIncome, 2) ?></td>
+                                        <?php
+                                    }
+                                    ?>
                                 </tr>
                                 <?php
                                 $row_total += $dt->row_total;
+                                $totalCosting += $dt->costing;
+                            }
+                            if ($totalCosting != $data->costing) {
+                                $data->costing = $totalCosting;
+                                $data->save();
                             }
                         } else {
                             ?>
@@ -219,7 +255,7 @@
                         }
                         ?>
                         <tr>
-                            <td rowspan="5" colspan="2" style="border: none;">
+                            <td rowspan="<?= $footerRowSpan ?>>" colspan="2" style="border: none;">
                                 <div>Total Amount In Words:</div>
                                 <div>BDT:
                                     <?php
@@ -266,7 +302,6 @@
                             ?>
 
                             <tr>
-                                <td colspan="2" style="border: none; background: white;"></td>
                                 <td colspan="2" style="border: none;">
                                     Previous Due Amount
                                 </td>
@@ -314,7 +349,10 @@
                                     Cash Discount
                                 </td>
                                 <td style="text-align: right; border: none;">
-                                    TK (-<?= number_format($current_collection_discount > 0 ? $current_collection_discount : 0, 2) ?>)</td>
+                                    TK
+                                    (-<?= number_format($current_collection_discount > 0 ? $current_collection_discount : 0, 2) ?>
+                                    )
+                                </td>
                             </tr>
                             <tr style="font-weight: bold;">
                                 <td colspan="2" style="border: none;"></td>
@@ -373,3 +411,16 @@
         </div>
     </div>
 </div>
+show profit loss summary on profitLossText div using javascript  must be show after loading the page
+<script>
+    $(document).ready(function () {
+        var profitLoss = <?= $row_total - $totalCosting ?>;
+        // if profit then show green color else show red color
+        if (profitLoss > 0) {
+            $('#profitLossText').css('color', 'green');
+        } else {
+            $('#profitLossText').css('color', 'red');
+        }
+        $('#profitLossText').text(profitLoss.toFixed(2));
+    });
+</script>

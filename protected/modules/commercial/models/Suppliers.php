@@ -173,7 +173,7 @@ class Suppliers extends CActiveRecord
                 'pageSize' => 50,
             ),
             'sort' => array(
-                'defaultOrder' => 'company_name ASC',
+                'defaultOrder' => 'id DESC',
             ),
         ));
     }

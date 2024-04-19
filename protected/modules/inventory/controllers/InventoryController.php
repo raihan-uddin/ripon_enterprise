@@ -304,7 +304,7 @@ class InventoryController extends Controller
         if ($dateFrom != "" && $dateTo != '') {
             $criteria = new CDbCriteria;
             $criteria->select = "
-            t.model_name, t.code, inv.model_id, t.sell_price,
+            t.model_name, t.code, inv.model_id, t.sell_price, t.purchase_price as cpp,
             IFNULL((SELECT (SUM(op.stock_in) - SUM(op.stock_out)) FROM inventory op where op.date < '$dateFrom' AND op.model_id = t.id), 0) as opening_stock,
             SUM(CASE WHEN (inv.date BETWEEN '$dateFrom' AND '$dateTo') THEN inv.stock_in ELSE 0 END) as stock_in, 
             SUM(CASE WHEN (inv.date BETWEEN '$dateFrom' AND '$dateTo') THEN inv.stock_out ELSE 0 END) as stock_out

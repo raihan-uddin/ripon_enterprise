@@ -139,7 +139,7 @@ Yii::app()->clientScript->registerCoreScript("jquery.ui");
                             }).data("ui-autocomplete")._renderItem = function (ul, item) {
                                 return $("<li></li>")
                                     .data("item.autocomplete", item)
-                                    .append(`<a> ${item.name} <small><br>City: ${item.city}, State: ${item.state}, Zip: ${item.zip} <br> Contact:  ${item.contact_no}</small></a>`)
+                                    .append(`<a> ${item.name} <small><br>ID: ${item.id} <br> Contact:  ${item.contact_no}</small></a>`)
                                     .appendTo(ul);
                             };
 
@@ -439,17 +439,26 @@ Yii::app()->clientScript->registerCoreScript("jquery.ui");
                                             "model_id": $('#SellOrderDetails_model_id').val(),
                                         }, function (data) {
                                             response(data);
+                                            console.log(`length: ${data.length}, data: ${JSON.stringify(data)}`);
 
                                             // Check if there's only one item and trigger select event
                                             if (data.length === 1 && data[0].id) {
                                                 $('#model_id_text').val(data[0].label);
                                                 $('#product_sl_no').val(data[0].product_sl_no);
-                                                $('#SellOrderDetails_model_id').val(data[0].id);
+                                                if (data[0].id == prev_product_id)
+                                                    sp = prev_sell_price
+                                                else
+                                                    sp = data[0].sell_price
+                                                $('#SellOrderDetails_model_id').val(sp);
                                                 $('#SellOrderDetails_amount').val(data[0].sell_price);
                                                 $('#SellOrderDetails_qty').val(1);
-                                                $('#SellOrderDetails_row_total').val(data[0].sell_price);
+                                                $('#SellOrderDetails_row_total').val(sp);
                                                 showPurchasePrice(data[0].purchasePrice);
                                                 showCurrentStock(data[0].stock);
+                                                // trigger select event
+                                                $('#product_sl_no').autocomplete('option', 'select').call($('#product_sl_no')[0], null, {
+                                                    item: data[0]
+                                                });
                                             }
                                         }, "json");
                                     },
@@ -459,9 +468,13 @@ Yii::app()->clientScript->registerCoreScript("jquery.ui");
                                         $('#model_id_text').val(ui.item.label);
                                         $('#product_sl_no').val(ui.item.product_sl_no);
                                         $('#SellOrderDetails_model_id').val(ui.item.id);
-                                        $('#SellOrderDetails_amount').val(ui.item.sell_price);
+                                        if (ui.item.id == prev_product_id)
+                                            sp = prev_sell_price
+                                        else
+                                            sp = ui.item.sell_price
+                                        $('#SellOrderDetails_amount').val(sp);
                                         $('#SellOrderDetails_qty').val(1);
-                                        $('#SellOrderDetails_row_total').val(ui.item.sell_price);
+                                        $('#SellOrderDetails_row_total').val(sp);
                                         // $('.product_unit_text').html($('#Inventory_unit_id option:selected').text());
                                         showPurchasePrice(ui.item.purchasePrice);
                                         showCurrentStock(ui.item.stock);
@@ -720,6 +733,9 @@ Yii::app()->clientScript->registerCoreScript("jquery.ui");
     </div>
 </div>
 <script>
+
+    let prev_product_id = 0;
+    let prev_sell_price = 0;
     var picker = new Lightpick({
         field: document.getElementById('entry_date'),
         // minDate: moment(),
@@ -799,7 +815,7 @@ Yii::app()->clientScript->registerCoreScript("jquery.ui");
             toastr.error("Please enter qty & amount!");
             return false;
         } else {
-            $("#list tbody").append(`
+            $("#list tbody").prepend(`
                 <tr class="item">
                     <td>${model_id_text}</td>
                     <td class="text-center">${product_sl_no}</td>
@@ -827,6 +843,9 @@ Yii::app()->clientScript->registerCoreScript("jquery.ui");
                 `);
             calculateTotal();
             clearDynamicItem(product_sl_no);
+
+            prev_sell_price = unit_price;
+            prev_product_id = model_id;
         }
     }
 

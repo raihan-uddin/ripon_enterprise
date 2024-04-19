@@ -33,6 +33,7 @@ class ProdModels extends CActiveRecord
 
     public $maxProdId;
     public $activePrice;
+    public $cpp;
     public $deviceFile;
     public $min_order_qty;
     public $qty;

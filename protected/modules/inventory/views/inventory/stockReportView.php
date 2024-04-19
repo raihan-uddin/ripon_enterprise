@@ -94,30 +94,56 @@ $this->widget('ext.mPrint.mPrint', array(
 echo "</div>";
 
 ?>
+<!--need a radio button group for show only stock, zero stock, negative stock-->
+<div class="btn-group" data-toggle="buttons">
+    <label class="btn btn-secondary active">
+        <input type="radio" name="stockFilter" value="all" checked> Show All
+    </label>
+    <label class="btn btn-secondary">
+        <input type="radio" name="stockFilter" value="negative"> Negative Stock
+    </label>
+    <label class="btn btn-secondary">
+        <input type="radio" name="stockFilter" value="zero"> Zero Stock
+    </label>
+    <label class="btn btn-secondary">
+        <input type="radio" name="stockFilter" value="positive"> Only Stock
+    </label>
+</div>
 <script src="<?= Yii::app()->theme->baseUrl ?>/js/jquery.table2excel.js"></script>
 <div class='printAllTableForThisReport table-responsive p-0"'>
     <table class="summaryTab final-result table2excel table2excel_with_colors table table-bordered table-sm"
            id="table-1">
         <thead>
-        <tr>
-            <td colspan="10" style="font-size:16px; font-weight:bold; text-align:center">
+        <tr class=" negative zero positive">
+            <td colspan="13" style="font-size:16px; font-weight:bold; text-align:center">
                 <?php echo $message; ?></td>
         </tr>
-        <tr class="titlesTr sticky">
+        <tr class="titlesTr sticky negative zero positive">
             <th style="width: 2%; box-shadow: 0px 0px 0px 1px black inset;">SL</th>
-            <th style="width: 3%; box-shadow: 0px 0px 0px 1px black inset;">ID</th>
+<!--            <th style="width: 3%; box-shadow: 0px 0px 0px 1px black inset;">ID</th>-->
             <th style="box-shadow: 0px 0px 0px 1px black inset;">Product Name</th>
-            <th style="box-shadow: 0px 0px 0px 1px black inset;">Code</th>
-            <th style="box-shadow: 0px 0px 0px 1px black inset; width: 10%; min-width: 60px;">Opening Stock</th>
+<!--            <th style="box-shadow: 0px 0px 0px 1px black inset;">Code</th>-->
+            <th style="box-shadow: 0px 0px 0px 1px black inset; width: 10%; min-width: 30px;">Opening</th>
             <th style="box-shadow: 0px 0px 0px 1px black inset;  width: 10%; min-width: 60px;">Stock In</th>
             <th style="box-shadow: 0px 0px 0px 1px black inset;  width: 10%; min-width: 60px;">Stock Out</th>
             <th style="box-shadow: 0px 0px 0px 1px black inset;  width: 10%; min-width: 60px;">Closing
                 Stock
             </th>
-            <th style="box-shadow: 0px 0px 0px 1px black inset;">Sell Price</th>
+            <th style="box-shadow: 0px 0px 0px 1px black inset;  width: 10%; min-width: 50px;" title="Current Purchase Price">
+                C.P.P
+            </th>
+            <th style="box-shadow: 0px 0px 0px 1px black inset;">S.P</th>
             <th style="box-shadow: 0px 0px 0px 1px black inset;  width: 10%; min-width: 60px;">
+                Sell Value
+            </th>
+
+            <th style="box-shadow: 0px 0px 0px 1px black inset;  width: 10%; min-width: 60px;">
+                P.P
+            </th>
+            <th style="box-shadow: 0px 0px 0px 1px black inset;  width: 10%; min-width: 50px;">
                 Stock Value
             </th>
+
         </tr>
         </thead>
         <tbody>
@@ -130,26 +156,30 @@ echo "</div>";
             if ($dmr->opening_stock != 0 || $dmr->stock_in != 0 || $dmr->stock_out) {
                 $closing = (($dmr->opening_stock + $dmr->stock_in) - $dmr->stock_out);
                 $stockValue = $closing * $dmr->sell_price;
+                $cpp = $dmr->cpp;
                 $rowFound = true;
                 $groundTotal += $stockValue;
+                $negativeStockClass = $closing < 0 ? '  negative ' : ' ';
+                $zeroStockClass = $closing == 0 ? '  zero ' : ' ';
+                $positiveStockClass = $closing > 0 ? ' positive ' : ' ';
                 ?>
-                <tr>
+                <tr class="<?= $positiveStockClass . $zeroStockClass .  $negativeStockClass?>">
                     <td style="text-align: center;"><?php echo $sl++; ?></td>
-                    <td style="text-align: center;">
-                        <?php echo $dmr->model_id; ?>
-                    </td>
+<!--                    <td style="text-align: center;">-->
+<!--                        --><?php //echo $dmr->model_id; ?>
+<!--                    </td>-->
                     <td style="text-align: left;">
                         <a href="#"
                            onclick="currentStockPreview(<?= $dmr->model_id > 0 ? $dmr->model_id : 0 ?>);">
                             <?php echo $dmr->model_name; ?>
                         </a>
                     </td>
-                    <td style="text-align: left;">
-                        <a href="#"
-                           onclick="currentStockPreview(<?= $dmr->model_id > 0 ? $dmr->model_id : 0 ?>);">
-                            <?php echo $dmr->code; ?>
-                        </a>
-                    </td>
+<!--                    <td style="text-align: left;">-->
+<!--                        <a href="#"-->
+<!--                           onclick="currentStockPreview(--><?php //= $dmr->model_id > 0 ? $dmr->model_id : 0 ?><!--);">-->
+<!--                            --><?php //echo $dmr->code; ?>
+<!--                        </a>-->
+<!--                    </td>-->
 
                     <td style="text-align: center;"><?php echo $dmr->opening_stock; ?></td>
                     <td style="text-align: center;"><a href="#" onclick="currentStockInPreview(
@@ -163,8 +193,12 @@ echo "</div>";
                         <?= strtotime($endDate) ?> )"
                         ><?php echo $dmr->stock_out; ?></a></td>
                     <td style="text-align: center;"><?php echo $closing; ?></td>
+
+                    <td style="text-align: right;"><?php echo is_numeric($cpp) ? number_format($cpp, 2) : ''; ?></td>
                     <td style="text-align: center;"><?php echo is_numeric($dmr->sell_price) ? number_format($dmr->sell_price, 2) : ''; ?></td>
                     <td style="text-align: right;"><?php echo is_numeric($stockValue) ? number_format($stockValue, 2) : ''; ?></td>
+                    <td style="text-align: right;"><?php echo 0; ?></td>
+                    <td style="text-align: right;"><?php echo 0; ?></td>
                 </tr>
                 <?php
             }
@@ -174,7 +208,7 @@ echo "</div>";
         if (!$rowFound) {
             ?>
             <tr>
-                <td colspan="10">
+                <td colspan="13">
                     <div class="alert alert-warning"><i class="fa fa-exclamation-triangle"></i> No result found !</div>
                 </td>
             </tr>
@@ -182,7 +216,7 @@ echo "</div>";
         } else {
             ?>
             <tr>
-                <th style="text-align: right;" colspan="9">Ground Total</th>
+                <th style="text-align: right;" colspan="8">Ground Total</th>
                 <th style="text-align: right;"><?= number_format($groundTotal, 2) ?></th>
             </tr>
             <?php
@@ -278,4 +312,22 @@ echo "</div>";
         winprops = 'height=' + h + ',width=' + w + ',top=' + wint + ',left=' + winl + ',scrollbars=' + scrl + ',toolbar=0,location=0,statusbar=0,menubar=0,resizable=0';
         eval("page" + id + " = window.open(URL, '" + id + "', winprops);");
     }
+    $(document).ready(function() {
+        $('input[name="stockFilter"]').change(function() {
+            var selectedValue = $(this).val();
+            console.log(selectedValue);
+            $('#table-1 tr').each(function() {
+                if (selectedValue === "all") {
+                    $(this).show();
+                } else if ($(this).hasClass(selectedValue)) {
+                    $(this).show();
+                } else {
+                    $(this).hide();
+                }
+            });
+        });
+
+        // Initial execution to show all rows
+        $('input[value="all"]').change();
+    });
 </script>

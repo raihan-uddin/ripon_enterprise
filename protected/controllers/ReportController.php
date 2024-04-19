@@ -69,9 +69,10 @@ class ReportController extends RController
                     FROM sell_order
                     WHERE date BETWEEN '$dateFrom' AND '$dateTo' " . ($customer_id > 0 ? " AND customer_id = $customer_id" : "") . "
                     UNION
-                    SELECT id, date, mr_no AS order_no, customer_id, amount, 'collection', created_at
+                    SELECT GROUP_CONCAT(DISTINCT id SEPARATOR ',') as id, date, GROUP_CONCAT(DISTINCT invoice_id SEPARATOR ',') AS order_no, customer_id, SUM(amount) as amount, 'collection', created_at
                     FROM money_receipt
                     WHERE date BETWEEN '$dateFrom' AND '$dateTo' " . ($customer_id > 0 ? " AND customer_id = $customer_id" : "") . "
+                    GROUP BY customer_id, date
                 ) temp
                 ORDER BY created_at ASC;
                 ";
@@ -449,5 +450,134 @@ class ReportController extends RController
             'message' => $message,
         ), true, true);
         Yii::app()->end();
+    }
+
+    // sales report
+    public function actionSalesReport()
+    {
+        $model = new Inventory();
+        $this->pageTitle = 'SALES REPORT';
+        $this->render('salesReport', array('model' => $model));
+    }
+
+    // sales report view
+    public function actionSalesReportView()
+    {
+        if (Yii::app()->request->isAjaxRequest) {
+            Yii::app()->clientScript->scriptMap['jquery.js'] = false;
+        }
+
+        date_default_timezone_set("Asia/Dhaka");
+        $dateFrom = $_POST['Inventory']['date_from'];
+        $dateTo = $_POST['Inventory']['date_to'];
+        $customer_id = $_POST['Inventory']['customer_id'];
+        $created_by = $_POST['Inventory']['created_by'];
+
+        $message = "";
+        $data = NULL;
+
+        if ($dateFrom != "" && $dateTo != '') {
+            $message .= "<br>  Date: " . date('d/m/Y', strtotime($dateFrom)) . "-" . date('d/m/Y', strtotime($dateTo));
+
+            $criteria = new CDbCriteria();
+            $criteria->addBetweenCondition('t.date', $dateFrom, $dateTo);
+            $criteria->addColumnCondition(['t.order_type' => SellOrder::NEW_ORDER]);
+            if ($customer_id > 0) {
+                $criteria->addColumnCondition(['t.customer_id' => $customer_id]);
+            }
+            if ($created_by > 0) {
+                $criteria->addColumnCondition(['t.created_by' => $created_by]);
+            }
+            $criteria->join .= " INNER JOIN customers c on t.customer_id = c.id ";
+            $criteria->select = "t.*, c.company_name as customer_name, c.owner_mobile_no as contact_no";
+            $criteria->order = 't.date asc';
+            $data = SellOrder::model()->findAll($criteria);
+        }
+        echo $this->renderPartial('salesReportView', array(
+            'data' => $data,
+            'message' => $message,
+        ), true, true);
+        Yii::app()->end();
+    }
+
+    public function actionSaleDetailsReport()
+    {
+        $model = new Inventory();
+        $this->pageTitle = 'SALE DETAILS REPORT';
+        $this->render('saleDetailsReport', array('model' => $model));
+    }
+
+    public function actionSaleDetailsReportView()
+    {
+        if (Yii::app()->request->isAjaxRequest) {
+            Yii::app()->clientScript->scriptMap['jquery.js'] = false;
+        }
+
+        date_default_timezone_set("Asia/Dhaka");
+        $dateFrom = $_POST['Inventory']['date_from'];
+        $dateTo = $_POST['Inventory']['date_to'];
+        $model_id = $_POST['Inventory']['model_id'];
+        $customer_id = $_POST['Inventory']['customer_id'];
+        $created_by = $_POST['Inventory']['created_by'];
+
+        $message = "";
+        $data = NULL;
+
+        if ($dateFrom != "" && $dateTo != '') {
+            $message .= "<br>  Date: " . date('d/m/Y', strtotime($dateFrom)) . "-" . date('d/m/Y', strtotime($dateTo));
+
+            $criteria = new CDbCriteria();
+            $criteria->addBetweenCondition('t.date', $dateFrom, $dateTo);
+            $criteria->addColumnCondition(['t.order_type' => SellOrder::NEW_ORDER]);
+            if ($customer_id > 0) {
+                $criteria->addColumnCondition(['t.customer_id' => $customer_id]);
+            }
+            if ($model_id > 0) {
+                $criteria->addColumnCondition(['sod.model_id' => $model_id]);
+            }
+            if ($created_by > 0) {
+                $criteria->addColumnCondition(['t.created_by' => $created_by]);
+            }
+            $criteria->join .= " INNER JOIN sell_order_details sod on t.id = sod.sell_order_id ";
+            $criteria->join .= " INNER JOIN prod_models p on sod.model_id = p.id ";
+            $criteria->join .= " INNER JOIN customers c on t.customer_id = c.id ";
+            $criteria->select = "t.*, c.company_name as customer_name, c.owner_mobile_no as contact_no, 
+                                p.model_name as product_name, p.code as product_code, p.purchase_price as current_pp, p.sell_price as current_sp,
+                                sod.product_sl_no, sod.qty, sod.amount,  sod.row_total, sod.costing";
+            $criteria->order = 't.date asc';
+            $data = SellOrder::model()->findAll($criteria);
+        }
+        echo $this->renderPartial('saleDetailsReportView', array(
+            'data' => $data,
+            'message' => $message,
+        ), true, true);
+        Yii::app()->end();
+    }
+
+    public function actionSaleInvoiceDetailsPreview()
+    {
+        $invoiceId = $_POST['invoiceId'];
+
+        if (Yii::app()->request->isAjaxRequest) {
+            Yii::app()->clientScript->scriptMap['jquery.js'] = false;
+        }
+
+        if ($invoiceId) {
+            $criteria = new CDbCriteria;
+            $criteria->addColumnCondition(['id' => $invoiceId]);
+            $data = SellOrder::model()->findByAttributes([], $criteria);
+
+            if ($data) {
+                echo $this->renderPartial("application.modules.sell.views.sellOrder.voucherPreview", array('data' => $data, 'preview_type' => SellOrder::NORMAL_PAD_PRINT, 'show_profit' => true), true, true);
+            } else {
+                header('Content-type: application/json');
+                echo CJSON::encode(array(
+                    'status' => 'error',
+                ));
+            }
+            Yii::app()->end();
+        } else {
+            echo '<div class="alert alert-danger" role="alert">Please select sales invoice no!</div>';
+        }
     }
 }

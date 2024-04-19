@@ -89,12 +89,13 @@ endforeach;
                 'summaryCssClass' => 'col-sm-12 col-md-5',
                 'pagerCssClass' => 'col-sm-12 col-md-7 pager',
                 'columns' => array(
+                    'id',
                     'company_name',
                     'company_address',
                     'company_contact_no',
-                    'contact_number_2',
-                    'company_fax',
-                    'company_email',
+//                    'contact_number_2',
+//                    'company_fax',
+//                    'company_email',
                     'company_web',
 //                    'opening_amount',
                     array

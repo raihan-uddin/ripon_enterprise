@@ -217,7 +217,8 @@ class CustomersController extends Controller
         $customerName = trim($_POST['q']);
         $criteria = new CDbCriteria();
         $criteria->compare('company_name', $customerName, true);
-        $criteria->compare('customer_code', $customerName, true, "OR");
+        $criteria->compare('id', $customerName, true, "OR");
+        $criteria->compare('owner_mobile_no', $customerName, true, "OR");
         $criteria->order = 'company_name asc';
         $criteria->limit = 10;
         $info = Customers::model()->findAll($criteria);
@@ -228,7 +229,7 @@ class CustomersController extends Controller
                 $city = $row->city;
                 $state = $row->state;
                 $zip = $row->zip;
-                $contact_no = $row->company_contact_no;
+                $contact_no = $row->owner_mobile_no;
                 $customer_code = $row->customer_code;
                 $results[] = array(
                     'value' => $value,

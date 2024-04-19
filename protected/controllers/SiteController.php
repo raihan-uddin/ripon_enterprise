@@ -100,6 +100,87 @@ class SiteController extends Controller
         }
     }
 
+    public function actionProfitLossSummary ()
+    {
+        $this->layout = 'column1';
+        $this->pageTitle = 'Profit & Loss Summary';
+        $date = explode(' - ', $_POST['dateRange']);
+        $startDate = date('Y-m-d', strtotime($date[0]));
+        $endDate = date('Y-m-d', strtotime($date[1]));
+        if (!$endDate) {
+            $endDate = $startDate;
+        }
+
+        // calculate total sales amount with the profit
+        $totalSalesSummary = Yii::app()->db->createCommand()
+            ->select('ROUND(SUM(grand_total)) as total_amount, ROUND(SUM(costing)) as cogs')
+            ->from('sell_order')
+            ->where('order_type = :type AND date BETWEEN :start_date AND :end_date',
+                array(
+                    ':type' => SellOrder::NEW_ORDER,
+                    ':start_date' => $startDate,
+                    ':end_date' => $endDate,
+                ))
+            ->queryRow();
+        $totalCogsValue = $totalSalesSummary['cogs'];
+        $totalSalesValue = $totalSalesSummary['total_amount'];
+
+        // calculate total purchase amount
+        $totalPurchaseSummary = Yii::app()->db->createCommand()
+            ->select('ROUND(SUM(grand_total)) as grand_total')
+            ->from('purchase_order')
+            ->where('date BETWEEN :start_date AND :end_date', array(
+                ':start_date' => $startDate,
+                ':end_date' => $endDate,
+            ))
+            ->queryScalar();
+
+        // calculate total expense amount
+        $totalExpenseSummary = Yii::app()->db->createCommand()
+            ->select('ROUND(SUM(amount)) as total_amount')
+            ->from('expense')
+            ->where(' date BETWEEN :start_date AND :end_date',
+                array(
+                    ':start_date' => $startDate,
+                    ':end_date' => $endDate,
+                ))
+            ->queryScalar();
+
+        // total money receipt amount
+        $totalMoneyReceiptSummary = Yii::app()->db->createCommand()
+            ->select('ROUND(SUM(amount)) as total_amount')
+            ->from('money_receipt')
+            ->where(' date BETWEEN :start_date AND :end_date',
+                array(
+                    ':start_date' => $startDate,
+                    ':end_date' => $endDate,
+                ))
+            ->queryScalar();
+
+        // total payment amount
+        $totalPaymentSummary = Yii::app()->db->createCommand()
+            ->select('ROUND(SUM(amount)) as total_amount')
+            ->from('payment_receipt')
+            ->where(' date BETWEEN :start_date AND :end_date',
+                array(
+                    ':start_date' => $startDate,
+                    ':end_date' => $endDate,
+                ))
+            ->queryScalar();
+
+
+        $this->renderPartial('profitLossSummary', array(
+            'totalSalesValue' => $totalSalesValue,
+            'totalCogsValue' => $totalCogsValue,
+            'totalPurchaseValue' => $totalPurchaseSummary,
+            'totalExpenseValue' => $totalExpenseSummary,
+            'totalMoneyReceiptValue' => $totalMoneyReceiptSummary,
+            'totalPaymentValue' => $totalPaymentSummary,
+            'startDate' => $startDate,
+            'endDate' => $endDate,
+        ));
+    }
+
     public function actionHelp()
     {
         if (!Yii::app()->user->isGuest) {

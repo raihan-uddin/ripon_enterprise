@@ -93,7 +93,9 @@ $endDate = date('Y-m-t');
             <i class="fa fa-money"></i> Payment
         </a>
     </div>
-
 <?php
 
 $this->renderPartial('report-shortcut');
+
+$this->renderPartial('summary-widget');
+

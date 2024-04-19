@@ -103,6 +103,7 @@ endforeach;
                 'summaryCssClass' => 'col-sm-12 col-md-5',
                 'pagerCssClass' => 'col-sm-12 col-md-7 pager',
                 'columns' => array(
+                    'id',
                     'company_name',
                     'customer_code',
                     'company_address',
@@ -110,10 +111,10 @@ endforeach;
                     'company_web',
                     'owner_person',
                     'owner_mobile_no',
-                    'city',
-                    'state',
-                    'zip',
-                    'trn_no',
+//                    'city',
+//                    'state',
+//                    'zip',
+//                    'trn_no',
                     array(
                         'header' => 'Options',
                         'htmlOptions' => array('style' => 'width:120px'),

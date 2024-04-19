@@ -70,8 +70,11 @@ Yii::app()->clientScript->registerCoreScript("jquery.ui");
                         <?php
                         echo $form->dropDownList(
                             $model, 'cash_due', Lookup::items('cash_due'), array(
-                            'prompt' => 'Select',
+//                            'prompt' => 'Select',
                             'class' => 'form-control',
+                            'options' => array(
+                                Lookup::DUE => array('selected' => 'selected')
+                            ),
                         ));
                         ?>
                     </div>
@@ -647,6 +650,7 @@ Yii::app()->clientScript->registerCoreScript("jquery.ui");
         ), array('class' => 'btn btn-primary btn-md'));
         ?>
 
+
         <span id="ajaxLoaderMR" class="ajaxLoaderMR" style="display: none;">
             <i class="fa fa-spinner fa-spin fa-2x"></i>
         </span>
@@ -661,6 +665,10 @@ Yii::app()->clientScript->registerCoreScript("jquery.ui");
     </div>
 </div>
 <script>
+
+    let prev_model_id = 0;
+    let prev_pp = 0;
+
     var picker = new Lightpick({
         field: document.getElementById('entry_date'),
         minDate: moment(),
@@ -754,13 +762,13 @@ Yii::app()->clientScript->registerCoreScript("jquery.ui");
             toastr.error("Please enter qty & amount!");
             return false;
         } else {
-            $("#list tbody").append(`
+            $("#list tbody").prepend(`
                 <tr class="item">
                     <td>${model_id_text}</td>
                     <td class="text-center">${product_sl_no}</td>
                     <td class="text-center">${note}</td>
-                    <td class="text-center">${unit_price}</td>
                     <td class="text-center">${qty}</td>
+                    <td class="text-center">${unit_price}</td>
                     <td class="text-center">
                         ${row_total}
                         <input type="hidden" class="form-control text-center" value="${qty}" name="PurchaseOrderDetails[temp_qty][]">
@@ -777,6 +785,8 @@ Yii::app()->clientScript->registerCoreScript("jquery.ui");
                 `);
             calculateTotal();
             clearDynamicItem(product_sl_no);
+            prev_model_id = model_id;
+            prev_pp = unit_price;
         }
     }
 
@@ -809,6 +819,10 @@ Yii::app()->clientScript->registerCoreScript("jquery.ui");
     }
 
     function clearDynamicItem(product_sl_no) {
+        let pp = '';
+        if (prev_model_id == $("#PurchaseOrderDetails_model_id").val()) {
+            pp = prev_pp;
+        }
         if (product_sl_no.length > 0) {
             $("#PurchaseOrderDetails_product_sl_no").val('');
             $("#PurchaseOrderDetails_product_sl_no").focus();
@@ -817,7 +831,7 @@ Yii::app()->clientScript->registerCoreScript("jquery.ui");
             $("#model_id_text").val('');
             $("#PurchaseOrderDetails_product_sl_no").val('');
             $("#PurchaseOrderDetails_amount").val('');
-            $("#PurchaseOrderDetails_row_total").val('');
+            $("#PurchaseOrderDetails_row_total").val(pp);
             $("#PurchaseOrderDetails_qty").val('');
             $("#PurchaseOrderDetails_color").val('');
             $("#PurchaseOrderDetails_note").val('');
@@ -828,7 +842,26 @@ Yii::app()->clientScript->registerCoreScript("jquery.ui");
         let keycode = (event.keyCode ? event.keyCode : event.which);
         if (keycode == '13') {
             console.log('You pressed a "enter" key in somewhere');
+            // focus to next input field
+
             // addToList();
+            return false;
+        }
+    });
+
+    // on PurchaseOrderDetails_product_sl_no , PurchaseOrderDetails_amount enter press add to list
+    $("#PurchaseOrderDetails_product_sl_no").keypress(function (event) {
+        let keycode = (event.keyCode ? event.keyCode : event.which);
+        if (keycode == '13') {
+            console.log('You pressed a "enter" key in somewhere');
+            addToList();
+            return false;
+        }
+    });
+    $("#PurchaseOrderDetails_amount").keypress(function (event) {
+        let keycode = (event.keyCode ? event.keyCode : event.which);
+        if (keycode == '13') {
+            addToList();
             return false;
         }
     });

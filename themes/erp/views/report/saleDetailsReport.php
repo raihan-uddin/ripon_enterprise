@@ -7,9 +7,8 @@
 <?php
 $this->widget('application.components.BreadCrumb', array(
     'crumbs' => array(
-        array('name' => 'Sell', 'url' => array('')),
         array('name' => 'Reports', 'url' => array('')),
-        array('name' => 'Customer DUE REPORT',),
+        array('name' => 'Sales Details Report',),
     ),
 //    'delimiter' => ' &rarr; ',
 ));
@@ -21,7 +20,7 @@ $form = $this->beginWidget('CActiveForm', array(
 ?>
 <div class="card card-primary">
     <div class="card-header">
-        <h3 class="card-title">Search Conditions (CUSTOMER DUE REPORT)</h3>
+        <h3 class="card-title">Search Conditions (SALES DETAILS REPORT)</h3>
         <div class="card-tools">
             <button type="button" class="btn btn-tool" data-card-widget="collapse">
                 <i class="fa fa-minus"></i>
@@ -35,7 +34,7 @@ $form = $this->beginWidget('CActiveForm', array(
     <div class="card-body">
         <div class="row">
 
-            <div class="col-sm-12 col-md-2" style="display: none">
+            <div class="col-sm-12 col-md-2">
                 <div class="form-group" style="">
                     <?php echo $form->labelEx($model, 'date_from', ['class' => 'col-form-label']); ?>
                     <div class="input-group" id="date_from" data-target-input="nearest">
@@ -49,7 +48,7 @@ $form = $this->beginWidget('CActiveForm', array(
                 </div>
             </div>
 
-            <div class="col-sm-12 col-md-2" style="display: none">
+            <div class="col-sm-12 col-md-2">
                 <div class="form-group" style="">
                     <?php echo $form->labelEx($model, 'date_to', ['class' => 'col-form-label']); ?>
                     <div class="input-group" id="date_to" data-target-input="nearest">
@@ -62,7 +61,46 @@ $form = $this->beginWidget('CActiveForm', array(
                           style="color: red; width: 100%"> <?php echo $form->error($model, 'date_to'); ?></span>
                 </div>
             </div>
+            <div class="col-sm-12 col-md-2">
+                <div class="form-group" style="">
+                    <?php echo $form->labelEx($model, 'model_id', ['class' => 'col-form-label']); ?>
+                    <div class="input-group" id="model_id" data-target-input="nearest">
+                        <input type="text" id="model_id_text" class="form-control">
+                        <?php echo $form->hiddenField($model, 'model_id', array('class' => 'form-control',)); ?>
+                        <div class="input-group-append" onclick="clearProduct()">
+                            <div class="input-group-text"><i class="fa fa-refresh"></i></div>
+                        </div>
+                    </div>
+                    <span class="help-block"
+                          style="color: red; width: 100%"> <?php echo $form->error($model, 'date_to'); ?></span>
+                    <script>
+                        $(document).ready(function () {
+                            $('#model_id_text').autocomplete({
+                                source: function (request, response) {
+                                    var search = request.term;
+                                    $.post('<?php echo Yii::app()->baseUrl ?>/index.php/prodModels/Jquery_showprodSearch', {
+                                            "q": search,
+                                        },
+                                        function (data) {
+                                            response(data);
+                                        }, "json");
+                                },
+                                minLength: 1,
+                                select: function (event, ui) {
+                                    $('#model_id_text').val(ui.item.value);
+                                    $('#Inventory_model_id').val(ui.item.id);
+                                }
+                            }).data("ui-autocomplete")._renderItem = function (ul, item) {
+                                return $("<li></li>")
+                                    .data("item.autocomplete", item)
+                                    .append(`<a><img style="height: 50px; width: 50px;" src="${item.img}"> ${item.name} <br><i><small>${item.code}</small></i> </a>`)
+                                    .appendTo(ul);
+                            };
 
+                        });
+                    </script>
+                </div>
+            </div>
             <div class="col-sm-12 col-md-2">
                 <div class="form-group" style="">
                     <?php echo $form->labelEx($model, 'customer_id', ['class' => 'col-form-label']); ?>
@@ -92,13 +130,42 @@ $form = $this->beginWidget('CActiveForm', array(
                                     $('#customer_id_text').val(ui.item.value);
                                     $('#Inventory_customer_id').val(ui.item.id);
                                 }
-                            }).data("ui-autocomplete")._renderItem = function (ul, item) {
-                                return $("<li></li>")
-                                    .data("item.autocomplete", item)
-                                    .append(`<a> ${item.name} <small><br>ID: ${item.id} <br> Contact:  ${item.contact_no}</small></a>`)
-                                    .appendTo(ul);
-                            };
+                            })
+                        });
+                    </script>
+                </div>
+            </div>
 
+            <div class="col-sm-12 col-md-2">
+                <div class="form-group" style="">
+                    <?php echo $form->labelEx($model, 'created_by', ['class' => 'col-form-label']); ?>
+                    <div class="input-group" id="created_by" data-target-input="nearest">
+                        <input type="text" id="created_by_text" class="form-control">
+                        <?php echo $form->hiddenField($model, 'created_by', array('class' => 'form-control',)); ?>
+                        <div class="input-group-append" onclick="clearUser()">
+                            <div class="input-group-text"><i class="fa fa-refresh"></i></div>
+                        </div>
+                    </div>
+                    <span class="help-block"
+                          style="color: red; width: 100%"> <?php echo $form->error($model, 'created_by'); ?></span>
+                    <script>
+                        $(document).ready(function () {
+                            $('#created_by_text').autocomplete({
+                                source: function (request, response) {
+                                    var search = request.term;
+                                    $.post('<?php echo Yii::app()->baseUrl ?>/index.php/users/jquery_userSearch', {
+                                            "q": search,
+                                        },
+                                        function (data) {
+                                            response(data);
+                                        }, "json");
+                                },
+                                minLength: 1,
+                                select: function (event, ui) {
+                                    $('#created_by_text').val(ui.item.value);
+                                    $('#Inventory_created_by').val(ui.item.id);
+                                }
+                            })
                         });
                     </script>
                 </div>
@@ -110,11 +177,16 @@ $form = $this->beginWidget('CActiveForm', array(
         echo CHtml::submitButton('Search', array(
                 'ajax' => array(
                     'type' => 'POST',
-                    'url' => CController::createUrl('/report/customerDueReportView'),
+                    'url' => CController::createUrl('/report/saleDetailsReportView'),
                     'beforeSend' => 'function(){
-                                $(".ajaxLoaderResultView").show();
-                                $("#reportSearchButton").prop("disabled", true);
-                                $("#reportSearchButton").val("Please wait ...");
+                                if($("#Inventory_date_from").val()=="" || $("#Inventory_date_to").val()==""){
+                                    toastr.error("Warning! Please select date range!");
+                                    return false;
+                                }else{
+                                    $(".ajaxLoaderResultView").show();
+                                    $("#reportSearchButton").prop("disabled", true);
+                                    $("#reportSearchButton").val("Please wait ...");
+                                }
                             }',
                     'error' => 'function(XMLHttpRequest, textStatus, errorThrown){
                                 $(".ajaxLoaderResultView").hide();
@@ -158,7 +230,6 @@ $form = $this->beginWidget('CActiveForm', array(
 
 <?php $this->endWidget(); ?>
 <script>
-
     var startDate = moment().startOf('month').format('YYYY-MM-DD');
     var endDate = moment().format('YYYY-MM-DD');
 
@@ -185,11 +256,17 @@ $form = $this->beginWidget('CActiveForm', array(
         $("#Inventory_date_from").val("");
         $("#Inventory_date_to").val("");
         clearProduct();
+        clearUser();
     });
 
     function clearProduct() {
         $("#customer_id_text").val("");
         $("#Inventory_customer_id").val("");
+    }
+
+    function clearUser() {
+        $("#created_by_text").val("");
+        $("#Inventory_created_by").val("");
     }
 </script>
 

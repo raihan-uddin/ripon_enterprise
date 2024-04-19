@@ -46,10 +46,19 @@ class SellOrder extends CActiveRecord
     public $invoice_no;
     public $item_count;
     public $row_total;
+    public $customer_name;
+    public $invoice_id;
+    public $username;
+    public $contact_no;
     public $print_type;
     public $company_name;
     public $customer_code;
     public $pp;
+    public $cogs;
+    public $product_name;
+    public $product_code;
+    public $qty;
+    public $amount;
 
     const INVOICE_DONE = 1;
     const INVOICE_NOT_DONE = 0;

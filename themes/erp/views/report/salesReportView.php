@@ -92,12 +92,13 @@ echo "</div>";
         </tr>
         <tr class="titlesTr sticky">
             <th style="width: 2%; box-shadow: 0px 0px 0px 1px black inset;">SL</th>
-            <th style="width: 10%; box-shadow: 0px 0px 0px 1px black inset;">Trx Type</th>
             <th style="width: 10%; box-shadow: 0px 0px 0px 1px black inset;">Date</th>
-            <th style="width: 5%;box-shadow: 0px 0px 0px 1px black inset;">ID</th>
-            <th style="width: 10%;box-shadow: 0px 0px 0px 1px black inset;">Invoice No</th>
+            <th style="width: 7%; box-shadow: 0px 0px 0px 1px black inset;">ID</th>
+            <th style="box-shadow: 0px 0px 0px 1px black inset;">Customer</th>
+            <th style="width: 10%;box-shadow: 0px 0px 0px 1px black inset;">Discount</th>
             <th style="width: 10%;box-shadow: 0px 0px 0px 1px black inset;">Amount</th>
-            <th style="width: 10%;box-shadow: 0px 0px 0px 1px black inset; width: 10%; min-width: 60px;">Closing</th>
+            <th style="width: 10%;box-shadow: 0px 0px 0px 1px black inset;">N.I</th>
+            <th style="width: 10%;box-shadow: 0px 0px 0px 1px black inset;">Due</th>
         </tr>
         </thead>
         <tbody>
@@ -105,36 +106,30 @@ echo "</div>";
         $sl = 1;
         $rowFound = false;
         $groundTotal = 0;
-        $row_closing = 0;
+        $row_closing = $row_closing_discount = $net_income_total = $total_due = 0;
         ?>
-        <tr>
-            <td></td>
-            <td style="text-align: center;">Opening</td>
-            <td colspan="3"></td>
-            <td style="text-align: right;"><?= number_format($opening) ?></td>
-            <td></td>
-        </tr>
 
         <?php
-        $row_closing += $opening;
         if ($data) {
             foreach ($data as $dmr) {
-                $trx_type = $dmr['trx_type'];
-                if ($trx_type == 'sale') {
-                    $row_closing += $dmr['amount'];
-                } else {
-                    $row_closing -= $dmr['amount'];
-                }
+                $row_closing_discount += $dmr->discount_amount;
+                $row_closing += $dmr->grand_total;
+                $netIncome = $dmr->grand_total - $dmr->costing;
                 $rowFound = true;
+
+                $net_income_total += $netIncome;
+                $net_income_total += $netIncome;
+                $total_due += $dmr->total_due;
                 ?>
                 <tr>
                     <td style="text-align: center;"><?php echo $sl++; ?></td>
-                    <td style="text-align: center; text-transform: capitalize;"><?php echo $dmr['trx_type']; ?></td>
-                    <td style="text-align: center;"><?php echo $dmr['date']; ?></td>
-                    <td style="text-align: center;"><?php echo $dmr['id']; ?></td>
-                    <td style="text-align: left;"><?php echo $dmr['order_no']; ?></td>
-                    <td style="text-align: right;"><?php echo number_format($dmr['amount'], 2); ?></td>
-                    <td style="text-align: right;"><?php echo number_format($row_closing, 2); ?></td>
+                    <td style="text-align: center;"><?php echo $dmr->date; ?></td>
+                    <td style="text-align: center;" class="invoiceDetails"><?php echo $dmr->id; ?></td>
+                    <td style="text-align: left;"><?php echo sprintf("%s | %s", $dmr->customer_name, $dmr->contact_no); ?></td>
+                    <td style="text-align: right;"><?php echo number_format($dmr->discount_amount, 2); ?></td>
+                    <td style="text-align: right;"><?php echo number_format($dmr->grand_total, 2); ?></td>
+                    <td style="text-align: right;"><?php echo number_format($netIncome, 2); ?></td>
+                    <td style="text-align: right;"><?php echo number_format($dmr->total_due, 2); ?></td>
                 </tr>
                 <?php
 
@@ -143,8 +138,11 @@ echo "</div>";
         ?>
 
         <tr>
-            <th style="text-align: right;" colspan="6">Ground Total</th>
+            <th style="text-align: right;" colspan="4">Ground Total</th>
+            <th style="text-align: right;"><?= number_format($row_closing_discount, 2) ?></th>
             <th style="text-align: right;"><?= number_format($row_closing, 2) ?></th>
+            <th style="text-align: right;"><?= number_format($net_income_total, 2) ?></th>
+            <th style="text-align: right;"><?= number_format($total_due, 2) ?></th>
         </tr>
 
         </tbody>
@@ -164,6 +162,27 @@ echo "</div>";
             <th style="text-decoration: overline; text-align: right;">Approved By</th>
         </tr>
     </table>
+</div>
+
+<!--        modal-->
+<div class="modal fade" id="information-modal" tabindex="-1" role="dialog"
+     aria-labelledby="information-modal" aria-hidden="true">
+    <div class="modal-dialog modal-xl" role="document">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title" id="exampleModalLabel">Invoice</h5>
+                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                    <span aria-hidden="true">&times;</span>
+                </button>
+            </div>
+            <div class="modal-body text-center">
+                <p>Loading...</p> <!-- this will be replaced by the response from the server -->
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
+            </div>
+        </div>
+    </div>
 </div>
 
 <style>
@@ -186,7 +205,7 @@ echo "</div>";
                 $(table).table2excel({
                     exclude: ".noExl",
                     name: "Excel Document Name",
-                    filename: "CUSTOMER_LEDGER-" + new Date().toISOString().replace(/[\-\:\.]/g, "") + ".xls",
+                    filename: "SELL_ORDER_REPORT-" + new Date().toISOString().replace(/[\-\:\.]/g, "") + ".xls",
                     fileext: ".xls",
                     exclude_img: true,
                     exclude_links: true,
@@ -195,6 +214,29 @@ echo "</div>";
                 });
             }
         });
+    });
+    //
+    $('#table-1').off('click', '.invoiceDetails').on('click', '.invoiceDetails', function () {
 
+        var invoiceId = $(this).text();
+        console.log(invoiceId);
+        var $this = $(this);
+        $this.html('<i class="fa fa-spinner fa-spin"></i>');
+        $.ajax({
+            url: '<?= Yii::app()->createUrl("report/saleInvoiceDetailsPreview") ?>',
+            type: 'POST',
+            data: {
+                invoiceId: invoiceId
+            },
+            success: function (response) {
+                $('#information-modal').modal('show');
+                $('#information-modal .modal-body').html(response);
+                $this.html(invoiceId);
+            },
+            error: function () {
+                $this.html(invoiceId);
+                toastr.error('Something went wrong');
+            }
+        });
     });
 </script>
