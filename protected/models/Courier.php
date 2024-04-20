@@ -39,6 +39,8 @@ class Courier extends CActiveRecord
 
     public function beforeSave()
     {
+        // set default time zone to asia/dhaka
+        date_default_timezone_set('Asia/Dhaka');
         if ($this->isNewRecord) {
             $this->created_datetime = new CDbExpression('NOW()');
             $this->created_by = Yii::app()->user->getId();

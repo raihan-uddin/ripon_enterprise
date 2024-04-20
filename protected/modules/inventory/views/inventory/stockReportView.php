@@ -21,6 +21,7 @@
         border: 1px dotted #a6a6a6;
     }
 
+
     .summaryTab tr td,
     .summaryTab tr th {
         padding: 5px;
@@ -129,9 +130,6 @@ echo "</div>";
             <th style="box-shadow: 0px 0px 0px 1px black inset;  width: 10%; min-width: 60px;">Closing
                 Stock
             </th>
-            <th style="box-shadow: 0px 0px 0px 1px black inset;  width: 10%; min-width: 50px;" title="Current Purchase Price">
-                C.P.P
-            </th>
             <th style="box-shadow: 0px 0px 0px 1px black inset;">S.P</th>
             <th style="box-shadow: 0px 0px 0px 1px black inset;  width: 10%; min-width: 60px;">
                 Sell Value
@@ -150,55 +148,53 @@ echo "</div>";
         <?php
         $sl = 1;
         $rowFound = false;
-        $groundTotal = 0;
+        $groundTotalSaleValue = 0;
+        $groundTotalStockValue = 0;
         /** @var mixed $data */
         foreach ($data as $dmr) {
             if ($dmr->opening_stock != 0 || $dmr->stock_in != 0 || $dmr->stock_out) {
                 $closing = (($dmr->opening_stock + $dmr->stock_in) - $dmr->stock_out);
-                $stockValue = $closing * $dmr->sell_price;
+                $stockSaleValue = $closing * $dmr->sell_price;
                 $cpp = $dmr->cpp;
                 $rowFound = true;
-                $groundTotal += $stockValue;
+                $groundTotalSaleValue += $stockSaleValue;
+
+                $opening_stock_value = $dmr->opening_stock_value;
+                $stock_in_value = $dmr->stock_in_value;
+                $stock_out_value = $dmr->stock_out_value;
+                $row_stock_closing_value = (($opening_stock_value + $stock_in_value) - $stock_out_value);
+
+                $groundTotalStockValue += $row_stock_closing_value;
+
+
                 $negativeStockClass = $closing < 0 ? '  negative ' : ' ';
                 $zeroStockClass = $closing == 0 ? '  zero ' : ' ';
                 $positiveStockClass = $closing > 0 ? ' positive ' : ' ';
                 ?>
                 <tr class="<?= $positiveStockClass . $zeroStockClass .  $negativeStockClass?>">
                     <td style="text-align: center;"><?php echo $sl++; ?></td>
-<!--                    <td style="text-align: center;">-->
-<!--                        --><?php //echo $dmr->model_id; ?>
-<!--                    </td>-->
                     <td style="text-align: left;">
                         <a href="#"
                            onclick="currentStockPreview(<?= $dmr->model_id > 0 ? $dmr->model_id : 0 ?>);">
                             <?php echo $dmr->model_name; ?>
                         </a>
                     </td>
-<!--                    <td style="text-align: left;">-->
-<!--                        <a href="#"-->
-<!--                           onclick="currentStockPreview(--><?php //= $dmr->model_id > 0 ? $dmr->model_id : 0 ?><!--);">-->
-<!--                            --><?php //echo $dmr->code; ?>
-<!--                        </a>-->
-<!--                    </td>-->
-
-                    <td style="text-align: center;"><?php echo $dmr->opening_stock; ?></td>
-                    <td style="text-align: center;"><a href="#" onclick="currentStockInPreview(
+                    <td style="text-align: center;" title="Stock Value: <?= number_format($opening_stock_value, 2) ?>"><?php echo $dmr->opening_stock; ?></td>
+                    <td style="text-align: center;"  title="Stock Value: <?= number_format($stock_in_value, 2) ?>"><a href="#" onclick="currentStockInPreview(
                         <?= $dmr->model_id > 0 ? $dmr->model_id : 0 ?>,
                         <?= strtotime($startDate) ?>,
                         <?= strtotime($endDate) ?> )"
                         ><?php echo $dmr->stock_in; ?></a></td>
-                    <td style="text-align: center;"><a href="#" onclick="currentStockOutPreview(
+                    <td style="text-align: center;"  title="Stock Value: <?= number_format($stock_out_value, 2) ?>"><a href="#" onclick="currentStockOutPreview(
                         <?= $dmr->model_id > 0 ? $dmr->model_id : 0 ?>,
                         <?= strtotime($startDate) ?>,
                         <?= strtotime($endDate) ?> )"
                         ><?php echo $dmr->stock_out; ?></a></td>
                     <td style="text-align: center;"><?php echo $closing; ?></td>
-
-                    <td style="text-align: right;"><?php echo is_numeric($cpp) ? number_format($cpp, 2) : ''; ?></td>
                     <td style="text-align: center;"><?php echo is_numeric($dmr->sell_price) ? number_format($dmr->sell_price, 2) : ''; ?></td>
-                    <td style="text-align: right;"><?php echo is_numeric($stockValue) ? number_format($stockValue, 2) : ''; ?></td>
-                    <td style="text-align: right;"><?php echo 0; ?></td>
-                    <td style="text-align: right;"><?php echo 0; ?></td>
+                    <td style="text-align: right;"><?php echo is_numeric($stockSaleValue) ? number_format($stockSaleValue, 2) : ''; ?></td>
+                    <td style="text-align: right;"><?php echo is_numeric($cpp) ? number_format($cpp, 2) : ''; ?></td>
+                    <td style="text-align: right;"><?php echo is_numeric($row_stock_closing_value) ? number_format($row_stock_closing_value, 2) : '';; ?></td>
                 </tr>
                 <?php
             }
@@ -217,7 +213,8 @@ echo "</div>";
             ?>
             <tr>
                 <th style="text-align: right;" colspan="8">Ground Total</th>
-                <th style="text-align: right;"><?= number_format($groundTotal, 2) ?></th>
+                <th style="text-align: right;"><?= number_format($groundTotalSaleValue, 2) ?></th>
+                <th style="text-align: right;"><?= number_format($groundTotalStockValue, 2) ?></th>
             </tr>
             <?php
         }

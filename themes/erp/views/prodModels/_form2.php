@@ -361,6 +361,19 @@ $form = $this->beginWidget('CActiveForm', array(
                               style="color: red; width: 100%"> <?php echo $form->error($model, 'stockable'); ?></span>
                     </div>
 
+
+                    <div class="form-group col-sm-12 col-md-6 col-lg-4">
+                        <?php echo $form->labelEx($model, 'status'); ?>
+                        <?php
+                        echo $form->dropDownList(
+                            $model, 'status', [1 => 'ACTIVE', 0 => 'INACTIVE'], array(
+                            'class' => 'form-control',
+                        ));
+                        ?>
+                        <span class="help-block"
+                              style="color: red; width: 100%"> <?php echo $form->error($model, 'status'); ?></span>
+                    </div>
+
                     <div class="form-group col-sm-12 col-md-12 col-lg-12">
                         <?php echo $form->labelEx($model, 'description'); ?>
                         <?php echo $form->textArea($model, 'description', array('maxlength' => 255, 'class' => 'form-control', 'style' => 'height: 250px;')); ?>

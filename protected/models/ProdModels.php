@@ -22,6 +22,7 @@
  * @property string $description
  * @property integer $updated_by
  * @property boolean $stockable
+ * @property boolean $status
  *
  * The followings are the available model relations:
  * @property ProdBrands $brand
@@ -35,6 +36,9 @@ class ProdModels extends CActiveRecord
     public $activePrice;
     public $cpp;
     public $deviceFile;
+    public $opening_stock_value;
+    public $stock_in_value;
+    public $stock_out_value;
     public $min_order_qty;
     public $qty;
     public $barCodeGenerator;
@@ -75,7 +79,7 @@ class ProdModels extends CActiveRecord
         // will receive user inputs.
         return array(
             array('item_id, brand_id, model_name, code, unit_id', 'required'),
-            array('item_id, brand_id, unit_id, stockable, manufacturer_id', 'numerical', 'integerOnly' => true),
+            array('item_id, brand_id, unit_id, stockable, manufacturer_id, status', 'numerical', 'integerOnly' => true),
             array('sell_price, purchase_price', 'numerical'),
             array('model_name, code, min_order_qty', 'length', 'max' => 255),
             array('warranty', 'numerical'),
@@ -84,7 +88,7 @@ class ProdModels extends CActiveRecord
             array('features, description', 'safe'),
             // The following rule is used by search().
             // Please remove those attributes that should not be searched.
-            array('min_order_qty, id, item_id, brand_id, model_name, manufacturer_id, features, stockable, warranty, description,  purchase_price, sell_price', 'safe', 'on' => 'search'),
+            array('min_order_qty, id, item_id, brand_id, model_name, manufacturer_id, status, features, stockable, warranty, description,  purchase_price, sell_price', 'safe', 'on' => 'search'),
         );
     }
 
@@ -120,11 +124,14 @@ class ProdModels extends CActiveRecord
             'sell_price' => 'Sell Price',
             'stockable' => 'Stock Maintain?',
             'manufacturer_id' => 'Company',
+            'status' => 'Status',
         );
     }
 
     public function beforeSave()
     {
+        // set default time zone to asia/dhaka
+        date_default_timezone_set('Asia/Dhaka');
         $this->model_name = strtoupper($this->model_name);
         if (!$this->sell_price > 0) {
             $this->sell_price = NULL;
@@ -254,6 +261,7 @@ class ProdModels extends CActiveRecord
 
         $criteria = new CDbCriteria;
 
+        $criteria->compare('id', $this->id);
         $criteria->compare('item_id', $this->item_id);
         $criteria->compare('brand_id', $this->brand_id);
         $criteria->compare('manufacturer_id', $this->manufacturer_id);
@@ -262,6 +270,7 @@ class ProdModels extends CActiveRecord
         $criteria->compare('min_order_qty', $this->min_order_qty, true);
         $criteria->compare('warranty', $this->warranty);
         $criteria->compare('unit_id', $this->unit_id);
+        $criteria->compare('status', $this->status);
         $criteria->compare('stockable', $this->stockable);
         $criteria->compare('description', $this->description, true);
         $criteria->compare('features', $this->features, true);

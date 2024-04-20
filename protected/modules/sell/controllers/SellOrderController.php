@@ -16,9 +16,8 @@ class SellOrderController extends Controller
     {
         return array(
             'rights
-            -SoDetails
-            -JobCardDetails
-            -ProductionDetails',
+            -VoucherPreview, -SinglePreview, 
+            -SoDetails',
         );
     }
 
@@ -81,6 +80,9 @@ class SellOrderController extends Controller
             if ($model->save()) {
                 foreach ($_POST['SellOrderDetails']['temp_model_id'] as $key => $model_id) {
                     $purchasePrice = $_POST['SellOrderDetails']['temp_pp'][$key];
+                    if (!$purchasePrice > 0) {
+                        $purchasePrice = ProdModels::model()->findByPk($model_id)->purchase_price;
+                    }
                     $product = ProdModels::model()->findByPk($model_id);
                     $model2 = new SellOrderDetails();
                     $model2->sell_order_id = $model->id;
@@ -188,6 +190,9 @@ class SellOrderController extends Controller
                 foreach ($_POST['SellOrderDetails']['temp_model_id'] as $key => $model_id) {
                     $product_sl_no = $_POST['SellOrderDetails']['temp_product_sl_no'][$key];
                     $purchasePrice = $_POST['SellOrderDetails']['temp_pp'][$key];
+                    if (!$purchasePrice > 0) {
+                        $purchasePrice = ProdModels::model()->findByPk($model_id)->purchase_price;
+                    }
                     $model2 = SellOrderDetails::model()->findByAttributes(['model_id' => $model_id, 'sell_order_id' => $model->id, 'product_sl_no' => $product_sl_no]);
                     if (!$model2)
                         $model2 = new SellOrderDetails();

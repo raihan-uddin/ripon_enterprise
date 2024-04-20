@@ -7,6 +7,9 @@ $this->widget('application.components.BreadCrumb', array(
     ),
 //    'delimiter' => ' &rarr; ',
 ));
+// print yii1 version
+echo Yii::getVersion();
+
 ?>
 
 <?php
@@ -397,7 +400,7 @@ Yii::app()->clientScript->registerCoreScript("jquery.ui");
         } else {
             $("#list tbody").append(`
                     <tr class="item">
-                        <td class="text-center sl-no" style="vertical-align: middle;">${sl++}</td>
+                        <td class="text-center sl-no" style="vertical-align: middle;">${$('#list tbody tr').length+1}</td>
                         <td class="text-left" style="vertical-align: middle;">
                             ${head_text}
                             <input type="hidden" name="ExpenseDetails[temp_expense_head_id][]"

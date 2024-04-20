@@ -565,6 +565,7 @@ Yii::app()->clientScript->registerCoreScript("jquery.ui");
                         <table class="table table-bordered table-striped table-valign-middle" id="list">
                             <thead class="table-info">
                             <tr>
+                                <th>SL</th>
                                 <th>Product Name</th>
                                 <th style="width: 20%;" class="text-center">Product Sl No</th>
                                 <th style="width: 10%;" class="text-center">Warranty(Mon.)</th>
@@ -578,9 +579,10 @@ Yii::app()->clientScript->registerCoreScript("jquery.ui");
                             </thead>
                             <tbody>
                             <?php
-                            foreach ($model3 as $m3) {
+                            foreach ($model3 as $key =>  $m3) {
                                 ?>
                                 <tr class="item">
+                                    <td class="serial"></td>
                                     <td><?= $m3->model_name ?></td>
                                     <td class="text-center"><?= $m3->product_sl_no ?></td>
                                     <td class="text-center"><?= $m3->warranty ?></td>
@@ -817,6 +819,7 @@ Yii::app()->clientScript->registerCoreScript("jquery.ui");
         } else {
             $("#list tbody").prepend(`
                 <tr class="item">
+                    <td class="serial"></td>
                     <td>${model_id_text}</td>
                     <td class="text-center">${product_sl_no}</td>
                     <td class="text-center">${warranty}</td>
@@ -921,8 +924,21 @@ Yii::app()->clientScript->registerCoreScript("jquery.ui");
 
         calculateVat();
         addDeliveryCharge();
+
+        tableSerial();
     }
 
+
+
+    function tableSerial() {
+        //  get the table tbody tr length
+        var i = $('#list tbody tr').length;
+        $('#list tbody tr').each(function () {
+            $(this).find('.serial').text(i);
+            i--;
+        });
+    }
+    tableSerial();
     function addDeliveryCharge() {
         let delivery_charge = parseFloat($("#SellOrder_delivery_charge").val());
         let total_amount = parseFloat($("#SellOrder_total_amount").val());

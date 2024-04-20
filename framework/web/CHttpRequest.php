@@ -526,8 +526,29 @@ class CHttpRequest extends CApplicationComponent
 		}
 		else
 		{
-			return utf8_encode($pathInfo);
+			return $this->utf8Encode($pathInfo);
 		}
+	}
+
+	/**
+	 * Encodes an ISO-8859-1 string to UTF-8
+	 * @param string $s
+	 * @return string the UTF-8 translation of `s`.
+	 * @see https://github.com/yiisoft/yii/issues/4505
+	 * @see https://github.com/symfony/polyfill-php72/blob/master/Php72.php#L24
+	 */
+	private function utf8Encode($s)
+	{
+		$s.=$s;
+		$len=strlen($s);
+		for ($i=$len>>1,$j=0; $i<$len; ++$i,++$j) {
+			switch (true) {
+				case $s[$i] < "\x80": $s[$j] = $s[$i]; break;
+				case $s[$i] < "\xC0": $s[$j] = "\xC2"; $s[++$j] = $s[$i]; break;
+				default: $s[$j] = "\xC3"; $s[++$j] = chr(ord($s[$i]) - 64); break;
+			}
+		}
+		return substr($s, 0, $j);
 	}
 
 	/**
@@ -800,7 +821,7 @@ class CHttpRequest extends CApplicationComponent
 
 	private $_port;
 
- 	/**
+	/**
 	 * Returns the port to use for insecure requests.
 	 * Defaults to 80, or the port specified by the server if the current
 	 * request is insecure.
@@ -1213,27 +1234,27 @@ class CHttpRequest extends CApplicationComponent
 	 *
 	 * As this header directive is non-standard different directives exists for different web servers applications:
 	 * <ul>
-     * <li>Apache: {@link https://tn123.org/mod_xsendfile X-Sendfile}</li>
-     * <li>Lighttpd v1.4: {@link https://redmine.lighttpd.net/projects/lighttpd/wiki/X-LIGHTTPD-send-file X-LIGHTTPD-send-file}</li>
-     * <li>Lighttpd v1.5: {@link https://redmine.lighttpd.net/projects/lighttpd/wiki/X-LIGHTTPD-send-file X-Sendfile}</li>
-     * <li>Nginx: {@link https://wiki.nginx.org/XSendfile X-Accel-Redirect}</li>
-     * <li>Cherokee: {@link https://www.cherokee-project.com/doc/other_goodies.html#x-sendfile X-Sendfile and X-Accel-Redirect}</li>
-     * </ul>
-     * So for this method to work the X-SENDFILE option/module should be enabled by the web server and
-     * a proper xHeader should be sent.
-     *
-     * <b>Note:</b>
-     * This option allows to download files that are not under web folders, and even files that are otherwise protected (deny from all) like .htaccess2
-     *
-     * <b>Side effects</b>:
-     * If this option is disabled by the web server, when this method is called a download configuration dialog
-     * will open but the downloaded file will have 0 bytes.
-     *
-     * <b>Known issues</b>:
-     * There is a Bug with Internet Explorer 6, 7 and 8 when X-SENDFILE is used over an SSL connection, it will show
-     * an error message like this: "Internet Explorer was not able to open this Internet site. The requested site is either unavailable or cannot be found.".
-     * You can work around this problem by removing the <code>Pragma</code>-header.
-     *
+	 * <li>Apache: {@link https://tn123.org/mod_xsendfile X-Sendfile}</li>
+	 * <li>Lighttpd v1.4: {@link https://redmine.lighttpd.net/projects/lighttpd/wiki/X-LIGHTTPD-send-file X-LIGHTTPD-send-file}</li>
+	 * <li>Lighttpd v1.5: {@link https://redmine.lighttpd.net/projects/lighttpd/wiki/X-LIGHTTPD-send-file X-Sendfile}</li>
+	 * <li>Nginx: {@link https://wiki.nginx.org/XSendfile X-Accel-Redirect}</li>
+	 * <li>Cherokee: {@link https://www.cherokee-project.com/doc/other_goodies.html#x-sendfile X-Sendfile and X-Accel-Redirect}</li>
+	 * </ul>
+	 * So for this method to work the X-SENDFILE option/module should be enabled by the web server and
+	 * a proper xHeader should be sent.
+	 *
+	 * <b>Note:</b>
+	 * This option allows to download files that are not under web folders, and even files that are otherwise protected (deny from all) like .htaccess
+	 *
+	 * <b>Side effects</b>:
+	 * If this option is disabled by the web server, when this method is called a download configuration dialog
+	 * will open but the downloaded file will have 0 bytes.
+	 *
+	 * <b>Known issues</b>:
+	 * There is a Bug with Internet Explorer 6, 7 and 8 when X-SENDFILE is used over an SSL connection, it will show
+	 * an error message like this: "Internet Explorer was not able to open this Internet site. The requested site is either unavailable or cannot be found.".
+	 * You can work around this problem by removing the <code>Pragma</code>-header.
+	 *
 	 * <b>Example</b>:
 	 * <pre>
 	 * <?php

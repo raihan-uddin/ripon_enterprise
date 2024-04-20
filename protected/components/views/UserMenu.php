@@ -128,6 +128,12 @@ $this->widget('application.extensions.mbmenu.MbMenu', array(
                         ['label' => Yii::t('app', 'PAYMENT REPORT'), 'url' => ['/report/paymentReport'], 'visible' => Yii::app()->user->checkAccess('Report.PaymentReport')],
                     ),
                 ),
+                array('label' => 'EXPENSE',
+                    'items' => array(
+                        ['label' => Yii::t('app', 'EXPENSE SUMMARY (DAY WISE)'), 'url' => ['/report/expenseSummaryReport'], 'visible' => Yii::app()->user->checkAccess('Report.ExpenseSummaryReport')],
+                        ['label' => Yii::t('app', 'EXPENSE DETAILS (DAY WISE)'), 'url' => ['/report/expenseDetailsReport'], 'visible' => Yii::app()->user->checkAccess('Report.ExpenseDetailsReport')],
+                    ),
+                ),
             ),
         ),
         array('label' => 'LOGOUT', 'url' => array('/site/logout')),

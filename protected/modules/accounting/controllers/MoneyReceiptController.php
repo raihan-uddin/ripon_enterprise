@@ -15,7 +15,7 @@ class MoneyReceiptController extends Controller
     public function filters()
     {
         return array(
-            'rights',
+            'rights-VoucherPreview',
         );
     }
 

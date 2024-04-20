@@ -165,6 +165,8 @@ class ReceivePurchase extends CActiveRecord
 
     public function beforeSave()
     {
+        // set default time zone to asia/dhaka
+        date_default_timezone_set('Asia/Dhaka');
         if (($this->supplier_memo_date) == "") {
             $this->supplier_memo_date = NULL;
         }

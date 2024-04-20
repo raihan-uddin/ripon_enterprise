@@ -44,6 +44,8 @@ class Inventory extends CActiveRecord
     public $opening_stock;
     public $customer_id;
     public $supplier_id;
+    public $pp;
+    public $sp;
     public $t_type;
     public $unit_id;
     public $item_id;
@@ -51,6 +53,7 @@ class Inventory extends CActiveRecord
     public $image;
     public $stock;
     public $closing_stock;
+    public $expense_head_id;
     public $manufacturer_id;
 
     public static function maxSlNo()
@@ -138,6 +141,9 @@ class Inventory extends CActiveRecord
             'customer_id' => 'Customer',
             'supplier_id' => 'Supplier',
             'manufacturer_id' => 'Company',
+            'item_id' => 'Category',
+            'brand_id' => 'Sub-Category',
+            'expense_head_id' => 'Expense Head',
         );
     }
 
@@ -217,6 +223,8 @@ class Inventory extends CActiveRecord
 
     public function beforeSave()
     {
+        // set default time zone to asia/dhaka
+        date_default_timezone_set('Asia/Dhaka');
         if ($this->isNewRecord) {
             $this->create_time = new CDbExpression('NOW()');
             $this->create_by = Yii::app()->user->id;

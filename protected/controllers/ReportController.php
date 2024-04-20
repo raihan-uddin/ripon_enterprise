@@ -18,6 +18,7 @@ class ReportController extends RController
         return array(
             'rights
             -purchaseInvoiceDetailsPreview
+            -ExpensePreview
             -saleInvoiceDetailsPreview
             ', // perform access control for CRUD operations
         );
@@ -348,7 +349,7 @@ class ReportController extends RController
                          FROM payment_receipt
                          WHERE date BETWEEN '$dateFrom' AND '$dateTo')
                      ) AS t
-                GROUP BY date";
+                GROUP BY date ORDER BY date ASC;";
             $command = Yii::app()->db->createCommand($sql);
             $data = $command->queryAll();
         }
@@ -633,7 +634,8 @@ class ReportController extends RController
         Yii::app()->end();
     }
 
-    public function actionPurchaseInvoiceDetailsPreview(){
+    public function actionPurchaseInvoiceDetailsPreview()
+    {
         $invoiceId = $_POST['invoiceId'];
 
         if (Yii::app()->request->isAjaxRequest) {
@@ -646,7 +648,7 @@ class ReportController extends RController
             $data = PurchaseOrder::model()->findByAttributes([], $criteria);
 
             if ($data) {
-                echo $this->renderPartial("application.modules.commercial.views.purchaseOrder.voucherPreview", array('data' => $data, ), true, true);
+                echo $this->renderPartial("application.modules.commercial.views.purchaseOrder.voucherPreview", array('data' => $data,), true, true);
             } else {
                 header('Content-type: application/json');
                 echo CJSON::encode(array(
@@ -695,5 +697,121 @@ class ReportController extends RController
             'message' => $message,
         ), true, true);
         Yii::app()->end();
+    }
+
+    public function actionExpenseSummaryReport()
+    {
+        $model = new Inventory();
+        $this->pageTitle = 'EXPENSE SUMMARY REPORT';
+        $this->render('expenseSummaryReport', array('model' => $model));
+    }
+
+    public function actionExpenseSummaryReportView()
+    {
+        if (Yii::app()->request->isAjaxRequest) {
+            Yii::app()->clientScript->scriptMap['jquery.js'] = false;
+        }
+
+        date_default_timezone_set("Asia/Dhaka");
+        $dateFrom = $_POST['Inventory']['date_from'];
+        $dateTo = $_POST['Inventory']['date_to'];
+        $created_by = $_POST['Inventory']['created_by'];
+
+        $message = "";
+        $data = NULL;
+
+        if ($dateFrom != "" && $dateTo != '') {
+            $message .= "<br>  Date: " . date('d/m/Y', strtotime($dateFrom)) . "-" . date('d/m/Y', strtotime($dateTo));
+
+            $criteria = new CDbCriteria();
+            $criteria->addBetweenCondition('t.date', $dateFrom, $dateTo);
+            if ($created_by > 0) {
+                $criteria->addColumnCondition(['t.created_by' => $created_by]);
+            }
+            $criteria->join .= " INNER JOIN users u on t.created_by = u.id ";
+            $criteria->select = "t.*, u.username";
+            $criteria->order = 't.date asc';
+            $data = Expense::model()->findAll($criteria);
+        }
+        echo $this->renderPartial('expenseSummaryReportView', array(
+            'data' => $data,
+            'message' => $message,
+        ), true, true);
+        Yii::app()->end();
+    }
+
+    public function actionExpenseDetailsReport()
+    {
+        $model = new Inventory();
+        $this->pageTitle = 'EXPENSE DETAILS REPORT';
+        $this->render('expenseDetailsReport', array('model' => $model));
+    }
+
+    public function actionExpenseDetailsReportView()
+    {
+        if (Yii::app()->request->isAjaxRequest) {
+            Yii::app()->clientScript->scriptMap['jquery.js'] = false;
+        }
+
+        date_default_timezone_set("Asia/Dhaka");
+        $dateFrom = $_POST['Inventory']['date_from'];
+        $dateTo = $_POST['Inventory']['date_to'];
+        $created_by = $_POST['Inventory']['created_by'];
+        $expense_head_id = $_POST['Inventory']['expense_head_id'];
+
+        $message = "";
+        $data = NULL;
+
+        if ($dateFrom != "" && $dateTo != '') {
+            $message .= "<br>  Date: " . date('d/m/Y', strtotime($dateFrom)) . "-" . date('d/m/Y', strtotime($dateTo));
+
+            $criteria = new CDbCriteria();
+            $criteria->addBetweenCondition('t.date', $dateFrom, $dateTo);
+            if ($created_by > 0) {
+                $criteria->addColumnCondition(['t.created_by' => $created_by]);
+            }
+            if ($expense_head_id > 0) {
+                $criteria->addColumnCondition(['eh.id' => $expense_head_id]);
+            }
+            $criteria->join .= " INNER JOIN users u on t.created_by = u.id ";
+            $criteria->join .= " INNER JOIN expense_details ed on t.id = ed.expense_id ";
+            $criteria->join .= " INNER JOIN expense_head eh on ed.expense_head_id = eh.id ";
+            $criteria->select = "t.*, u.username, ed.amount as expense_amount, eh.title as expense_head_name, ed.remarks as expense_head_remarks";
+            $criteria->order = 't.date asc';
+            $data = Expense::model()->findAll($criteria);
+        }
+        echo $this->renderPartial('expenseDetailsReportView', array(
+            'data' => $data,
+            'message' => $message,
+        ), true, true);
+        Yii::app()->end();
+    }
+
+
+    public function actionExpensePreview()
+    {
+        $invoiceId = $_POST['invoiceId'];
+
+        if (Yii::app()->request->isAjaxRequest) {
+            Yii::app()->clientScript->scriptMap['jquery.js'] = false;
+        }
+
+        if ($invoiceId) {
+            $criteria = new CDbCriteria;
+            $criteria->addColumnCondition(['id' => $invoiceId]);
+            $data = Expense::model()->findByAttributes([], $criteria);
+
+            if ($data) {
+                echo $this->renderPartial("application.modules.accounting.views.expense.voucherPreview", array('data' => $data,), true, true);
+            } else {
+                header('Content-type: application/json');
+                echo CJSON::encode(array(
+                    'status' => 'error',
+                ));
+            }
+            Yii::app()->end();
+        } else {
+            echo '<div class="alert alert-danger" role="alert">Please select expense no!</div>';
+        }
     }
 }

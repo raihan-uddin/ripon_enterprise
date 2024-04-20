@@ -264,6 +264,8 @@ class PurchaseOrder extends CActiveRecord
 
     public function beforeSave()
     {
+        // set default time zone to asia/dhaka
+        date_default_timezone_set('Asia/Dhaka');
         if (($this->exp_receive_date) == "")
             $this->exp_receive_date = NULL;
         if ($this->isNewRecord) {

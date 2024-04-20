@@ -224,6 +224,8 @@ class PaymentReceipt extends CActiveRecord
 
     public function beforeSave()
     {
+        // set default time zone to asia/dhaka
+        date_default_timezone_set('Asia/Dhaka');
         if (($this->cheque_date) == "") {
             $this->cheque_date = NULL;
         }

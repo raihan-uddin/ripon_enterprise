@@ -623,6 +623,7 @@ Yii::app()->clientScript->registerCoreScript("jquery.ui");
                         <table class="table table-bordered table-striped table-valign-middle" id="list">
                             <thead class="table-info">
                             <tr>
+                                <th>SL</th>
                                 <th>Product Name</th>
                                 <th style="width: 20%;" class="text-center">Product Sl No</th>
                                 <th style="width: 10%;" class="text-center">Warranty(Mon.)</th>
@@ -835,6 +836,7 @@ Yii::app()->clientScript->registerCoreScript("jquery.ui");
         } else {
             $("#list tbody").prepend(`
                 <tr class="item">
+                    <td class="serial"></td>
                     <td>${model_id_text}</td>
                     <td class="text-center">${product_sl_no}</td>
                     <td class="text-center">${warranty}</td>
@@ -940,6 +942,8 @@ Yii::app()->clientScript->registerCoreScript("jquery.ui");
 
         calculateVat();
         addDeliveryCharge();
+
+        tableSerial();
     }
 
     function addDeliveryCharge() {
@@ -1048,6 +1052,16 @@ Yii::app()->clientScript->registerCoreScript("jquery.ui");
             $('.current-stock').html('<span style="color: green;">Stock: <b>' + parseFloat(stock).toFixed(2) + '</b></span>');
         else
             $('.current-stock').html('<span style="color: red;">Stock: <b>' + parseFloat(stock).toFixed(2) + '</b></span>');
+    }
+
+
+    function tableSerial() {
+        //  get the table tbody tr length
+        var i = $('#list tbody tr').length;
+        $('#list tbody tr').each(function () {
+            $(this).find('.serial').text(i);
+            i--;
+        });
     }
 </script>
 

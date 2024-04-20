@@ -298,6 +298,8 @@ class InventoryController extends Controller
         $dateTo = $_POST['Inventory']['date_to'];
         $model_id = $_POST['Inventory']['model_id'];
         $manufacturer_id = $_POST['Inventory']['manufacturer_id'];
+        $item_id = $_POST['Inventory']['item_id'];
+        $brand_id = $_POST['Inventory']['brand_id'];
 
         $message = "";
         $data = "";
@@ -307,8 +309,11 @@ class InventoryController extends Controller
             $criteria->select = "
             t.model_name, t.code, inv.model_id, t.sell_price, t.purchase_price as cpp,
             IFNULL((SELECT (SUM(op.stock_in) - SUM(op.stock_out)) FROM inventory op where op.date < '$dateFrom' AND op.model_id = t.id), 0) as opening_stock,
+            IFNULL((SELECT (SUM(op.stock_in*op.purchase_price) - SUM(op.stock_out*op.purchase_price)) FROM inventory op where op.date < '$dateFrom' AND op.model_id = t.id), 0) as opening_stock_value,
             SUM(CASE WHEN (inv.date BETWEEN '$dateFrom' AND '$dateTo') THEN inv.stock_in ELSE 0 END) as stock_in, 
-            SUM(CASE WHEN (inv.date BETWEEN '$dateFrom' AND '$dateTo') THEN inv.stock_out ELSE 0 END) as stock_out
+            SUM(CASE WHEN (inv.date BETWEEN '$dateFrom' AND '$dateTo') THEN inv.stock_out ELSE 0 END) as stock_out,
+            SUM(CASE WHEN (inv.date BETWEEN '$dateFrom' AND '$dateTo') THEN (inv.stock_in * inv.purchase_price) ELSE 0 END) as stock_in_value, 
+            SUM(CASE WHEN (inv.date BETWEEN '$dateFrom' AND '$dateTo') THEN (inv.stock_out * inv.purchase_price) ELSE 0 END) as stock_out_value
             ";
             $message .= "Stock Report from  $dateFrom To $dateTo";
 
@@ -319,6 +324,12 @@ class InventoryController extends Controller
             }
             if ($manufacturer_id > 0) {
                 $criteria->addColumnCondition(['t.manufacturer_id' => $manufacturer_id]);
+            }
+            if ($item_id > 0) {
+                $criteria->addColumnCondition(['t.item_id' => $item_id]);
+            }
+            if ($brand_id > 0) {
+                $criteria->addColumnCondition(['t.brand_id' => $brand_id]);
             }
 
             $criteria->join = " LEFT JOIN inventory inv  on inv.model_id = t.id ";
@@ -404,6 +415,58 @@ class InventoryController extends Controller
             'message' => $message
         ), true, true);
         Yii::app()->end();
+    }
+
+    public function actionFixPurchasePrice()
+    {
+        $criteria = new CDbCriteria();
+        $criteria->select = 't.model_id, t.purchase_price, t.sell_price, pm.purchase_price as pp, pm.sell_price as sp, t.stock_in, t.stock_out, t.source_id';
+        $criteria->addColumnCondition(['t.purchase_price' => 0]);
+        $criteria->join = " INNER JOIN prod_models pm on t.model_id = pm.id ";
+        $data = Inventory::model()->findAll($criteria);
+        if ($data) {
+            $total_fix = 0;
+            foreach ($data as $dt) {
+                $saved = false;
+                if ($dt->stock_in > 0) {
+                    $purchase_price = $dt->purchase_price > 0 ? $dt->purchase_price : $dt->pp;
+                    $sell_price = $dt->sell_price > 0 ? $dt->sell_price : $dt->sp;
+                    $row_total = $dt->stock_in * $purchase_price;
+                    $dt->purchase_price = $purchase_price;
+//                    $dt->sell_price = $sell_price;
+                    $dt->row_total = $row_total;
+                    $dt->save();
+                    $saved = true;
+                }
+                if ($dt->stock_out > 0) {
+                    $source_id = $dt->source_id;
+
+                    $purchase_price = $dt->purchase_price > 0 ? $dt->purchase_price : $dt->pp;
+
+                    if ($source_id > 0){
+                        $sellOrderDetails = SellOrderDetails::model()->findByPk($source_id);
+                        if ($sellOrderDetails){
+                            $qty = $sellOrderDetails->qty;
+                            $costing = $sellOrderDetails->costing;
+                            $purchase_price = round($costing/ $qty, 2);
+                        }
+                    }
+
+                    $sell_price = $dt->sell_price > 0 ? $dt->sell_price : $dt->sp;
+                    $row_total = $dt->stock_out * $purchase_price;
+                    $dt->purchase_price = $purchase_price;
+//                    $dt->sell_price = $sell_price;
+                    $dt->row_total = $row_total;
+                    $dt->save();
+                    $saved = true;
+                }
+                if ($saved) {
+                    $total_fix++;
+                }
+            }
+            echo "Total Fixed: $total_fix";
+        }
+
     }
 
 }

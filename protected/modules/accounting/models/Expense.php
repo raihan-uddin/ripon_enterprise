@@ -20,6 +20,8 @@ class Expense extends CActiveRecord
 {
     public $so_no;
     public $customer_name;
+    public $expense_head_name;
+    public $expense_head_remarks;
     public $customer_id;
     public $order_id;
     public $total_amount;
@@ -154,6 +156,8 @@ class Expense extends CActiveRecord
 
     public function beforeSave()
     {
+        // set default time zone to asia/dhaka
+        date_default_timezone_set('Asia/Dhaka');
         if ($this->isNewRecord) {
             $this->created_at = new CDbExpression('NOW()');
             $this->created_by = Yii::app()->user->id;

@@ -16,7 +16,7 @@ class PurchaseOrderController extends Controller
 
     {
         return array(
-            'rights',
+            'rights-VoucherPreview',
         );
     }
 

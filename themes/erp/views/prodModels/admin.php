@@ -119,6 +119,11 @@ endforeach;
                     'value' => '$data->stockable == 1 ? "YES" : "NO"',
                     'filter' => [1 => "YES", 0 => "NO"],
                 ),
+                array(
+                    'name' => 'status',
+                    'value' => '$data->status == 1 ? "ACTIVE" : "INACTIVE"',
+                    'filter' => [1 => "ACTIVE", 0 => "INACTIVE"],
+                ),
                 /*
                   array(
                   'name'=>'activePrice',
@@ -137,7 +142,7 @@ endforeach;
                 array
                 (
                     'header' => 'Options',
-                    'template' => '{view}{update}{delete}', //{addSellPrice}{sellPriceHistory}
+                    'template' => '{view}{update}', //{addSellPrice}{sellPriceHistory}{delete}
                     'class' => 'CButtonColumn',
 
                     'htmlOptions' => ['style' => 'width: 120px'],

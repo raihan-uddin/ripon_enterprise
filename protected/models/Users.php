@@ -83,6 +83,8 @@ class Users extends CActiveRecord
 
     public function beforeSave()
     {
+        // set default time zone to asia/dhaka
+        date_default_timezone_set('Asia/Dhaka');
         if ($this->password != "") {
             $this->password = $pass = md5($this->password);
             $this->activkey = $apiKey = self::hashPassword($pass);

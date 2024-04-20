@@ -133,6 +133,8 @@ class PurchaseOrderDetails extends CActiveRecord
 
     public function beforeSave()
     {
+        // set default time zone to asia/dhaka
+        date_default_timezone_set('Asia/Dhaka');
         if ($this->isNewRecord) {
             $prodModel = ProdModels::model()->findByPk($this->model_id);
             if ($prodModel) {

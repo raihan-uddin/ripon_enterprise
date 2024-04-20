@@ -188,11 +188,28 @@ if (Yii::app()->user->checkAccess('Accounting.Expense.VoucherPreview')) {
                     'htmlOptions' => ['class' => 'text-center'],
                 ),
                 'created_at',
-//                'updated_by',
-//                'updated_at',
-                /*array(
+                array
+                (
+                    'header' => 'Options',
+                    'template' => '{delete}', //{update}
                     'class' => 'CButtonColumn',
-                ),*/
+                    'htmlOptions' => ['style' => 'width: 200px', 'class' => 'text-center'],
+                    'buttons' => array(
+
+                        'update' => array(
+                            'label' => '<i class="fa fa-pencil-square-o fa-2x" style="color: black;"></i>&nbsp;&nbsp;',
+                            'imageUrl' => false,
+                            'options' => array('rel' => 'tooltip', 'data-toggle' => 'tooltip', 'title' => Yii::t('app', 'Edit')),
+//                            'visible' => '$data->is_paid == 0 ? TRUE : FALSE',
+                        ),
+                        'delete' => array(
+                            'label' => '<i class="fa fa-trash fa-2x" style="color: red;"></i>&nbsp;&nbsp;',
+                            'imageUrl' => false,
+                            'options' => array('rel' => 'tooltip', 'data-toggle' => 'tooltip', 'title' => Yii::t('app', 'Delete')),
+//                            'visible' => '($data->total_paid == 0) ? TRUE : FALSE',
+                        ),
+                    )
+                ),
             ),
         )); ?>
     </div>

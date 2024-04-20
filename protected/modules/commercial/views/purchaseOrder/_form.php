@@ -563,6 +563,7 @@ Yii::app()->clientScript->registerCoreScript("jquery.ui");
                         <table class="table table-bordered table-striped table-valign-middle" id="list">
                             <thead class="table-info">
                             <tr>
+                                <th>SL</th>
                                 <th>Product Name</th>
                                 <th style="width: 20%;" class="text-center">Product SL No</th>
                                 <th style="width: 20%;" class="text-center">Product Note</th>
@@ -764,6 +765,7 @@ Yii::app()->clientScript->registerCoreScript("jquery.ui");
         } else {
             $("#list tbody").prepend(`
                 <tr class="item">
+                    <td class="serial"></td>
                     <td>${model_id_text}</td>
                     <td class="text-center">${product_sl_no}</td>
                     <td class="text-center">${note}</td>
@@ -849,6 +851,30 @@ Yii::app()->clientScript->registerCoreScript("jquery.ui");
         }
     });
 
+    function calculateTotal() {
+        let item_count = $(".item").length;
+
+        let total = 0;
+        $('.row-total').each(function () {
+            total += parseFloat($(this).val());
+        });
+
+        $("#PurchaseOrder_total_amount").val(total.toFixed(2)).change();
+        $("#PurchaseOrder_item_count").val(item_count);
+        calculateVat();
+
+        tableSerial();
+    }
+
+    function tableSerial() {
+        //  get the table tbody tr length
+        var i = $('#list tbody tr').length;
+        $('#list tbody tr').each(function () {
+            $(this).find('.serial').text(i);
+            i--;
+        });
+    }
+
     // on PurchaseOrderDetails_product_sl_no , PurchaseOrderDetails_amount enter press add to list
     $("#PurchaseOrderDetails_product_sl_no").keypress(function (event) {
         let keycode = (event.keyCode ? event.keyCode : event.which);
@@ -866,18 +892,7 @@ Yii::app()->clientScript->registerCoreScript("jquery.ui");
         }
     });
 
-    function calculateTotal() {
-        let item_count = $(".item").length;
-
-        let total = 0;
-        $('.row-total').each(function () {
-            total += parseFloat($(this).val());
-        });
-
-        $("#PurchaseOrder_total_amount").val(total.toFixed(2)).change();
-        $("#PurchaseOrder_item_count").val(item_count);
-        calculateVat();
-    }
+    tableSerial();
 </script>
 
 <?php $this->endWidget(); ?>
