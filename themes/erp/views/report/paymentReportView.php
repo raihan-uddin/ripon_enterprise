@@ -165,7 +165,7 @@ echo "</div>";
     $(function () {
         $(".exportToExcel").click(function (e) {
             var table = $('.table2excel');
-            console.log(table);
+
             if (table && table.length) {
                 var preserveColors = (table.hasClass('table2excel_with_colors') ? true : false);
                 $(table).table2excel({

@@ -35,35 +35,29 @@ $form = $this->beginWidget('CActiveForm', array(
     <div class="card-body">
         <div class="row">
 
-            <div class="col-sm-12 col-md-2">
+            <div class="col-sm-12 col-md-3">
                 <div class="form-group" style="">
                     <?php echo $form->labelEx($model, 'date_from', ['class' => 'col-form-label']); ?>
                     <div class="input-group" id="date_from" data-target-input="nearest">
                         <?php echo $form->textField($model, 'date_from', array('class' => 'form-control datetimepicker-input', 'placeholder' => 'YYYY-MM-DD', 'value' => date('Y-m-d'))); ?>
-                        <div class="input-group-append">
-                            <div class="input-group-text"><i class="fa fa-calendar"></i></div>
-                        </div>
                     </div>
                     <span class="help-block"
                           style="color: red; width: 100%"> <?php echo $form->error($model, 'date_from'); ?></span>
                 </div>
             </div>
 
-            <div class="col-sm-12 col-md-2">
+            <div class="col-sm-12 col-md-3">
                 <div class="form-group" style="">
                     <?php echo $form->labelEx($model, 'date_to', ['class' => 'col-form-label']); ?>
                     <div class="input-group" id="date_to" data-target-input="nearest">
                         <?php echo $form->textField($model, 'date_to', array('class' => 'form-control datetimepicker-input', 'placeholder' => 'YYYY-MM-DD', 'value' => date('Y-m-d'))); ?>
-                        <div class="input-group-append">
-                            <div class="input-group-text"><i class="fa fa-calendar"></i></div>
-                        </div>
                     </div>
                     <span class="help-block"
                           style="color: red; width: 100%"> <?php echo $form->error($model, 'date_to'); ?></span>
                 </div>
             </div>
 
-            <div class="col-sm-12 col-md-2">
+            <div class="col-sm-12 col-md-3">
                 <div class="form-group" style="">
                     <?php echo $form->labelEx($model, 'customer_id', ['class' => 'col-form-label']); ?>
                     <div class="input-group" id="customer_id" data-target-input="nearest">
@@ -97,7 +91,7 @@ $form = $this->beginWidget('CActiveForm', array(
                     </script>
                 </div>
             </div>
-            <div class="col-sm-12 col-md-2">
+            <div class="col-sm-12 col-md-3">
                 <div class="form-group" style="">
                     <?php echo $form->labelEx($model, 'created_by', ['class' => 'col-form-label']); ?>
                     <div class="input-group" id="created_by" data-target-input="nearest">

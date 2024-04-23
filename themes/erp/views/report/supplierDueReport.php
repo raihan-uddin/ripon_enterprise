@@ -63,7 +63,7 @@ $form = $this->beginWidget('CActiveForm', array(
                 </div>
             </div>
 
-            <div class="col-sm-12 col-md-2">
+            <div class="col-sm-12 col-md-4">
                 <div class="form-group" style="">
                     <?php echo $form->labelEx($model, 'supplier_id', ['class' => 'col-form-label']); ?>
                     <div class="input-group" id="supplier_id" data-target-input="nearest">
