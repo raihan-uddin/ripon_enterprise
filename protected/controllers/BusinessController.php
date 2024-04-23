@@ -1,47 +1,53 @@
 <?php
 
-class ProdItemsController extends Controller
+class BusinessController extends Controller
 {
-
-    /**
-     * @var string the default layout for the views. Defaults to '//layouts/column2', meaning
-     * using two-column layout. See 'protected/views/layouts/column2.php'.
-     */
+	/**
+	 * @var string the default layout for the views. Defaults to '//layouts/column2', meaning
+	 * using two-column layout. See 'protected/views/layouts/column2.php'.
+	 */
     public $layout = '//layouts/column1';
     public $defaultAction = 'admin';
 
-    /**
-     * @return array action filters
-     */
-    public function filters()
-    {
-        return array(
-            'rights', // perform access control for CRUD operations
-        );
-    }
+	/**
+	 * @return array action filters
+	 */
+	public function filters()
+	{
+		return array(
+			'rights', // perform access control for CRUD operations
+		);
+	}
 
-    public function allowedActions()
-    {
-        return '';
-    }
+	/**
+	 * Specifies the access control rules.
+	 * This method is used by the 'accessControl' filter.
+	 * @return array access control rules
+	 */
+	public function accessRules()
+	{
+		return array(
+		);
+	}
 
-    public function actionCreateProdItemsFromOutSide()
+    public function actionCreateBusinessFromOutSide()
     {
-        $model = new ProdItems;
+        $model = new Business;
 
         // Uncomment the following line if AJAX validation is needed
         $this->performAjaxValidation($model);
 
-        if (isset($_POST['ProdItems'])) {
-            $model->attributes = $_POST['ProdItems'];
+        if (isset($_POST['Business'])) {
+            $model->attributes = $_POST['Business'];
             if ($model->save()) {
                 if (Yii::app()->request->isAjaxRequest) {
-                    $data = ProdItems::model()->findByPk($model->id);
                     echo CJSON::encode(array(
                         'status' => 'success',
-                        'div' => '<div class="alert alert-success">Successfully created!</div>',
-                        'value' => $data->id,
-                        'label' => $data->item_name,
+                        'div' => '<div class="alert alert-success ">
+                                      Successfully created!
+                                    </div>',
+                        'value' => $model->id,
+                        'label' => $model->display_name
                     ));
                     exit;
                 } else
@@ -60,19 +66,19 @@ class ProdItemsController extends Controller
             $this->render('create', array('model' => $model,));
     }
 
-    /**
-     * Creates a new model.
-     * If creation is successful, the browser will be redirected to the 'view' page.
-     */
+	/**
+	 * Creates a new model.
+	 * If creation is successful, the browser will be redirected to the 'view' page.
+	 */
     public function actionCreate()
     {
-        $model = new ProdItems;
+        $model = new Business;
 
         // Uncomment the following line if AJAX validation is needed
         $this->performAjaxValidation($model);
 
-        if (isset($_POST['ProdItems'])) {
-            $model->attributes = $_POST['ProdItems'];
+        if (isset($_POST['Business'])) {
+            $model->attributes = $_POST['Business'];
             $valid = $model->validate();
             if ($valid) {
                 $model->save();
@@ -95,11 +101,11 @@ class ProdItemsController extends Controller
         }
     }
 
-    /**
-     * Updates a particular model.
-     * If update is successful, the browser will be redirected to the 'view' page.
-     * @param integer $id the ID of the model to be updated
-     */
+	/**
+	 * Updates a particular model.
+	 * If update is successful, the browser will be redirected to the 'view' page.
+	 * @param integer $id the ID of the model to be updated
+	 */
     public function actionUpdate($id)
     {
         $model = $this->loadModel($id);
@@ -107,8 +113,8 @@ class ProdItemsController extends Controller
         // Uncomment the following line if AJAX validation is needed
         $this->performAjaxValidation($model);
 
-        if (isset($_POST['ProdItems'])) {
-            $model->attributes = $_POST['ProdItems'];
+        if (isset($_POST['Business'])) {
+            $model->attributes = $_POST['Business'];
             if ($model->save()) {
                 if (Yii::app()->request->isAjaxRequest) {
                     // Stop jQuery from re-initialization
@@ -116,7 +122,9 @@ class ProdItemsController extends Controller
 
                     echo CJSON::encode(array(
                         'status' => 'success',
-                        'content' => '<div class="alert alert-success">Successfully updated! </div>',
+                        'content' => '<div class="alert alert-success">
+                                      Successfully updated!
+                                    </div>',
                     ));
                     exit;
                 } else
@@ -138,11 +146,11 @@ class ProdItemsController extends Controller
             $this->render('update', array('model' => $model));
     }
 
-    /**
-     * Deletes a particular model.
-     * If deletion is successful, the browser will be redirected to the 'admin' page.
-     * @param integer $id the ID of the model to be deleted
-     */
+	/**
+	 * Deletes a particular model.
+	 * If deletion is successful, the browser will be redirected to the 'admin' page.
+	 * @param integer $id the ID of the model to be deleted
+	 */
     public function actionDelete($id)
     {
         if (Yii::app()->request->isPostRequest) {
@@ -157,45 +165,47 @@ class ProdItemsController extends Controller
     }
 
 
-    /**
-     * Manages all models.
-     */
-    public function actionAdmin()
-    {
-        $model = new ProdItems('search');
-        $model->unsetAttributes();  // clear any default values
-        if (isset($_GET['ProdItems']))
-            $model->attributes = $_GET['ProdItems'];
+	/**
+	 * Manages all models.
+	 */
+	public function actionAdmin()
+	{
+		$model=new Business('search');
+		$model->unsetAttributes();  // clear any default values
+		if(isset($_GET['Business']))
+			$model->attributes=$_GET['Business'];
+        $this->pageTitle = "BUSINESS";
+		$this->render('admin',array(
+			'model'=>$model,
+		));
+	}
 
-        $this->pageTitle = "CATEGORY";
-        $this->render('admin', array(
-            'model' => $model,
-        ));
-    }
 
-    /**
-     * Returns the data model based on the primary key given in the GET variable.
-     * If the data model is not found, an HTTP exception will be raised.
-     * @param integer the ID of the model to be loaded
-     */
-    public function loadModel($id)
-    {
-        $model = ProdItems::model()->findByPk($id);
-        if ($model === null)
-            throw new CHttpException(404, 'The requested page does not exist.');
-        return $model;
-    }
+	/**
+	 * Returns the data model based on the primary key given in the GET variable.
+	 * If the data model is not found, an HTTP exception will be raised.
+	 * @param integer $id the ID of the model to be loaded
+	 * @return Business the loaded model
+	 * @throws CHttpException
+	 */
+	public function loadModel($id)
+	{
+		$model=Business::model()->findByPk($id);
+		if($model===null)
+			throw new CHttpException(404,'The requested page does not exist.');
+		return $model;
+	}
 
-    /**
-     * Performs the AJAX validation.
-     * @param CModel the model to be validated
-     */
-    protected function performAjaxValidation($model)
-    {
-        if (isset($_POST['ajax']) && $_POST['ajax'] === 'prod-items-form') {
-            echo CActiveForm::validate($model);
-            Yii::app()->end();
-        }
-    }
-
+	/**
+	 * Performs the AJAX validation.
+	 * @param Business $model the model to be validated
+	 */
+	protected function performAjaxValidation($model)
+	{
+		if(isset($_POST['ajax']) && $_POST['ajax']==='business-form')
+		{
+			echo CActiveForm::validate($model);
+			Yii::app()->end();
+		}
+	}
 }
