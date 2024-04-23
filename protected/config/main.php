@@ -50,15 +50,15 @@ return array(
             # automatically login from registration
             'autoLogin' => true,
             # registration path
-            'registrationUrl' => array('/user/registration'),
+//            'registrationUrl' => array('/user/registration'),
             # recovery password path
-            'recoveryUrl' => array('/user/recovery'),
+//            'recoveryUrl' => array('/user/recovery'),
             # login form path
-            'loginUrl' => array('/user/login'),
+//            'loginUrl' => array('/user/login'),
             # page after login
-            'returnUrl' => array('/user/profile'),
+//            'returnUrl' => array('/user/profile'),
             # page after logout
-            'returnLogoutUrl' => array('/user/login'),
+//            'returnLogoutUrl' => array('/user/login'),
         ),
         //Modules Rights
         'rights' => array(
@@ -66,8 +66,8 @@ return array(
             'authenticatedName' => 'Authenticated', // Name of the authenticated user role.
             'userIdColumn' => 'id', // Name of the user id column in the database.
             'userNameColumn' => 'username', // Name of the user name column in the database.
-            'enableBizRule' => true, // Whether to enable authorization item business rules.
-            'enableBizRuleData' => true, // Whether to enable data for business rules.
+            'enableBizRule' => false, // Whether to enable authorization item business rules.
+            'enableBizRuleData' => false, // Whether to enable data for business rules.
             'displayDescription' => true, // Whether to use item description instead of name.
             'flashSuccessKey' => 'RightsSuccess', // Key to use for setting success flash messages.
             'flashErrorKey' => 'RightsError', // Key to use for setting error flash messages.
@@ -78,9 +78,6 @@ return array(
             'install' => false, // Whether to enable installer.
             'debug' => false,
         ),
-        'importcsv' => array(
-            'path' => 'upload/importCsv/', // path to folder for saving csv file and file with import params
-        ),
         'gii' => array(
             'class' => 'system.gii.GiiModule',
             'password' => 'admin',
@@ -90,7 +87,7 @@ return array(
         'crm',
         'commercial',
         'sell',
-        'cal' => array('debug' => FALSE),
+        'cal' => array('debug' => true),
     ),
 // application components
     'components' => array(
@@ -122,12 +119,20 @@ return array(
             'routes' => array(
                 array(
                     'class' => 'CFileLogRoute',
-                    'levels' => 'error, warning',
+                    'levels' => 'trace, info, error, warning, vardump',
                 ),
                 array(
                     'class' => 'CProfileLogRoute',
                     'levels' => 'profile',
                     'enabled' => true,
+                ),
+                // uncomment the following to show log messages on web pages
+                array(
+                    'class' => 'CWebLogRoute',
+                    'enabled' => YII_DEBUG,
+                    'levels' => 'error, warning, trace, notice',
+                    'categories' => 'application',
+                    'showInFireBug' => false,
                 ),
             ),
         ),
@@ -142,12 +147,18 @@ return array(
             'class' => 'RWebUser',
             'authTimeout' => 21600, // auto-logout after 3 hours  (value in seconds)
             'allowAutoLogin' => true,
-            'autoUpdateFlash' => false, // add this line to disable the flash counter
+            'autoUpdateFlash' => true, // add this line to disable the flash counter
             'loginUrl' => array('/site/login'),
             'loginRequiredAjaxResponse' => 'Session timed out. Please login again to continue.',
         ),
         'authManager' => array(
             'class' => 'RDbAuthManager',
+            'connectionID'=>'db',
+            'itemTable'=>'AuthItem',
+            'itemChildTable'=>'AuthItemChild',
+            'assignmentTable'=>'AuthAssignment',
+            'rightsTable'=>'rights',
+
         ),
         'urlManager' => require(dirname(__FILE__) . '/urlManager.php'),
         'db' => require(dirname(__FILE__) . '/db.php'),

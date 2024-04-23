@@ -86,13 +86,19 @@ endforeach;
             'emptyText' => "<div class='alert alert-warning text-center' role='alert'><i class='icon fa fa-exclamation-triangle'></i>No results found.</div>",
             'columns' => array(
                 'id',
-                'slug',
                 'display_name',
                 'status',
                 'owner_name',
                 'phone_number',
                 'email',
                 'address',
+                array(
+                    'name' => 'status',
+                    'value' => 'Business::model()->statusString($data->status)',
+                    'type' => 'raw',
+                    'filter' => CHtml::listData(Business::model()->statusFilter(), 'id', 'title'),
+                    'htmlOptions' => ['class' => 'text-center']
+                ),
                 /*
                 'created_at',
                 'created_by',
@@ -115,7 +121,7 @@ endforeach;
                                 $( '#update-dialog' ).children( ':eq(0)' ).empty(); // Stop auto POST
                                 updateDialog( $( this ).attr( 'href' ) );
                                 $( '#update-dialog' )
-                                  .dialog( { title: 'Update Category' } )
+                                  .dialog( { title: 'Update Business' } )
                                   .dialog( 'open' ); 
                               }",
                         ),

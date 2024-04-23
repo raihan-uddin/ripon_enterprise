@@ -1,16 +1,12 @@
 <?php
-/* @var $this BranchController */
-/* @var $model Branch */
-
-$this->breadcrumbs=array(
-	'Branches'=>array('index'),
-	'Manage',
-);
-
-$this->menu=array(
-	array('label'=>'List Branch', 'url'=>array('index')),
-	array('label'=>'Create Branch', 'url'=>array('create')),
-);
+$this->widget('application.components.BreadCrumb', array(
+    'crumbs' => array(
+        array('name' => 'Common', 'url' => array('')),
+        array('name' => 'Branch', 'url' => array('admin')),
+        array('name' => 'Manage Branches'),
+    ),
+//    'delimiter' => ' &rarr; ',
+));
 
 Yii::app()->clientScript->registerScript('search', "
 $('.search-button').click(function(){
@@ -24,42 +20,210 @@ $('.search-form form').submit(function(){
 	return false;
 });
 ");
+if (Yii::app()->user->checkAccess('Branch.Create')) {
+    echo $this->renderPartial('_form', array('model' => $model));
+}
 ?>
 
-<h1>Manage Branches</h1>
+<?php
+$user = Yii::app()->getUser();
+foreach ($user->getFlashKeys() as $key):
+    if ($user->hasFlash($key)): ?>
+        <div class="alert alert-<?php echo $key; ?> alert-dismissible">
+            <button type="button" class="close" data-dismiss="alert" aria-hidden="true">×</button>
+            <?php echo $user->getFlash($key); ?>
+        </div>
+    <?php
+    endif;
+endforeach;
+?>
+<div id="statusMsg"></div>
+<div class="card card-primary">
+    <div class="card-header">
+        <h3 class="card-title">Manage Branch</h3>
 
-<p>
-You may optionally enter a comparison operator (<b>&lt;</b>, <b>&lt;=</b>, <b>&gt;</b>, <b>&gt;=</b>, <b>&lt;&gt;</b>
-or <b>=</b>) at the beginning of each of your search values to specify how the comparison should be done.
-</p>
+        <div class="card-tools">
+            <button type="button" class="btn btn-tool" data-card-widget="collapse">
+                <i class="fa fa-minus"></i>
+            </button>
+            <!--            <button type="button" class="btn btn-tool" data-card-widget="remove">-->
+            <!--                <i class="fa fa-times"></i>-->
+            <!--            </button>-->
+        </div>
+    </div>
+    <div class="card-body">
+        <!--branch-grid-->
+        <?php
+        $this->widget('ext.groupgridview.GroupGridView', array(
+            'id' => 'prod-brands-grid',
+            'dataProvider' => $model->search(),
+            'mergeColumns' => array('business_id'),
+            'filter' => $model,
+            'cssFile' => Yii::app()->theme->baseUrl . '/css/gridview/styles.css',
+            'htmlOptions' => array('class' => 'row table-responsive grid-view'),
+            'itemsCssClass' => 'table table-sm table-hover table-striped table-condensed table-bordered dataTable dtr-inline',
+//            'loadingCssClass' => 'fa fa-spinner fa-spin fa-2x',
+            'pager' => array(            //  pager like twitter bootstrap
+                'htmlOptions' => array('class' => 'pagination  justify-content-end'),
+                'header' => '',
+                'cssFile' => false,
+                'maxButtonCount' => 10,
+                'selectedPageCssClass' => 'page-item active', //default "selected"
+                'nextPageCssClass' => 'page-item',//default "next"
+                'hiddenPageCssClass' => 'page-item disabled',//default "hidden"
+                'firstPageCssClass' => 'page-item previous', //default "first"\
+                'lastPageCssClass' => 'page-item last', //default "last"
+                'internalPageCssClass' => 'page-item',//default "page"
+                'previousPageCssClass' => 'page-item',//default "previours"\
+                'firstPageLabel' => '<<',
+                'lastPageLabel' => '>>',
+                'prevPageLabel' => '<',
+                'nextPageLabel' => '>',
+//                'footer'=>'End',//defalut empty
+            ),
+            'template' => "{pager}\n\n{summary}{items}{summary}\n{pager}",
+            'summaryText' => "<div class='dataTables_info' role='status' aria-live='polite'><p>Displaying {start}-{end} of {page} result(s)</p></div>",
+            'summaryCssClass' => 'col-sm-12 col-md-5',
+            'pagerCssClass' => 'col-sm-12 col-md-7 pager',
+            'emptyText' => "<div class='alert alert-warning text-center' role='alert'><i class='icon fa fa-exclamation-triangle'></i>No results found.</div>",
+//            'enableSorting' => false,
+            'columns' => array(
+                'id',
+                array(
+                    'name' => 'business_id',
+                    'value' => 'Business::model()->nameOfThis($data->business_id)',
+                    'filter' => CHtml::listData(Business::model()->findAll(), 'id', 'display_name'),
+                ),
+                'display_name',
+                'address',
+                'phone_number',
+                array(
+                    'name' => 'status',
+                    'value' => 'Branch::model()->statusString($data->status)',
+                    'type' => 'raw',
+                    'filter' => CHtml::listData(Branch::model()->statusFilter(), 'id', 'title'),
+                    'htmlOptions' => ['class' => 'text-center']
+                ),
+                'created_at',
+                /*
+                'status',
+                'created_by',
+                'updated_at',
+                'updated_by',
+                */
+                array
+                (
+                    'header' => 'Options',
+                    'template' => '{update}{delete}', //
+                    'class' => 'CButtonColumn',
+                    'htmlOptions' => ['style' => 'width: 100px'],
+                    'buttons' => array(
+                        'update' => array(
+                            'label' => '<i class="fa fa-pencil-square-o fa-2x" style="color: black;"></i>&nbsp;&nbsp;',
+                            'imageUrl' => false,
+                            'options' => array('rel' => 'tooltip', 'data-toggle' => 'tooltip', 'title' => Yii::t('app', 'Edit')),
+                            'click' => "function( e ){
+                                    e.preventDefault();
+                                    $( '#update-dialog' ).children( ':eq(0)' ).empty(); // Stop auto POST
+                                    updateDialog( $( this ).attr( 'href' ) );
+                                    $( '#update-dialog' )
+                                      .dialog( { title: 'Update Branch' } )
+                                      .dialog( 'open' ); 
+                                   }",
+                        ),
+                        'delete' => array(
+                            'label' => '<i class="fa fa-trash fa-2x" style="color: red;"></i>&nbsp;&nbsp;',
+                            'imageUrl' => false,
+                            'options' => array('rel' => 'tooltip', 'data-toggle' => 'tooltip', 'title' => Yii::t('app', 'Delete')),
+//                            'visible' => '$data->account_type=="1"?TRUE:FALSE',
+//                            'visible'=>'$data->account_type=="2"?TRUE:FALSE',
+                        ),
+                    )
+                ),
+            ),
+        )); ?>
+    </div>
+</div>
 
-<?php echo CHtml::link('Advanced Search','#',array('class'=>'search-button')); ?>
-<div class="search-form" style="display:none">
-<?php $this->renderPartial('_search',array(
-	'model'=>$model,
-)); ?>
-</div><!-- search-form -->
 
-<?php $this->widget('zii.widgets.grid.CGridView', array(
-	'id'=>'branch-grid',
-	'dataProvider'=>$model->search(),
-	'filter'=>$model,
-	'columns'=>array(
-		'id',
-		'business_id',
-		'slug',
-		'display_name',
-		'address',
-		'phone_number',
-		/*
-		'status',
-		'created_at',
-		'created_by',
-		'updated_at',
-		'updated_by',
-		*/
-		array(
-			'class'=>'CButtonColumn',
-		),
-	),
-)); ?>
+<?php
+$this->beginWidget('zii.widgets.jui.CJuiDialog', array(
+    'id' => 'update-dialog',
+    'options' => array(
+        'title' => 'Update Branch',
+        'autoOpen' => false,
+        'modal' => true,
+        'width' => 'auto',
+        'resizable' => false,
+    ),
+));
+?>
+<div class="update-dialog-content"></div>
+<?php $this->endWidget(); ?>
+
+<?php
+$updateJS = CHtml::ajax(array(
+    'url' => "js:url",
+    'data' => "js:form.serialize() + action",
+    'type' => 'post',
+    'dataType' => 'json',
+    'success' => "function( data )
+  {
+    if( data.status == 'failure' ){
+      $( '#update-dialog div.update-dialog-content' ).html( data.content );
+      $( '#update-dialog div.update-dialog-content form input[type=submit]' )
+        .off() // Stop from re-binding event handlers
+        .on( 'click', function( e ){ // Send clicked button value
+          e.preventDefault();
+          updateDialog( false, $( this ).attr( 'name' ) );
+      });
+    }else{
+      $( '#update-dialog div.update-dialog-content' ).html( data.content );
+      if( data.status == 'success' ) // Update all grid views on success
+      {
+        $( 'div.grid-view' ).each( function(){ // Change the selector if you use different class or element
+          $.fn.yiiGridView.update( $( this ).attr( 'id' ) );
+        });
+      }
+      setTimeout( \"$( '#update-dialog' ).dialog( 'close' ).children( ':eq(0)' ).empty();\", 1000 );
+    }
+  }"
+));
+?>
+
+<?php Yii::app()->clientScript->registerScript('updateDialog', "
+function updateDialog( url, act )
+{
+  var action = '';
+  var form = $( '#update-dialog div.update-dialog-content form' );
+  if( url == false )
+  {
+    action = '&action=' + act;
+    url = form.attr( 'action' );
+  }
+  {$updateJS}
+}"); ?>
+
+<?php
+Yii::app()->clientScript->registerScript('updateDialogCreate', "
+jQuery( function($){
+    $( 'a.update-dialog-create' ).bind( 'click', function( e ){
+      e.preventDefault();
+      $( '#update-dialog' ).children( ':eq(0)' ).empty();
+      updateDialog( $( this ).attr( 'href' ) );
+      $( '#update-dialog' )
+        .dialog( { title: 'Create' } )
+        .dialog( 'open' );
+    });
+});
+");
+?>
+
+<style>
+
+
+    /* disable selected for merged cells */
+    .grid-view td.merge {
+        background: none repeat scroll 0 0 #F8F8F8;
+    }
+</style>
