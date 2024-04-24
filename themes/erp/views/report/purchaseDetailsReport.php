@@ -8,8 +8,8 @@
 $this->widget('application.components.BreadCrumb', array(
     'crumbs' => array(
         array('name' => 'Report', 'url' => array('')),
-        array('name' => 'Sales', 'url' => array('')),
-        array('name' => 'Sales Details Report',),
+        array('name' => 'Purchase', 'url' => array('')),
+        array('name' => 'Purchase Details Report',),
     ),
 //    'delimiter' => ' &rarr; ',
 ));
@@ -21,7 +21,7 @@ $form = $this->beginWidget('CActiveForm', array(
 ?>
 <div class="card card-primary">
     <div class="card-header">
-        <h3 class="card-title">Search Conditions (SALES DETAILS REPORT)</h3>
+        <h3 class="card-title">Search Conditions (PURCHASE DETAILS REPORT)</h3>
         <div class="card-tools">
             <button type="button" class="btn btn-tool" data-card-widget="collapse">
                 <i class="fa fa-minus"></i>
@@ -54,6 +54,62 @@ $form = $this->beginWidget('CActiveForm', array(
                     </div>
                     <span class="help-block"
                           style="color: red; width: 100%"> <?php echo $form->error($model, 'date_to'); ?></span>
+                </div>
+            </div>
+
+            <div class="col-sm-12 col-md-2">
+                <div class="form-group" style="">
+                    <?php echo $form->labelEx($model, 'supplier_id', ['class' => 'col-form-label']); ?>
+                    <div class="input-group" id="supplier_id" data-target-input="nearest">
+                        <input type="text" id="supplier_id_text" class="form-control">
+                        <?php echo $form->hiddenField($model, 'supplier_id', array('class' => 'form-control',)); ?>
+                        <div class="input-group-append" onclick="clearProduct()">
+                            <div class="input-group-text"><i class="fa fa-refresh"></i></div>
+                        </div>
+                    </div>
+                    <span class="help-block"
+                          style="color: red; width: 100%"> <?php echo $form->error($model, 'customer_id'); ?></span>
+                    <script>
+                        $(document).ready(function () {
+                            $('#supplier_id_text').autocomplete({
+                                source: function (request, response) {
+                                    var search = request.term;
+                                    $.post('<?php echo Yii::app()->baseUrl ?>/index.php/commercial/suppliers/jquery_supplierSearch', {
+                                            "q": search,
+                                        },
+                                        function (data) {
+                                            response(data);
+                                        }, "json");
+                                },
+                                minLength: 1,
+                                select: function (event, ui) {
+                                    $('#supplier_id_text').val(ui.item.value);
+                                    $('#Inventory_supplier_id').val(ui.item.id);
+                                }
+                            })
+                        });
+                    </script>
+                </div>
+            </div>
+
+
+            <div class="col-sm-12 col-md-2">
+                <div class="form-group" style="">
+                    <?php echo $form->labelEx($model, 'manufacturer_id', ['class' => 'col-form-label']); ?>
+                    <div class="input-group" id="manufacturer_id" data-target-input="nearest">
+                        <?php
+                        echo $form->dropDownList(
+                            $model, 'manufacturer_id', CHtml::listData(Company::model()->findAll(array('order' => 'name ASC')), 'id', 'name'), array(
+                            'prompt' => 'Select',
+                            'class' => 'form-control',
+                        ));
+                        ?>
+                        <!--                        <div class="input-group-append">-->
+                        <!--                            <div class="input-group-text"><i class="fa fa-calendar"></i></div>-->
+                        <!--                        </div>-->
+                    </div>
+                    <span class="help-block"
+                          style="color: red; width: 100%"> <?php echo $form->error($model, 'manufacturer_id'); ?></span>
                 </div>
             </div>
 
@@ -100,56 +156,52 @@ $form = $this->beginWidget('CActiveForm', array(
 
             <div class="col-sm-12 col-md-2">
                 <div class="form-group" style="">
-                    <?php echo $form->labelEx($model, 'manufacturer_id', ['class' => 'col-form-label']); ?>
-                    <div class="input-group" id="manufacturer_id" data-target-input="nearest">
+                    <?php echo $form->labelEx($model, 'item_id', ['class' => 'col-form-label']); ?>
+                    <div class="input-group" id="item_id" data-target-input="nearest">
                         <?php
                         echo $form->dropDownList(
-                            $model, 'manufacturer_id', CHtml::listData(Company::model()->findAll(array('order' => 'name ASC')), 'id', 'name'), array(
+                            $model, 'item_id', CHtml::listData(ProdItems::model()->findAll(array('order' => 'item_name ASC')), 'id', 'item_name'), array(
                             'prompt' => 'Select',
                             'class' => 'form-control',
+                            'ajax' => array(
+                                'type' => 'POST',
+                                'dataType' => 'json',
+                                'url' => CController::createUrl('/prodModels/subCatOfThisCat'),
+                                'success' => 'function(data) {
+                                                $("#Inventory_brand_id").html(data.subCatList);
+                                         }',
+                                'data' => array(
+                                    'catId' => 'js:jQuery("#Inventory_item_id").val()',
+                                ),
+                                'beforeSend' => 'function(){
+                                                    document.getElementById("Inventory_brand_id").style.background="url(' . Yii::app()->theme->baseUrl . '/images/ajax-loader.gif) no-repeat #FFFFFF 80% 1px";   
+                                         }',
+                                'complete' => 'function(){
+                                            document.getElementById("Inventory_brand_id").style.background="url(' . Yii::app()->theme->baseUrl . '/images/downDrop.png) no-repeat #FFFFFF 98% 2px"; 
+                                        }',
+                            ),
                         ));
                         ?>
-                        <!--                        <div class="input-group-append">-->
-                        <!--                            <div class="input-group-text"><i class="fa fa-calendar"></i></div>-->
-                        <!--                        </div>-->
                     </div>
                     <span class="help-block"
-                          style="color: red; width: 100%"> <?php echo $form->error($model, 'manufacturer_id'); ?></span>
+                          style="color: red; width: 100%"> <?php echo $form->error($model, 'item_id'); ?></span>
                 </div>
             </div>
 
             <div class="col-sm-12 col-md-2">
                 <div class="form-group" style="">
-                    <?php echo $form->labelEx($model, 'customer_id', ['class' => 'col-form-label']); ?>
-                    <div class="input-group" id="customer_id" data-target-input="nearest">
-                        <input type="text" id="customer_id_text" class="form-control">
-                        <?php echo $form->hiddenField($model, 'customer_id', array('class' => 'form-control',)); ?>
-                        <div class="input-group-append" onclick="clearProduct()">
-                            <div class="input-group-text"><i class="fa fa-refresh"></i></div>
-                        </div>
+                    <?php echo $form->labelEx($model, 'brand_id', ['class' => 'col-form-label']); ?>
+                    <div class="input-group" id="brand_id" data-target-input="nearest">
+                        <?php
+                        echo $form->dropDownList(
+                            $model, 'brand_id', CHtml::listData(ProdBrands::model()->findAll(array('order' => 'brand_name ASC')), 'id', 'brand_name'), array(
+                            'prompt' => 'Select',
+                            'class' => 'form-control',
+                        ));
+                        ?>
                     </div>
                     <span class="help-block"
-                          style="color: red; width: 100%"> <?php echo $form->error($model, 'customer_id'); ?></span>
-                    <script>
-                        $(document).ready(function () {
-                            $('#customer_id_text').autocomplete({
-                                source: function (request, response) {
-                                    var search = request.term;
-                                    $.post('<?php echo Yii::app()->baseUrl ?>/index.php/crm/customers/Jquery_customerSearch', {
-                                            "q": search,
-                                        },
-                                        function (data) {
-                                            response(data);
-                                        }, "json");
-                                },
-                                minLength: 1,
-                                select: function (event, ui) {
-                                    $('#customer_id_text').val(ui.item.value);
-                                    $('#Inventory_customer_id').val(ui.item.id);
-                                }
-                            })
-                        });
-                    </script>
+                          style="color: red; width: 100%"> <?php echo $form->error($model, 'brand_id'); ?></span>
                 </div>
             </div>
 
@@ -194,7 +246,7 @@ $form = $this->beginWidget('CActiveForm', array(
         echo CHtml::submitButton('Search', array(
                 'ajax' => array(
                     'type' => 'POST',
-                    'url' => CController::createUrl('/report/saleDetailsReportView'),
+                    'url' => CController::createUrl('/report/purchaseDetailsReportView'),
                     'beforeSend' => 'function(){
                                 if($("#Inventory_date_from").val()=="" || $("#Inventory_date_to").val()==""){
                                     toastr.error("Warning! Please select date range!");

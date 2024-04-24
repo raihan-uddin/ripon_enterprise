@@ -124,7 +124,7 @@ $this->widget('application.extensions.mbmenu.MbMenu', array(
                 array('label' => 'PURCHASE',
                     'items' => array(
                         ['label' => Yii::t('app', 'PURCHASE REPORT'), 'url' => ['/report/purchaseReport'], 'visible' => Yii::app()->user->checkAccess('Report.PurchaseReport')],
-//                        ['label' => Yii::t('app', 'PURCHASE DETAILS REPORT'), 'url' => ['/report/purchaseDetailsReport'], 'visible' => Yii::app()->user->checkAccess('Report.PurchaseDetailsReport')],
+                        ['label' => Yii::t('app', 'PURCHASE DETAILS REPORT'), 'url' => ['/report/purchaseDetailsReport'], 'visible' => Yii::app()->user->checkAccess('Report.PurchaseDetailsReport')],
                         ['label' => Yii::t('app', 'SUPPLIER DUE REPORT'), 'url' => ['/report/supplierDueReport'], 'visible' => Yii::app()->user->checkAccess('Report.SupplierDueReport')],
                         ['label' => Yii::t('app', 'SUPPLIER LEDGER'), 'url' => ['/report/supplierLedger'], 'visible' => Yii::app()->user->checkAccess('Report.SupplierLedger')],
                         ['label' => Yii::t('app', 'PAYMENT REPORT'), 'url' => ['/report/paymentReport'], 'visible' => Yii::app()->user->checkAccess('Report.PaymentReport')],

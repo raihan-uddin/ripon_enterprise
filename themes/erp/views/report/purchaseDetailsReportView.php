@@ -95,7 +95,9 @@ echo "</div>";
             <th style="width: 10%; box-shadow: 0px 0px 0px 1px black inset;">Date</th>
             <th style="width: 7%; box-shadow: 0px 0px 0px 1px black inset;">ID</th>
             <th style="box-shadow: 0px 0px 0px 1px black inset;">Supplier</th>
-            <th style="width: 10%;box-shadow: 0px 0px 0px 1px black inset;">Discount</th>
+            <th style="box-shadow: 0px 0px 0px 1px black inset;">Product</th>
+            <th style="width: 10%;box-shadow: 0px 0px 0px 1px black inset;">Qty</th>
+            <th style="width: 10%;box-shadow: 0px 0px 0px 1px black inset;">P.P</th>
             <th style="width: 10%;box-shadow: 0px 0px 0px 1px black inset;">Amount</th>
         </tr>
         </thead>
@@ -103,15 +105,14 @@ echo "</div>";
         <?php
         $sl = 1;
         $rowFound = false;
-        $groundTotal = 0;
-        $row_closing = $row_closing_discount = $net_income_total = $total_due = 0;
+        $row_closing = $qty_total = 0;
         ?>
 
         <?php
         if ($data) {
             foreach ($data as $dmr) {
-                $row_closing_discount += $dmr->discount;
-                $row_closing += $dmr->grand_total;
+                $qty_total += $dmr->qty;
+                $row_closing += $dmr->row_total;
                 $rowFound = true;
                 ?>
                 <tr>
@@ -119,8 +120,10 @@ echo "</div>";
                     <td style="text-align: center;"><?php echo $dmr->date; ?></td>
                     <td style="text-align: center; text-decoration: underline; cursor: zoom-in;" title="click here to get the preview" class="invoiceDetails"><?php echo $dmr->id; ?></td>
                     <td style="text-align: left;"><?php echo sprintf("%s | %s", $dmr->company_name, $dmr->contact_no); ?></td>
-                    <td style="text-align: right;"><?php echo number_format($dmr->discount, 2); ?></td>
-                    <td style="text-align: right;"><?php echo number_format($dmr->grand_total, 2); ?></td>
+                    <td style="text-align: left;"><?php echo $dmr->product_name; ?></td>
+                    <td style="text-align: right;"><?php echo number_format($dmr->qty, 2) . " $dmr->label"; ?></td>
+                    <td style="text-align: right;"><?php echo number_format($dmr->unit_price, 2); ?></td>
+                    <td style="text-align: right;"><?php echo number_format($dmr->row_total, 2); ?></td>
                 </tr>
                 <?php
 
@@ -129,8 +132,9 @@ echo "</div>";
         ?>
 
         <tr>
-            <th style="text-align: right;" colspan="4">Ground Total</th>
-            <th style="text-align: right;"><?= number_format($row_closing_discount, 2) ?></th>
+            <th style="text-align: right;" colspan="5">Ground Total</th>
+            <th style="text-align: right;"><?= number_format($qty_total, 2) ?></th>
+            <th style="text-align: right;"></th>
             <th style="text-align: right;"><?= number_format($row_closing, 2) ?></th>
         </tr>
 

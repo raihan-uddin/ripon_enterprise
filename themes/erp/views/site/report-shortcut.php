@@ -8,6 +8,7 @@
             <div class="dropdown-menu" role="menu">
                 <a class="dropdown-item" href="<?= Yii::app()->createUrl("inventory/inventory/stockReport") ?>">Stock
                     Report</a>
+                <a class="dropdown-item disabled" href="<?= Yii::app()->createUrl("inventory/inventory/stockReport") ?>">Product Performance Report</a>
                 <a class="dropdown-item disabled" href="<?= Yii::app()->createUrl("inventory/inventory/stockReport") ?>">Slow
                     Moving Report</a>
             </div>
@@ -56,7 +57,7 @@
 
                 <a class="dropdown-item" href="<?= Yii::app()->createUrl("report/purchaseReport") ?>">Purchase
                     Report</a>
-                <a class="dropdown-item disabled" href="<?= Yii::app()->createUrl("report/purchaseDetailsReport") ?>">Purchase
+                <a class="dropdown-item" href="<?= Yii::app()->createUrl("report/purchaseDetailsReport") ?>">Purchase
                     Report (Product Wise)</a>
 
             </div>
