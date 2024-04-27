@@ -8,7 +8,7 @@ $this->widget('application.components.BreadCrumb', array(
 //    'delimiter' => ' &rarr; ',
 ));
 // print yii1 version
-echo Yii::getVersion();
+//echo Yii::getVersion();
 
 ?>
 
