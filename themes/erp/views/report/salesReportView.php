@@ -198,7 +198,7 @@ echo "</div>";
     $(function () {
         $(".exportToExcel").click(function (e) {
             var table = $('.table2excel');
-            console.log(table);
+
             if (table && table.length) {
                 var preserveColors = (table.hasClass('table2excel_with_colors') ? true : false);
                 $(table).table2excel({
@@ -218,7 +218,6 @@ echo "</div>";
     $('#table-1').off('click', '.invoiceDetails').on('click', '.invoiceDetails', function () {
 
         var invoiceId = $(this).text();
-        console.log(invoiceId);
         var $this = $(this);
         $this.html('<i class="fa fa-spinner fa-spin"></i>');
         $.ajax({

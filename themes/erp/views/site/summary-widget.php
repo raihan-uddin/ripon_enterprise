@@ -53,19 +53,40 @@
             return date.split('/').reverse().join('-');
         }).join(' - ');
 
+        // Show spinner or loading text in the modal body & button disabled
+        $('#profit-loss-summary-modal .modal-body').html('<div class="spinner-border" role="status"><span class="sr-only">Loading...</span></div>');
+        $('#profit-loss-summary-modal .modal-footer button').prop('disabled', true).html('<span class="spinner-border spinner-border-sm" role="status" aria-hidden="true"></span> Loading...');
+        $('#profit-loss-summary-btn').prop('disabled', true).html('<span class="spinner-border spinner-border-sm" role="status" aria-hidden="true"></span> Loading...');
+
         $.ajax({
             url: '<?= Yii::app()->createUrl("site/profitLossSummary") ?>',
             type: 'POST',
             data: {
                 dateRange: dateRange
             },
+
             success: function (response) {
-                $('#profit-loss-summary-modal').modal('show');
+                // Hide spinner or loading text
                 $('#profit-loss-summary-modal .modal-body').html(response);
-                // also change the modal title to the selected date range
-                // like Summary for 19/Apr/24 - 19/Apr/24
-                $('#profit-loss-summary-modal .modal-title').html(`Summary for  (${dateRange}) `);
-                }
+                // Enable the button
+                $('#profit-loss-summary-modal .modal-footer button').prop('disabled', false).html('Submit');
+                // Enable profit-loss-summary-btn
+                $('#profit-loss-summary-btn').prop('disabled', false).html('Submit');
+                // Show the modal
+                $('#profit-loss-summary-modal').modal('show');
+                // Change the modal title to the selected date range
+                $('#profit-loss-summary-modal .modal-title').html(`Summary for (${dateRange})`);
+            },
+            error: function (xhr, status, error) {
+                // Handle errors if needed
+                toastr.error('An error occurred. Please try again later.');
+                // Hide spinner or loading text
+                $('#profit-loss-summary-modal .modal-body').html(response);
+                // Enable the button
+                $('#profit-loss-summary-modal .modal-footer button').prop('disabled', false).html('Submit');
+                // Enable profit-loss-summary-btn
+                $('#profit-loss-summary-btn').prop('disabled', false).html('Submit');
+            }
         });
     });
 

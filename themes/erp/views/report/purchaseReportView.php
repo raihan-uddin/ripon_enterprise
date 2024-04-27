@@ -94,7 +94,7 @@ echo "</div>";
             <th style="width: 2%; box-shadow: 0px 0px 0px 1px black inset;">SL</th>
             <th style="width: 10%; box-shadow: 0px 0px 0px 1px black inset;">Date</th>
             <th style="width: 7%; box-shadow: 0px 0px 0px 1px black inset;">ID</th>
-            <th style="box-shadow: 0px 0px 0px 1px black inset;">Customer</th>
+            <th style="box-shadow: 0px 0px 0px 1px black inset;">Supplier</th>
             <th style="width: 10%;box-shadow: 0px 0px 0px 1px black inset;">Discount</th>
             <th style="width: 10%;box-shadow: 0px 0px 0px 1px black inset;">Amount</th>
         </tr>
@@ -131,7 +131,7 @@ echo "</div>";
         <tr>
             <th style="text-align: right;" colspan="4">Ground Total</th>
             <th style="text-align: right;"><?= number_format($row_closing_discount, 2) ?></th>
-            <th style="text-align: right;"><?= number_format($row_closing, 2) ?></th>=
+            <th style="text-align: right;"><?= number_format($row_closing, 2) ?></th>
         </tr>
 
         </tbody>
@@ -188,7 +188,7 @@ echo "</div>";
     $(function () {
         $(".exportToExcel").click(function (e) {
             var table = $('.table2excel');
-            console.log(table);
+
             if (table && table.length) {
                 var preserveColors = (table.hasClass('table2excel_with_colors') ? true : false);
                 $(table).table2excel({
@@ -208,7 +208,6 @@ echo "</div>";
     $('#table-1').off('click', '.invoiceDetails').on('click', '.invoiceDetails', function () {
 
         var invoiceId = $(this).text();
-        console.log(invoiceId);
         var $this = $(this);
         $this.html('<i class="fa fa-spinner fa-spin"></i>');
         $.ajax({

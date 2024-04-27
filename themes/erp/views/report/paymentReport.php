@@ -9,7 +9,6 @@ $this->widget('application.components.BreadCrumb', array(
     'crumbs' => array(
         array('name' => 'Report', 'url' => array('')),
         array('name' => 'Purchase', 'url' => array('')),
-
         array('name' => 'Payment Report',),
     ),
 //    'delimiter' => ' &rarr; ',
@@ -41,9 +40,6 @@ $form = $this->beginWidget('CActiveForm', array(
                     <?php echo $form->labelEx($model, 'date_from', ['class' => 'col-form-label']); ?>
                     <div class="input-group" id="date_from" data-target-input="nearest">
                         <?php echo $form->textField($model, 'date_from', array('class' => 'form-control datetimepicker-input', 'placeholder' => 'YYYY-MM-DD', 'value' => date('Y-m-d'))); ?>
-                        <div class="input-group-append">
-                            <div class="input-group-text"><i class="fa fa-calendar"></i></div>
-                        </div>
                     </div>
                     <span class="help-block"
                           style="color: red; width: 100%"> <?php echo $form->error($model, 'date_from'); ?></span>
@@ -55,16 +51,13 @@ $form = $this->beginWidget('CActiveForm', array(
                     <?php echo $form->labelEx($model, 'date_to', ['class' => 'col-form-label']); ?>
                     <div class="input-group" id="date_to" data-target-input="nearest">
                         <?php echo $form->textField($model, 'date_to', array('class' => 'form-control datetimepicker-input', 'placeholder' => 'YYYY-MM-DD', 'value' => date('Y-m-d'))); ?>
-                        <div class="input-group-append">
-                            <div class="input-group-text"><i class="fa fa-calendar"></i></div>
-                        </div>
                     </div>
                     <span class="help-block"
                           style="color: red; width: 100%"> <?php echo $form->error($model, 'date_to'); ?></span>
                 </div>
             </div>
 
-            <div class="col-sm-12 col-md-2">
+            <div class="col-sm-12 col-md-3">
                 <div class="form-group" style="">
                     <?php echo $form->labelEx($model, 'supplier_id', ['class' => 'col-form-label']); ?>
                     <div class="input-group" id="supplier_id" data-target-input="nearest">
@@ -98,7 +91,7 @@ $form = $this->beginWidget('CActiveForm', array(
                     </script>
                 </div>
             </div>
-            <div class="col-sm-12 col-md-2">
+            <div class="col-sm-12 col-md-3">
                 <div class="form-group" style="">
                     <?php echo $form->labelEx($model, 'created_by', ['class' => 'col-form-label']); ?>
                     <div class="input-group" id="created_by" data-target-input="nearest">

@@ -35,7 +35,7 @@ $form = $this->beginWidget('CActiveForm', array(
     <div class="card-body">
         <div class="row">
 
-            <div class="col-sm-12 col-md-2" style="display: none">
+            <div class="col-sm-12 col-md-4" style="display: none">
                 <div class="form-group" style="">
                     <?php echo $form->labelEx($model, 'date_from', ['class' => 'col-form-label']); ?>
                     <div class="input-group" id="date_from" data-target-input="nearest">
@@ -63,7 +63,7 @@ $form = $this->beginWidget('CActiveForm', array(
                 </div>
             </div>
 
-            <div class="col-sm-12 col-md-2">
+            <div class="col-sm-12 col-md-4">
                 <div class="form-group" style="">
                     <?php echo $form->labelEx($model, 'customer_id', ['class' => 'col-form-label']); ?>
                     <div class="input-group" id="customer_id" data-target-input="nearest">

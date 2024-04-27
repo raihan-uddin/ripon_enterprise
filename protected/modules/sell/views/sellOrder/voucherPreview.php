@@ -105,7 +105,7 @@
 
             $customer = Customers::model()->findByPk($data->customer_id);
             ?>
-            <div class='printAllTableForThisReport' style="width: 8.5in;">
+            <div class='printAllTableForThisReport table-responsive' style="width: 8.5in;">
                 <div class="page-begaining">
                     <div class="header" id="pageHeader" style="width: 100%; min-height: 80px;">
                         <?php
@@ -411,7 +411,6 @@
         </div>
     </div>
 </div>
-show profit loss summary on profitLossText div using javascript  must be show after loading the page
 <script>
     $(document).ready(function () {
         var profitLoss = <?= $row_total - $totalCosting ?>;

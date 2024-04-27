@@ -400,7 +400,7 @@ Yii::app()->clientScript->registerCoreScript("jquery.ui");
         } else {
             $("#list tbody").append(`
                     <tr class="item">
-                        <td class="text-center sl-no" style="vertical-align: middle;">${$('#list tbody tr').length+1}</td>
+                        <td class="text-center sl-no" style="vertical-align: middle;">${$('#list tbody tr').length + 1}</td>
                         <td class="text-left" style="vertical-align: middle;">
                             ${head_text}
                             <input type="hidden" name="ExpenseDetails[temp_expense_head_id][]"
