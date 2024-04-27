@@ -8,9 +8,7 @@ $this->widget('application.extensions.mbmenu.MbMenu', array(
                 array('label' => 'USER',
                     'items' => array(
                         ['label' => Yii::t('app', 'MANAGE USERS'), 'url' => ['/users/admin'], 'visible' => Yii::app()->user->checkAccess('Users.Admin')],
-                        ['label' => Yii::t('app', 'BUSINESS'), 'url' => ['/business'], 'visible' => Yii::app()->user->id = 1],
-                        ['label' => Yii::t('app', 'BRANCH'), 'url' => ['/branch'], 'visible' => Yii::app()->user->id = 1],
-                        ['label' => Yii::t('app', 'MANAGE PERMISSION'), 'url' => ['/rights'], 'visible' => Yii::app()->user->id = 1],
+                        ['label' => Yii::t('app', 'MANAGE PERMISSION'), 'url' => ['/rights'], 'visible' => Yii::app()->user->checkAccess('rights')],
                     ),
                 ),
                 array('label' => 'EXPENSE',
@@ -138,7 +136,7 @@ $this->widget('application.extensions.mbmenu.MbMenu', array(
                 ),
             ),
         ),
-        array('label' => sprintf('LOGOUT(%s)', Yii::app()->user->name), 'url' => array('/site/logout')),
+        array('label' => 'LOGOUT (' . strtoupper(Yii::app()->user->name) . ')', 'url' => array('/site/logout')),
     ),
 ));
 ?>

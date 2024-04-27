@@ -254,7 +254,8 @@ class SellOrderController extends Controller
                             }
                         }
                     }
-                    $delete_inv_arr[] = $inventory->id;
+                    if ($inventory)
+                        $delete_inv_arr[] = $inventory->id;
                 }
                 if (count($delete_inv_arr) > 0) {
                     $criteriaDel = new CDbCriteria;

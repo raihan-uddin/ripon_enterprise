@@ -43,7 +43,7 @@ class Users extends CActiveRecord
             array('username', 'match', 'pattern' => '/^[A-Za-z0-9_]+$/u', 'message' => "Incorrect symbols (A-z0-9)."),
 //            array('username', 'match' ,'pattern'=>'/^[A-Za-z_]+$/u', 'message'=>'Username can contain only alphanumeric characters and hyphens(-).'),
             array('status', 'in', 'range' => array(self::STATUS_NOACTIVE, self::STATUS_ACTIVE, self::STATUS_BANNED)),
-            array('id, employee_id, business_id, branch_id', 'numerical', 'integerOnly' => true),
+            array('id, employee_id', 'numerical', 'integerOnly' => true),
             array('username, password, password2, old_password, new_password, repeat_password, ', 'length', 'max' => 250, 'min' => 4),
 //            array('password', 'compare', 'compareAttribute' => 'password2'),
             array('password', 'compare', 'compareAttribute' => 'password2', 'on' => 'create'),
@@ -161,26 +161,6 @@ class Users extends CActiveRecord
             $i++;
         }
         return $markup;
-    }
-
-    public function fullEmpInfoOfThis($id)
-    {
-        $data = self::model()->findByPk($id);
-        if ($data) {
-            $empInfo = Employees::model()->findByPk($data->employee_id);
-            if ($empInfo)
-                return $empInfo;
-        }
-    }
-
-    public function fullNameOfThis($id)
-    {
-        $data = self::model()->findByPk($id);
-        if ($data) {
-            $empInfo = Employees::model()->findByPk($data->employee_id);
-            if ($empInfo)
-                return $empInfo->full_name;
-        }
     }
 
     public function userNameOfThis($id)

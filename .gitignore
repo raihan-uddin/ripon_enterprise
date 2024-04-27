@@ -22,3 +22,11 @@ uploads/*
 ## Directory-based project format:
 .idea/
 .zip
+/tmebd_inventory1.rar
+/tmebd_inventory.rar
+
+## add all zip, rar etc tar files into gitignore
+*.zip
+*.rar
+*.tar
+

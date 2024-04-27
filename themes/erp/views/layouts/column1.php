@@ -20,7 +20,7 @@
                 <b>Version</b> <?php echo Yii::app()->params->version; ?>
             </div>
             <strong>Copyright © <?php echo Yii::app()->params->copyrightBy; ?> <a
-                        href="tel:01680527922"><?php echo Yii::app()->params->developedBy; ?></a>.</strong> All rights
+                        href="#"><?php echo Yii::app()->params->developedBy; ?></a>.</strong> All rights
             reserved.
         </div>
         <!-- /.container -->
