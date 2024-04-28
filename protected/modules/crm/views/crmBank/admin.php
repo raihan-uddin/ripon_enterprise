@@ -65,24 +65,24 @@ endforeach;
             'htmlOptions' => array('class' => 'table-responsive grid-view'),
             'itemsCssClass' => 'table table-sm table-hover table-striped table-condensed table-bordered dataTable dtr-inline',
 //            'loadingCssClass' => 'fa fa-spinner fa-spin fa-2x',
-            'pager' => array(            //  pager like twitter bootstrap
-                'htmlOptions' => array('class' => 'pagination  justify-content-end'),
-                'header' => '',
-                'cssFile' => false,
-                'maxButtonCount' => 10,
-                'selectedPageCssClass' => 'page-item active', //default "selected"
-                'nextPageCssClass' => 'page-item',//default "next"
-                'hiddenPageCssClass' => 'page-item disabled',//default "hidden"
-                'firstPageCssClass' => 'page-item previous', //default "first"\
-                'lastPageCssClass' => 'page-item last', //default "last"
-                'internalPageCssClass' => 'page-item',//default "page"
-                'previousPageCssClass' => 'page-item',//default "previours"\
-                'firstPageLabel' => '<<',
-                'lastPageLabel' => '>>',
-                'prevPageLabel' => '<',
-                'nextPageLabel' => '>',
-//                'footer'=>'End',//defalut empty
-            ),
+//            'pager' => array(            //  pager like twitter bootstrap
+//                'htmlOptions' => array('class' => 'pagination  justify-content-end'),
+//                'header' => '',
+//                'cssFile' => false,
+//                'maxButtonCount' => 10,
+//                'selectedPageCssClass' => 'page-item active', //default "selected"
+//                'nextPageCssClass' => 'page-item',//default "next"
+//                'hiddenPageCssClass' => 'page-item disabled',//default "hidden"
+//                'firstPageCssClass' => 'page-item previous', //default "first"\
+//                'lastPageCssClass' => 'page-item last', //default "last"
+//                'internalPageCssClass' => 'page-item',//default "page"
+//                'previousPageCssClass' => 'page-item',//default "previours"\
+//                'firstPageLabel' => '<<',
+//                'lastPageLabel' => '>>',
+//                'prevPageLabel' => '<',
+//                'nextPageLabel' => '>',
+////                'footer'=>'End',//defalut empty
+//            ),
             'template' => "{pager}\n\n{summary}{items}{summary}\n{pager}",
             'summaryText' => "<div class='dataTables_info' role='status' aria-live='polite'><p>Displaying {start}-{end} of {page} result(s)</p></div>",
             'emptyText' => "<div class='alert alert-warning text-center' role='alert'><i class='icon fa fa-exclamation-triangle'></i>No results found.</div>",

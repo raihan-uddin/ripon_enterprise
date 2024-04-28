@@ -63,7 +63,7 @@ endforeach;
         'htmlOptions' => array('class' => 'table-responsive grid-view'),
         'itemsCssClass' => 'table table-sm table-hover table-striped table-condensed table-bordered dataTable dtr-inline',
 //            'loadingCssClass' => 'fa fa-spinner fa-spin fa-2x',
-        'pager' => array('htmlOptions' => array('class' => 'pagination pagination-sm justify-content-end')), // set whatever css class you want
+//        'pager' => array('htmlOptions' => array('class' => 'pagination pagination-sm justify-content-end')), // set whatever css class you want
 //        'template' => "{pager}{summary}{items}{summary}{pager}",
         'columns' => array(
             array(
