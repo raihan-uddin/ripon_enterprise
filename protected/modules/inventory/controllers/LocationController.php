@@ -1,6 +1,6 @@
 <?php
 
-class LocationController extends Controller
+class LocationController extends RController
 {
     /**
      * @var string the default layout for the views. Defaults to '//layouts/column2', meaning

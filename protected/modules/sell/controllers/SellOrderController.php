@@ -228,7 +228,7 @@ class SellOrderController extends RController
                         if (!$purchasePrice > 0) {
                             $purchasePrice = ProdModels::model()->findByPk($model_id)->purchase_price;
                         }
-                        $model2 = SellOrderDetails::model()->findByAttributes(['model_id' => $model_id, 'sell_order_id' => $model->id, 'product_sl_no' => $product_sl_no]);
+                        $model2 = SellOrderDetails::model()->findByAttributes(['model_id' => $model_id, 'sell_order_id' => $model->id, 'product_sl_no' => $product_sl_no, 'is_deleted' => 0]);
                         if (!$model2)
                             $model2 = new SellOrderDetails();
                         $model2->sell_order_id = $model->id;
@@ -257,19 +257,19 @@ class SellOrderController extends RController
                     if (count($details_id_arr) > 0) {
                         $criteriaDel = new CDbCriteria;
                         $criteriaDel->addNotInCondition('id', $details_id_arr);
-                        $criteriaDel->addColumnCondition(['sell_order_id' => $id]);
+                        $criteriaDel->addColumnCondition(['sell_order_id' => $id, 'is_deleted' => 0]);
                         SellOrderDetails::model()->deleteAll($criteriaDel);
                     }
 
                     $delete_inv_arr = [];
                     $criteria2 = new CDbCriteria();
-                    $criteria2->addColumnCondition(['sell_order_id' => $id]);
+                    $criteria2->addColumnCondition(['sell_order_id' => $id, 'is_deleted' => 0]);
                     $sellOrderDetails = SellOrderDetails::model()->findAll($criteria2);
 
                     $inv_sl = Inventory::maxSlNo();
                     foreach ($sellOrderDetails as $detail) {
                         $product = ProdModels::model()->findByPk($detail->model_id);
-                        $inventory = Inventory::model()->findByAttributes(['model_id' => $detail->model_id, 'stock_status' => Inventory::SALES_DELIVERY, 'source_id' => $detail->id, 'product_sl_no' => $detail->product_sl_no]);
+                        $inventory = Inventory::model()->findByAttributes(['model_id' => $detail->model_id, 'stock_status' => Inventory::SALES_DELIVERY, 'source_id' => $detail->id, 'product_sl_no' => $detail->product_sl_no, 'is_deleted' => 0]);
                         if (!$inventory) {
                             $inventory = new Inventory();
                         }
@@ -299,7 +299,7 @@ class SellOrderController extends RController
                     if (count($delete_inv_arr) > 0) {
                         $criteriaDel = new CDbCriteria;
                         $criteriaDel->addNotInCondition('id', $delete_inv_arr);
-                        $criteriaDel->addColumnCondition(['master_id' => $id, 'stock_status' => Inventory::SALES_DELIVERY]);
+                        $criteriaDel->addColumnCondition(['master_id' => $id, 'stock_status' => Inventory::SALES_DELIVERY, 'is_deleted' => 0]);
                         Inventory::model()->deleteAll($criteriaDel);
                     }
 
@@ -454,73 +454,5 @@ class SellOrderController extends RController
 
     }
 
-
-    public function actionSoDetails()
-    {
-        $so_no = trim($_POST['so_no']);
-        $status = 404;
-        $order_item_status = 405;
-        $message = 'Order not found!';
-        $data = NULL;
-        $order_items = [];
-        $order_info = [];
-        if (strlen($so_no) > 0) {
-            $criteria = new CDbCriteria();
-            $criteria->select = "t.*, c.company_name, c.customer_code";
-            $criteria->join = " INNER JOIN customers c on t.customer_id = c.id ";
-            $criteria->addColumnCondition(['so_no' => $so_no]);
-            $data = SellOrder::model()->findByAttributes([], $criteria);
-            if ($data) {
-                $order_info = [
-                    'order_id' => $data->id,
-                    'customer_id' => $data->customer_id,
-                    'customer_name' => $data->company_name,
-                    'customer_code' => $data->customer_code,
-                    'so_no' => $data->so_no,
-                    'date' => $data->date,
-                ];
-                $status = 200;
-                $message = 'Order found!';
-                $criteria2 = new CDbCriteria();
-                $criteria2->select = "t.*, pm.model_name, pm.unit_id, pm.code ";
-                $criteria2->join = " INNER JOIN prod_models pm on t.model_id = pm.id ";
-                $criteria2->addColumnCondition(['sell_order_id' => $data->id]);
-                $orderDetails = SellOrderDetails::model()->findAll($criteria2);
-                if ($orderDetails) {
-                    foreach ($orderDetails as $od) {
-                        $order_qty = $od->qty;
-                        $total_invoice_qty = InvoiceDetails::model()->totalInvoiceQtyOfThisModelByOrder($od->model_id, $data->id);
-                        $rem_qty = $order_qty - $total_invoice_qty;
-                        if ($rem_qty > 0) {
-                            $order_item_status = 200;
-                            $order_items[] = [
-                                'model_name' => $od->model_name,
-                                'code' => $od->code,
-                                'model_id' => $od->model_id,
-                                'rem_qty' => $rem_qty,
-                                'qty' => $od->qty,
-                                'unit_price' => $od->amount,
-                                'color' => $od->color,
-                                'note' => $od->note,
-                            ];
-                        }
-                    }
-                } else {
-                    $message = 'Order items not found!';
-                }
-            }
-        } else {
-            $message = 'Please insert order No!';
-
-        }
-        echo CJSON::encode(array(
-            'status' => $status,
-            'order' => $data,
-            'order_info' => $order_info,
-            'order_item_status' => $order_item_status,
-            'order_items' => $order_items,
-            'message' => $message,
-        ));
-    }
 
 }

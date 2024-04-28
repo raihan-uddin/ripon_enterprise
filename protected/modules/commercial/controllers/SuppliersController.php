@@ -1,6 +1,6 @@
 <?php
 
-class SuppliersController extends Controller
+class SuppliersController extends RController
 {
 
     /**

@@ -37,43 +37,24 @@
 
 
 <?php
-$yourCompanyInfo = YourCompany::model()->findByAttributes(array('is_active' => YourCompany::ACTIVE,));
-if ($yourCompanyInfo) {
-    $yourCompanyName = $yourCompanyInfo->company_name;
-    $yourCompanyLocation = $yourCompanyInfo->location;
-    $yourCompanyRoad = $yourCompanyInfo->road;
-    $yourCompanyHouse = $yourCompanyInfo->house;
-    $yourCompanyContact = $yourCompanyInfo->contact;
-    $yourCompanyEmail = $yourCompanyInfo->email;
-    $yourCompanyWeb = $yourCompanyInfo->web;
-} else {
-    $yourCompanyName = 'N/A';
-    $yourCompanyLocation = 'N/A';
-    $yourCompanyRoad = 'N/A';
-    $yourCompanyHouse = 'N/A';
-    $yourCompanyContact = 'N/A';
-    $yourCompanyEmail = 'N/A';
-    $yourCompanyWeb = 'N/A';
-}
-
-echo "<div class='printBtn' style='width: unset;'>";
-$this->widget('ext.mPrint.mPrint', array(
-    'title' => ' ', //the title of the document. Defaults to the HTML title
-    'tooltip' => 'Print', //tooltip message of the print icon. Defaults to 'print'
-    'text' => '', //text which will appear beside the print icon. Defaults to NULL
-    'element' => '.printAllTableForThisReport', //the element to be printed.
-    'exceptions' => array(//the element/s which will be ignored
-
-    ),
-    'publishCss' => TRUE, //publish the CSS for the whole page?
-    'visible' => !Yii::app()->user->isGuest, //should this be visible to the current user?
-    'alt' => 'print', //text which will appear if image can't be loaded
-    'debug' => FALSE, //enable the debugger to see what you will get
-    'id' => 'print-div2'         //id of the print link
-));
-echo "</div>";
+//echo "<div class='printBtn' style='width: unset;'>";
+//$this->widget('ext.mPrint.mPrint', array(
+//    'title' => ' ', //the title of the document. Defaults to the HTML title
+//    'tooltip' => 'Print', //tooltip message of the print icon. Defaults to 'print'
+//    'text' => '', //text which will appear beside the print icon. Defaults to NULL
+//    'element' => '.printAllTableForThisReport', //the element to be printed.
+//    'exceptions' => array(//the element/s which will be ignored
+//
+//    ),
+//    'publishCss' => TRUE, //publish the CSS for the whole page?
+//    'visible' => !Yii::app()->user->isGuest, //should this be visible to the current user?
+//    'alt' => 'print', //text which will appear if image can't be loaded
+//    'debug' => FALSE, //enable the debugger to see what you will get
+//    'id' => 'print-div2'         //id of the print link
+//));
+//echo "</div>";
 ?>
-<div class='printAllTableForThisReport'>
+<div class='printAllTableForThisReport table-responsive'>
     <table class="summaryTab final-result" id="table-1">
         <thead>
         <tr>

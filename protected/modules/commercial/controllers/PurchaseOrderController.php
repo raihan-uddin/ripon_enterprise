@@ -1,6 +1,6 @@
 <?php
 
-class PurchaseOrderController extends Controller
+class PurchaseOrderController extends RController
 {
     /**
      * @var string the default layout for the views. Defaults to '//layouts/column2', meaning

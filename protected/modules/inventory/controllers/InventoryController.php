@@ -319,8 +319,8 @@ class InventoryController extends RController
             $criteria = new CDbCriteria;
             $criteria->select = "
             t.model_name, t.code, inv.model_id, t.sell_price, t.purchase_price as cpp,
-            IFNULL((SELECT (SUM(op.stock_in) - SUM(op.stock_out)) FROM inventory op where op.date < '$dateFrom' AND op.model_id = t.id), 0) as opening_stock,
-            IFNULL((SELECT (SUM(op.stock_in*op.purchase_price) - SUM(op.stock_out*op.purchase_price)) FROM inventory op where op.date < '$dateFrom' AND op.model_id = t.id), 0) as opening_stock_value,
+            IFNULL((SELECT (SUM(op.stock_in) - SUM(op.stock_out)) FROM inventory op where op.date < '$dateFrom' AND op.model_id = t.id AND op.is_deleted = 0), 0) as opening_stock,
+            IFNULL((SELECT (SUM(op.stock_in*op.purchase_price) - SUM(op.stock_out*op.purchase_price)) FROM inventory op where op.date < '$dateFrom' AND op.model_id = t.id  AND op.is_deleted = 0), 0) as opening_stock_value,
             SUM(CASE WHEN (inv.date BETWEEN '$dateFrom' AND '$dateTo') THEN inv.stock_in ELSE 0 END) as stock_in, 
             SUM(CASE WHEN (inv.date BETWEEN '$dateFrom' AND '$dateTo') THEN inv.stock_out ELSE 0 END) as stock_out,
             SUM(CASE WHEN (inv.date BETWEEN '$dateFrom' AND '$dateTo') THEN (inv.stock_in * inv.purchase_price) ELSE 0 END) as stock_in_value, 
@@ -343,6 +343,8 @@ class InventoryController extends RController
                 $criteria->addColumnCondition(['t.brand_id' => $brand_id]);
             }
 
+            $criteria->addColumnCondition(['inv.is_deleted' => 0]);
+
             $criteria->join = " LEFT JOIN inventory inv  on inv.model_id = t.id ";
             $criteria->group = " t.id ";
             $criteria->order = 't.model_name ASC';
@@ -362,6 +364,9 @@ class InventoryController extends RController
     public function actionCurrentStockReportBatchWiseView()
     {
         date_default_timezone_set('Asia/Dhaka');
+        if (Yii::app()->request->isAjaxRequest) {
+            Yii::app()->clientScript->scriptMap['jquery.js'] = false;
+        }
 
         $data = '';
         $condition = '';
@@ -382,6 +387,10 @@ class InventoryController extends RController
     public function actionCurrentStockOutReportBatchWiseView()
     {
         date_default_timezone_set('Asia/Dhaka');
+
+        if (Yii::app()->request->isAjaxRequest) {
+            Yii::app()->clientScript->scriptMap['jquery.js'] = false;
+        }
 
         $data = '';
         $condition = '';
@@ -407,6 +416,10 @@ class InventoryController extends RController
     public function actionCurrentStockInReportBatchWiseView()
     {
         date_default_timezone_set('Asia/Dhaka');
+
+        if (Yii::app()->request->isAjaxRequest) {
+            Yii::app()->clientScript->scriptMap['jquery.js'] = false;
+        }
 
         $data = '';
         $condition = '';

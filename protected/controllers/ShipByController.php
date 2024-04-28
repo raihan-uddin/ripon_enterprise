@@ -1,6 +1,6 @@
 <?php
 
-class ShipByController extends Controller
+class ShipByController extends RController
 {
 
     /**

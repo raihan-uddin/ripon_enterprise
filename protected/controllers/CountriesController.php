@@ -1,6 +1,6 @@
 <?php
 
-class CountriesController extends Controller
+class CountriesController extends RController
 {
 
     /**

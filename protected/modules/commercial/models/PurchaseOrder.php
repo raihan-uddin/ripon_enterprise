@@ -167,6 +167,8 @@ class PurchaseOrder extends CActiveRecord
         $criteria->select = "t.*";
         $criteria->join = " ";
 
+        $criteria->addColumnCondition(['is_deleted' => 0]);
+
         if (!Yii::app()->user->checkAccess('Admin')) {
             $criteria->addColumnCondition(['t.created_by' => Yii::app()->user->id]);
         }
@@ -216,61 +218,6 @@ class PurchaseOrder extends CActiveRecord
             ),
         ));
     }
-
-
-    public function searchPendingReceive()
-    {
-
-        $criteria = new CDbCriteria;
-        $criteria->select = "t.*";
-        $criteria->join = " ";
-
-        $criteria->addColumnCondition(['is_all_received' => PurchaseOrder::NOT_RECEIVED]);
-        if (($this->supplier_id) != "") {
-            $criteria->join .= " INNER JOIN suppliers s on t.supplier_id = s.id ";
-            $criteria->compare('s.company_name', ($this->supplier_id), true);
-        }
-        if (($this->created_by) != "") {
-            $criteria->join .= " INNER JOIN users u on t.created_by = u.id ";
-            $criteria->compare('u.username', ($this->created_by), true);
-        }
-
-        $criteria->compare('id', $this->id);
-        $criteria->compare('ship_by', $this->ship_by);
-        $criteria->compare('location_id', $this->location_id);
-        $criteria->compare('store_id', $this->store_id);
-        $criteria->compare('order_type', $this->order_type);
-        $criteria->compare('date', $this->date, true);
-        $criteria->compare('max_sl_no', $this->max_sl_no);
-        $criteria->compare('po_no', $this->po_no, true);
-        $criteria->compare('manual_po_no', $this->manual_po_no, true);
-        $criteria->compare('total_amount', $this->total_amount);
-        $criteria->compare('vat_amount', $this->vat_amount);
-        $criteria->compare('discount_percentage', $this->discount_percentage);
-        $criteria->compare('discount', $this->discount);
-        $criteria->compare('grand_total', $this->grand_total);
-        $criteria->compare('vat_percentage', $this->vat_percentage);
-        $criteria->compare('is_paid', $this->is_paid);
-        $criteria->compare('is_all_received', $this->is_all_received);
-        $criteria->compare('cash_due', $this->cash_due);
-        $criteria->compare('created_at', $this->created_at, true);
-        $criteria->compare('updated_by', $this->updated_by);
-        $criteria->compare('updated_at', $this->updated_at, true);
-        $criteria->compare('bill_to', $this->bill_to, true);
-        $criteria->compare('ship_to', $this->ship_to, true);
-        $criteria->compare('exp_receive_date', $this->exp_receive_date, true);
-
-        return new CActiveDataProvider($this, array(
-            'criteria' => $criteria,
-            'pagination' => array(
-                'pageSize' => 50,
-            ),
-            'sort' => array(
-                'defaultOrder' => 'id DESC',
-            ),
-        ));
-    }
-
 
     public function beforeSave()
     {

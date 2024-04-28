@@ -1,6 +1,6 @@
 <?php
 
-class ProdBrandsController extends Controller
+class ProdBrandsController extends RController
 {
 
     /**

@@ -69,25 +69,25 @@ if ($yourCompanyInfo) {
     $yourCompanyEmail = 'N/A';
     $yourCompanyWeb = 'N/A';
 }
-
-echo "<div class='printBtn' style='width: unset;'>";
-$this->widget('ext.mPrint.mPrint', array(
-    'title' => ' ', //the title of the document. Defaults to the HTML title
-    'tooltip' => 'Print', //tooltip message of the print icon. Defaults to 'print'
-    'text' => '', //text which will appear beside the print icon. Defaults to NULL
-    'element' => '.printAllTableForThisReport', //the element to be printed.
-    'exceptions' => array(//the element/s which will be ignored
-
-    ),
-    'publishCss' => TRUE, //publish the CSS for the whole page?
-    'visible' => !Yii::app()->user->isGuest, //should this be visible to the current user?
-    'alt' => 'print', //text which will appear if image can't be loaded
-    'debug' => FALSE, //enable the debugger to see what you will get
-    'id' => 'print-div2'         //id of the print link
-));
-echo "</div>";
+//
+//echo "<div class='printBtn' style='width: unset;'>";
+//$this->widget('ext.mPrint.mPrint', array(
+//    'title' => ' ', //the title of the document. Defaults to the HTML title
+//    'tooltip' => 'Print', //tooltip message of the print icon. Defaults to 'print'
+//    'text' => '', //text which will appear beside the print icon. Defaults to NULL
+//    'element' => '.printAllTableForThisReport', //the element to be printed.
+//    'exceptions' => array(//the element/s which will be ignored
+//
+//    ),
+//    'publishCss' => TRUE, //publish the CSS for the whole page?
+//    'visible' => !Yii::app()->user->isGuest, //should this be visible to the current user?
+//    'alt' => 'print', //text which will appear if image can't be loaded
+//    'debug' => FALSE, //enable the debugger to see what you will get
+//    'id' => 'print-div2'         //id of the print link
+//));
+//echo "</div>";
 ?>
-<div class='printAllTableForThisReport'>
+<div class='printAllTableForThisReport table-responsive'>
     <table class="summaryTab final-result" id="table-1">
         <thead>
         <tr>
@@ -121,7 +121,7 @@ echo "</div>";
         $total = 0;
         if ($model_id) {
             $criteria = new CDbCriteria();
-            $criteria->addColumnCondition(['model_id' => $model_id]);
+            $criteria->addColumnCondition(['model_id' => $model_id, 'is_deleted' => 0]);
             $criteria->addBetweenCondition('date', date('Y-m-d', $start_date), date('Y-m-d', $end_date));
             $criteria->addCondition('stock_out != 0');
 

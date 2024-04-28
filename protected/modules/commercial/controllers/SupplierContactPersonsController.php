@@ -1,6 +1,6 @@
 <?php
 
-class SupplierContactPersonsController extends Controller
+class SupplierContactPersonsController extends RController
 {
 
     /**

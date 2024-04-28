@@ -58,24 +58,6 @@
 
 <?php
 date_default_timezone_set("Asia/Dhaka");
-$yourCompanyInfo = YourCompany::model()->findByAttributes(array('is_active' => YourCompany::ACTIVE,));
-if ($yourCompanyInfo) {
-    $yourCompanyName = $yourCompanyInfo->company_name;
-    $yourCompanyLocation = $yourCompanyInfo->location;
-    $yourCompanyRoad = $yourCompanyInfo->road;
-    $yourCompanyHouse = $yourCompanyInfo->house;
-    $yourCompanyContact = $yourCompanyInfo->contact;
-    $yourCompanyEmail = $yourCompanyInfo->email;
-    $yourCompanyWeb = $yourCompanyInfo->web;
-} else {
-    $yourCompanyName = 'N/A';
-    $yourCompanyLocation = 'N/A';
-    $yourCompanyRoad = 'N/A';
-    $yourCompanyHouse = 'N/A';
-    $yourCompanyContact = 'N/A';
-    $yourCompanyEmail = 'N/A';
-    $yourCompanyWeb = 'N/A';
-}
 
 echo "<div class='printBtn' style='width: unset;'>";
 echo "  <img class='exportToExcel' id='exportToExcel'  src='" . Yii::app()->theme->baseUrl . "/images/excel.png' title='EXPORT TO EXCEL'>";
@@ -121,9 +103,9 @@ echo "</div>";
         </tr>
         <tr class="titlesTr sticky negative zero positive">
             <th style="width: 2%; box-shadow: 0px 0px 0px 1px black inset;">SL</th>
-<!--            <th style="width: 3%; box-shadow: 0px 0px 0px 1px black inset;">ID</th>-->
+            <!--            <th style="width: 3%; box-shadow: 0px 0px 0px 1px black inset;">ID</th>-->
             <th style="box-shadow: 0px 0px 0px 1px black inset;">Product Name</th>
-<!--            <th style="box-shadow: 0px 0px 0px 1px black inset;">Code</th>-->
+            <!--            <th style="box-shadow: 0px 0px 0px 1px black inset;">Code</th>-->
             <th style="box-shadow: 0px 0px 0px 1px black inset; width: 10%; min-width: 30px;">Opening</th>
             <th style="box-shadow: 0px 0px 0px 1px black inset;  width: 10%; min-width: 60px;">Stock In</th>
             <th style="box-shadow: 0px 0px 0px 1px black inset;  width: 10%; min-width: 60px;">Stock Out</th>
@@ -171,21 +153,24 @@ echo "</div>";
                 $zeroStockClass = $closing == 0 ? '  zero ' : ' ';
                 $positiveStockClass = $closing > 0 ? ' positive ' : ' ';
                 ?>
-                <tr class="<?= $positiveStockClass . $zeroStockClass .  $negativeStockClass?>">
+                <tr class="<?= $positiveStockClass . $zeroStockClass . $negativeStockClass ?>">
                     <td style="text-align: center;"><?php echo $sl++; ?></td>
                     <td style="text-align: left;">
                         <a href="#"
-                           onclick="currentStockPreview(<?= $dmr->model_id > 0 ? $dmr->model_id : 0 ?>);">
+                           onclick="currentStockPreview(this, <?= $dmr->model_id > 0 ? $dmr->model_id : 0 ?>);">
                             <?php echo $dmr->model_name; ?>
                         </a>
                     </td>
-                    <td style="text-align: center;" title="Stock Value: <?= number_format($opening_stock_value, 2) ?>"><?php echo $dmr->opening_stock; ?></td>
-                    <td style="text-align: center;"  title="Stock Value: <?= number_format($stock_in_value, 2) ?>"><a href="#" onclick="currentStockInPreview(
+                    <td style="text-align: center;"
+                        title="Stock Value: <?= number_format($opening_stock_value, 2) ?>"><?php echo $dmr->opening_stock; ?></td>
+                    <td style="text-align: center;" title="Stock Value: <?= number_format($stock_in_value, 2) ?>"><a
+                                href="#" onclick="currentStockInPreview( this,
                         <?= $dmr->model_id > 0 ? $dmr->model_id : 0 ?>,
                         <?= strtotime($startDate) ?>,
                         <?= strtotime($endDate) ?> )"
                         ><?php echo $dmr->stock_in; ?></a></td>
-                    <td style="text-align: center;"  title="Stock Value: <?= number_format($stock_out_value, 2) ?>"><a href="#" onclick="currentStockOutPreview(
+                    <td style="text-align: center;" title="Stock Value: <?= number_format($stock_out_value, 2) ?>"><a
+                                href="#" onclick="currentStockOutPreview(this,
                         <?= $dmr->model_id > 0 ? $dmr->model_id : 0 ?>,
                         <?= strtotime($startDate) ?>,
                         <?= strtotime($endDate) ?> )"
@@ -221,22 +206,30 @@ echo "</div>";
         ?>
         </tbody>
     </table>
-
-    <table class="headerTab table table-bordered " style="float: left; width: 100%;">
-        <tr>
-            <td style="padding-top: 40px; text-align: left;"></td>
-            <td style="padding-top: 40px; text-align: right;"></td>
-            <td style="padding-top: 40px; text-align: center;"></td>
-            <td style="padding-top: 40px; text-align: center;"></td>
-        </tr>
-        <tr>
-            <th style="text-decoration: overline; text-align: left;">Prepared By</th>
-            <th style="text-decoration: overline;text-align: center;">Checked By</th>
-            <th style="text-decoration: overline;text-align: center;">Head of Department</th>
-            <th style="text-decoration: overline; text-align: right;">Approved By</th>
-        </tr>
-    </table>
 </div>
+
+
+<!--        modal-->
+<div class="modal fade" id="information-modal" tabindex="-1" data-backdrop="static" role="dialog"
+     aria-labelledby="information-modal" aria-hidden="true">
+    <div class="modal-dialog modal-dialog-centered modal-xl" role="document">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title" id="exampleModalLabel">Preview</h5>
+                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                    <span aria-hidden="true">&times;</span>
+                </button>
+            </div>
+            <div class="modal-body text-center">
+                <p>Loading...</p> <!-- this will be replaced by the response from the server -->
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
+            </div>
+        </div>
+    </div>
+</div>
+
 
 <style>
     .summaryTab tr td, .summaryTab tr {
@@ -271,49 +264,79 @@ echo "</div>";
     });
 
 
-    function currentStockPreview(product_id, start_date, end_date) {
-        var URL = '<?php echo Yii::app()->createUrl('inventory/inventory/currentStockReportBatchWiseView'); ?>?product_id=' + product_id
-        var day = new Date();
-        var id = day.getTime();
-        var w = 900;
-        var h = 600;
-        var scrl = 1;
-        var winl = (screen.width - w) / 2;
-        var wint = (screen.height - h) / 2;
-        winprops = 'height=' + h + ',width=' + w + ',top=' + wint + ',left=' + winl + ',scrollbars=' + scrl + ',toolbar=0,location=0,statusbar=0,menubar=0,resizable=0';
-        eval("page" + id + " = window.open(URL, '" + id + "', winprops);");
+    function currentStockPreview(element, product_id, start_date, end_date) {
+        var invoiceId = element.innerHTML;
+        element.innerHTML = '<i class="fa fa-spinner fa-spin"></i>';
+        $.ajax({
+            url: '<?= Yii::app()->createUrl("inventory/inventory/currentStockReportBatchWiseView") ?>',
+            type: 'GET',
+            data: {
+                product_id: product_id
+            },
+            success: function (response) {
+                $('#information-modal').modal('show');
+                $('#information-modal .modal-body').html(response);
+                element.innerHTML = invoiceId;
+            },
+            error: function () {
+                element.innerHTML = invoiceId;
+                toastr.error('Something went wrong');
+            }
+        });
     }
 
-    function currentStockOutPreview(product_id, start_date, end_date) {
-        var URL = '<?php echo Yii::app()->createUrl('inventory/inventory/currentStockOutReportBatchWiseView'); ?>?product_id=' + product_id + '&start_date=' + start_date + '&end_date=' + end_date;
-        var day = new Date();
-        var id = day.getTime();
-        var w = 900;
-        var h = 600;
-        var scrl = 1;
-        var winl = (screen.width - w) / 2;
-        var wint = (screen.height - h) / 2;
-        winprops = 'height=' + h + ',width=' + w + ',top=' + wint + ',left=' + winl + ',scrollbars=' + scrl + ',toolbar=0,location=0,statusbar=0,menubar=0,resizable=0';
-        eval("page" + id + " = window.open(URL, '" + id + "', winprops);");
+    function currentStockOutPreview(element, product_id, start_date, end_date) {
+        var invoiceId = element.innerHTML;
+        element.innerHTML = '<i class="fa fa-spinner fa-spin"></i>';
+        $.ajax({
+            url: '<?= Yii::app()->createUrl("inventory/inventory/currentStockOutReportBatchWiseView") ?>',
+            type: 'GET',
+            data: {
+                product_id: product_id,
+                start_date: start_date,
+                end_date: end_date
+            },
+            success: function (response) {
+                $('#information-modal').modal('show');
+                $('#information-modal .modal-body').html(response);
+                element.innerHTML = invoiceId;
+            },
+            error: function () {
+                element.innerHTML = invoiceId;
+                toastr.error('Something went wrong');
+            }
+        });
     }
 
-    function currentStockInPreview(product_id, start_date, end_date) {
-        var URL = '<?php echo Yii::app()->createUrl('inventory/inventory/currentStockInReportBatchWiseView'); ?>?product_id=' + product_id + '&start_date=' + start_date + '&end_date=' + end_date;
-        var day = new Date();
-        var id = day.getTime();
-        var w = 900;
-        var h = 600;
-        var scrl = 1;
-        var winl = (screen.width - w) / 2;
-        var wint = (screen.height - h) / 2;
-        winprops = 'height=' + h + ',width=' + w + ',top=' + wint + ',left=' + winl + ',scrollbars=' + scrl + ',toolbar=0,location=0,statusbar=0,menubar=0,resizable=0';
-        eval("page" + id + " = window.open(URL, '" + id + "', winprops);");
+    function currentStockInPreview(element, product_id, start_date, end_date) {
+
+        var invoiceId = element.innerHTML;
+        element.innerHTML = '<i class="fa fa-spinner fa-spin"></i>';
+        $.ajax({
+            url: '<?= Yii::app()->createUrl("inventory/inventory/currentStockInReportBatchWiseView") ?>',
+            type: 'GET',
+            data: {
+                product_id: product_id,
+                start_date: start_date,
+                end_date: end_date
+            },
+            success: function (response) {
+                $('#information-modal').modal('show');
+                $('#information-modal .modal-body').html(response);
+                element.innerHTML = invoiceId;
+            },
+            error: function () {
+                element.innerHTML = invoiceId;
+                toastr.error('Something went wrong');
+            }
+        });
     }
-    $(document).ready(function() {
-        $('input[name="stockFilter"]').change(function() {
+
+    $(document).ready(function () {
+        $('input[name="stockFilter"]').change(function () {
             var selectedValue = $(this).val();
             console.log(selectedValue);
-            $('#table-1 tr').each(function() {
+            $('#table-1 tr').each(function () {
                 if (selectedValue === "all") {
                     $(this).show();
                 } else if ($(this).hasClass(selectedValue)) {

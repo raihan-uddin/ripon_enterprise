@@ -1,6 +1,6 @@
 <?php
 
-class UnitsController extends Controller
+class UnitsController extends RController
 {
 
     /**

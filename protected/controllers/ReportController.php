@@ -57,13 +57,13 @@ class ReportController extends RController
 
             $criteriaOpSell = new CDbCriteria();
             $criteriaOpSell->select = " sum(grand_total) as grand_total";
-            $criteriaOpSell->addColumnCondition(['customer_id' => $customer_id]);
+            $criteriaOpSell->addColumnCondition(['customer_id' => $customer_id, 't.is_deleted' => 0]);
             $criteriaOpSell->addCondition(" date < '$dateFrom'");
             $data_opening_sell = SellOrder::model()->findByAttributes([], $criteriaOpSell);
 
             $criteriaOpMr = new CDbCriteria();
             $criteriaOpMr->select = " sum(amount) as amount";
-            $criteriaOpMr->addColumnCondition(['customer_id' => $customer_id]);
+            $criteriaOpMr->addColumnCondition(['customer_id' => $customer_id, 't.is_deleted' => 0]);
             $criteriaOpMr->addCondition(" date < '$dateFrom'");
             $data_opening_mr = MoneyReceipt::model()->findByAttributes([], $criteriaOpMr);
             $opening = ($data_opening_sell ? $data_opening_sell->grand_total : 0) - ($data_opening_mr ? $data_opening_mr->amount : 0);
@@ -71,11 +71,11 @@ class ReportController extends RController
             $sql = "SELECT temp.* FROM (
                     SELECT id, date, so_no AS order_no, customer_id, grand_total AS amount, 'sale' as trx_type, created_at
                     FROM sell_order
-                    WHERE date BETWEEN '$dateFrom' AND '$dateTo' " . ($customer_id > 0 ? " AND customer_id = $customer_id" : "") . "
+                    WHERE date BETWEEN '$dateFrom' AND '$dateTo' " . ($customer_id > 0 ? " AND customer_id = $customer_id AND is_deleted = 0" : "") . "
                     UNION
                     SELECT GROUP_CONCAT(DISTINCT id SEPARATOR ',') as id, date, GROUP_CONCAT(DISTINCT invoice_id SEPARATOR ',') AS order_no, customer_id, SUM(amount) as amount, 'collection', created_at
                     FROM money_receipt
-                    WHERE date BETWEEN '$dateFrom' AND '$dateTo' " . ($customer_id > 0 ? " AND customer_id = $customer_id" : "") . "
+                    WHERE date BETWEEN '$dateFrom' AND '$dateTo' " . ($customer_id > 0 ? " AND customer_id = $customer_id is_deleted = 0" : "") . "
                     GROUP BY customer_id, date
                 ) temp
                 ORDER BY created_at ASC;
@@ -131,7 +131,8 @@ class ReportController extends RController
                     grand_total as amount 
                 FROM 
                     sell_order
-                    " . ($customer_id > 0 ? " WHERE customer_id = $customer_id" : "") . "
+                    WHERE is_deleted = 0 
+                    " . ($customer_id > 0 ? " AND customer_id = $customer_id" : "") . "
                 UNION ALL
                 SELECT 
                     customer_id, 
@@ -140,7 +141,8 @@ class ReportController extends RController
                     -(amount+discount) 
                 FROM 
                     money_receipt
-                    " . ($customer_id > 0 ? " WHERE customer_id = $customer_id" : "") . "
+                    WHERE is_deleted = 0
+                    " . ($customer_id > 0 ? " AND customer_id = $customer_id" : "") . "
                 ) AS t
             inner join customers c on t.customer_id = c.id
             GROUP BY 
@@ -186,13 +188,13 @@ class ReportController extends RController
 
             $criteriaOpSell = new CDbCriteria();
             $criteriaOpSell->select = " sum(grand_total) as total_amount";
-            $criteriaOpSell->addColumnCondition(['supplier_id' => $customer_id]);
+            $criteriaOpSell->addColumnCondition(['supplier_id' => $customer_id, 't.is_deleted' => 0]);
             $criteriaOpSell->addCondition(" date < '$dateFrom'");
             $data_opening_purchase = PurchaseOrder::model()->findByAttributes([], $criteriaOpSell);
 
             $criteriaOpPr = new CDbCriteria();
             $criteriaOpPr->select = " sum(amount) as amount";
-            $criteriaOpPr->addColumnCondition(['supplier_id' => $customer_id]);
+            $criteriaOpPr->addColumnCondition(['supplier_id' => $customer_id, 't.is_deleted' => 0]);
             $criteriaOpPr->addCondition(" date < '$dateFrom'");
             $data_opening_pr = PaymentReceipt::model()->findByAttributes([], $criteriaOpPr);
             $opening = ($data_opening_purchase ? $data_opening_purchase->total_amount : 0) - ($data_opening_pr ? $data_opening_pr->amount : 0);
@@ -200,11 +202,11 @@ class ReportController extends RController
             $sql = "SELECT temp.* FROM (
                     SELECT id, date, po_no AS order_no, supplier_id, grand_total AS amount, 'purchase' as trx_type, created_at
                     FROM purchase_order
-                    WHERE date BETWEEN '$dateFrom' AND '$dateTo' " . ($customer_id > 0 ? " AND supplier_id = $customer_id" : "") . "
+                    WHERE date BETWEEN '$dateFrom' AND '$dateTo' " . ($customer_id > 0 ? " AND supplier_id = $customer_id AND is_deleted = 0" : "") . "
                     UNION
                     SELECT id, date, pr_no AS order_no, supplier_id, amount, 'payment', created_at
                     FROM payment_receipt
-                    WHERE date BETWEEN '$dateFrom' AND '$dateTo' " . ($customer_id > 0 ? " AND supplier_id = $customer_id" : "") . "
+                    WHERE date BETWEEN '$dateFrom' AND '$dateTo' " . ($customer_id > 0 ? " AND supplier_id = $customer_id AND is_deleted = 0" : "") . "
                 ) temp
                 
                 ORDER BY created_at ASC;";
@@ -261,7 +263,8 @@ class ReportController extends RController
                     grand_total as amount 
                 FROM 
                     purchase_order
-                    " . ($customer_id > 0 ? " WHERE supplier_id = $customer_id" : "") . "
+                        WHERE is_deleted = 0
+                    " . ($customer_id > 0 ? " AND supplier_id = $customer_id" : "") . "
                 UNION ALL
                 SELECT 
                     supplier_id, 
@@ -270,7 +273,8 @@ class ReportController extends RController
                     -amount 
                 FROM 
                     payment_receipt
-                    " . ($customer_id > 0 ? " WHERE supplier_id = $customer_id" : "") . "
+                        WHERE is_deleted = 0
+                    " . ($customer_id > 0 ? " AND supplier_id = $customer_id" : "") . "
                 ) AS t
             inner join suppliers s on t.supplier_id = s.id
             GROUP BY 
@@ -315,16 +319,19 @@ class ReportController extends RController
 
             $criteriaOpMr = new CDbCriteria();
             $criteriaOpMr->select = " sum(amount) as amount";
+            $criteriaOpMr->addColumnCondition(['is_deleted' => 0]);
             $criteriaOpMr->addCondition(" date < '$dateFrom'");
             $data_opening_mr = MoneyReceipt::model()->findByAttributes([], $criteriaOpMr);
 
             $criteriaOpPr = new CDbCriteria();
             $criteriaOpPr->select = " sum(amount) as amount";
+            $criteriaOpPr->addColumnCondition(['is_deleted' => 0]);
             $criteriaOpPr->addCondition(" date < '$dateFrom'");
             $data_opening_pr = PaymentReceipt::model()->findByAttributes([], $criteriaOpPr);
 
             $criteriaOpExp = new CDbCriteria();
             $criteriaOpExp->select = " sum(amount) as amount";
+            $criteriaOpPr->addColumnCondition(['is_deleted' => 0]);
             $criteriaOpExp->addCondition(" date < '$dateFrom'");
             $data_opening_exp = Expense::model()->findByAttributes([], $criteriaOpExp);
 
@@ -337,19 +344,19 @@ class ReportController extends RController
                 FROM (
                         (SELECT 'Expense' AS transaction_type, date, amount
                          FROM expense
-                         WHERE date BETWEEN '$dateFrom' AND '$dateTo')
+                         WHERE date BETWEEN '$dateFrom' AND '$dateTo' AND is_deleted = 0)
                 
                          UNION ALL
                 
                          (SELECT 'Income' AS transaction_type, date, amount
                          FROM money_receipt
-                         WHERE date BETWEEN '$dateFrom' AND '$dateTo')
+                         WHERE date BETWEEN '$dateFrom' AND '$dateTo' AND is_deleted = 0)
                 
                          UNION ALL
                 
                          (SELECT 'Outgoing Payment' AS transaction_type, date, amount
                          FROM payment_receipt
-                         WHERE date BETWEEN '$dateFrom' AND '$dateTo')
+                         WHERE date BETWEEN '$dateFrom' AND '$dateTo' AND is_deleted = 0)
                      ) AS t
                 GROUP BY date ORDER BY date ASC;";
             $command = Yii::app()->db->createCommand($sql);
@@ -391,6 +398,7 @@ class ReportController extends RController
 
             $criteria = new CDbCriteria();
             $criteria->addBetweenCondition('t.date', $dateFrom, $dateTo);
+            $criteria->addColumnCondition(['t.is_deleted' => 0]);
             if ($customer_id > 0) {
                 $criteria->addColumnCondition(['t.customer_id' => $customer_id]);
             }
@@ -439,6 +447,9 @@ class ReportController extends RController
 
             $criteria = new CDbCriteria();
             $criteria->addBetweenCondition('t.date', $dateFrom, $dateTo);
+
+            $criteria->addColumnCondition(['t.is_deleted' => 0]);
+
             if ($supplier_id > 0) {
                 $criteria->addColumnCondition(['t.supplier_id' => $supplier_id]);
             }
@@ -487,7 +498,7 @@ class ReportController extends RController
 
             $criteria = new CDbCriteria();
             $criteria->addBetweenCondition('t.date', $dateFrom, $dateTo);
-            $criteria->addColumnCondition(['t.order_type' => SellOrder::NEW_ORDER]);
+            $criteria->addColumnCondition(['t.order_type' => SellOrder::NEW_ORDER, 't.is_deleted' => 0]);
             if ($customer_id > 0) {
                 $criteria->addColumnCondition(['t.customer_id' => $customer_id]);
             }
@@ -535,7 +546,7 @@ class ReportController extends RController
 
             $criteria = new CDbCriteria();
             $criteria->addBetweenCondition('t.date', $dateFrom, $dateTo);
-            $criteria->addColumnCondition(['t.order_type' => SellOrder::NEW_ORDER]);
+            $criteria->addColumnCondition(['t.order_type' => SellOrder::NEW_ORDER, 't.is_deleted' => 0, 'sod.is_deleted' => 0]);
             if ($customer_id > 0) {
                 $criteria->addColumnCondition(['t.customer_id' => $customer_id]);
             }
@@ -591,6 +602,7 @@ class ReportController extends RController
 
             $criteria = new CDbCriteria();
             $criteria->addBetweenCondition('t.date', $dateFrom, $dateTo);
+            $criteria->addColumnCondition(['t.is_deleted' => 0]);
             if ($supplier_id > 0) {
                 $criteria->addColumnCondition(['t.supplier_id' => $supplier_id]);
             }
@@ -641,6 +653,7 @@ class ReportController extends RController
 
             $criteria = new CDbCriteria();
             $criteria->addBetweenCondition('t.date', $dateFrom, $dateTo);
+            $criteria->addColumnCondition(['t.is_deleted' => 0, 'pod.is_deleted' => 0]);
             if ($supplier_id > 0) {
                 $criteria->addColumnCondition(['t.supplier_id' => $supplier_id]);
             }
@@ -741,6 +754,7 @@ class ReportController extends RController
 
             $criteria = new CDbCriteria();
             $criteria->addBetweenCondition('t.date', $dateFrom, $dateTo);
+            $criteria->addColumnCondition(['t.is_deleted' => 0]);
             if ($created_by > 0) {
                 $criteria->addColumnCondition(['t.created_by' => $created_by]);
             }
@@ -782,6 +796,7 @@ class ReportController extends RController
             $message .= "<br>  Date: " . date('d/m/Y', strtotime($dateFrom)) . "-" . date('d/m/Y', strtotime($dateTo));
 
             $criteria = new CDbCriteria();
+            $criteria->addColumnCondition(['t.is_deleted' => 0, 'ed.is_deleted' => 0]);
             $criteria->addBetweenCondition('t.date', $dateFrom, $dateTo);
             if ($created_by > 0) {
                 $criteria->addColumnCondition(['t.created_by' => $created_by]);

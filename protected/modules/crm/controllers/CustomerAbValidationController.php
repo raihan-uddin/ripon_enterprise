@@ -1,6 +1,6 @@
 <?php
 
-class CustomerAbValidationController extends Controller
+class CustomerAbValidationController extends RController
 {
 
     /**
@@ -8,6 +8,7 @@ class CustomerAbValidationController extends Controller
      * using two-column layout. See 'protected/views/layouts/column2.php'.
      */
     public $layout = '//layouts/column1';
+    public $defaultAction = 'admin';
 
     /**
      * @return array action filters

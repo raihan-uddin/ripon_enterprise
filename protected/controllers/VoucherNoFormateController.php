@@ -1,6 +1,6 @@
 <?php
 
-class VoucherNoFormateController extends Controller
+class VoucherNoFormateController extends RController
 {
 
     /**

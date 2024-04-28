@@ -151,7 +151,7 @@ class Inventory extends CActiveRecord
     {
         $criteria = new CDbCriteria();
         $criteria->select = "SUM(stock_in) AS stock_in, sum(stock_out) AS stock_out";
-        $criteria->addColumnCondition(['model_id' => $model_id]);
+        $criteria->addColumnCondition(['model_id' => $model_id, 'is_deleted' => 0]);
 
         if ($product_sl_no && strlen($product_sl_no) > 0) {
             $criteria->addColumnCondition(['t.product_sl_no' => $product_sl_no]);
@@ -180,6 +180,7 @@ class Inventory extends CActiveRecord
         $criteria = new CDbCriteria;
         $criteria->select = "t.*";
         $criteria->join = " ";
+        $criteria->addColumnCondition(['t.is_deleted' => 0]);
 
         if (($this->model_id) != "") {
             $criteria->join .= " INNER JOIN prod_models pm on t.model_id = pm.id ";

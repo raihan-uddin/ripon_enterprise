@@ -1,6 +1,6 @@
 <?php
 
-class SellPriceController extends Controller
+class SellPriceController extends RController
 {
 
     /**

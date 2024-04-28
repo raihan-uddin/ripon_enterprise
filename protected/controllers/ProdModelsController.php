@@ -1,6 +1,6 @@
 <?php
 
-class ProdModelsController extends Controller
+class ProdModelsController extends RController
 {
 
     /**

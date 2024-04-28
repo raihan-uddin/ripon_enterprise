@@ -1,6 +1,6 @@
 <?php
 
-class CourierController extends Controller
+class CourierController extends RController
 {
 
     /**

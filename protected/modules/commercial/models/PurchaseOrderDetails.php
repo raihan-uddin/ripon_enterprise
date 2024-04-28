@@ -105,6 +105,8 @@ class PurchaseOrderDetails extends CActiveRecord
 
         $criteria = new CDbCriteria;
 
+        $criteria->addColumnCondition(['t.is_deleted' => 0]);
+
         $criteria->select = "t.*";
         $criteria->compare('id', $this->id);
         $criteria->compare('order_id', $this->order_id);

@@ -204,15 +204,6 @@ class SellOrder extends CActiveRecord
         return $data ? $data->max_sl_no + 1 : 1;
     }
 
-    public static function maxJobNo()
-    {
-        $criteria = new CDbCriteria();
-        $criteria->select = "MAX(job_max_sl_no) as job_max_sl_no";
-//        $criteria->addColumnCondition(['year(date)' => date('Y'), 'month(date)' => date('m')]);
-        $data = self::model()->findByAttributes([], $criteria);
-        return $data ? $data->job_max_sl_no + 1 : 1;
-    }
-
     /**
      * Retrieves a list of models based on the current search/filter conditions.
      *
@@ -231,6 +222,8 @@ class SellOrder extends CActiveRecord
         $criteria = new CDbCriteria;
         $criteria->select = "t.*";
         $criteria->join = " ";
+
+        $criteria->addColumnCondition(['t.is_deleted' => 0]);
 
         if (!Yii::app()->user->checkAccess('Admin')) {
             $criteria->addColumnCondition(['t.created_by' => Yii::app()->user->id]);
