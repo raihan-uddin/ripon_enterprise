@@ -343,8 +343,10 @@ $this->widget('application.components.BreadCrumb', array(
                         $("#payment-receipt-form")[0].reset();
                         $("#formResult").animate({opacity:1.0},1000).fadeOut("slow");
                         $("#list tbody").empty();
-                        $("#soReportDialogBox").dialog("open");
-                        $("#AjFlashReportSo").html(data.soReportInfo).show();
+                        //$("#soReportDialogBox").dialog("open");
+                        //$("#AjFlashReportSo").html(data.soReportInfo).show();
+                        $("#information-modal-payment-receipt").modal("show");
+                        $("#information-modal-payment-receipt .modal-body").html(data.soReportInfo);  
                     }else{
                         $("#formResultError").html("Data not saved. Please solve the following errors.");
                         $.each(data, function(key, val) {
@@ -470,6 +472,16 @@ $this->widget('application.components.BreadCrumb', array(
         }
         clearBankInfo();
     });
+
+    $(document).keypress(function (event) {
+        let keycode = (event.keyCode ? event.keyCode : event.which);
+        if (keycode == '13') {
+            console.log('You pressed a "enter" key in somewhere');
+            // addToList();
+            return false;
+        }
+    });
+
 
     $(document).on('keyup', ".amount", function () {
         this.value = this.value.replace(/[^0-9\.]/g, '');
@@ -611,4 +623,26 @@ $this->beginWidget('zii.widgets.jui.CJuiDialog', array(
 <div id='AjFlashReportSo' style="display:none;"></div>
 <?php $this->endWidget(); ?>
 
+
+
+<!--        modal-->
+<div class="modal fade" id="information-modal-payment-receipt" tabindex="-1" data-backdrop="static" role="dialog"
+     aria-labelledby="information-modal-payment-receipt" aria-hidden="true">
+    <div class="modal-dialog modal-dialog-centered modal-xl" role="document">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title" id="exampleModalLabel">Invoice</h5>
+                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                    <span aria-hidden="true">&times;</span>
+                </button>
+            </div>
+            <div class="modal-body text-center">
+                <p>Loading...</p> <!-- this will be replaced by the response from the server -->
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
+            </div>
+        </div>
+    </div>
+</div>
 

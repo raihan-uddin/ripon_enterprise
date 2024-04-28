@@ -119,7 +119,7 @@ echo "</div>";
                 ?>
                 <tr>
                     <td style="text-align: center;"><?php echo $sl++; ?></td>
-                    <td style="text-align: center;"><?php echo $dmr['customer_id']; ?></td>
+                    <td style="text-align: center; "><?php echo $dmr['customer_id']; ?></td>
                     <td style="text-align: left;"><?php echo $dmr['company_name']; ?></td>
                     <td style="text-align: center;"><?php echo $dmr['company_contact_no']; ?></td>
                     <td style="text-align: right;"><?php echo number_format($dmr['total_sale_amount'], 2); ?></td>
@@ -152,21 +152,6 @@ echo "</div>";
         }
         ?>
         </tbody>
-    </table>
-
-    <table class="headerTab table table-bordered " style="float: left; width: 100%;">
-        <tr>
-            <td style="padding-top: 40px; text-align: left;"></td>
-            <td style="padding-top: 40px; text-align: right;"></td>
-            <td style="padding-top: 40px; text-align: center;"></td>
-            <td style="padding-top: 40px; text-align: center;"></td>
-        </tr>
-        <tr>
-            <th style="text-decoration: overline; text-align: left;">Prepared By</th>
-            <th style="text-decoration: overline;text-align: center;">Checked By</th>
-            <th style="text-decoration: overline;text-align: center;">Head of Department</th>
-            <th style="text-decoration: overline; text-align: right;">Approved By</th>
-        </tr>
     </table>
 </div>
 
@@ -201,4 +186,5 @@ echo "</div>";
         });
 
     });
+
 </script>

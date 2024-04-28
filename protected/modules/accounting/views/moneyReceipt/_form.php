@@ -256,7 +256,7 @@ $this->widget('application.components.BreadCrumb', array(
                     $i = 1;
                     $invoice_total = $invoice_total_due = 0;
                     $criteriaInv = new CDbCriteria();
-                    $criteriaInv->addColumnCondition(['is_paid' => Invoice::DUE]);
+                    $criteriaInv->addColumnCondition(['is_paid' => SellOrder::DUE]);
                     if ($sell_id > 0) {
                         $criteriaInv->addColumnCondition(['t.id' => $sell_id]);
                     } else{
@@ -361,8 +361,10 @@ $this->widget('application.components.BreadCrumb', array(
                         $("#money-receipt-form")[0].reset();
                         $("#formResult").animate({opacity:1.0},1000).fadeOut("slow");
                         $("#list tbody").empty();
-                        $("#soReportDialogBox").dialog("open");
-                        $("#AjFlashReportSo").html(data.soReportInfo).show();
+                        //$("#soReportDialogBox").dialog("open");
+                        //$("#AjFlashReportSo").html(data.soReportInfo).show();
+                        $("#information-modal-money-receipt").modal("show");
+                        $("#information-modal-money-receipt .modal-body").html(data.soReportInfo); 
                     }else{
                         $("#formResultError").html("Data not saved. Please solve the following errors.");
                         $.each(data, function(key, val) {
@@ -431,7 +433,14 @@ $this->widget('application.components.BreadCrumb', array(
                         $("#ajaxLoader").show();
                     }
                  }',
-            'error' => 'function(xhr) { 
+            'error' => 'function(xhr, status, error) { 
+                     // Code to handle errors
+                    toastr.error(xhr.responseText); // Displaying error message using Toastr
+                    // Optionally, you can display additional error details
+                    console.error(xhr.statusText);
+                    console.error(xhr.status);
+                    console.error(xhr.responseText);
+                
                     $("#overlay").fadeOut(300);
               }',
             'complete' => 'function() {
@@ -473,6 +482,16 @@ $this->widget('application.components.BreadCrumb', array(
             document.getElementById('MoneyReceipt_cheque_date').value = date.format('YYYY-MM-DD');
         }
     });
+
+    $(document).keypress(function (event) {
+        let keycode = (event.keyCode ? event.keyCode : event.which);
+        if (keycode == '13') {
+            console.log('You pressed a "enter" key in somewhere');
+            // addToList();
+            return false;
+        }
+    });
+
 
     $("#MoneyReceipt_payment_type").change(function () {
         let type = this.value;
@@ -643,5 +662,28 @@ $this->beginWidget('zii.widgets.jui.CJuiDialog', array(
 ?>
 <div id='AjFlashReportSo' style="display:none;"></div>
 <?php $this->endWidget(); ?>
+
+
+<!--        modal-->
+<div class="modal fade" id="information-modal-money-receipt" tabindex="-1" data-backdrop="static" role="dialog"
+     aria-labelledby="information-modal-money-receipt" aria-hidden="true">
+    <div class="modal-dialog modal-dialog-centered modal-xl" role="document">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title" id="exampleModalLabel">Invoice</h5>
+                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                    <span aria-hidden="true">&times;</span>
+                </button>
+            </div>
+            <div class="modal-body text-center">
+                <p>Loading...</p> <!-- this will be replaced by the response from the server -->
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
+            </div>
+        </div>
+    </div>
+</div>
+
 
 

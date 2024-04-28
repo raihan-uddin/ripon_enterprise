@@ -95,7 +95,7 @@ $form = $this->beginWidget('CActiveForm', array(
                             }).data("ui-autocomplete")._renderItem = function (ul, item) {
                                 return $("<li></li>")
                                     .data("item.autocomplete", item)
-                                    .append(`<a> ${item.name} <small><br>City: ${item.city}, State: ${item.state}, Zip: ${item.zip} <br> Contact:  ${item.contact_no}</small></a>`)
+                                    .append(`<a> ${item.label}  (${item.id})<small><br>Address: ${item.address},  <br> Contact:  ${item.contact_no}</small></a>`)
                                     .appendTo(ul);
                             };
 

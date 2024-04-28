@@ -86,7 +86,12 @@ $form = $this->beginWidget('CActiveForm', array(
                                     $('#supplier_id_text').val(ui.item.value);
                                     $('#Inventory_supplier_id').val(ui.item.id);
                                 }
-                            })
+                            }).data("ui-autocomplete")._renderItem = function (ul, item) {
+                                return $("<li></li>")
+                                    .data("item.autocomplete", item)
+                                    .append(`<a> ${item.label}  (${item.id})<small><br>Address: ${item.address},  <br> Contact:  ${item.contact_no}</small></a>`)
+                                    .appendTo(ul);
+                            };
                         });
                     </script>
                 </div>

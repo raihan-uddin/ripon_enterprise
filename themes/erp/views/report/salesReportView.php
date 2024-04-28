@@ -205,8 +205,8 @@ echo "</div>";
             }
         });
     });
-    //
-    $('#table-1').off('click', '.invoiceDetails').on('click', '.invoiceDetails', function () {
+
+    $('body #table-1').off('click', '.invoiceDetails').on('click', '.invoiceDetails', function () {
 
         var invoiceId = $(this).text();
         var $this = $(this);
@@ -215,7 +215,8 @@ echo "</div>";
             url: '<?= Yii::app()->createUrl("sell/sellOrder/voucherPreview") ?>',
             type: 'POST',
             data: {
-                invoiceId: invoiceId
+                invoiceId: invoiceId,
+                show_profit: 1
             },
             success: function (response) {
                 $('#information-modal').modal('show');

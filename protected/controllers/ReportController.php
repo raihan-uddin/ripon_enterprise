@@ -75,7 +75,7 @@ class ReportController extends RController
                     UNION
                     SELECT GROUP_CONCAT(DISTINCT id SEPARATOR ',') as id, date, GROUP_CONCAT(DISTINCT invoice_id SEPARATOR ',') AS order_no, customer_id, SUM(amount) as amount, 'collection', created_at
                     FROM money_receipt
-                    WHERE date BETWEEN '$dateFrom' AND '$dateTo' " . ($customer_id > 0 ? " AND customer_id = $customer_id is_deleted = 0" : "") . "
+                    WHERE date BETWEEN '$dateFrom' AND '$dateTo' " . ($customer_id > 0 ? " AND customer_id = $customer_id AND is_deleted = 0" : "") . "
                     GROUP BY customer_id, date
                 ) temp
                 ORDER BY created_at ASC;
@@ -488,7 +488,7 @@ class ReportController extends RController
         $dateFrom = $_POST['Inventory']['date_from'];
         $dateTo = $_POST['Inventory']['date_to'];
         $customer_id = $_POST['Inventory']['customer_id'];
-        $created_by = $_POST['Inventory']['created_by'];
+        $created_by = isset($_POST['Inventory']['created_by'])? $_POST['Inventory']['created_by'] : 0;
 
         $message = "";
         $data = NULL;

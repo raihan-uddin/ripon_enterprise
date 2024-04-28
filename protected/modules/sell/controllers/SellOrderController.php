@@ -133,8 +133,7 @@ class SellOrderController extends RController
                         $costing += $model2->costing;
                         ProdModels::model()->updateProductPrice($model2->model_id, $model2->amount);
                     }
-                    $model->costing = $costing;
-                    $model->save();
+
 
                     if ($model->cash_due == Lookup::CASH) {
                         $moneyReceipt = new MoneyReceipt();
@@ -151,7 +150,13 @@ class SellOrderController extends RController
                             $transaction->rollBack();
                             throw new CHttpException(500, 'Error in saving money receipt! <br> ' . json_encode($moneyReceipt->getErrors()));
                         }
+                        $model->total_paid = $model->total_due;
+                        $model->total_due = 0;
+                        $model->is_paid = SellOrder::PAID;
                     }
+
+                    $model->costing = $costing;
+                    $model->save();
 
                     $transaction->commit();
 
@@ -404,6 +409,7 @@ class SellOrderController extends RController
         $so_no = isset($_POST['so_no']) ? trim($_POST['so_no']) : "";
         $preview_type = isset($_POST['preview_type']) ? trim($_POST['preview_type']) : 0;
         $invoiceId = isset($_POST['invoiceId']) ? trim($_POST['invoiceId']) : 0;
+        $show_profit = isset($_POST['show_profit']) ? trim($_POST['show_profit']) : 0;
 
         if (Yii::app()->request->isAjaxRequest) {
             Yii::app()->clientScript->scriptMap['jquery.js'] = false;
@@ -418,7 +424,7 @@ class SellOrderController extends RController
             $data = SellOrder::model()->findByAttributes([], $criteria);
 
             if ($data) {
-                echo $this->renderPartial("voucherPreview", array('data' => $data, 'preview_type' => $preview_type), true, true);
+                echo $this->renderPartial("voucherPreview", array('data' => $data, 'preview_type' => $preview_type, 'show_profit' => $show_profit), true, true);
             } else {
                 header('Content-type: application/json');
                 echo CJSON::encode(array(

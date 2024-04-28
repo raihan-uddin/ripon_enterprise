@@ -251,7 +251,7 @@ if (Yii::app()->user->checkAccess('Sell.Order.VoucherPreview')) {
                 ),
                 array(
                     'name' => 'is_paid',
-                    'filter' => [Invoice::PAID => 'PAID', Invoice::DUE => 'DUE'],
+                    'filter' => [SellOrder::PAID => 'PAID', SellOrder::DUE => 'DUE'],
                     'value' => 'SellOrder::model()->isPaid($data->is_paid)',
                     'type' => 'raw',
                     'htmlOptions' => ['class' => 'text-center']

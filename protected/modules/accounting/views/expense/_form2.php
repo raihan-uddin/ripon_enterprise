@@ -49,7 +49,7 @@ Yii::app()->clientScript->registerCoreScript("jquery.ui");
                         <?php echo $form->labelEx($model, 'date', ['class' => 'col-sm-12 col-md-3 col-form-label']); ?>
                         <div class="col-sm-12 col-md-9">
                             <div class="input-group" id="entry_date" data-target-input="nearest">
-                                <?php echo $form->textField($model, 'date', array('class' => 'form-control datetimepicker-input', 'placeholder' => 'YYYY-MM-DD', )); ?>
+                                <?php echo $form->textField($model, 'date', array('class' => 'form-control datetimepicker-input', 'placeholder' => 'YYYY-MM-DD',)); ?>
                                 <!--<div class="input-group-append">
                                     <div class="input-group-text"><i class="fa fa-calendar"></i></div>
                                 </div>-->
@@ -254,7 +254,8 @@ Yii::app()->clientScript->registerCoreScript("jquery.ui");
                                             </td>
                                             <td class="text-center" style="vertical-align: middle;  min-width: 120px;">
                                                 <input type="text" name="ExpenseDetails[temp_amount][]"
-                                                       class="form-control text-right temp-amount" value="<?= $dt->amount ?>">
+                                                       class="form-control text-right temp-amount"
+                                                       value="<?= $dt->amount ?>">
                                             </td>
                                             <td>
                                                 <button type="button" class="btn btn-danger dlt"><i
@@ -291,7 +292,7 @@ Yii::app()->clientScript->registerCoreScript("jquery.ui");
 
     <div class="card-footer">
         <?php
-//        echo CHtml::ajaxSubmitButton('Update', CHtml::normalizeUrl(array('/accounting/expense/update', 'render' => true)), array(
+        //        echo CHtml::ajaxSubmitButton('Update', CHtml::normalizeUrl(array('/accounting/expense/update', 'render' => true)), array(
         echo CHtml::ajaxSubmitButton('Update ', CHtml::normalizeUrl(array('/accounting/expense/update/id/' . $model->id, 'render' => true)), array(
 
 
@@ -306,8 +307,10 @@ Yii::app()->clientScript->registerCoreScript("jquery.ui");
 //                        $("#expense-form")[0].reset();
                         $("#formResult").animate({opacity:1.0},1000).fadeOut("slow");
 //                        $("#list tbody").empty();
-                        $("#soReportDialogBox").dialog("open");
-                        $("#AjFlashReportSo").html(data.soReportInfo).show();
+                        //$("#soReportDialogBox").dialog("open");
+                        //$("#AjFlashReportSo").html(data.soReportInfo).show();
+                        $("#information-modal").modal("show");
+                        $("#information-modal .modal-body").html(data.soReportInfo); 
                     }else{
                         $("#formResultError").html("Data not saved. Please solve the following errors.");
                         $.each(data, function(key, val) {
@@ -348,8 +351,16 @@ Yii::app()->clientScript->registerCoreScript("jquery.ui");
                         $("#ajaxLoader").show();
                     }
                  }',
-            'error' => 'function(xhr) { 
+            'error' => 'function(xhr, status, error) { 
                     $("#overlay").fadeOut(300);
+                    $("#ajaxLoader").hide();
+                    
+                    // Code to handle errors
+                    toastr.error(xhr.responseText); // Displaying error message using Toastr
+                    // Optionally, you can display additional error details
+                    console.error(xhr.statusText);
+                    console.error(xhr.status);
+                    console.error(xhr.responseText);
               }',
             'complete' => 'function() {
                     $("#overlay").fadeOut(300);
@@ -512,5 +523,28 @@ $this->beginWidget('zii.widgets.jui.CJuiDialog', array(
 ?>
 <div id='AjFlashReportSo' style="display:none;"></div>
 <?php $this->endWidget(); ?>
+
+
+<!--        modal-->
+<div class="modal fade" id="information-modal" tabindex="-1" data-backdrop="static" role="dialog"
+     aria-labelledby="information-modal" aria-hidden="true">
+    <div class="modal-dialog modal-dialog-centered modal-xl" role="document">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title" id="exampleModalLabel">Invoice</h5>
+                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                    <span aria-hidden="true">&times;</span>
+                </button>
+            </div>
+            <div class="modal-body text-center">
+                <p>Loading...</p> <!-- this will be replaced by the response from the server -->
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
+            </div>
+        </div>
+    </div>
+</div>
+
 
 

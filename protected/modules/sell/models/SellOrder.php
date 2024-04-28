@@ -447,7 +447,7 @@ class SellOrder extends CActiveRecord
 
     public function isPaid($value)
     {
-        if ($value != Invoice::PAID) {
+        if ($value != self::PAID) {
             $string = "<span class='badge badge-danger'>DUE</span>";
         } else {
             $string = "<span class='badge badge-success'>PAID</span>";

@@ -123,6 +123,13 @@ $form = $this->beginWidget('CActiveForm', array(
 					           // showErrorText(XMLHttpRequest, textStatus, errorThrown);
 					            $("#reportSearchButton").prop("disabled", false);
                                 $("#reportSearchButton").val("Search");
+                                
+                                // Code to handle errors
+                                toastr.error(XMLHttpRequest.responseText); // Displaying error message using Toastr
+                                // Optionally, you can display additional error details
+                                console.error(XMLHttpRequest.statusText);
+                                console.error(XMLHttpRequest.status);
+                                console.error(XMLHttpRequest.responseText);
 						    }',
                     'complete' => 'function(){
                                 $(".ajaxLoaderResultView").hide();

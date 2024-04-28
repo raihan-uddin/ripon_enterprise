@@ -91,9 +91,9 @@ Yii::app()->clientScript->registerCoreScript("jquery.ui");
                     <div class="col-sm-8">
                         <div class="input-group" id="entry_date" data-target-input="nearest">
                             <?php echo $form->textField($model, 'date', array('class' => 'form-control datetimepicker-input', 'placeholder' => 'YYYY-MM-DD',)); ?>
-<!--                            <div class="input-group-append">-->
-<!--                                <div class="input-group-text"><i class="fa fa-calendar"></i></div>-->
-<!--                            </div>-->
+                            <!--                            <div class="input-group-append">-->
+                            <!--                                <div class="input-group-text"><i class="fa fa-calendar"></i></div>-->
+                            <!--                            </div>-->
                         </div>
                     </div>
                     <span class="help-block"
@@ -544,7 +544,8 @@ Yii::app()->clientScript->registerCoreScript("jquery.ui");
                                     <td class="serial"></td>
                                     <td>
                                         <?= $m3->model_name ?>
-                                        <input type="hidden" class="form-control tmep_model_id" value="<?= $m3->model_id ?>"
+                                        <input type="hidden" class="form-control tmep_model_id"
+                                               value="<?= $m3->model_id ?>"
                                                name="PurchaseOrderDetails[temp_model_id][]">
                                     </td>
                                     <td class="text-center">
@@ -557,15 +558,17 @@ Yii::app()->clientScript->registerCoreScript("jquery.ui");
                                                name=PurchaseOrderDetails[temp_note][]"">
                                     </td>
                                     <td class="text-center">
-                                        <input type="text" class="form-control text-center temp_qty" value="<?= $m3->qty ?>"
+                                        <input type="text" class="form-control text-center temp_qty"
+                                               value="<?= $m3->qty ?>"
                                                name=PurchaseOrderDetails[temp_qty][]"">
                                     </td>
                                     <td class="text-center">
-                                        <input type="text" class="form-control temp_unit_price" value="<?= $m3->unit_price ?>"
+                                        <input type="text" class="form-control temp_unit_price"
+                                               value="<?= $m3->unit_price ?>"
                                                name="PurchaseOrderDetails[temp_unit_price][]">
                                     </td>
                                     <td class="text-center">
-                                        <input type="text" class="form-control row-total"
+                                        <input type="text"  readonly class="form-control row-total"
                                                value="<?= $m3->row_total ?>"
                                                name="PurchaseOrderDetails[temp_row_total][]">
                                     </td>
@@ -624,11 +627,13 @@ Yii::app()->clientScript->registerCoreScript("jquery.ui");
                             $("#formResult").fadeIn();
                             $("#formResult").html("Data saved successfully.");
                             toastr.success("Data saved successfully.");
-                            $("#bom-form")[0].reset();
+                            //$("#bom-form")[0].reset();
                             $("#formResult").animate({opacity:1.0},1000).fadeOut("slow");
-                            $("#list").empty();
-                            $("#soReportDialogBox").dialog("open");
-                            $("#AjFlashReportSo").html(data.soReportInfo).show();
+                            //$("#list").empty();
+                            //$("#soReportDialogBox").dialog("open");
+                            //$("#AjFlashReportSo").html(data.soReportInfo).show();
+                            $("#information-modal").modal("show");
+                            $("#information-modal .modal-body").html(data.soReportInfo);
                         }else{
                             $("#formResultError").html(data.message).removeClass("d-none");
                             $.each(data, function(key, val) {
@@ -665,7 +670,14 @@ Yii::app()->clientScript->registerCoreScript("jquery.ui");
                             $("#ajaxLoader").show();
                         }
                      }',
-                    'error' => 'function(xhr) { 
+                    'error' => 'function(xhr, status, error) { 
+                         // Code to handle errors
+                        toastr.error(xhr.responseText); // Displaying error message using Toastr
+                        // Optionally, you can display additional error details
+                        console.error(xhr.statusText);
+                        console.error(xhr.status);
+                        console.error(xhr.responseText);
+                        
                          $("#overlay").fadeOut(300);
                     }',
                     'complete' => 'function() {
@@ -687,95 +699,96 @@ Yii::app()->clientScript->registerCoreScript("jquery.ui");
             <span class="spinner"></span>
         </div>
     </div>
-    <script>
-        var picker = new Lightpick({
-            field: document.getElementById('entry_date'),
-            minDate: moment(),
-            onSelect: function (date) {
-                document.getElementById('PurchaseOrder_date').value = date.format('YYYY-MM-DD');
-            }
-        });
-        var picker2 = new Lightpick({
-            field: document.getElementById('PurchaseOrder_exp_receive_date'),
-            minDate: moment(),
-            onSelect: function (date) {
-                document.getElementById('PurchaseOrder_exp_receive_date').value = date.format('YYYY-MM-DD');
-                document.getElementById('PurchaseOrder_exp_receive_date').value = date.format('YYYY-MM-DD');
-            }
-        });
+</div>
+<script>
+    var picker = new Lightpick({
+        field: document.getElementById('entry_date'),
+        minDate: moment(),
+        onSelect: function (date) {
+            document.getElementById('PurchaseOrder_date').value = date.format('YYYY-MM-DD');
+        }
+    });
+    var picker2 = new Lightpick({
+        field: document.getElementById('PurchaseOrder_exp_receive_date'),
+        minDate: moment(),
+        onSelect: function (date) {
+            document.getElementById('PurchaseOrder_exp_receive_date').value = date.format('YYYY-MM-DD');
+            document.getElementById('PurchaseOrder_exp_receive_date').value = date.format('YYYY-MM-DD');
+        }
+    });
 
-        $(document).ready(function () {
-            $(".qty-amount").keyup(function () {
-                var $this = $(this);
-                $this.val($this.val().replace(/[^\d.]/g, ''));
-            });
-
-            $(".qty-amount").on("keydown keyup", function () {
-                let amount = parseFloat($("#PurchaseOrderDetails_amount").val());
-                let qty = parseFloat($("#PurchaseOrderDetails_qty").val());
-                amount = amount > 0 ? amount : 0;
-                qty = qty > 0 ? qty : 0;
-
-                $("#PurchaseOrderDetails_row_total").val((amount * qty).toFixed(2));
-            });
-            $("#PurchaseOrder_vat_percentage").on("keydown keyup", function () {
-                calculateVat();
-            });
+    $(document).ready(function () {
+        $(".qty-amount").keyup(function () {
+            var $this = $(this);
+            $this.val($this.val().replace(/[^\d.]/g, ''));
         });
 
-        function addToList() {
-            let model_id = $("#PurchaseOrderDetails_model_id").val();
-            let model_id_text = $("#model_id_text").val();
-            let unit_price = $("#PurchaseOrderDetails_amount").val();
-            let note = $("#PurchaseOrderDetails_note").val();
-            let qty = $("#PurchaseOrderDetails_qty").val();
-            let product_sl_no = $("#PurchaseOrderDetails_product_sl_no").val();
-            let row_total = $("#PurchaseOrderDetails_row_total").val();
-            let isproductpresent = false;
-            let temp_codearray = document.getElementsByName("PurchaseOrderDetails[temp_model_id][]");
-            let temp_sl_array = document.getElementsByName("PurchaseOrderDetails[temp_product_sl_no][]");
-            // console.log(temp_sl_array);
-            /* if (temp_codearray.length > 0) {
-                 for (let l = 0; l < temp_codearray.length; l++) {
-                     var code = temp_codearray[l].value;
-                     if (code == model_id) {
-                         isproductpresent = true;
-                         break;
-                     }
+        $(".qty-amount").on("keydown keyup", function () {
+            let amount = parseFloat($("#PurchaseOrderDetails_amount").val());
+            let qty = parseFloat($("#PurchaseOrderDetails_qty").val());
+            amount = amount > 0 ? amount : 0;
+            qty = qty > 0 ? qty : 0;
+
+            $("#PurchaseOrderDetails_row_total").val((amount * qty).toFixed(2));
+        });
+        $("#PurchaseOrder_vat_percentage").on("keydown keyup", function () {
+            calculateVat();
+        });
+    });
+
+    function addToList() {
+        let model_id = $("#PurchaseOrderDetails_model_id").val();
+        let model_id_text = $("#model_id_text").val();
+        let unit_price = $("#PurchaseOrderDetails_amount").val();
+        let note = $("#PurchaseOrderDetails_note").val();
+        let qty = $("#PurchaseOrderDetails_qty").val();
+        let product_sl_no = $("#PurchaseOrderDetails_product_sl_no").val();
+        let row_total = $("#PurchaseOrderDetails_row_total").val();
+        let isproductpresent = false;
+        let temp_codearray = document.getElementsByName("PurchaseOrderDetails[temp_model_id][]");
+        let temp_sl_array = document.getElementsByName("PurchaseOrderDetails[temp_product_sl_no][]");
+        // console.log(temp_sl_array);
+        /* if (temp_codearray.length > 0) {
+             for (let l = 0; l < temp_codearray.length; l++) {
+                 var code = temp_codearray[l].value;
+                 if (code == model_id) {
+                     isproductpresent = true;
+                     break;
                  }
-             }*/
-            if (product_sl_no.length > 0) {
-                console.log("length found");
-                console.log(temp_sl_array.length);
-                for (let l = 0; l < temp_sl_array.length; l++) {
-                    let code = temp_sl_array[l].value;
-                    console.log(code);
-                    if (code === product_sl_no) {
-                        isproductpresent = true;
-                        break;
-                    }
+             }
+         }*/
+        if (product_sl_no.length > 0) {
+            console.log("length found");
+            console.log(temp_sl_array.length);
+            for (let l = 0; l < temp_sl_array.length; l++) {
+                let code = temp_sl_array[l].value;
+                console.log(code);
+                if (code === product_sl_no) {
+                    isproductpresent = true;
+                    break;
                 }
-                console.log(isproductpresent);
             }
+            console.log(isproductpresent);
+        }
 
 
-            if (model_id == "" || model_id_text == "") {
-                toastr.error("Please select materials");
-                return false;
-            } else if (isproductpresent == true) {
-                toastr.error(model_id_text + " is already on the list! Please add another!");
-                return false;
-            } else if (unit_price == "") {
-                toastr.error("Please insert unit price");
-                return false;
-            } else if (qty == "" || qty == 0) {
-                toastr.error("Please enter qty");
-                return false;
-            } else if (row_total == "" || row_total == 0) {
-                toastr.error("Please enter qty & amount!");
-                return false;
-            } else {
-                $("#list tbody").prepend(`
+        if (model_id == "" || model_id_text == "") {
+            toastr.error("Please select materials");
+            return false;
+        } else if (isproductpresent == true) {
+            toastr.error(model_id_text + " is already on the list! Please add another!");
+            return false;
+        } else if (unit_price == "") {
+            toastr.error("Please insert unit price");
+            return false;
+        } else if (qty == "" || qty == 0) {
+            toastr.error("Please enter qty");
+            return false;
+        } else if (row_total == "" || row_total == 0) {
+            toastr.error("Please enter qty & amount!");
+            return false;
+        } else {
+            $("#list tbody").prepend(`
                 <tr class="item">
                     <td class="serial"></td>
                     <td>
@@ -795,131 +808,154 @@ Yii::app()->clientScript->registerCoreScript("jquery.ui");
                         <input type="text" class="form-control temp_unit_price" value="${unit_price}" name="PurchaseOrderDetails[temp_unit_price][]" >
                     </td>
                     <td class="text-center">
-                        <input type="text" class="form-control row-total" value="${row_total}" name="PurchaseOrderDetails[temp_row_total][]" >
+                        <input type="text" readonly class="form-control row-total" value="${row_total}" name="PurchaseOrderDetails[temp_row_total][]" >
                     </td>
                     <td>
                         <button type="button" class="btn btn-danger dlt"><i class="fa fa-trash-o"></i> </button>
                     </td>
                 </tr>
                 `);
-                calculateTotal();
-                clearDynamicItem();
-            }
-        }
-
-        $("#list").on("click", ".dlt", function () {
-            $(this).closest("tr").remove();
             calculateTotal();
+            clearDynamicItem();
+        }
+    }
+
+    $("#list").on("click", ".dlt", function () {
+        $(this).closest("tr").remove();
+        calculateTotal();
+    });
+
+
+    function calculateVat() {
+        let total_amount = parseFloat($("#PurchaseOrder_total_amount").val());
+        let vat_p = parseFloat($("#PurchaseOrder_vat_percentage").val());
+        total_amount = total_amount > 0 ? total_amount : 0;
+        vat_p = vat_p > 0 ? vat_p : 0;
+        let vat = parseFloat(((vat_p / 100) * total_amount));
+        let grand_total = parseFloat(total_amount + vat);
+        $("#PurchaseOrder_vat_amount").val(vat.toFixed(2));
+        $("#PurchaseOrder_grand_total").val(grand_total.toFixed(2));
+    }
+
+    function resetDynamicItem() {
+        $("#PurchaseOrderDetails_model_id").val('');
+        $("#model_id_text").val('');
+        $("#PurchaseOrderDetails_product_sl_no").val('');
+        $("#PurchaseOrderDetails_amount").val('');
+        $("#PurchaseOrderDetails_row_total").val('');
+        $("#PurchaseOrderDetails_qty").val('');
+        $("#PurchaseOrderDetails_color").val('');
+        $("#PurchaseOrderDetails_note").val('');
+    }
+
+    // on temp_qty change/keyup event calculate row total
+    $(document).on("change keyup", ".temp_qty", function () {
+        let qty = parseFloat($(this).val());
+        let unit_price = parseFloat($(this).closest("tr").find(".temp_unit_price").val());
+        let row_total = parseFloat(qty * unit_price);
+        $(this).closest("tr").find(".row-total").val(row_total.toFixed(2));
+        calculateTotal();
+    });
+    // on temp_unit_price change/keyup event calculate row total
+    $(document).on("change keyup", ".temp_unit_price", function () {
+        let unit_price = parseFloat($(this).val());
+        let qty = parseFloat($(this).closest("tr").find(".temp_qty").val());
+        let row_total = parseFloat(qty * unit_price);
+        $(this).closest("tr").find(".row-total").val(row_total.toFixed(2));
+        calculateTotal();
+    });
+
+
+    function clearDynamicItem() {
+        $("#PurchaseOrderDetails_model_id").val('');
+        $("#model_id_text").val('');
+        $("#PurchaseOrderDetails_amount").val('');
+        $("#PurchaseOrderDetails_row_total").val('');
+        $("#PurchaseOrderDetails_qty").val('');
+        $("#PurchaseOrderDetails_color").val('');
+        $("#PurchaseOrderDetails_note").val('');
+    }
+
+    function calculateTotal() {
+        let item_count = $(".item").length;
+
+        let total = 0;
+        $('.row-total').each(function () {
+            total += parseFloat($(this).val());
         });
 
-
-        function calculateVat() {
-            let total_amount = parseFloat($("#PurchaseOrder_total_amount").val());
-            let vat_p = parseFloat($("#PurchaseOrder_vat_percentage").val());
-            total_amount = total_amount > 0 ? total_amount : 0;
-            vat_p = vat_p > 0 ? vat_p : 0;
-            let vat = parseFloat(((vat_p / 100) * total_amount));
-            let grand_total = parseFloat(total_amount + vat);
-            $("#PurchaseOrder_vat_amount").val(vat.toFixed(2));
-            $("#PurchaseOrder_grand_total").val(grand_total.toFixed(2));
-        }
-        function resetDynamicItem() {
-            $("#PurchaseOrderDetails_model_id").val('');
-            $("#model_id_text").val('');
-            $("#PurchaseOrderDetails_product_sl_no").val('');
-            $("#PurchaseOrderDetails_amount").val('');
-            $("#PurchaseOrderDetails_row_total").val('');
-            $("#PurchaseOrderDetails_qty").val('');
-            $("#PurchaseOrderDetails_color").val('');
-            $("#PurchaseOrderDetails_note").val('');
-        }
-
-        // on temp_qty change/keyup event calculate row total
-        $(document).on("change keyup", ".temp_qty", function () {
-            let qty = parseFloat($(this).val());
-            let unit_price = parseFloat($(this).closest("tr").find(".temp_unit_price").val());
-            let row_total = parseFloat(qty * unit_price);
-            $(this).closest("tr").find(".row-total").val(row_total.toFixed(2));
-            calculateTotal();
-        });
-        // on temp_unit_price change/keyup event calculate row total
-        $(document).on("change keyup", ".temp_unit_price", function () {
-            let unit_price = parseFloat($(this).val());
-            let qty = parseFloat($(this).closest("tr").find(".temp_qty").val());
-            let row_total = parseFloat(qty * unit_price);
-            $(this).closest("tr").find(".row-total").val(row_total.toFixed(2));
-            calculateTotal();
-        });
-
-
-        function clearDynamicItem() {
-            $("#PurchaseOrderDetails_model_id").val('');
-            $("#model_id_text").val('');
-            $("#PurchaseOrderDetails_amount").val('');
-            $("#PurchaseOrderDetails_row_total").val('');
-            $("#PurchaseOrderDetails_qty").val('');
-            $("#PurchaseOrderDetails_color").val('');
-            $("#PurchaseOrderDetails_note").val('');
-        }
-
-        function calculateTotal() {
-            let item_count = $(".item").length;
-
-            let total = 0;
-            $('.row-total').each(function () {
-                total += parseFloat($(this).val());
-            });
-
-            $("#PurchaseOrder_total_amount").val(total.toFixed(2)).change();
-            $("#PurchaseOrder_item_count").val(item_count);
-            calculateVat();
-            tableSerial();
-        }
-
-        $("#PurchaseOrderDetails_product_sl_no").keypress(function (event) {
-            let keycode = (event.keyCode ? event.keyCode : event.which);
-            if (keycode == '13') {
-                console.log('You pressed a "enter" key in somewhere');
-                addToList();
-                return false;
-            }
-        });
-        $("#PurchaseOrderDetails_amount").keypress(function (event) {
-            let keycode = (event.keyCode ? event.keyCode : event.which);
-            if (keycode == '13') {
-                addToList();
-                return false;
-            }
-        });
-
-        function tableSerial() {
-            //  get the table tbody tr length
-            var i = $('#list tbody tr').length;
-            $('#list tbody tr').each(function () {
-                $(this).find('.serial').text(i);
-                i--;
-            });
-        }
-
+        $("#PurchaseOrder_total_amount").val(total.toFixed(2)).change();
+        $("#PurchaseOrder_item_count").val(item_count);
+        calculateVat();
         tableSerial();
-    </script>
+    }
 
-    <?php $this->endWidget(); ?>
+    $("#PurchaseOrderDetails_product_sl_no").keypress(function (event) {
+        let keycode = (event.keyCode ? event.keyCode : event.which);
+        if (keycode == '13') {
+            console.log('You pressed a "enter" key in somewhere');
+            addToList();
+            return false;
+        }
+    });
+    $("#PurchaseOrderDetails_amount").keypress(function (event) {
+        let keycode = (event.keyCode ? event.keyCode : event.which);
+        if (keycode == '13') {
+            addToList();
+            return false;
+        }
+    });
+
+    function tableSerial() {
+        //  get the table tbody tr length
+        var i = $('#list tbody tr').length;
+        $('#list tbody tr').each(function () {
+            $(this).find('.serial').text(i);
+            i--;
+        });
+    }
+
+    tableSerial();
+</script>
+
+<?php $this->endWidget(); ?>
 
 
 
-    <?php
-    $this->beginWidget('zii.widgets.jui.CJuiDialog', array(
-        'id' => 'soReportDialogBox',
-        'options' => array(
-            'title' => 'ORDER VOUCHER PREVIEW',
-            'autoOpen' => false,
-            'modal' => true,
-            'width' => 1030,
-            'resizable' => false,
-        ),
-    ));
-    ?>
-    <div id='AjFlashReportSo' style="display:none;"></div>
-    <?php $this->endWidget(); ?>
+<?php
+$this->beginWidget('zii.widgets.jui.CJuiDialog', array(
+    'id' => 'soReportDialogBox',
+    'options' => array(
+        'title' => 'ORDER VOUCHER PREVIEW',
+        'autoOpen' => false,
+        'modal' => true,
+        'width' => 1030,
+        'resizable' => false,
+    ),
+));
+?>
+<div id='AjFlashReportSo' style="display:none;"></div>
+<?php $this->endWidget(); ?>
+
+
+<!--        modal-->
+<div class="modal fade" id="information-modal" tabindex="-1" data-backdrop="static" role="dialog"
+     aria-labelledby="information-modal" aria-hidden="true">
+    <div class="modal-dialog modal-dialog-centered modal-xl" role="document">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title" id="exampleModalLabel">Invoice</h5>
+                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                    <span aria-hidden="true">&times;</span>
+                </button>
+            </div>
+            <div class="modal-body text-center">
+                <p>Loading...</p> <!-- this will be replaced by the response from the server -->
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
+            </div>
+        </div>
+    </div>
+</div>
 

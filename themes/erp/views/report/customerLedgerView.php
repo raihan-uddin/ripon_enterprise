@@ -122,8 +122,10 @@ echo "</div>";
                 $trx_type = $dmr['trx_type'];
                 if ($trx_type == 'sale') {
                     $row_closing += $dmr['amount'];
+                    $class = "sell";
                 } else {
                     $row_closing -= $dmr['amount'];
+                    $class = "mr";
                 }
                 $rowFound = true;
                 ?>
@@ -131,7 +133,8 @@ echo "</div>";
                     <td style="text-align: center;"><?php echo $sl++; ?></td>
                     <td style="text-align: center; text-transform: capitalize;"><?php echo $dmr['trx_type']; ?></td>
                     <td style="text-align: center;"><?php echo $dmr['date']; ?></td>
-                    <td style="text-align: center;"><?php echo $dmr['id']; ?></td>
+                    <td style="text-align: center; cursor: zoom-in;"
+                        class="<?= $class ?>"><?php echo $dmr['id']; ?></td>
                     <td style="text-align: left;"><?php echo $dmr['order_no']; ?></td>
                     <td style="text-align: right;"><?php echo number_format($dmr['amount'], 2); ?></td>
                     <td style="text-align: right;"><?php echo number_format($row_closing, 2); ?></td>
@@ -148,21 +151,6 @@ echo "</div>";
         </tr>
 
         </tbody>
-    </table>
-
-    <table class="headerTab table table-bordered " style="float: left; width: 100%;">
-        <tr>
-            <td style="padding-top: 40px; text-align: left;"></td>
-            <td style="padding-top: 40px; text-align: right;"></td>
-            <td style="padding-top: 40px; text-align: center;"></td>
-            <td style="padding-top: 40px; text-align: center;"></td>
-        </tr>
-        <tr>
-            <th style="text-decoration: overline; text-align: left;">Prepared By</th>
-            <th style="text-decoration: overline;text-align: center;">Checked By</th>
-            <th style="text-decoration: overline;text-align: center;">Head of Department</th>
-            <th style="text-decoration: overline; text-align: right;">Approved By</th>
-        </tr>
     </table>
 </div>
 
@@ -197,4 +185,51 @@ echo "</div>";
         });
 
     });
+
+
+    $('#table-1').off('click', '.sell').on('click', '.sell', function () {
+
+        var invoiceId = $(this).text();
+        var $this = $(this);
+        $this.html('<i class="fa fa-spinner fa-spin"></i>');
+        $.ajax({
+            url: '<?= Yii::app()->createUrl("sell/sellOrder/voucherPreview") ?>',
+            type: 'POST',
+            data: {
+                invoiceId: invoiceId,
+                show_profit: 1
+            },
+            success: function (response) {
+                $('#information-modal').modal('show');
+                $('#information-modal .modal-body').html(response);
+                $this.html(invoiceId);
+            },
+            error: function () {
+                $this.html(invoiceId);
+                toastr.error('Something went wrong');
+            }
+        });
+    });
 </script>
+
+
+<!--        modal-->
+<div class="modal fade" id="information-modal" tabindex="-1" data-backdrop="static" role="dialog"
+     aria-labelledby="information-modal" aria-hidden="true">
+    <div class="modal-dialog modal-dialog-centered modal-xl" role="document">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title" id="exampleModalLabel">Invoice</h5>
+                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                    <span aria-hidden="true">&times;</span>
+                </button>
+            </div>
+            <div class="modal-body text-center">
+                <p>Loading...</p> <!-- this will be replaced by the response from the server -->
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
+            </div>
+        </div>
+    </div>
+</div>

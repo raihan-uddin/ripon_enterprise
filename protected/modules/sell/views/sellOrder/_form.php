@@ -670,8 +670,10 @@ Yii::app()->clientScript->registerCoreScript("jquery.ui");
                         $("#bom-form")[0].reset();
                         $("#formResult").animate({opacity:1.0},1000).fadeOut("slow");
                         $("#list").empty();
-                        $("#soReportDialogBox").dialog("open");
-                        $("#AjFlashReportSo").html(data.soReportInfo).show();
+                        // $("#soReportDialogBox").dialog("open");
+                        //$("#AjFlashReportSo").html(data.soReportInfo).show();
+                        $("#information-modal").modal("show");
+                        $("#information-modal .modal-body").html(data.soReportInfo);  
                     }else{
                         //$("#formResultError").html("Data not saved. Please solve the following errors.");
                         $.each(data, function(key, val) {
@@ -1106,3 +1108,24 @@ $this->beginWidget('zii.widgets.jui.CJuiDialog', array(
 <div id='AjFlashReportSo' style="display:none;"></div>
 <?php $this->endWidget(); ?>
 
+
+<!--        modal-->
+<div class="modal fade" id="information-modal" tabindex="-1" data-backdrop="static" role="dialog"
+     aria-labelledby="information-modal" aria-hidden="true">
+    <div class="modal-dialog modal-dialog-centered modal-xl" role="document">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title" id="exampleModalLabel">Invoice</h5>
+                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                    <span aria-hidden="true">&times;</span>
+                </button>
+            </div>
+            <div class="modal-body text-center">
+                <p>Loading...</p> <!-- this will be replaced by the response from the server -->
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
+            </div>
+        </div>
+    </div>
+</div>
