@@ -1,3 +1,10 @@
+<?php
+/** @var double $opening */
+/** @var double $opening_purchase_amount */
+/** @var double $opening_payment_amount */
+/** @var string $message */
+/** @var mixed $data */
+?>
 <style>
     .summaryTab {
         float: left;
@@ -44,24 +51,6 @@
 
 <?php
 date_default_timezone_set("Asia/Dhaka");
-$yourCompanyInfo = YourCompany::model()->findByAttributes(array('is_active' => YourCompany::ACTIVE,));
-if ($yourCompanyInfo) {
-    $yourCompanyName = $yourCompanyInfo->company_name;
-    $yourCompanyLocation = $yourCompanyInfo->location;
-    $yourCompanyRoad = $yourCompanyInfo->road;
-    $yourCompanyHouse = $yourCompanyInfo->house;
-    $yourCompanyContact = $yourCompanyInfo->contact;
-    $yourCompanyEmail = $yourCompanyInfo->email;
-    $yourCompanyWeb = $yourCompanyInfo->web;
-} else {
-    $yourCompanyName = 'N/A';
-    $yourCompanyLocation = 'N/A';
-    $yourCompanyRoad = 'N/A';
-    $yourCompanyHouse = 'N/A';
-    $yourCompanyContact = 'N/A';
-    $yourCompanyEmail = 'N/A';
-    $yourCompanyWeb = 'N/A';
-}
 
 echo "<div class='printBtn' style='width: unset;'>";
 echo "  <img class='exportToExcel' id='exportToExcel'  src='" . Yii::app()->theme->baseUrl . "/images/excel.png' title='EXPORT TO EXCEL'>";
@@ -87,7 +76,8 @@ echo "</div>";
            id="table-1">
         <thead>
         <tr>
-            <td colspan="10" style="font-size:16px; font-weight:bold; text-align:center"><?php echo $message; ?>
+            <td colspan="10" style="font-size:16px; font-weight:bold; text-align:center">
+                <?php echo $message; ?>
             </td>
         </tr>
         <tr class="titlesTr sticky">
@@ -116,14 +106,17 @@ echo "</div>";
         </tr>
 
         <?php
+        $total_purchase = $total_payment = 0;
         $row_closing += $opening;
         if ($data) {
             foreach ($data as $dmr) {
                 $trx_type = $dmr['trx_type'];
                 if ($trx_type == 'purchase') {
                     $row_closing += $dmr['amount'];
+                    $total_purchase += $dmr['amount'];
                 } else {
                     $row_closing -= $dmr['amount'];
+                    $total_payment += $dmr['amount'];
                 }
                 $rowFound = true;
                 ?>
@@ -141,29 +134,26 @@ echo "</div>";
             }
         }
         ?>
-
         <tr>
-            <th style="text-align: right;" colspan="6">Ground Total</th>
-            <th style="text-align: right;"><?= number_format($row_closing, 2) ?></th>
+            <th colspan="2"></th>
+            <th>Opening Purchase</th>
+            <th>Opening Payment</th>
+            <th>Date Range Purchase</th>
+            <th>Date Range Payment</th>
+            <th>Closing</th>
+        </tr>
+        <tr>
+            <td colspan="2"></td>
+            <td style="text-align: center; font-weight: bold;"><?= $opening_purchase_amount ? number_format($opening_purchase_amount, 2) : 0 ?></td>
+            <td style="text-align: center; font-weight: bold;"><?= $opening_payment_amount ? number_format($opening_payment_amount, 2) : 0 ?></td>
+            <td style="text-align: center; font-weight: bold;"><?= $total_purchase ? number_format($total_purchase, 2) : 0 ?></td>
+            <td style="text-align: center; font-weight: bold;"><?= $total_payment ? number_format($total_payment, 2) : 0 ?></td>
+            <td style="text-align: center; font-weight: bold;"><?= $row_closing ? number_format($row_closing, 2) : 0 ?></td>
         </tr>
 
         </tbody>
     </table>
 
-    <table class="headerTab table table-bordered " style="float: left; width: 100%;">
-        <tr>
-            <td style="padding-top: 40px; text-align: left;"></td>
-            <td style="padding-top: 40px; text-align: right;"></td>
-            <td style="padding-top: 40px; text-align: center;"></td>
-            <td style="padding-top: 40px; text-align: center;"></td>
-        </tr>
-        <tr>
-            <th style="text-decoration: overline; text-align: left;">Prepared By</th>
-            <th style="text-decoration: overline;text-align: center;">Checked By</th>
-            <th style="text-decoration: overline;text-align: center;">Head of Department</th>
-            <th style="text-decoration: overline; text-align: right;">Approved By</th>
-        </tr>
-    </table>
 </div>
 
 <style>

@@ -188,14 +188,14 @@ class ReportController extends RController
             $criteriaOpSell->select = " sum(grand_total) as total_amount";
             $criteriaOpSell->addColumnCondition(['supplier_id' => $customer_id]);
             $criteriaOpSell->addCondition(" date < '$dateFrom'");
-            $data_opening_sell = PurchaseOrder::model()->findByAttributes([], $criteriaOpSell);
+            $data_opening_purchase = PurchaseOrder::model()->findByAttributes([], $criteriaOpSell);
 
-            $criteriaOpMr = new CDbCriteria();
-            $criteriaOpMr->select = " sum(amount) as amount";
-            $criteriaOpMr->addColumnCondition(['supplier_id' => $customer_id]);
-            $criteriaOpMr->addCondition(" date < '$dateFrom'");
-            $data_opening_mr = PaymentReceipt::model()->findByAttributes([], $criteriaOpMr);
-            $opening = ($data_opening_sell ? $data_opening_sell->total_amount : 0) - ($data_opening_mr ? $data_opening_mr->amount : 0);
+            $criteriaOpPr = new CDbCriteria();
+            $criteriaOpPr->select = " sum(amount) as amount";
+            $criteriaOpPr->addColumnCondition(['supplier_id' => $customer_id]);
+            $criteriaOpPr->addCondition(" date < '$dateFrom'");
+            $data_opening_pr = PaymentReceipt::model()->findByAttributes([], $criteriaOpPr);
+            $opening = ($data_opening_purchase ? $data_opening_purchase->total_amount : 0) - ($data_opening_pr ? $data_opening_pr->amount : 0);
 
             $sql = "SELECT temp.* FROM (
                     SELECT id, date, po_no AS order_no, supplier_id, grand_total AS amount, 'purchase' as trx_type, created_at
@@ -215,6 +215,8 @@ class ReportController extends RController
             'data' => $data,
             'message' => $message,
             'opening' => $opening,
+            'opening_purchase_amount' => ($data_opening_purchase ? $data_opening_purchase->total_amount : 0),
+            'opening_payment_amount' => ($data_opening_pr ? $data_opening_pr->amount : 0),
         ), true, true);
         Yii::app()->end();
     }

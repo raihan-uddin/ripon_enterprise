@@ -1,6 +1,6 @@
 <?php
 
-class InventoryController extends Controller
+class InventoryController extends RController
 {
     /**
      * @var string the default layout for the views. Defaults to '//layouts/column2', meaning
@@ -16,6 +16,7 @@ class InventoryController extends Controller
     {
         return array(
             'rights
+            -VoucherPreview
             -Jquery_showprodSlNoSearch
             -Jquery_getStockQty',
         );
@@ -180,7 +181,7 @@ class InventoryController extends Controller
             $criteria = new CDbCriteria;
             $criteria->select = "t.*, pm.model_name, pm.unit_id";
             $criteria->join = " INNER JOIN prod_models pm on t.model_id = pm.id";
-            $criteria->addColumnCondition(['challan_no' => $challan_no]);
+            $criteria->addColumnCondition(['challan_no' => trim($challan_no)]);
             $data = Inventory::model()->findAll($criteria);
             if ($data) {
                 echo $this->renderPartial("voucherPreview", array('data' => $data,), true, true);

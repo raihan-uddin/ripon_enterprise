@@ -581,7 +581,9 @@ Yii::app()->clientScript->registerCoreScript("jquery.ui");
                             </thead>
                             <tbody>
                             <?php
+                            $totalCosting = 0;
                             foreach ($model3 as $key => $m3) {
+                                $totalCosting += $m3->costing;
                                 ?>
                                 <tr class="item">
                                     <td class="serial"></td>
@@ -591,48 +593,42 @@ Yii::app()->clientScript->registerCoreScript("jquery.ui");
                                                name="SellOrderDetails[temp_model_id][]">
                                     </td>
                                     <td class="text-center">
-                                        <label>
-                                            <input type="text" class="form-control text-center"
-                                                   value="<?= $m3->product_sl_no ?>"
-                                                   name=SellOrderDetails[temp_product_sl_no][]">
-                                        </label>
+                                        <input type="text" class="form-control text-center"
+                                               value="<?= $m3->product_sl_no ?>"
+                                               name=SellOrderDetails[temp_product_sl_no][]">
+
                                     </td>
                                     <td class="text-center">
-                                        <label>
-                                            <input type="text" class="form-control" value="<?= $m3->warranty ?>"
-                                                   name="SellOrderDetails[temp_warranty][]">
-                                        </label>
+                                        <input type="text" class="form-control" value="<?= $m3->warranty ?>"
+                                               name="SellOrderDetails[temp_warranty][]">
+
                                     </td>
                                     <td class="text-center">
-                                        <label>
-                                            <input type="text" class="form-control" value="<?= $m3->note ?>"
-                                                   name="SellOrderDetails[temp_note][]">
-                                        </label>
+                                        <input type="text" class="form-control" value="<?= $m3->note ?>"
+                                               name="SellOrderDetails[temp_note][]">
+
                                     </td>
                                     <td class="text-center" style="display: none;"><?= $m3->color ?></td>
                                     <td class="text-center">
-                                        <label>
-                                            <input type="text" class="form-control text-center temp_qty"
-                                                   value="<?= $m3->qty ?>"
-                                                   name=SellOrderDetails[temp_qty][]">
-                                        </label>
+                                        <input type="text" class="form-control text-center temp_qty"
+                                               value="<?= $m3->qty ?>"
+                                               name=SellOrderDetails[temp_qty][]">
+
                                     </td>
                                     <td class="text-center">
-                                        <label>
-                                            <input type="text" class="form-control temp_unit_price"
-                                                   value="<?= $m3->amount ?>"
-                                                   name="SellOrderDetails[temp_unit_price][]">
-                                        </label>
+                                        <input type="text" class="form-control temp_unit_price"
+                                               value="<?= $m3->amount ?>"
+                                               name="SellOrderDetails[temp_unit_price][]">
+
                                         <input type="hidden" class="form-control text-center temp-costing"
                                                value="<?= round(($m3->costing / $m3->qty), 2) ?>"
                                                name=SellOrderDetails[temp_pp][]">
                                     </td>
                                     <td class="text-center">
-                                        <label>
-                                            <input type="text" class="form-control row-total"
-                                                   value="<?= $m3->row_total ?>"
-                                                   name="SellOrderDetails[temp_row_total][]">
-                                        </label>
+                                        <input type="text" class="form-control row-total"
+                                               value="<?= $m3->row_total ?>"
+                                               name="SellOrderDetails[temp_row_total][]">
+
 
                                         <input type="hidden" class="form-control" value="<?= $m3->color ?>"
                                                name="SellOrderDetails[temp_color][]">
@@ -1080,6 +1076,7 @@ Yii::app()->clientScript->registerCoreScript("jquery.ui");
     }
 
     document.addEventListener('DOMContentLoaded', function () {
+        $(".current-costing-amount").html('<span style="color: green;">Costing: <b>' + <?= $totalCosting  ?> + '</b></span>');
         var eyeIcon = document.querySelector('.eye-icon');
         var helpBlock = document.querySelector('.current-costing-amount');
 

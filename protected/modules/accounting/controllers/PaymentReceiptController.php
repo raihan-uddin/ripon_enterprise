@@ -1,6 +1,6 @@
 <?php
 
-class PaymentReceiptController extends Controller
+class PaymentReceiptController extends RController
 {
     /**
      * @var string the default layout for the views. Defaults to '//layouts/column2', meaning
@@ -15,7 +15,8 @@ class PaymentReceiptController extends Controller
     public function filters()
     {
         return array(
-            'rights',
+            'rights
+            -VoucherPreview',
         );
     }
 
@@ -43,71 +44,81 @@ class PaymentReceiptController extends Controller
         // Uncomment the following line if AJAX validation is needed
         $this->performAjaxValidation($model);
 
+        $transaction = Yii::app()->db->beginTransaction();
+        try {
+            if (isset($_POST['PaymentReceipt'])) {
+                $model->attributes = $_POST['PaymentReceipt'];
+                $model->max_sl_no = PaymentReceipt::maxSlNo();
+                $model->order_id = 0;
+                $model->amount = 0;
+                $model->pr_no = "PR-" . date('y') . "-" . date('m') . "-" . str_pad($model->max_sl_no, 5, "0", STR_PAD_LEFT);
+                if ($model->validate()) {
+                    $order_id_arr = [];
+                    foreach ($_POST['PaymentReceipt']['amount'] as $key => $amount) {
+                        $rem_amount = $_POST['PaymentReceipt']['rem_amount'][$key];
+                        $order_id = $_POST['PaymentReceipt']['order_id'][$key];
+                        if ($amount > 0) {
+                            $model2 = new PaymentReceipt();
+                            $model2->date = $model->date;
+                            $model2->payment_type = $model->payment_type;
+                            $model2->supplier_id = $model->supplier_id;
+                            $model2->order_id = $order_id;
+                            $model2->max_sl_no = $model->max_sl_no;
+                            $model2->pr_no = $model->pr_no;
+                            $model2->amount = $amount;
+                            $model2->bank_id = $model->bank_id;
+                            $model2->cheque_no = $model->cheque_no;
+                            $model2->remarks = $model->remarks;
+                            $model2->cheque_date = $model->cheque_date;
+                            if (!$model2->save()) {
+                                $transaction->rollBack();
+                                throw new CHttpException(500, sprintf('Error in saving order details! %s <br>', json_encode($model2->getErrors())));
+                            }
+                            $order_id_arr[] = $order_id;
+                        }
+                    }
+                    $criteria = new CDbCriteria();
+                    $criteria->addInCondition('id', $order_id_arr);
+                    $data = PurchaseOrder::model()->findAll($criteria);
+                    if ($data) {
+                        foreach ($data as $dt) {
+                            $grand_total = $dt->grand_total;
+                            $total_mr = PaymentReceipt::model()->totalPaidAmountOfThisOrder($dt->id);
+                            $rem = $grand_total - $total_mr;
+                            if ($total_mr >= $grand_total) {
+                                $dt->is_paid = PurchaseOrder::PAID;
+                                $dt->save();
+                            }
+                        }
+                    }
 
-        if (isset($_POST['PaymentReceipt'])) {
-            $model->attributes = $_POST['PaymentReceipt'];
-            $model->max_sl_no = PaymentReceipt::maxSlNo();
-            $model->order_id = 0;
-            $model->amount = 0;
-            $model->pr_no = "PR-" . date('y') . "-" . date('m') . "-" . str_pad($model->max_sl_no, 5, "0", STR_PAD_LEFT);
-            if ($model->validate()) {
-                $order_id_arr = [];
-                foreach ($_POST['PaymentReceipt']['amount'] as $key => $amount) {
-                    $rem_amount = $_POST['PaymentReceipt']['rem_amount'][$key];
-                    $order_id = $_POST['PaymentReceipt']['order_id'][$key];
-                    if ($amount > 0) {
-                        $model2 = new PaymentReceipt();
-                        $model2->date = $model->date;
-                        $model2->payment_type = $model->payment_type;
-                        $model2->supplier_id = $model->supplier_id;
-                        $model2->order_id = $order_id;
-                        $model2->max_sl_no = $model->max_sl_no;
-                        $model2->pr_no = $model->pr_no;
-                        $model2->amount = $amount;
-                        $model2->bank_id = $model->bank_id;
-                        $model2->cheque_no = $model->cheque_no;
-                        $model2->remarks = $model->remarks;
-                        $model2->cheque_date = $model->cheque_date;
-                        if (!$model2->save()) {
-                            var_dump($model2->getErrors());
-                            exit;
-                        }
-                        $order_id_arr[] = $order_id;
-                    }
+                    $transaction->commit();
+
+                    $criteria = new CDbCriteria;
+                    $criteria->select = "SUM(amount) as amount, supplier_id, date, pr_no, bank_id, cheque_no, cheque_date, remarks, created_by";
+                    $criteria->addColumnCondition(['supplier_id' => $model->supplier_id, 'pr_no' => $model->pr_no]);
+                    $criteria->group = 'supplier_id, pr_no';
+                    $dataMr = PaymentReceipt::model()->findAll($criteria);
+                    echo CJSON::encode(array(
+                        'status' => 'success',
+                        'soReportInfo' => $this->renderPartial('voucherPreview', array('data' => $dataMr, 'new' => true), true, true), //
+                    ));
+                    Yii::app()->end();
+                } else {
+                    $error = CActiveForm::validate($model);
+                    $error2 = CActiveForm::validate($model2);
+                    if ($error != '[]')
+                        echo $error;
+                    if ($error2 != '[]')
+                        echo $error2;
+                    Yii::app()->end();
                 }
-                $criteria = new CDbCriteria();
-                $criteria->addInCondition('id', $order_id_arr);
-                $data = PurchaseOrder::model()->findAll($criteria);
-                if ($data) {
-                    foreach ($data as $dt) {
-                        $grand_total = $dt->grand_total;
-                        $total_mr = PaymentReceipt::model()->totalPaidAmountOfThisOrder($dt->id);
-                        $rem = $grand_total - $total_mr;
-                        if ($total_mr >= $grand_total) {
-                            $dt->is_paid = PurchaseOrder::PAID;
-                            $dt->save();
-                        }
-                    }
-                }
-                $criteria = new CDbCriteria;
-                $criteria->select = "SUM(amount) as amount, supplier_id, date, pr_no, bank_id, cheque_no, cheque_date, remarks, created_by";
-                $criteria->addColumnCondition(['supplier_id' => $model->supplier_id, 'pr_no' => $model->pr_no]);
-                $criteria->group = 'supplier_id, pr_no';
-                $dataMr = PaymentReceipt::model()->findAll($criteria);
-                echo CJSON::encode(array(
-                    'status' => 'success',
-                    'soReportInfo' => $this->renderPartial('voucherPreview', array('data' => $dataMr, 'new' => true), true, true), //
-                ));
-                Yii::app()->end();
-            } else {
-                $error = CActiveForm::validate($model);
-                $error2 = CActiveForm::validate($model2);
-                if ($error != '[]')
-                    echo $error;
-                if ($error2 != '[]')
-                    echo $error2;
-                Yii::app()->end();
             }
+        } catch (PDOException $e) {
+            $transaction->rollBack();
+            throw new CHttpException(500, $e->getMessage());
+        } catch (Exception $e) {
+            throw new CHttpException(500, $e->getMessage());
         }
 
 

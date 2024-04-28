@@ -49,13 +49,13 @@ $this->widget('application.components.BreadCrumb', array(
         <div class="row">
             <div class=" col-sm-12 col-md-3">
                 <div class="form-group row" style="">
-                    <?php echo $form->labelEx($model, 'date', ['class' => 'col-sm-12 col-md-3 col-form-label']); ?>
-                    <div class="col-sm-12 col-md-9">
+                    <?php echo $form->labelEx($model, 'date', ['class' => 'col-sm-12 col-md-4 col-form-label']); ?>
+                    <div class="col-sm-12 col-md-8">
                         <div class="input-group" id="entry_date" data-target-input="nearest">
                             <?php echo $form->textField($model, 'date', array('class' => 'form-control datetimepicker-input', 'placeholder' => 'YYYY-MM-DD', 'value' => date('Y-m-d'))); ?>
-                            <div class="input-group-append">
+                            <!--<div class="input-group-append">
                                 <div class="input-group-text"><i class="fa fa-calendar"></i></div>
-                            </div>
+                            </div>-->
                         </div>
                     </div>
                     <span class="help-block"
@@ -65,8 +65,8 @@ $this->widget('application.components.BreadCrumb', array(
 
             <div class=" col-sm-12 col-md-3">
                 <div class="form-group row" style="">
-                    <?php echo $form->labelEx($model, 'payment_type', ['class' => 'col-sm-12 col-md-3 col-form-label']); ?>
-                    <div class="col-sm-12 col-md-9">
+                    <?php echo $form->labelEx($model, 'payment_type', ['class' => 'col-sm-12 col-md-6 col-form-label']); ?>
+                    <div class="col-sm-12 col-md-6">
                         <div class="input-group" id="customer_id" data-target-input="nearest">
                             <?php
                             echo $form->dropDownList($model, 'payment_type', CHtml::listData(PaymentReceipt::model()->paymentTypeFilter(), 'id', 'title'), array(
@@ -74,9 +74,9 @@ $this->widget('application.components.BreadCrumb', array(
                                 'class' => 'form-control',
                             ));
                             ?>
-                            <div class="input-group-append">
+                           <!-- <div class="input-group-append">
                                 <div class="input-group-text"><i class="fa fa fa-credit-card"></i></div>
-                            </div>
+                            </div>-->
                         </div>
                     </div>
                     <span class="help-block"
@@ -221,6 +221,20 @@ $this->widget('application.components.BreadCrumb', array(
                       style="color: red; width: 100%"> <?php echo $form->error($model, 'cheque_date'); ?></span>
             </div>
 
+            <div class="form-group col-sm-12 col-md-3" style="">
+                <?php echo $form->labelEx($model, 'paid_amt'); ?>
+                <div class="input-group" data-target-input="nearest">
+                    <?php echo $form->textField($model, 'paid_amt', array('class' => 'form-control', 'oninput' => 'validatePositiveNumber(this)')); ?>
+                    <div class="input-group-append ">
+                        <div class="input-group-text">
+                            <i class="fa fa-money"></i>
+                        </div>
+                    </div>
+                </div>
+                <span class="help-block"
+                      style="color: red; width: 100%"> <?php echo $form->error($model, 'paid_amt'); ?></span>
+            </div>
+
             <div class="table table-responsive">
                 <table class="table table-sm  table-hover table-bordered table-striped" id="list">
                     <thead>
@@ -284,7 +298,11 @@ $this->widget('application.components.BreadCrumb', array(
                             }
                         }
                     } else {
-
+                        ?>
+                        <tr>
+                            <td colspan="8" class="text-center">No data found!</td>
+                        </tr>
+                        <?php
                     }
                     ?>
                     <tfoot>
@@ -502,6 +520,57 @@ $this->widget('application.components.BreadCrumb', array(
         $("#PaymentReceipt_bank_id").val("");
         $("#PaymentReceipt_cheque_no").val("");
         $("#PaymentReceipt_cheque_date").val("");
+    }
+
+    function validatePositiveNumber(input) {
+        // Get the input value
+        var value = input.value;
+
+        // Remove leading zeros
+        value = value.replace(/^0+/, '');
+
+        // Remove non-digit characters except dot
+        value = value.replace(/[^\d.]/g, '');
+
+        // Remove extra dots
+        value = value.replace(/(\..*)\./g, '$1');
+
+        // Update the input value
+        input.value = value;
+
+        // Check if the value is a positive number
+        if (parseFloat(value) < 0 || isNaN(parseFloat(value))) {
+            // You can also clear the input field or take any other action as needed
+            input.value = '';
+        }
+        distributeValuesIntoAmounts(value);
+    }
+
+    function distributeValuesIntoAmounts(paidAmounts) {
+        let amt = parseFloat(paidAmounts);
+        let supplierCurrentDueAmounts = 0;
+        $(".due-amount").each(function () {
+            let due = parseFloat($(this).val());
+            let discount = parseFloat($(this).closest('tr').find('.discount').val());
+            due = isNaN(due) ? 0 : due;
+            discount = isNaN(discount) ? 0 : discount;
+            let rem = due - (discount);
+            if (paidAmounts >= rem) {
+                $(this).closest('tr').find('.amount').val(rem).change();
+                paidAmounts = paidAmounts - rem;
+            } else {
+                $(this).closest('tr').find('.amount').val(paidAmounts).change();
+                paidAmounts = 0;
+            }
+            $(this).closest('tr').find('.amount').trigger('keyup');
+            supplierCurrentDueAmounts += due;
+        });
+        if(amt > supplierCurrentDueAmounts){
+            toastr.error("Collected amount is greater than customer due amount.");
+            $("#MoneyReceipt_collected_amt").val("");
+        }
+        calculateTotal();
+        calculateRemainingAMount();
     }
 </script>
 

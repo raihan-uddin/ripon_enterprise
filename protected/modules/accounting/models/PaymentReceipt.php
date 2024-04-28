@@ -46,6 +46,7 @@ class PaymentReceipt extends CActiveRecord
     public $vat_percentage;
     public $vat_amount;
     public $grand_total;
+    public $paid_amt;
     public $model_id;
     public $row_total;
     public $order_note;

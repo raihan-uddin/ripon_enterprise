@@ -88,7 +88,7 @@
             echo "</div>";
             $yourCompany = YourCompany::model()->findByAttributes(['is_active' => YourCompany::ACTIVE]);
             $company_name = $company_location = $company_road = $company_house = $company_contact = $company_email = $company_web = $company_trn_no = "N/A";
-            if ($yourCompany){
+            if ($yourCompany) {
                 $company_name = $yourCompany->company_name;
                 $company_location = $yourCompany->location;
                 $company_road = $yourCompany->road;
@@ -102,26 +102,29 @@
             $customer = Suppliers::model()->findByPk($data->supplier_id);
             ?>
         </div>
-        <div class='printAllTableForThisReport' style="width: 8.5in;">
+        <div class='printAllTableForThisReport' style="width: 100%;">
             <table style="width: 100%; border-collapse: collapse; font-size: 11px;" class="item-list">
                 <tr>
-                    <td colspan="4"><img src="<?= Yii::app()->theme->baseUrl . "/images/logo.png" ?>"
-                                         style="width: 130px; height: 100px;"></td>
-                    <td style="text-align: center;" colspan="2"><h3>PURCHASE ORDER</h3></td>
+                    <td colspan="3" style="border: 1px solid white;">
+                        <img src="<?= Yii::app()->theme->baseUrl . "/images/logo.png" ?>"
+                             style="width: 130px; height: 100px; float: left" alt="">
+                    </td>
+                    <td style="text-align: center; border: 1px solid white;" colspan="3"><h3>PURCHASE ORDER</h3></td>
                 </tr>
                 <tr>
-                    <td colspan="3" style="border-right: white;">
+                    <td colspan="3" style="border-right: white; text-align: left; border-left: 1px solid white; border-right: 1px solid white; background: white;">
+                        <h5>Suppliers Details</h5>
                         <?php
-                        echo "$company_road<br>";
-                        echo "$company_house<br>";
-                        echo "$company_location<br>";
-                        echo "Ph : $company_contact<br>";
-                        echo "Email: $company_email<br>";
-                        echo "Website: $company_web<br>";
-                        echo "TRN: $company_trn_no<br>";
+                        $customer_name = $customer_zip = $customer_city = $customer_state = $customer_phone = $customer_trn_no = "N/A";
+                        if ($customer) {
+                            $customer_name = $customer->company_name;
+                            $customer_address = $customer->company_address;
+                        }
+                        echo "<b>$customer_name</b><br>";
+                        echo "$customer_address";
                         ?>
                     </td>
-                    <td colspan="3">
+                    <td colspan="3" style="border-right: 1px solid white;">
                         <table style="width: 100%; border-collapse: collapse; font-size: 11px;">
                             <tr>
                                 <td style="text-align: center;"><b>Order No</b></td>
@@ -142,20 +145,7 @@
                         </table>
                     </td>
                 </tr>
-                <tr>
-                    <td colspan="6">
-                        <h5>Suppliers Details</h5>
-                        <?php
-                        $customer_name = $customer_zip = $customer_city = $customer_state = $customer_phone = $customer_trn_no = "N/A";
-                        if ($customer) {
-                            $customer_name = $customer->company_name;
-                            $customer_address = $customer->company_address;
-                        }
-                        echo "$customer_name<br>";
-                        echo "$customer_address";
-                        ?>
-                    </td>
-                </tr>
+
                 <tr>
                     <td style="text-align: center;">#</td>
                     <td style="text-align: center;" colspan="2">Description</td>
@@ -235,7 +225,7 @@
                     <td style="text-align: right;"><?= $data->grand_total ?></td>
                 </tr>
                 <tr>
-                    <td colspan="6" style="height: 150px; vertical-align: bottom; text-align: left;">
+                    <td colspan="6" style="height: 150px; vertical-align: bottom; text-align: left; border: 1px solid white; background: white;">
                         <span style="text-decoration: overline;">Receivers Name, Signature & Mob No</span>
                     </td>
                 </tr>

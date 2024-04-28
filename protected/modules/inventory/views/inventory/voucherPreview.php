@@ -62,7 +62,7 @@
             <!--            </button>-->
         </div>
     </div>
-    <div class="card-body">
+    <div class="card-body table-responsive">
         <div style="width: 100%">
             <?php
             if ($data) {
@@ -85,40 +85,13 @@
                 'id' => 'print-div'         //id of the print link
             ));
             echo "</div>";
-            $yourCompany = YourCompany::model()->findByAttributes(['is_active' => YourCompany::ACTIVE]);
-            $company_name = $company_location = $company_road = $company_house = $company_contact = $company_email = $company_web = $company_trn_no = "N/A";
-            if ($yourCompany) {
-                $company_name = $yourCompany->company_name;
-                $company_location = $yourCompany->location;
-                $company_road = $yourCompany->road;
-                $company_house = $yourCompany->house;
-                $company_contact = $yourCompany->contact;
-                $company_email = $yourCompany->email;
-                $company_web = $yourCompany->web;
-                $company_trn_no = $yourCompany->trn_no;
-            }
 
             ?>
         </div>
-        <div class='printAllTableForThisReport' style="width: 8.5in;">
+        <div class='printAllTableForThisReport ' style="width: 8.5in;">
             <table style="width: 100%; border-collapse: collapse; font-size: 11px;" class="item-list">
                 <tr>
-                    <td colspan="4"><img src="<?= Yii::app()->theme->baseUrl . "/images/logo.png" ?>"
-                                         style="width: 130px; height: 100px;"></td>
-                </tr>
-                <tr>
-                    <td colspan="2" style="border-right: white;">
-                        <?php
-                        echo "$company_road<br>";
-                        echo "$company_house<br>";
-                        echo "$company_location<br>";
-                        echo "Ph : $company_contact<br>";
-                        echo "Email: $company_email<br>";
-                        echo "Website: $company_web<br>";
-                        echo "TRN: $company_trn_no<br>";
-                        ?>
-                    </td>
-                    <td colspan="2">
+                    <td colspan="9" style="border: 1px solid white;">
                         <table style="width: 100%; border-collapse: collapse; font-size: 11px;">
                             <tr>
                                 <td style="text-align: center;"><b>Challan No</b></td>
@@ -129,38 +102,59 @@
                                 <td style="text-align: center;"><?= date('d.m.Y', strtotime(reset($data)->date)) ?></td>
                             </tr>
                         </table>
+                        <div style="width: 100%; height: 20px;"></div>
                     </td>
                 </tr>
 
                 <tr>
                     <td style="text-align: center;">#</td>
                     <td style="text-align: center;">Description</td>
-                    <td style="text-align: center; width: 15%;">Stock In</td>
-                    <td style="text-align: center;  width: 15%;">Stock Out</td>
+                    <td style="text-align: center;">Product SL No</td>
+                    <td style="text-align: center; ">Stock In</td>
+                    <td style="text-align: center;  ">Stock Out</td>
+                    <td style="text-align: center;">P.P</td>
+                    <td style="text-align: center;">S.P</td>
+                    <td style="text-align: center;">T.P.P</td>
+                    <td style="text-align: center;">T.S.P</td>
                 </tr>
                 <tbody>
                 <?php
                 $i = 1;
+                $g_total_in_qty = $g_total_out_qty = $g_total_pp = $g_total_sp = 0;
                 foreach ($data as $dt) {
-                    $unit_label = Units::model()->nameOfThis($dt->unit_id);
-                    $unit_label_in = $unit_label_out = "";
-                    if ($dt->stock_in > 0) {
-                        $unit_label_in = $unit_label;
-                    } else {
-                        $unit_label_out = $unit_label;
-                    }
+
+                    $g_total_in_qty += $dt->stock_in;
+                    $g_total_out_qty += $dt->stock_out;
+
+                    $g_total_pp += $dt->purchase_price * ($g_total_in_qty > 0 ? $dt->stock_in : $dt->stock_out);
+                    $g_total_sp += $dt->sell_price * ($g_total_out_qty > 0 ? $dt->stock_out : $dt->stock_in);
                     ?>
                     <tr>
                         <td style="text-align: center;"><?= $i++ ?></td>
-                        <td><?= $dt->model_name ?></td>
-                        <td style="text-align: center;"><?= $dt->stock_in . " $unit_label_in" ?></td>
-                        <td style="text-align: right;"><?= $dt->stock_out . " $unit_label_out" ?></td>
+                        <td style="text-align: left;"><?= $dt->model_name ?></td>
+                        <td><?= $dt->product_sl_no ?></td>
+                        <td style="text-align: center;"><?= $dt->stock_in ?></td>
+                        <td style="text-align: center;"><?= $dt->stock_out ?></td>
+                        <td><?= $dt->purchase_price ? number_format($dt->purchase_price, 2) : 0 ?></td>
+                        <td><?= $dt->sell_price ? number_format($dt->sell_price, 2) : 0; ?></td>
+                        <td><?= number_format($dt->purchase_price * ($dt->stock_in > 0 ? $dt->stock_in : $dt->stock_out), 2) ?></td>
+                        <td><?= number_format($dt->sell_price * ($dt->stock_out > 0 ? $dt->stock_out : $dt->stock_in), 2) ?></td>
                     </tr>
                     <?php
                 }
                 ?>
                 <tr>
-                    <td colspan="6" style="height: 150px; vertical-align: bottom; text-align: left;">
+                    <td colspan="3" style="text-align: right;"><b>Total</b></td>
+                    <td style="text-align: center;"><b><?= $g_total_in_qty ?></b></td>
+                    <td style="text-align: center;"><b><?= $g_total_out_qty ?></b></td>
+                    <td></td>
+                    <td></td>
+                    <td style="text-align: right;"><b><?= number_format($g_total_pp, 2) ?></b></td>
+                    <td style="text-align: right;"><b><?= number_format($g_total_sp, 2) ?></b></td>
+                </tr>
+                <tr>
+                    <td colspan="6"
+                        style="height: 150px; vertical-align: bottom; text-align: left; border: 1px solid white; background: white;">
                         <span style="text-decoration: overline;">Receivers Name, Signature & Mob No</span>
                     </td>
                 </tr>

@@ -118,7 +118,8 @@ echo "</div>";
                 <tr>
                     <td style="text-align: center;"><?php echo $sl++; ?></td>
                     <td style="text-align: center;"><?php echo $dmr->date; ?></td>
-                    <td style="text-align: center; text-decoration: underline; cursor: zoom-in;" title="click here to get the preview" class="invoiceDetails"><?php echo $dmr->id; ?></td>
+                    <td style="text-align: center; text-decoration: underline; cursor: zoom-in;"
+                        title="click here to get the preview" class="invoiceDetails"><?php echo $dmr->id; ?></td>
                     <td style="text-align: left;"><?php echo sprintf("%s | %s", $dmr->company_name, $dmr->contact_no); ?></td>
                     <td style="text-align: left;"><?php echo $dmr->product_name; ?></td>
                     <td style="text-align: right;"><?php echo number_format($dmr->qty, 2) . " $dmr->label"; ?></td>
@@ -158,9 +159,9 @@ echo "</div>";
 </div>
 
 <!--        modal-->
-<div class="modal fade" id="information-modal" tabindex="-1" role="dialog"
+<div class="modal fade" id="information-modal" tabindex="-1" data-backdrop="static" role="dialog"
      aria-labelledby="information-modal" aria-hidden="true">
-    <div class="modal-dialog modal-xl" role="document">
+    <div class="modal-dialog modal-dialog-centered modal-xl" role="document">
         <div class="modal-content">
             <div class="modal-header">
                 <h5 class="modal-title" id="exampleModalLabel">Invoice</h5>

@@ -3,7 +3,7 @@ $this->widget('application.components.BreadCrumb', array(
     'crumbs' => array(
         array('name' => 'Common', 'url' => array('admin')),
         array('name' => 'Expense', 'url' => array('admin')),
-        array('name' => 'Create'),
+        array('name' => 'Update (' . $model->entry_no . ') '),
     ),
 //    'delimiter' => ' &rarr; ',
 ));
@@ -49,7 +49,7 @@ Yii::app()->clientScript->registerCoreScript("jquery.ui");
                         <?php echo $form->labelEx($model, 'date', ['class' => 'col-sm-12 col-md-3 col-form-label']); ?>
                         <div class="col-sm-12 col-md-9">
                             <div class="input-group" id="entry_date" data-target-input="nearest">
-                                <?php echo $form->textField($model, 'date', array('class' => 'form-control datetimepicker-input', 'placeholder' => 'YYYY-MM-DD', 'value' => date('Y-m-d'))); ?>
+                                <?php echo $form->textField($model, 'date', array('class' => 'form-control datetimepicker-input', 'placeholder' => 'YYYY-MM-DD', )); ?>
                                 <!--<div class="input-group-append">
                                     <div class="input-group-text"><i class="fa fa-calendar"></i></div>
                                 </div>-->
@@ -79,7 +79,7 @@ Yii::app()->clientScript->registerCoreScript("jquery.ui");
                         <?php echo $form->labelEx($model, 'created_by', ['class' => 'col-sm-12 col-md-3 col-form-label']); ?>
                         <div class="col-sm-12 col-md-9">
                             <div class="input-group" id="customer_id" data-target-input="nearest">
-                                <?php echo $form->textField($model, 'created_by_text', array('class' => 'form-control', 'readonly' => true, 'value' => Users::model()->nameOfThis(Yii::app()->user->id))); ?>
+                                <?php echo $form->textField($model, 'created_by_text', array('class' => 'form-control', 'readonly' => true, 'value' => Users::model()->nameOfThis($model->created_by))); ?>
                                 <div class="input-group-append">
                                     <div class="input-group-text"><i class="fa fa-user"></i></div>
                                 </div>
@@ -235,6 +235,37 @@ Yii::app()->clientScript->registerCoreScript("jquery.ui");
                                 </tr>
                                 </thead>
                                 <tbody>
+                                <?php
+                                if ($oldData) {
+                                    foreach ($oldData as $key => $dt) {
+                                        ?>
+                                        <tr class="item">
+                                            <td class="text-center sl-no"
+                                                style="vertical-align: middle;"><?= ++$key ?></td>
+                                            <td class="text-left" style="vertical-align: middle;">
+                                                <?= ExpenseHead::model()->nameOfThis($dt->expense_head_id) ?>
+                                                <input type="hidden" name="ExpenseDetails[temp_expense_head_id][]"
+                                                       class="form-control model-id"
+                                                       value="<?= $dt->expense_head_id ?>">
+                                            </td>
+                                            <td class="text-center" style="vertical-align: middle;  min-width: 120px;">
+                                                <input type="text" name="ExpenseDetails[temp_remarks][]"
+                                                       class="form-control text-left" value="<?= $dt->remarks ?>">
+                                            </td>
+                                            <td class="text-center" style="vertical-align: middle;  min-width: 120px;">
+                                                <input type="text" name="ExpenseDetails[temp_amount][]"
+                                                       class="form-control text-right temp-amount" value="<?= $dt->amount ?>">
+                                            </td>
+                                            <td>
+                                                <button type="button" class="btn btn-danger dlt"><i
+                                                            class="fa fa-trash-o"></i>
+                                                </button>
+                                            </td>
+                                        </tr>
+                                        <?php
+                                    }
+                                }
+                                ?>
                                 </tbody>
                                 <tfoot>
                                 <tr>
@@ -260,7 +291,10 @@ Yii::app()->clientScript->registerCoreScript("jquery.ui");
 
     <div class="card-footer">
         <?php
-        echo CHtml::ajaxSubmitButton('Create', CHtml::normalizeUrl(array('/accounting/expense/create', 'render' => true)), array(
+//        echo CHtml::ajaxSubmitButton('Update', CHtml::normalizeUrl(array('/accounting/expense/update', 'render' => true)), array(
+        echo CHtml::ajaxSubmitButton('Update ', CHtml::normalizeUrl(array('/accounting/expense/update/id/' . $model->id, 'render' => true)), array(
+
+
             'dataType' => 'json',
             'type' => 'post',
             'success' => 'function(data) {
@@ -269,9 +303,9 @@ Yii::app()->clientScript->registerCoreScript("jquery.ui");
                         $("#formResult").fadeIn();
                         $("#formResult").html("Data saved successfully.");
                         toastr.success("Data saved successfully.");
-                        $("#expense-form")[0].reset();
+//                        $("#expense-form")[0].reset();
                         $("#formResult").animate({opacity:1.0},1000).fadeOut("slow");
-                        $("#list tbody").empty();
+//                        $("#list tbody").empty();
                         $("#soReportDialogBox").dialog("open");
                         $("#AjFlashReportSo").html(data.soReportInfo).show();
                     }else{

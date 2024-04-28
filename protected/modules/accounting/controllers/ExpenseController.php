@@ -1,6 +1,6 @@
 <?php
 
-class ExpenseController extends Controller
+class ExpenseController extends RController
 {
     /**
      * @var string the default layout for the views. Defaults to '//layouts/column2', meaning
@@ -15,7 +15,8 @@ class ExpenseController extends Controller
     public function filters()
     {
         return array(
-            'rights-VoucherPreview',
+            'rights
+            -VoucherPreview',
         );
     }
 
@@ -55,40 +56,49 @@ class ExpenseController extends Controller
 
         // Uncomment the following line if AJAX validation is needed
         // $this->performAjaxValidation($model);
+        $transaction = Yii::app()->db->beginTransaction();
+        try {
+            if (isset($_POST['Expense'], $_POST['ExpenseDetails'])) {
+                $model->attributes = $_POST['Expense'];
+                $model->max_sl_no = Expense::maxSlNo();
+                $model->entry_no = date('y') . date('m') . str_pad($model->max_sl_no, 3, "0", STR_PAD_LEFT);
+                if ($model->save()) {
+                    foreach ($_POST['ExpenseDetails']['temp_expense_head_id'] as $key => $expense_head_id) {
+                        $note = $_POST['ExpenseDetails']['temp_remarks'][$key];
+                        $amount = $_POST['ExpenseDetails']['temp_amount'][$key];
 
-        if (isset($_POST['Expense'], $_POST['ExpenseDetails'])) {
-            $model->attributes = $_POST['Expense'];
-            $model->max_sl_no = Expense::maxSlNo();
-            $model->entry_no = date('y') . date('m') . str_pad($model->max_sl_no, 3, "0", STR_PAD_LEFT);
-            if ($model->save()) {
-                foreach ($_POST['ExpenseDetails']['temp_expense_head_id'] as $key => $expense_head_id) {
-                    $note = $_POST['ExpenseDetails']['temp_remarks'][$key];
-                    $amount = $_POST['ExpenseDetails']['temp_amount'][$key];
-
-                    $model2 = new ExpenseDetails();
-                    $model2->expense_id = $model->id;
-                    $model2->remarks = $note;
-                    $model2->expense_head_id = $expense_head_id;
-                    $model2->amount = $amount;
-                    if (!$model2->save()) {
-                        var_dump($model2->getErrors());
-                        exit;
+                        $model2 = new ExpenseDetails();
+                        $model2->expense_id = $model->id;
+                        $model2->remarks = $note;
+                        $model2->expense_head_id = $expense_head_id;
+                        $model2->amount = $amount;
+                        if (!$model2->save()) {
+                            $transaction->rollBack();
+                            throw new CHttpException(500, sprintf('Error in saving order details! %s <br>', json_encode($model2->getErrors())));
+                        }
                     }
+
+                    $transaction->commit();
+                    echo CJSON::encode(array(
+                        'status' => 'success',
+                        'soReportInfo' => $this->renderPartial('voucherPreview', array('data' => $model, 'new' => true), true, true), //
+                    ));
+                    Yii::app()->end();
+                } else {
+                    $error = CActiveForm::validate($model);
+                    $error2 = CActiveForm::validate($model2);
+                    if ($error != '[]')
+                        echo $error;
+                    if ($error2 != '[]')
+                        echo $error2;
+                    Yii::app()->end();
                 }
-                echo CJSON::encode(array(
-                    'status' => 'success',
-                    'soReportInfo' => $this->renderPartial('voucherPreview', array('data' => $model, 'new' => true), true, true), //
-                ));
-                Yii::app()->end();
-            } else {
-                $error = CActiveForm::validate($model);
-                $error2 = CActiveForm::validate($model2);
-                if ($error != '[]')
-                    echo $error;
-                if ($error2 != '[]')
-                    echo $error2;
-                Yii::app()->end();
             }
+        } catch (PDOException $e) {
+            $transaction->rollBack();
+            throw new CHttpException(500, $e->getMessage());
+        } catch (Exception $e) {
+            throw new CHttpException(500, $e->getMessage());
         }
 
         $this->pageTitle = "CREATE EXPENSE";
@@ -105,19 +115,68 @@ class ExpenseController extends Controller
      */
     public function actionUpdate($id)
     {
+        if (Yii::app()->request->isAjaxRequest) {
+            Yii::app()->clientScript->scriptMap['jquery.js'] = false;
+        }
+
+
         $model = $this->loadModel($id);
+        $model2 = new ExpenseDetails();
+        $oldData = ExpenseDetails::model()->findAllByAttributes(['expense_id' => $model->id]);
 
         // Uncomment the following line if AJAX validation is needed
         // $this->performAjaxValidation($model);
+        $transaction = Yii::app()->db->beginTransaction();
+        try {
+            if (isset($_POST['Expense'])) {
+                $model->attributes = $_POST['Expense'];
+                if ($model->save()) {
+                    $savedDetails = [];
+                    foreach ($_POST['ExpenseDetails']['temp_expense_head_id'] as $key => $expense_head_id) {
+                        $note = $_POST['ExpenseDetails']['temp_remarks'][$key];
+                        $amount = $_POST['ExpenseDetails']['temp_amount'][$key];
+                        // find the old data by expense_id & expense_head_id
+                        $model2 = ExpenseDetails::model()->findByAttributes(['expense_id' => $model->id, 'expense_head_id' => $expense_head_id]);
+                        if (!$model2){
+                            $model2 = new ExpenseDetails();
+                        }
+                        $model2->expense_id = $model->id;
+                        $model2->remarks = $note;
+                        $model2->expense_head_id = $expense_head_id;
+                        $model2->amount = $amount;
+                        if (!$model2->save()) {
+                            $transaction->rollBack();
+                            throw new CHttpException(500, sprintf('Error in saving order details! %s <br>', json_encode($model2->getErrors())));
+                        }
+                        $savedDetails[] = $model2->id;
+                    }
+                    // delete the old data which is not in the savedDetails
+                    foreach ($oldData as $old) {
+                        if (!in_array($old->id, $savedDetails)) {
+                            $old->delete();
+                        }
+                    }
+                }
+                $transaction->commit();
 
-        if (isset($_POST['Expense'])) {
-            $model->attributes = $_POST['Expense'];
-            if ($model->save())
-                $this->redirect(array('view', 'id' => $model->id));
+                echo CJSON::encode(array(
+                    'status' => 'success',
+                    'soReportInfo' => $this->renderPartial('voucherPreview', array('data' => $model, 'new' => true), true, true), //
+                ));
+                Yii::app()->end();
+            }
+        } catch (PDOException $e) {
+            $transaction->rollBack();
+            throw new CHttpException(500, $e->getMessage());
+        } catch (Exception $e) {
+            throw new CHttpException(500, $e->getMessage());
         }
 
-        $this->render('update', array(
+        $this->pageTitle = "UPDATE EXPENSE";
+        $this->render('_form2', array(
             'model' => $model,
+            'model2' => $model2,
+            'oldData' => $oldData,
         ));
     }
 

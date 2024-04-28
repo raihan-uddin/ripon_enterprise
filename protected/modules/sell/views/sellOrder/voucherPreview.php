@@ -104,7 +104,7 @@
 
             $customer = Customers::model()->findByPk($data->customer_id);
             ?>
-            <div class='printAllTableForThisReport' style="width: 8.5in;">
+            <div class='printAllTableForThisReport' style="width: 99%;">
                 <div class="page-begaining">
                     <div class="header" id="pageHeader" style="width: 100%; min-height: 80px;">
                         <?php
@@ -255,14 +255,14 @@
                         }
                         ?>
                         <tr>
-                            <td rowspan="<?= $footerRowSpan ?>>" colspan="2" style="border: none;">
+                            <td rowspan="<?= $footerRowSpan ?>>" colspan="2" style="border: none; background: white; text-align: left; letter-spacing: 1px; font-weight: bold;">
                                 <div>Total Amount In Words:</div>
                                 <div>BDT:
                                     <?php
                                     $amountInWord = new AmountInWord();
                                     $inword = $amountInWord->convert(intval($row_total));
                                     if ($amountInWord->convertFloat($row_total)) {
-                                        $inword .= $amountInWord->convertFloat($row_total) . ' Only';
+                                        $inword .= $amountInWord->convertFloat($row_total) . ' Taka Only';
                                     } else {
                                         $inword .= ' Only';
                                     }
@@ -270,26 +270,26 @@
                                     ?>
                                 </div>
                             </td>
-                            <td colspan="2" style="border: none;">Sub Total</td>
+                            <td colspan="2" style="border: none; background: white;">Sub Total</td>
                             <td style="text-align: right; border: none;">TK <?= number_format($row_total, 2) ?></td>
                         </tr>
                         <tr>
-                            <td colspan="2" style="border: none;">Vat (<?= number_format($vat_percentage, 2) ?>%)</td>
+                            <td colspan="2" style="border: none; background: white;">Vat (<?= number_format($vat_percentage, 2) ?>%)</td>
                             <td style="text-align: right; border: none;">TK <?= number_format($vat, 2) ?></td>
                         </tr>
                         <tr>
-                            <td colspan="2" style="border: none;">Delivery Charge</td>
+                            <td colspan="2" style="border: none; background: white;">Delivery Charge</td>
                             <td style="text-align: right; border: none;">
                                 TK <?= number_format($delivery_charge, 2) ?></td>
                         </tr>
                         <tr>
-                            <td colspan="2" style="border: none;">Discount</td>
+                            <td colspan="2" style="border: none; background: white;">Discount</td>
                             <td style="text-align: right; border: none;">TK (-<?= number_format($discount_amount, 2) ?>
                                 )
                             </td>
                         </tr>
                         <tr style="font-weight: bold;">
-                            <td colspan="2" style="border: none;">
+                            <td colspan="2" style="border: none; background: white;">
                                 <div style="height: 1px; width: 100%; border: 1px solid black;"></div>
                                 Net payable amount
                             </td>
@@ -302,7 +302,7 @@
                             ?>
 
                             <tr>
-                                <td colspan="2" style="border: none;">
+                                <td colspan="2" style="border: none; background: white;">
                                     Previous Due Amount
                                 </td>
                                 <td style="text-align: right; border: none;">
@@ -336,7 +336,7 @@
                                     TK <?= number_format($previous_due_amount, 2) ?></td>
                             </tr>
                             <tr style="font-weight: bold;">
-                                <td colspan="2" style="border: none;"></td>
+                                <td colspan="2" style="border: none; background: white;"></td>
                                 <td colspan="2" style="border: none;">
                                     Current Paid Amount
                                 </td>
@@ -344,7 +344,7 @@
                                     TK <?= number_format($current_collection, 2) ?></td>
                             </tr>
                             <tr>
-                                <td colspan="2" style="border: none;"></td>
+                                <td colspan="2" style="border: none; background: white;"></td>
                                 <td colspan="2" style="border: none;">
                                     Cash Discount
                                 </td>
@@ -355,7 +355,7 @@
                                 </td>
                             </tr>
                             <tr style="font-weight: bold;">
-                                <td colspan="2" style="border: none;"></td>
+                                <td colspan="2" style="border: none; background: white;"></td>
                                 <td colspan="2" style="border: none;">
                                     <div style="height: 1px; width: 100%; border: 1px solid black;"></div>
                                     Current Due Amount
@@ -411,7 +411,6 @@
         </div>
     </div>
 </div>
-show profit loss summary on profitLossText div using javascript  must be show after loading the page
 <script>
     $(document).ready(function () {
         var profitLoss = <?= $row_total - $totalCosting - $discount_amount ?>;

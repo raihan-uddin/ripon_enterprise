@@ -62,7 +62,7 @@
             <!--            </button>-->
         </div>
     </div>
-    <div class="card-body">
+    <div class="card-body table-responsive">
         <div style="width: 100%">
             <?php
             if ($data) {
@@ -99,22 +99,22 @@
             }
             ?>
         </div>
-        <div class='printAllTableForThisReport' style="width: 8.5in;">
+        <div class='printAllTableForThisReport' style="width: 95%;">
             <table style="width: 100%; border-collapse: collapse; font-size: 11px;" class="item-list">
                 <tr>
-                    <td colspan="4" style="vertical-align: middle;">
+                    <td colspan="4" style="vertical-align: middle; border: 1px solid white;">
                         <div style="width: 70%; float: left;">
-                            <img src="<?= Yii::app()->theme->baseUrl . "/images/logo.png" ?>"
-                                 style="width: 130px; height: 100px;">
+<!--                            <img src="--><?php //= Yii::app()->theme->baseUrl . "/images/logo.png" ?><!--"-->
+<!--                                 style="width: 130px; height: 100px;">-->
                         </div>
                         <div style="width: 29%; float: right; vertical-align: middle; text-align: center;">
-                            <h3 style="vertical-align: middle;">EXPENSE</h3>
+                            <h5 style="vertical-align: middle; border: 1px dotted black; padding: 5px;">EXPENSE VOUCHER</h5>
                         </div>
                     </td>
                 </tr>
                 <tr>
-                    <td colspan="4" style="border-right: white;">
-                        <table style="width: 100%; border-collapse: collapse; font-size: 11px;">
+                    <td colspan="4" style=" border: 1px solid white;">
+                        <table style="width: 100%; border-collapse: collapse; font-size: 11px; border: 1px solid white;">
                             <tr>
                                 <td style="text-align: center;"><b>Date</b></td>
                                 <td style="text-align: center;"><?= date('d.m.Y', strtotime($data->date)) ?></td>
@@ -171,7 +171,7 @@
                     <td style="text-align: right;"> <?= $grand_total ?></td>
                 </tr>
                 <tr>
-                    <td colspan="4" style="height: 150px; vertical-align: bottom; text-align: left;">
+                    <td colspan="4" style="height: 150px; vertical-align: bottom; text-align: left; border: 1px solid white; background: white;">
                         <span style="text-decoration: overline;">Receivers Name, Signature & Mob No</span>
                     </td>
                 </tr>

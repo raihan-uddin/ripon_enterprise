@@ -8,9 +8,9 @@
             </div>
         </div>
         <!--        modal-->
-        <div class="modal fade" id="profit-loss-summary-modal" tabindex="-1" role="dialog"
+        <div class="modal fade" id="profit-loss-summary-modal" tabindex="-1" data-backdrop="static"  role="dialog"
              aria-labelledby="profit-loss-summary-modal" aria-hidden="true">
-            <div class="modal-dialog modal-lg" role="document">
+            <div class="modal-dialog modal-dialog-centered modal-lg" role="document">
                 <div class="modal-content">
                     <div class="modal-header">
                         <h5 class="modal-title" id="exampleModalLabel">Profit & Loss Summary</h5>

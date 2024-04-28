@@ -112,8 +112,10 @@ if (Yii::app()->user->checkAccess('Sell.Order.VoucherPreview')) {
                         if(data.status=='error'){
                             toastr.error('No data found!');
                         } else {
-                         $('#viewDialog').dialog('open');   
-                         $('#AjFlash').html(data).show();    
+//                         $('#viewDialog').dialog('open');   
+//                         $('#AjFlash').html(data).show();
+                            $('#information-modal').modal('show');
+                            $('#information-modal .modal-body').html(data);    
                         }      
                         $('#overlay').fadeOut(300);　                                                         
                     }",
@@ -282,7 +284,7 @@ if (Yii::app()->user->checkAccess('Sell.Order.VoucherPreview')) {
                 array
                 (
                     'header' => '',
-                    'htmlOptions' => array('style' => 'width:20px'),
+                    'htmlOptions' => array('style' => 'width:20px; text-align: center;', 'class' => 'text-center'),
                     'template' => '{singleInvoice}',
                     'class' => 'CButtonColumn',
                     'afterDelete' => 'function(link,success,data){ if(success) $("#statusMsg").html(data); }',
@@ -293,14 +295,17 @@ if (Yii::app()->user->checkAccess('Sell.Order.VoucherPreview')) {
                             'options' => array('rel' => 'tooltip', 'data-toggle' => 'tooltip', 'title' => Yii::t('app', 'Preview Invoice')),
                             'url' => 'Yii::app()->controller->createUrl("singlePreview",array("id"=>$data->id))',
                             'click' => "function(){
-                                    $('#viewDialog').dialog('open');
+//                                    $('#viewDialog').dialog('open');
                                     $.fn.yiiGridView.update('sell-order-grid', {
                                         type:'POST',
                                         url:$(this).attr('href'),
                                         success:function(data) {
                                              $('#ajaxLoaderView').hide();  
                                               //$('#AjFlash').html(data).fadeIn().animate({opacity: 1.0}, 3000).fadeOut('slow');
-                                              $('#AjFlash').html(data).show();
+                                              // $('#AjFlash').html(data).show();
+                                              
+                                              $('#information-modal').modal('show');
+                                              $('#information-modal .modal-body').html(data);   
                                         },
                                         beforeSend: function(){
                                             $('#ajaxLoaderView').show();
@@ -349,6 +354,28 @@ if (Yii::app()->user->checkAccess('Sell.Order.VoucherPreview')) {
 <div id="overlay">
     <div class="cv-spinner">
         <span class="spinner"></span>
+    </div>
+</div>
+
+
+<!--        modal-->
+<div class="modal fade" id="information-modal" tabindex="-1" data-backdrop="static" role="dialog"
+     aria-labelledby="information-modal" aria-hidden="true">
+    <div class="modal-dialog modal-dialog-centered modal-xl" role="document">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title" id="exampleModalLabel">Invoice</h5>
+                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                    <span aria-hidden="true">&times;</span>
+                </button>
+            </div>
+            <div class="modal-body text-center">
+                <p>Loading...</p> <!-- this will be replaced by the response from the server -->
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
+            </div>
+        </div>
     </div>
 </div>
 

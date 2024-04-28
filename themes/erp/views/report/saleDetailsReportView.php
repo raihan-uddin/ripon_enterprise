@@ -44,24 +44,6 @@
 
 <?php
 date_default_timezone_set("Asia/Dhaka");
-$yourCompanyInfo = YourCompany::model()->findByAttributes(array('is_active' => YourCompany::ACTIVE,));
-if ($yourCompanyInfo) {
-    $yourCompanyName = $yourCompanyInfo->company_name;
-    $yourCompanyLocation = $yourCompanyInfo->location;
-    $yourCompanyRoad = $yourCompanyInfo->road;
-    $yourCompanyHouse = $yourCompanyInfo->house;
-    $yourCompanyContact = $yourCompanyInfo->contact;
-    $yourCompanyEmail = $yourCompanyInfo->email;
-    $yourCompanyWeb = $yourCompanyInfo->web;
-} else {
-    $yourCompanyName = 'N/A';
-    $yourCompanyLocation = 'N/A';
-    $yourCompanyRoad = 'N/A';
-    $yourCompanyHouse = 'N/A';
-    $yourCompanyContact = 'N/A';
-    $yourCompanyEmail = 'N/A';
-    $yourCompanyWeb = 'N/A';
-}
 
 echo "<div class='printBtn' style='width: unset;'>";
 echo "  <img class='exportToExcel' id='exportToExcel'  src='" . Yii::app()->theme->baseUrl . "/images/excel.png' title='EXPORT TO EXCEL'>";
@@ -127,7 +109,8 @@ echo "</div>";
                 <tr>
                     <td style="text-align: center;"><?php echo $sl++; ?></td>
                     <td style="text-align: center;"><?php echo $dmr->date; ?></td>
-                    <td style="text-align: center; text-decoration: underline; cursor:zoom-in;" class="invoiceDetails" title="click here to get the preview"><?php echo $dmr->id; ?></td>
+                    <td style="text-align: center; text-decoration: underline; cursor:zoom-in;" class="invoiceDetails"
+                        title="click here to get the preview"><?php echo $dmr->id; ?></td>
                     <td style="text-align: left;"><?php echo sprintf("%s | %s", $dmr->customer_name, $dmr->contact_no); ?></td>
                     <td style="text-align: left;"><?php echo sprintf("%s | %s", $dmr->product_name, $dmr->product_code); ?></td>
                     <td style="text-align: right;"><?php echo number_format($pp, 2); ?></td>
@@ -170,9 +153,9 @@ echo "</div>";
 </div>
 
 <!--        modal-->
-<div class="modal fade" id="information-modal" tabindex="-1" role="dialog"
+<div class="modal fade" id="information-modal" tabindex="-1" data-backdrop="static" role="dialog"
      aria-labelledby="information-modal" aria-hidden="true">
-    <div class="modal-dialog modal-xl" role="document">
+    <div class="modal-dialog modal-dialog-centered modal-xl" role="document">
         <div class="modal-content">
             <div class="modal-header">
                 <h5 class="modal-title" id="exampleModalLabel">Invoice</h5>

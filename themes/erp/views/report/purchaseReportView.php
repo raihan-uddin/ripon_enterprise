@@ -1,3 +1,7 @@
+<?php
+/** @var string $message */
+/** @var mixed $data */
+?>
 <style>
     .summaryTab {
         float: left;
@@ -44,25 +48,6 @@
 
 <?php
 date_default_timezone_set("Asia/Dhaka");
-$yourCompanyInfo = YourCompany::model()->findByAttributes(array('is_active' => YourCompany::ACTIVE,));
-if ($yourCompanyInfo) {
-    $yourCompanyName = $yourCompanyInfo->company_name;
-    $yourCompanyLocation = $yourCompanyInfo->location;
-    $yourCompanyRoad = $yourCompanyInfo->road;
-    $yourCompanyHouse = $yourCompanyInfo->house;
-    $yourCompanyContact = $yourCompanyInfo->contact;
-    $yourCompanyEmail = $yourCompanyInfo->email;
-    $yourCompanyWeb = $yourCompanyInfo->web;
-} else {
-    $yourCompanyName = 'N/A';
-    $yourCompanyLocation = 'N/A';
-    $yourCompanyRoad = 'N/A';
-    $yourCompanyHouse = 'N/A';
-    $yourCompanyContact = 'N/A';
-    $yourCompanyEmail = 'N/A';
-    $yourCompanyWeb = 'N/A';
-}
-
 echo "<div class='printBtn' style='width: unset;'>";
 echo "  <img class='exportToExcel' id='exportToExcel'  src='" . Yii::app()->theme->baseUrl . "/images/excel.png' title='EXPORT TO EXCEL'>";
 $this->widget('ext.mPrint.mPrint', array(
@@ -97,13 +82,15 @@ echo "</div>";
             <th style="box-shadow: 0px 0px 0px 1px black inset;">Supplier</th>
             <th style="width: 10%;box-shadow: 0px 0px 0px 1px black inset;">Discount</th>
             <th style="width: 10%;box-shadow: 0px 0px 0px 1px black inset;">Amount</th>
+            <th style="width: 10%;box-shadow: 0px 0px 0px 1px black inset;">Paid</th>
+            <th style="width: 10%;box-shadow: 0px 0px 0px 1px black inset;">Due</th>
         </tr>
         </thead>
         <tbody>
         <?php
         $sl = 1;
         $rowFound = false;
-        $groundTotal = 0;
+        $groundTotal = $groundTotalPayment = $groundTotalDue = 0;
         $row_closing = $row_closing_discount = $net_income_total = $total_due = 0;
         ?>
 
@@ -113,14 +100,23 @@ echo "</div>";
                 $row_closing_discount += $dmr->discount;
                 $row_closing += $dmr->grand_total;
                 $rowFound = true;
+
+                $totalPaid = PaymentReceipt::model()->totalPaidAmountOfThisOrder($dmr->id);
+                $invoiceDue = $dmr->grand_total - $totalPaid;
+
+                $groundTotalPayment += $totalPaid;
+                $groundTotalDue += $invoiceDue;
                 ?>
                 <tr>
                     <td style="text-align: center;"><?php echo $sl++; ?></td>
                     <td style="text-align: center;"><?php echo $dmr->date; ?></td>
-                    <td style="text-align: center; text-decoration: underline; cursor: zoom-in;" title="click here to get the preview" class="invoiceDetails"><?php echo $dmr->id; ?></td>
+                    <td style="text-align: center; text-decoration: underline; cursor: zoom-in;"
+                        title="click here to get the preview" class="invoiceDetails"><?php echo $dmr->id; ?></td>
                     <td style="text-align: left;"><?php echo sprintf("%s | %s", $dmr->company_name, $dmr->contact_no); ?></td>
                     <td style="text-align: right;"><?php echo number_format($dmr->discount, 2); ?></td>
                     <td style="text-align: right;"><?php echo number_format($dmr->grand_total, 2); ?></td>
+                    <td style="text-align: right;"><?php echo number_format($totalPaid, 2); ?></td>
+                    <td style="text-align: right;"><?php echo number_format($invoiceDue, 2); ?></td>
                 </tr>
                 <?php
 
@@ -132,6 +128,8 @@ echo "</div>";
             <th style="text-align: right;" colspan="4">Ground Total</th>
             <th style="text-align: right;"><?= number_format($row_closing_discount, 2) ?></th>
             <th style="text-align: right;"><?= number_format($row_closing, 2) ?></th>
+            <th style="text-align: right;"><?= number_format($groundTotalPayment, 2) ?></th>
+            <th style="text-align: right;"><?= number_format($groundTotalDue, 2) ?></th>
         </tr>
 
         </tbody>
@@ -154,9 +152,9 @@ echo "</div>";
 </div>
 
 <!--        modal-->
-<div class="modal fade" id="information-modal" tabindex="-1" role="dialog"
+<div class="modal fade" id="information-modal" tabindex="-1" data-backdrop="static" role="dialog"
      aria-labelledby="information-modal" aria-hidden="true">
-    <div class="modal-dialog modal-xl" role="document">
+    <div class="modal-dialog modal-dialog-centered modal-xl" role="document">
         <div class="modal-content">
             <div class="modal-header">
                 <h5 class="modal-title" id="exampleModalLabel">Invoice</h5>

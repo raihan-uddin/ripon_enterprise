@@ -86,9 +86,9 @@ Yii::app()->clientScript->registerCoreScript("jquery.ui");
                     <div class="col-sm-8">
                         <div class="input-group" id="entry_date" data-target-input="nearest">
                             <?php echo $form->textField($model, 'date', array('class' => 'form-control datetimepicker-input', 'placeholder' => 'YYYY-MM-DD', 'value' => date('Y-m-d'))); ?>
-                            <div class="input-group-append">
-                                <div class="input-group-text"><i class="fa fa-calendar"></i></div>
-                            </div>
+<!--                            <div class="input-group-append">-->
+<!--                                <div class="input-group-text"><i class="fa fa-calendar"></i></div>-->
+<!--                            </div>-->
                         </div>
                     </div>
                     <span class="help-block"
@@ -397,7 +397,7 @@ Yii::app()->clientScript->registerCoreScript("jquery.ui");
             </div>
             <div class="card-body">
                 <div class="row">
-                    <div class="form-group col-xs-12 col-md-3 col-lg-2">
+                    <div class="form-group col-xs-12 col-md-3">
                         <?php echo $form->labelEx($model2, 'model_id'); ?>
 
                         <div class="input-group" data-target-input="nearest">
@@ -492,20 +492,20 @@ Yii::app()->clientScript->registerCoreScript("jquery.ui");
                         </script>
                     </div>
 
-                    <div class="form-group col-xs-12 col-md-2 col-lg-2">
+                    <div class="form-group col-xs-12 col-md-2">
                         <?php echo $form->labelEx($model2, 'product_sl_no'); ?>
                         <?php echo $form->textField($model2, 'product_sl_no', array('maxlength' => 255, 'class' => 'form-control')); ?>
                         <span class="help-block"
                               style="color: red; width: 100%"> <?php echo $form->error($model2, 'product_sl_no'); ?></span>
                     </div>
 
-                    <div class="form-group col-xs-12 col-md-2 col-lg-2">
+                    <div class="form-group col-xs-12 col-md-2" style="display: none;">
                         <?php echo $form->labelEx($model2, 'note'); ?>
                         <?php echo $form->textField($model2, 'note', array('maxlength' => 255, 'class' => 'form-control')); ?>
                         <span class="help-block"
                               style="color: red; width: 100%"> <?php echo $form->error($model2, 'note'); ?></span>
                     </div>
-                    <div class="form-group col-xs-12 col-md-1 col-lg-1">
+                    <div class="form-group col-xs-12 col-md-2 ">
                         <?php echo $form->labelEx($model2, 'qty'); ?>
 
                         <div class="input-group">
@@ -525,7 +525,7 @@ Yii::app()->clientScript->registerCoreScript("jquery.ui");
                         <span class="help-block"
                               style="color: red; width: 100%"> <?php echo $form->error($model2, 'qty'); ?></span>
                     </div>
-                    <div class="form-group col-xs-12 col-md-2 col-lg-2">
+                    <div class="form-group col-xs-12 col-md-2">
                         <?php echo $form->labelEx($model2, 'amount'); ?>
 
                         <div class="input-group">
@@ -537,7 +537,7 @@ Yii::app()->clientScript->registerCoreScript("jquery.ui");
                         <span class="help-block"
                               style="color: red; width: 100%"> <?php echo $form->error($model2, 'amount'); ?></span>
                     </div>
-                    <div class="form-group col-xs-12 col-md-2 col-lg-2">
+                    <div class="form-group col-xs-12 col-md-2">
                         <?php echo $form->labelEx($model2, 'row_total'); ?>
                         <div class="input-group">
                             <?php echo $form->textField($model2, 'row_total', array('maxlength' => 255, 'class' => 'form-control', 'readonly' => true)); ?>
@@ -549,7 +549,7 @@ Yii::app()->clientScript->registerCoreScript("jquery.ui");
                               style="color: red; width: 100%"> <?php echo $form->error($model2, 'row_total'); ?></span>
                     </div>
 
-                    <div class="form-group col-xs-12 col-md-1 col-lg-1">
+                    <div class="form-group col-xs-12 col-md-1 ">
                         <button class="btn  btn-success mt-4" onclick="addToList()" type="button" title="ADD TO LIST">
                             <i class="fa fa-cart-arrow-down" aria-hidden="true"></i>
                         </button>
@@ -766,19 +766,24 @@ Yii::app()->clientScript->registerCoreScript("jquery.ui");
             $("#list tbody").prepend(`
                 <tr class="item">
                     <td class="serial"></td>
-                    <td>${model_id_text}</td>
-                    <td class="text-center">${product_sl_no}</td>
-                    <td class="text-center">${note}</td>
-                    <td class="text-center">${qty}</td>
-                    <td class="text-center">${unit_price}</td>
+                    <td>
+                        ${model_id_text}
+                        <input type="hidden" class="form-control tmep_model_id" value="${model_id}" name="PurchaseOrderDetails[temp_model_id][]" >
+                    </td>
                     <td class="text-center">
-                        ${row_total}
-                        <input type="hidden" class="form-control text-center" value="${qty}" name="PurchaseOrderDetails[temp_qty][]">
-                        <input type="hidden" class="form-control text-center" value="${product_sl_no}" name="PurchaseOrderDetails[temp_product_sl_no][]">
-                        <input type="hidden" class="form-control text-center" value="${note}" name="PurchaseOrderDetails[temp_note][]">
-                        <input type="hidden" class="form-control" value="${model_id}" name="PurchaseOrderDetails[temp_model_id][]" >
-                        <input type="hidden" class="form-control" value="${unit_price}" name="PurchaseOrderDetails[temp_unit_price][]" >
-                        <input type="hidden" class="form-control row-total" value="${row_total}" name="PurchaseOrderDetails[temp_row_total][]" >
+                        <input type="text" class="form-control text-center" value="${product_sl_no}" name="PurchaseOrderDetails[temp_product_sl_no][]">
+                    </td>
+                    <td class="text-center">
+                        <input type="text" class="form-control text-center" value="${note}" name="PurchaseOrderDetails[temp_note][]">
+                    </td>
+                    <td class="text-center">
+                         <input type="text" class="form-control text-center temp_qty" value="${qty}" name="PurchaseOrderDetails[temp_qty][]">
+                    </td>
+                    <td class="text-center">
+                        <input type="text" class="form-control temp_unit_price" value="${unit_price}" name="PurchaseOrderDetails[temp_unit_price][]" >
+                    </td>
+                    <td class="text-center">
+                        <input type="text" class="form-control row-total" value="${row_total}" name="PurchaseOrderDetails[temp_row_total][]" >
                     </td>
                     <td>
                         <button type="button" class="btn btn-danger dlt"><i class="fa fa-trash-o"></i> </button>
@@ -820,6 +825,23 @@ Yii::app()->clientScript->registerCoreScript("jquery.ui");
         $("#PurchaseOrderDetails_note").val('');
     }
 
+    // on temp_qty change/keyup event calculate row total
+    $(document).on("change keyup", ".temp_qty", function () {
+        let qty = parseFloat($(this).val());
+        let unit_price = parseFloat($(this).closest("tr").find(".temp_unit_price").val());
+        let row_total = parseFloat(qty * unit_price);
+        $(this).closest("tr").find(".row-total").val(row_total.toFixed(2));
+        calculateTotal();
+    });
+    // on temp_unit_price change/keyup event calculate row total
+    $(document).on("change keyup", ".temp_unit_price", function () {
+        let unit_price = parseFloat($(this).val());
+        let qty = parseFloat($(this).closest("tr").find(".temp_qty").val());
+        let row_total = parseFloat(qty * unit_price);
+        $(this).closest("tr").find(".row-total").val(row_total.toFixed(2));
+        calculateTotal();
+    });
+
     function clearDynamicItem(product_sl_no) {
         let pp = '';
         if (prev_model_id == $("#PurchaseOrderDetails_model_id").val()) {
@@ -846,7 +868,7 @@ Yii::app()->clientScript->registerCoreScript("jquery.ui");
             console.log('You pressed a "enter" key in somewhere');
             // focus to next input field
 
-            // addToList();
+            addToList();
             return false;
         }
     });
