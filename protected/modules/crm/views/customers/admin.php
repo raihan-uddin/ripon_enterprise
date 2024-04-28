@@ -111,7 +111,7 @@ endforeach;
                     'company_web',
                     'owner_person',
                     'owner_mobile_no',
-//                    'city',
+                    'opening_amount',
 //                    'state',
 //                    'zip',
 //                    'trn_no',
@@ -169,7 +169,7 @@ endforeach;
                                     $( '#update-dialog' )
                                       .dialog( { title: 'Update Customer Info' } )
                                       .dialog( 'open' ); }",
-                                    ),
+                            ),
                             'customDelete' => array(
                                 'label' => '<i class="fa fa-trash fa-2x" style="color: red;"></i>&nbsp;&nbsp;',
                                 'imageUrl' => false,

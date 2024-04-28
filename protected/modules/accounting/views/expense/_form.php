@@ -50,9 +50,9 @@ Yii::app()->clientScript->registerCoreScript("jquery.ui");
                         <div class="col-sm-12 col-md-9">
                             <div class="input-group" id="entry_date" data-target-input="nearest">
                                 <?php echo $form->textField($model, 'date', array('class' => 'form-control datetimepicker-input', 'placeholder' => 'YYYY-MM-DD', 'value' => date('Y-m-d'))); ?>
-                                <div class="input-group-append">
+                                <!--<div class="input-group-append">
                                     <div class="input-group-text"><i class="fa fa-calendar"></i></div>
-                                </div>
+                                </div>-->
                             </div>
                         </div>
                         <span class="help-block"

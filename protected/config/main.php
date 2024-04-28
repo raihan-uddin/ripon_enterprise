@@ -7,7 +7,7 @@ date_default_timezone_set('Asia/Dhaka');
 return array(
     'basePath' => dirname(__FILE__) . DIRECTORY_SEPARATOR . '..',
     'theme' => 'erp',
-    'name' => 'Enterprise resource planning (ERP)',
+    'name' => 'INVENTORY MANAGEMENT',
     'defaultController' => 'site',
 // preloading 'log' component
     'preload' => array('log'),

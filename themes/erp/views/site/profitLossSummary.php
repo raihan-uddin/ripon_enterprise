@@ -5,6 +5,7 @@
 /** @var float $totalSalesValue */
 /** @var float $totalCogsValue */
 /** @var float $totalPaymentValue */
+/** @var float $totalSaleDiscountValue */
 ?>
 <div class="row">
     <div class="col-md-3">
@@ -15,7 +16,7 @@
             <div class="card-body">
                 <h4 class="text-center">
                     <?php
-                    $profit = $totalSalesValue - $totalCogsValue - $totalExpenseValue;
+                    $profit = $totalSalesValue - $totalCogsValue - $totalSaleDiscountValue - $totalExpenseValue;
                     echo number_format((float)$profit, 2);
                     ?>
                 </h4>

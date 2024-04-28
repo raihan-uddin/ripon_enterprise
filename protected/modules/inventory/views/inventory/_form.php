@@ -10,6 +10,9 @@ $form = $this->beginWidget('CActiveForm', array(
 
 <script>
     $(".alert").animate({opacity: 1.0}, 3000).fadeOut("slow");
+
+    let prev_product_id = 0;
+    let prev_sell_price = 0;
 </script>
 
 <div class="card card-primary">
@@ -34,9 +37,9 @@ $form = $this->beginWidget('CActiveForm', array(
                     <div class="col-sm-8">
                         <div class="input-group" id="entry_date" data-target-input="nearest">
                             <?php echo $form->textField($model, 'date', array('class' => 'form-control datetimepicker-input', 'placeholder' => 'YYYY-MM-DD', 'value' => date('Y-m-d'))); ?>
-                            <div class="input-group-append">
+                            <!--<div class="input-group-append">
                                 <div class="input-group-text"><i class="fa fa-calendar"></i></div>
-                            </div>
+                            </div>-->
                         </div>
                     </div>
                     <span class="help-block"
@@ -108,7 +111,6 @@ $form = $this->beginWidget('CActiveForm', array(
                                             delay: 700,
                                             select: function (event, ui) {
                                                 $('#model_id_text').val(ui.item.value);
-                                                $('#product_code').val(ui.item.code);
                                                 $('#Inventory_model_id').val(ui.item.id);
                                                 $('#Inventory_unit_id').val(ui.item.unit_id);
                                                 $('#Inventory_sell_price').val(ui.item.sell_price);
@@ -128,51 +130,6 @@ $form = $this->beginWidget('CActiveForm', array(
                                                 .appendTo(ul);
                                         };
 
-                                    });
-                                </script>
-                            </div>
-                            <div class="form-group col-sm-12 col-md-3 col-lg-2">
-                                <?php echo $form->labelEx($model, 'code'); ?>
-                                <input type="text" id="product_code" class="form-control">
-
-                                <span class="help-block"
-                                      style="color: red; width: 100%"> <?php echo $form->error($model, 'code'); ?></span>
-
-                                <script>
-                                    $(document).ready(function () {
-                                        $('#product_code').autocomplete({
-                                            source: function (request, response) {
-                                                var search = request.term;
-                                                $.post('<?php echo Yii::app()->baseUrl ?>/index.php/prodModels/Jquery_showprodCodeSearch', {
-                                                        "q": search,
-                                                    },
-                                                    function (data) {
-                                                        response(data);
-                                                    }, "json");
-                                            },
-                                            minLength: 1,
-                                            delay: 700,
-                                            select: function (event, ui) {
-                                                $('#model_id_text').val(ui.item.value);
-                                                $('#product_code').val(ui.item.code);
-                                                $('#Inventory_model_id').val(ui.item.id);
-                                                $('#Inventory_unit_id').val(ui.item.unit_id);
-                                                $('#Inventory_sell_price').val(ui.item.sell_price);
-                                                $('.product_unit_text').html($('#Inventory_unit_id option:selected').text());
-                                                if ($("#Inventory_t_type").val() == <?=  Inventory::STOCK_OUT ?>) {
-                                                    $.post('<?php echo Yii::app()->baseUrl ?>/index.php/inventory/inventory/Jquery_getStockQty', {
-                                                        model_id: ui.item.id,
-                                                    }, function (response) {
-                                                        $("#Inventory_closing_stock").val(response);
-                                                    });
-                                                }
-                                            }
-                                        }).data("ui-autocomplete")._renderItem = function (ul, item) {
-                                            return $("<li></li>")
-                                                .data("item.autocomplete", item)
-                                                .append(`<a><img style="height: 50px; width: 50px;" src="${item.img}"> ${item.name} <br><i><small>${item.code}</small></i> </a>`)
-                                                .appendTo(ul);
-                                        };
                                     });
                                 </script>
                             </div>
@@ -182,45 +139,6 @@ $form = $this->beginWidget('CActiveForm', array(
 
                                 <span class="help-block"
                                       style="color: red; width: 100%"> <?php echo $form->error($model, 'product_sl_no'); ?></span>
-
-                                <script>
-                                    $(document).ready(function () {
-                                        $('#product_sl_no').autocomplete({
-                                            source: function (request, response) {
-                                                var search = request.term;
-                                                $.post('<?php echo Yii::app()->baseUrl ?>/index.php/inventory/inventory/Jquery_showprodSlNoSearch', {
-                                                        "q": search,
-                                                    },
-                                                    function (data) {
-                                                        response(data);
-                                                    }, "json");
-                                            },
-                                            minLength: 1,
-                                            delay: 700,
-                                            select: function (event, ui) {
-                                                $('#model_id_text').val(ui.item.label);
-                                                $('#product_code').val(ui.item.code);
-                                                $('#Inventory_model_id').val(ui.item.id);
-                                                $('#Inventory_unit_id').val(ui.item.unit_id);
-                                                $('#Inventory_sell_price').val(ui.item.sell_price);
-                                                $('.product_unit_text').html($('#Inventory_unit_id option:selected').text());
-                                                if ($("#Inventory_t_type").val() == <?=  Inventory::STOCK_OUT ?>) {
-                                                    $.post('<?php echo Yii::app()->baseUrl ?>/index.php/inventory/inventory/Jquery_getStockQty', {
-                                                        model_id: ui.item.id,
-                                                    }, function (response) {
-                                                        $("#Inventory_closing_stock").val(response);
-                                                    });
-                                                }
-                                            }
-                                        }).data("ui-autocomplete")._renderItem = function (ul, item) {
-                                            return $("<li></li>")
-                                                .data("item.autocomplete", item)
-                                                .append(`<a><img style="height: 50px; width: 50px;" src="${item.img}"> ${item.name} <br><i><small>${item.code}</small></i> </a>`)
-                                                .appendTo(ul);
-                                        };
-
-                                    });
-                                </script>
                             </div>
                             <div class="form-group col-sm-12 col-md-2 col-lg-2 stock-in">
                                 <?php echo $form->labelEx($model, 'stock_in'); ?>
@@ -382,6 +300,16 @@ $form = $this->beginWidget('CActiveForm', array(
         }
     });
 
+    $(document).keypress(function (event) {
+        let keycode = (event.keyCode ? event.keyCode : event.which);
+        if (keycode == '13') {
+            addToList();
+            console.log('You pressed a "enter" key in somewhere');
+            // addToList();
+            return false;
+        }
+    });
+
     function addToList() {
         let t_type = parseInt($("#Inventory_t_type").val());
         let model_id = $("#Inventory_model_id").val();
@@ -418,12 +346,6 @@ $form = $this->beginWidget('CActiveForm', array(
         } else if ((stock_in == "" || stock_in == 0) && (stock_out == "" || stock_out == 0)) {
             toastr.error("Please enter qty");
             return false;
-        } else if ((t_type == <?= Inventory::STOCK_OUT ?>) && (closing_stock <= 0 || closing_stock == "")) {
-            toastr.error("Insufficient stock qty!");
-            return false;
-        } else if ((t_type == <?= Inventory::STOCK_OUT ?>) && (stock_out > closing_stock)) {
-            toastr.error("Insufficient stock qty!");
-            return false;
         } else {
             $("#list tbody").append(`
                 <tr class="item">
@@ -434,17 +356,12 @@ $form = $this->beginWidget('CActiveForm', array(
                     <td class="text-center">
                         <div class="input-group">
                             <input type="text" class="form-control text-center" value="${stock_in}" name="Inventory[temp_stock_in][]" ${t_type == <?=Inventory::STOCK_OUT ?> ? "readonly" : ""}>
-                                <div class="input-group-append">
-                                <span class="input-group-text"">${unit_name}</span>
                             </div>
                         </div>
                     </td>
                     <td class="text-center">
                         <div class="input-group">
                             <input type="text" class="form-control text-center" value="${stock_out}" name="Inventory[temp_stock_out][]"  ${t_type == <?=Inventory::STOCK_IN ?> ? "readonly" : ""}>
-                                <div class="input-group-append">
-                                <span class="input-group-text"">${unit_name}</span>
-                            </div>
                         </div>
                     </td>
                     <td>
@@ -455,6 +372,9 @@ $form = $this->beginWidget('CActiveForm', array(
                 </tr>
                 `);
             clearDynamicItem();
+
+            prev_sell_price = unit_price;
+            prev_product_id = model_id;
         }
     }
 
@@ -462,7 +382,7 @@ $form = $this->beginWidget('CActiveForm', array(
     function clearDynamicItem() {
         // $("#Inventory_model_id").val('');
         // $("#model_id_text").val('');
-        // $("#product_code").val('');
+        // $("#product_sl_no").val('');
         $("#product_sl_no").val('');
         $("#Inventory_unit_id").val('');
         // $("#Inventory_stock_in").val('');

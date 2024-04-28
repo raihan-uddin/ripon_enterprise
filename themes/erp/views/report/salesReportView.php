@@ -95,6 +95,8 @@ echo "</div>";
             <th style="width: 10%; box-shadow: 0px 0px 0px 1px black inset;">Date</th>
             <th style="width: 7%; box-shadow: 0px 0px 0px 1px black inset;">ID</th>
             <th style="box-shadow: 0px 0px 0px 1px black inset;">Customer</th>
+            <th style="width: 10%;box-shadow: 0px 0px 0px 1px black inset;">Sell Value</th>
+            <th style="width: 10%;box-shadow: 0px 0px 0px 1px black inset;">Delivery Charge</th>
             <th style="width: 10%;box-shadow: 0px 0px 0px 1px black inset;">Discount</th>
             <th style="width: 10%;box-shadow: 0px 0px 0px 1px black inset;">Amount</th>
             <th style="width: 10%;box-shadow: 0px 0px 0px 1px black inset;">N.I</th>
@@ -105,16 +107,18 @@ echo "</div>";
         <?php
         $sl = 1;
         $rowFound = false;
-        $groundTotal = 0;
+        $groundTotal = $total_amount = $total_delivery_charge = 0;
         $row_closing = $row_closing_discount = $net_income_total = $total_due = 0;
         ?>
 
         <?php
         if ($data) {
             foreach ($data as $dmr) {
+                $total_amount += $dmr->total_amount;
+                $total_delivery_charge += $dmr->delivery_charge;
                 $row_closing_discount += $dmr->discount_amount;
                 $row_closing += $dmr->grand_total;
-                $netIncome = $dmr->grand_total - $dmr->costing;
+                $netIncome = $dmr->total_amount - $dmr->costing - $dmr->discount_amount;
                 $rowFound = true;
 
                 $net_income_total += $netIncome;
@@ -123,8 +127,11 @@ echo "</div>";
                 <tr>
                     <td style="text-align: center;"><?php echo $sl++; ?></td>
                     <td style="text-align: center;"><?php echo $dmr->date; ?></td>
-                    <td style="text-align: center; text-decoration: underline; cursor: zoom-in;" class="invoiceDetails" title="click here to get the preview"><?php echo $dmr->id; ?></td>
+                    <td style="text-align: center; text-decoration: underline; cursor: zoom-in;" class="invoiceDetails"
+                        title="click here to get the preview"><?php echo $dmr->id; ?></td>
                     <td style="text-align: left;"><?php echo sprintf("%s | %s", $dmr->customer_name, $dmr->contact_no); ?></td>
+                    <td style="text-align: right;"><?php echo number_format($dmr->total_amount, 2); ?></td>
+                    <td style="text-align: right;"><?php echo number_format($dmr->delivery_charge, 2); ?></td>
                     <td style="text-align: right;"><?php echo number_format($dmr->discount_amount, 2); ?></td>
                     <td style="text-align: right;"><?php echo number_format($dmr->grand_total, 2); ?></td>
                     <td style="text-align: right;"><?php echo number_format($netIncome, 2); ?></td>
@@ -138,6 +145,8 @@ echo "</div>";
 
         <tr>
             <th style="text-align: right;" colspan="4">Ground Total</th>
+            <th style="text-align: right;"><?= number_format($total_amount, 2) ?></th>
+            <th style="text-align: right;"><?= number_format($total_delivery_charge, 2) ?></th>
             <th style="text-align: right;"><?= number_format($row_closing_discount, 2) ?></th>
             <th style="text-align: right;"><?= number_format($row_closing, 2) ?></th>
             <th style="text-align: right;"><?= number_format($net_income_total, 2) ?></th>

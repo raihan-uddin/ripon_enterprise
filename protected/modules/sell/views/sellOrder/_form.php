@@ -494,7 +494,7 @@ Yii::app()->clientScript->registerCoreScript("jquery.ui");
                                             "model_id": $('#SellOrderDetails_model_id').val(),
                                         }, function (data) {
                                             response(data);
-                                            console.log(`length: ${data.length}, data: ${JSON.stringify(data)}`);
+                                            // console.log(`length: ${data.length}, data: ${JSON.stringify(data)}`);
                                             // Check if there's only one item and trigger select event
                                             if (data.length === 1 && data[0].id) {
                                                 $('#model_id_text').val(data[0].label);
@@ -540,6 +540,8 @@ Yii::app()->clientScript->registerCoreScript("jquery.ui");
                                         var $inputs = $form.find(':input:visible:not([disabled])');
                                         var currentIndex = $inputs.index($('#product_sl_no'));
                                         $inputs.eq(currentIndex + 1).focus();
+
+                                        // addToList();
                                     }
                                 }).data("ui-autocomplete")._renderItem = function (ul, item) {
                                     var listItem = $("<li class='list-group-item p-2'></li>")
@@ -704,7 +706,14 @@ Yii::app()->clientScript->registerCoreScript("jquery.ui");
                         $("#ajaxLoader").show();
                     }
                  }',
-                'error' => 'function(xhr) { 
+                'error' => 'function(xhr, status, error) { 
+                    // Code to handle errors
+                    toastr.error(xhr.responseText); // Displaying error message using Toastr
+                    // Optionally, you can display additional error details
+                    console.error(xhr.statusText);
+                    console.error(xhr.status);
+                    console.error(xhr.responseText);
+                
                     $("#overlay").fadeOut(300);
               }',
                 'complete' => 'function() {
@@ -729,22 +738,7 @@ Yii::app()->clientScript->registerCoreScript("jquery.ui");
         <span class="spinner"></span>
     </div>
 </div>
-<div class="circle"></div>
-<style>
-    .circle {
-        width: 50px;
-        height: 50px;
-        background-color: red;
-        border-radius: 50%;
-        position: absolute; /* Make it float */
-        bottom: 50px;  /* Position at bottom */
-        right: 20px;   /* Position at right */
-        text-align: center; /* Center text within the circle */
-        line-height: 100px; /* Ensures vertical centering of content */
-        font-size: 36px; /* Adjust font size as needed */
-        color: black; /* Text color */
-    }
-</style>
+
 <script>
     let prev_product_id = 0;
     let prev_sell_price = 0;
@@ -837,24 +831,31 @@ Yii::app()->clientScript->registerCoreScript("jquery.ui");
             $("#list tbody").prepend(`
                 <tr class="item">
                     <td class="serial"></td>
-                    <td>${model_id_text}</td>
-                    <td class="text-center">${product_sl_no}</td>
-                    <td class="text-center">${warranty}</td>
-                    <td class="text-center">${note}</td>
-                    <td class="text-center" style="display: none;">${color}</td>
-                    <td class="text-center">${qty}</td>
-                    <td class="text-center">${unit_price}</td>
-                    <td class="text-center">
-                        ${row_total}
-                        <input type="hidden" class="form-control text-center temp_qty" value="${qty}" name="SellOrderDetails[temp_qty][]">
-                        <input type="hidden" class="form-control text-center temp-costing" value="${pp}" name="SellOrderDetails[temp_pp][]">
-                        <input type="hidden" class="form-control text-center" value="${warranty}" name="SellOrderDetails[temp_warranty][]">
-                        <input type="hidden" class="form-control text-center" value="${product_sl_no}" name="SellOrderDetails[temp_product_sl_no][]">
-                        <input type="hidden" class="form-control text-center" value="${note}" name="SellOrderDetails[temp_note][]">
-                        <input type="hidden" class="form-control" value="${color}" name="SellOrderDetails[temp_color][]" >
+                    <td>
+                        ${model_id_text}
                         <input type="hidden" class="form-control" value="${model_id}" name="SellOrderDetails[temp_model_id][]" >
-                        <input type="hidden" class="form-control" value="${unit_price}" name="SellOrderDetails[temp_unit_price][]" >
-                        <input type="hidden" class="form-control row-total" value="${row_total}" name="SellOrderDetails[temp_row_total][]" >
+                    </td>
+                    <td class="text-center">
+                        <input type="text" class="form-control text-center" value="${product_sl_no}" name="SellOrderDetails[temp_product_sl_no][]">
+                    </td>
+                    <td class="text-center">
+                        <input type="text" class="form-control text-center" value="${warranty}" name="SellOrderDetails[temp_warranty][]">
+                    </td>
+                    <td class="text-center">
+                        <input type="text" class="form-control text-center" value="${note}" name="SellOrderDetails[temp_note][]">
+                    </td>
+                    <td class="text-center" style="display: none;">
+                        <input type="text" class="form-control" value="${color}" name="SellOrderDetails[temp_color][]" >
+                    </td>
+                    <td class="text-center">
+                        <input type="text" class="form-control text-center temp_qty" value="${qty}" name="SellOrderDetails[temp_qty][]">
+                    </td>
+                    <td class="text-center">
+                        <input type="text" class="form-control temp_unit_price" value="${unit_price}" name="SellOrderDetails[temp_unit_price][]" >
+                        <input type="hidden" class="form-control text-center temp-costing" value="${pp}" name="SellOrderDetails[temp_pp][]">
+                    </td>
+                    <td class="text-center">
+                       <input type="text" readonly class="form-control row-total" value="${row_total}" name="SellOrderDetails[temp_row_total][]" >
                     </td>
                     <td>
                         <button type="button" class="btn btn-danger dlt"><i class="fa fa-trash-o"></i> </button>
@@ -870,6 +871,27 @@ Yii::app()->clientScript->registerCoreScript("jquery.ui");
 
     $("#list").on("click", ".dlt", function () {
         $(this).closest("tr").remove();
+        calculateTotal();
+    });
+
+    // on temp_qty change or keyup event calculate row total
+    $("#list").on("keyup", ".temp_qty", function () {
+        let qty = parseFloat($(this).val());
+        let unit_price = parseFloat($(this).closest("tr").find(".temp_unit_price").val());
+        qty = qty > 0 ? qty : 0;
+        unit_price = unit_price > 0 ? unit_price : 0;
+        $(this).closest("tr").find(".row-total").val((qty * unit_price).toFixed(2));
+        calculateTotal();
+    });
+
+
+    // on temp_unit_price change or keyup event calculate row total
+    $("#list").on("keyup", ".temp_unit_price", function () {
+        let unit_price = parseFloat($(this).val());
+        let qty = parseFloat($(this).closest("tr").find(".temp_qty").val());
+        qty = qty > 0 ? qty : 0;
+        unit_price = unit_price > 0 ? unit_price : 0;
+        $(this).closest("tr").find(".row-total").val((qty * unit_price).toFixed(2));
         calculateTotal();
     });
 
@@ -986,11 +1008,11 @@ Yii::app()->clientScript->registerCoreScript("jquery.ui");
                 qty = isNaN(qty) ? 0 : qty;
                 pp = isNaN(pp) ? 0 : pp;
 
-                console.log(`Qty: ${qty}, PP: ${pp}`);
+                // console.log(`Qty: ${qty}, PP: ${pp}`);
                 total_costing += qty * pp;
             });
         }
-        console.log(total_costing);
+        // console.log(total_costing);
         $(".current-costing-amount").html('<span style="color: green;">Costing: <b>' + parseFloat(total_costing).toFixed(2) + '</b></span>');
         return total_costing;
     }
@@ -1034,7 +1056,7 @@ Yii::app()->clientScript->registerCoreScript("jquery.ui");
         let keycode = (event.keyCode ? event.keyCode : event.which);
         if (keycode == '13') {
             console.log('You pressed a "enter" key in somewhere');
-            // addToList();
+            addToList();
             return false;
         }
     });

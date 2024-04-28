@@ -9,8 +9,11 @@
  * @property integer $model_id
  * @property double $qty
  * @property double $amount
+ * @property double $pp
  * @property double $row_total
  * @property double $costing
+ * @property double $discount_amount
+ * @property double $discount_percentage
  * @property integer $is_delivery_done
  * @property integer $is_invoice_done
  * @property integer $created_by
@@ -29,7 +32,7 @@ class SellOrderDetails extends CActiveRecord
     public $code;
     public $image;
     public $description;
-    public $pp;
+    public $total_costing;
 
     const DELIVERY_DONE = 1;
     const DELIVERY_NOT_DONE = 0;
@@ -51,11 +54,12 @@ class SellOrderDetails extends CActiveRecord
 		// will receive user inputs.
 		return array(
             array('sell_order_id, model_id, qty, amount, row_total', 'required'),
-            array('sell_order_id, model_id, is_delivery_done, is_invoice_done, created_by, updated_by, warranty', 'numerical', 'integerOnly' => true),
+            array('sell_order_id, model_id, is_delivery_done, pp, is_invoice_done, created_by, updated_by, warranty', 'numerical', 'integerOnly' => true),
+            array('discount_amount, discount_percentage', 'numerical'),
             array('qty, amount, row_total, costing', 'numerical'),
             array('created_at, updated_at, color, note, product_sl_no', 'safe'),
             // The following rule is used by search().
-            array('id, sell_order_id, model_id, qty, note, product_sl_no, amount, row_total, is_delivery_done, warranty, color, is_invoice_done, created_by, created_at, updated_by, updated_at, costing', 'safe', 'on' => 'search'),
+            array('id, sell_order_id, model_id, qty, note, product_sl_no, pp, amount, discount_amount, discount_percentage, row_total, is_delivery_done, warranty, color, is_invoice_done, created_by, created_at, updated_by, updated_at, costing', 'safe', 'on' => 'search'),
         );
 	}
 
@@ -115,6 +119,7 @@ class SellOrderDetails extends CActiveRecord
 
 		$criteria->compare('id',$this->id);
         $criteria->compare('sell_order_id', $this->sell_order_id);
+        $criteria->compare('pp', $this->pp);
         $criteria->compare('product_sl_no', $this->product_sl_no);
         $criteria->compare('model_id', $this->model_id);
         $criteria->compare('warranty', $this->warranty);
@@ -128,6 +133,8 @@ class SellOrderDetails extends CActiveRecord
 		$criteria->compare('created_at',$this->created_at,true);
 		$criteria->compare('updated_by',$this->updated_by);
         $criteria->compare('updated_at', $this->updated_at, true);
+        $criteria->compare('discount_percentage', $this->discount_percentage, true);
+        $criteria->compare('discount_amount', $this->discount_amount, true);
         $criteria->compare('note', $this->note, true);
         $criteria->compare('costing', $this->costing, true);
 
@@ -165,4 +172,16 @@ class SellOrderDetails extends CActiveRecord
 	{
 		return parent::model($className);
 	}
+
+    public function getTotalCosting($order_id)
+    {
+        if (empty($order_id)) return 0;
+
+        $criteria = new CDbCriteria();
+        $criteria->select = "SUM(costing) as total_costing";
+        $criteria->condition = "sell_order_id = $order_id";
+        $result = $this->find($criteria);
+
+        return $result->total_costing;
+    }
 }

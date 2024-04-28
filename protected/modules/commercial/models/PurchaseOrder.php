@@ -29,6 +29,7 @@
  * @property string $bill_to
  * @property string $ship_to
  * @property string $exp_receive_date
+ * @property boolean $is_opening
  */
 class PurchaseOrder extends CActiveRecord
 {
@@ -79,12 +80,12 @@ class PurchaseOrder extends CActiveRecord
             array('date, max_sl_no, po_no, supplier_id, total_amount, cash_due, order_type', 'required'),
             array('max_sl_no, supplier_id, is_paid, is_all_received, cash_due, created_by, updated_by, ship_by, order_type, location_id, 
 			store_id', 'numerical', 'integerOnly' => true),
-            array('total_amount, vat_amount, discount_percentage, discount, vat_percentage, grand_total', 'numerical'),
+            array('total_amount, vat_amount, discount_percentage, discount, vat_percentage, grand_total, is_opening', 'numerical'),
             array('po_no, manual_po_no', 'length', 'max' => 255),
             array('created_at, updated_at, bill_to, ship_to, exp_receive_date, order_note', 'safe'),
             // The following rule is used by search().
 
-            array('id, date, max_sl_no, bill_to, ship_to, order_note, ship_by, order_type, po_no, store_id, vat_percentage, grand_total, manual_po_no, location_id,
+            array('id, date, max_sl_no, bill_to, ship_to, is_opening, order_note, ship_by, order_type, po_no, store_id, vat_percentage, grand_total, manual_po_no, location_id,
 			 supplier_id, total_amount, vat_amount, discount_percentage, discount, is_paid, is_all_received, cash_due, created_by, created_at, updated_by, exp_receive_date, 
 			 updated_at', 'safe', 'on' => 'search'),
         );
@@ -166,6 +167,10 @@ class PurchaseOrder extends CActiveRecord
         $criteria->select = "t.*";
         $criteria->join = " ";
 
+        if (!Yii::app()->user->checkAccess('Admin')) {
+            $criteria->addColumnCondition(['t.created_by' => Yii::app()->user->id]);
+        }
+
         if (($this->customer_id) != "") {
             $criteria->join .= " INNER JOIN suppliers s on t.supplier_id = s.id ";
             $criteria->compare('s.company_name', ($this->supplier_id), true);
@@ -178,6 +183,7 @@ class PurchaseOrder extends CActiveRecord
         $criteria->compare('id', $this->id);
         $criteria->compare('ship_by', $this->ship_by);
         $criteria->compare('location_id', $this->location_id);
+        $criteria->compare('is_opening', $this->is_opening);
         $criteria->compare('store_id', $this->store_id);
         $criteria->compare('order_type', $this->order_type);
         $criteria->compare('date', $this->date, true);

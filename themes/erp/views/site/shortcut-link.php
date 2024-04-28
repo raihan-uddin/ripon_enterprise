@@ -5,18 +5,33 @@ $startDate = date('Y-m-01');
 $endDate = date('Y-m-t');
 ?>
 <div class="row">
-    <a class="btn btn-app bg-secondary"
-       href="<?= Yii::app()->createUrl("prodModels/create"/*,array("id"=>$data->primaryKey)*/) ?>">
+    <?php
+    if (Yii::app()->user->checkAccess('ProdModels.Admin') || Yii::app()->user->checkAccess('ProdModels.Create') || Yii::app()->user->checkAccess('ProdModels.Update')) {
+        ?>
+        <a class="btn btn-app bg-secondary"
+           href="<?= Yii::app()->createUrl("prodModels/create"/*,array("id"=>$data->primaryKey)*/) ?>">
         <span class="badge bg-success">
             <?= ProdModels::model()->count() ?>
         </span>
-        <i class="fa fa-barcode"></i> Products
-    </a>
-    <a class="btn btn-app bg-success" href="<?= Yii::app()->createUrl("crm/customers/admin") ?>">
-        <span class="badge bg-purple"><?= Customers::model()->count() ?></span>
-        <i class="fa fa-users"></i> Customers
-    </a>
-    <a class="btn btn-app bg-danger" href="<?= Yii::app()->createUrl("/sell/sellOrder/create") ?>">
+            <i class="fa fa-barcode"></i> Products
+        </a>
+        <?php
+    }
+    ?>
+    <?php
+    if (Yii::app()->user->checkAccess('Crm.Customers.Admin')) {
+        ?>
+        <a class="btn btn-app bg-success" href="<?= Yii::app()->createUrl("crm/customers/admin") ?>">
+            <span class="badge bg-purple"><?= Customers::model()->count() ?></span>
+            <i class="fa fa-users"></i> Customers
+        </a>
+        <?php
+    }
+    ?>
+    <?php
+    if (Yii::app()->user->checkAccess('Sell.SellOrder.Admin')) {
+        ?>
+        <a class="btn btn-app bg-danger" href="<?= Yii::app()->createUrl("/sell/sellOrder/create") ?>">
         <span class="badge bg-teal"><?=
             Yii::app()->db->createCommand()
                 ->select('FORMAT(ROUND(SUM(grand_total)), 0) as total_amount')
@@ -33,9 +48,16 @@ $endDate = date('Y-m-t');
             )); */
 
             ?></span>
-        <i class="fa fa-inbox"></i> Orders
-    </a>
-    <a class="btn btn-app bg-info" href="<?= Yii::app()->createUrl("/commercial/purchaseOrder/create") ?>">
+            <i class="fa fa-inbox"></i> Orders
+        </a>
+        <?php
+    }
+    ?>
+
+    <?php
+    if (Yii::app()->user->checkAccess('Commercial.PurchaseOrder.Create')) {
+        ?>
+        <a class="btn btn-app bg-info" href="<?= Yii::app()->createUrl("/commercial/purchaseOrder/create") ?>">
         <span class="badge bg-teal"><?=
             Yii::app()->db->createCommand()
                 ->select('FORMAT(ROUND(SUM(grand_total)), 0) as total_amount')
@@ -46,9 +68,15 @@ $endDate = date('Y-m-t');
                 ))
                 ->queryScalar();
             ?></span>
-        <i class="fa fa-inbox"></i> Purchase Order
-    </a>
-    <a class="btn btn-app bg-gradient-warning" href="<?= Yii::app()->createUrl("/accounting/expense/create") ?>">
+            <i class="fa fa-inbox"></i> Purchase Order
+        </a>
+        <?php
+    }
+    ?>
+    <?php
+    if (Yii::app()->user->checkAccess('Accounting.Expense.Create')) {
+        ?>
+        <a class="btn btn-app bg-gradient-warning" href="<?= Yii::app()->createUrl("/accounting/expense/create") ?>">
             <span class="badge bg-teal"><?=
                 Yii::app()->db->createCommand()
                     ->select('FORMAT(ROUND(SUM(amount)), 0) as total_amount')
@@ -60,10 +88,17 @@ $endDate = date('Y-m-t');
                         ))
                     ->queryScalar();
                 ?></span>
-        <i class="fa fa-money"></i> Expense
-    </a>
-    <a class="btn btn-app bg-primary"
-       href="<?= Yii::app()->createUrl("/accounting/moneyReceipt/adminMoneyReceipt") ?>">
+            <i class="fa fa-money"></i> Expense
+        </a>
+        <?php
+    }
+    ?>
+
+    <?php
+    if (Yii::app()->user->checkAccess('Accounting.MoneyReceipt.AdminMoneyReceipt')) {
+        ?>
+        <a class="btn btn-app bg-primary"
+           href="<?= Yii::app()->createUrl("/accounting/moneyReceipt/adminMoneyReceipt") ?>">
              <span class="badge bg-teal"><?=
                  Yii::app()->db->createCommand()
                      ->select('FORMAT(ROUND(SUM(amount)), 0) as total_amount')
@@ -75,10 +110,16 @@ $endDate = date('Y-m-t');
                          ))
                      ->queryScalar();
                  ?></span>
-        <i class="fa fa-money"></i> Collection
-    </a>
-    <a class="btn btn-app bg-primary"
-       href="<?= Yii::app()->createUrl("/accounting/paymentReceipt/adminPaymentReceipt") ?>">
+            <i class="fa fa-money"></i> Collection
+        </a>
+        <?php
+    }
+    ?>
+    <?php
+    if (Yii::app()->user->checkAccess('Accounting.PaymentReceipt.AdminPaymentReceipt')) {
+        ?>
+        <a class="btn btn-app bg-primary"
+           href="<?= Yii::app()->createUrl("/accounting/paymentReceipt/adminPaymentReceipt") ?>">
              <span class="badge bg-teal"><?=
                  Yii::app()->db->createCommand()
                      ->select('FORMAT(ROUND(SUM(amount)), 0) as total_amount')
@@ -90,7 +131,10 @@ $endDate = date('Y-m-t');
                          ))
                      ->queryScalar();
                  ?></span>
-        <i class="fa fa-money"></i> Payment
-    </a>
+            <i class="fa fa-money"></i> Payment
+        </a>
+        <?php
+    }
+    ?>
 </div>
 

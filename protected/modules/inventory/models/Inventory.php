@@ -191,6 +191,10 @@ class Inventory extends CActiveRecord
             $criteria->compare('u.username', ($this->create_by), true);
         }
 
+        if (!Yii::app()->user->checkAccess('Admin')) {
+            $criteria->addColumnCondition(['t.created_by' => Yii::app()->user->id]);
+        }
+
         $criteria->compare('id', $this->id);
         $criteria->compare('sl_no', $this->sl_no);
         $criteria->compare('date', $this->date, true);

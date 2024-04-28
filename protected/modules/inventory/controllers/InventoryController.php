@@ -63,12 +63,22 @@ class InventoryController extends Controller
             }
             if ($model->validate()) {
                 foreach ($_POST['Inventory']['temp_model_id'] as $key => $model_id) {
+                    $prodmodel = ProdModels::model()->findByPk($model_id);
+                    $purchase_price = $prodmodel->purchase_price;
+                    $productSlNo = Inventory::model()->findByAttributes([
+                        'product_sl_no' => $_POST['Inventory']['temp_product_sl_no'][$key],
+                        'model_id' => $model_id,
+                    ]);
+                    if ($productSlNo) {
+                        $purchase_price = $productSlNo->purchase_price;
+                    }
                     $model2 = new Inventory();
                     $model2->sl_no = $sl_no;
                     $model2->challan_no = $challan_no;
                     $model2->model_id = $model_id;
                     $model2->date = $_POST['Inventory']['date'];
                     $model2->product_sl_no = $_POST['Inventory']['temp_product_sl_no'][$key];
+                    $model2->purchase_price = $purchase_price;
                     if ($t_type == Inventory::STOCK_IN) {
                         $model2->stock_in = $_POST['Inventory']['temp_stock_in'][$key] > 0 ? $_POST['Inventory']['temp_stock_in'][$key] : $_POST['Inventory']['temp_stock_out'][$key];
                     } else {
@@ -443,12 +453,12 @@ class InventoryController extends Controller
 
                     $purchase_price = $dt->purchase_price > 0 ? $dt->purchase_price : $dt->pp;
 
-                    if ($source_id > 0){
+                    if ($source_id > 0) {
                         $sellOrderDetails = SellOrderDetails::model()->findByPk($source_id);
-                        if ($sellOrderDetails){
+                        if ($sellOrderDetails) {
                             $qty = $sellOrderDetails->qty;
                             $costing = $sellOrderDetails->costing;
-                            $purchase_price = round($costing/ $qty, 2);
+                            $purchase_price = round($costing / $qty, 2);
                         }
                     }
 
@@ -461,6 +471,44 @@ class InventoryController extends Controller
                     $saved = true;
                 }
                 if ($saved) {
+                    $total_fix++;
+                }
+            }
+            echo "Total Fixed: $total_fix";
+        }
+
+    }
+
+    public function actionFixSellOrderPP()
+    {
+        $sql = "SELECT sod.id, sod.sell_order_id, sod.model_id, sod.amount, sod.qty, (sod.costing / sod.qty) as sod_cost, pm.purchase_price , pm.model_name
+                FROM `sell_order_details` sod 
+                INNER JOIN prod_models pm on sod.model_id = pm.id 
+                WHERE pm.stockable = 1 and LENGTH(sod.product_sl_no) <= 0 
+                HAVING pm.purchase_price != sod_cost ORDER BY `sod`.`sell_order_id` ASC";
+        $data = Yii::app()->db->createCommand($sql)->queryAll();
+        if ($data) {
+            $total_fix = 0;
+            foreach ($data as $dt) {
+                $sellOrderDetails = SellOrderDetails::model()->findByPk($dt['sell_order_id']);
+                if ($sellOrderDetails) {
+                    $sellOrderDetails->costing = $dt['purchase_price'] * $dt['qty'];
+                    if ($sellOrderDetails->save()) {
+                        // update sell order costing value
+                        $sellOrder = SellOrder::model()->findByPk($dt['sell_order_id']);
+                        if ($sellOrder) {
+                            $sellOrder->costing = SellOrderDetails::model()->getTotalCosting($dt['sell_order_id']);
+                            $sellOrder->save();
+                        }
+
+                        // fix inventory purchase price
+                        $inventory = Inventory::model()->findByAttributes(['source_id' => $dt['id']]);
+                        if ($inventory) {
+                            $inventory->purchase_price = $dt['purchase_price'];
+                            $inventory->save();
+                        }
+                    }
+                    echo sprintf("Sell Order ID: %s, Model: %s, Old Costing: %s, New Costing: %s <br>", $dt['sell_order_id'], $dt['model_name'], $dt['sod_cost'], $dt['purchase_price']);
                     $total_fix++;
                 }
             }

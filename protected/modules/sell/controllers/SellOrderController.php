@@ -1,6 +1,6 @@
 <?php
 
-class SellOrderController extends Controller
+class SellOrderController extends RController
 {
     /**
      * @var string the default layout for the views. Defaults to '//layouts/column2', meaning
@@ -68,37 +68,43 @@ class SellOrderController extends Controller
             $model->attributes = $_POST['SellOrder'];
             $model->max_sl_no = SellOrder::maxSlNo();
             $model->discount_percentage = 0;
-            $model->is_invoice_done = SellOrder::INVOICE_NOT_DONE;
-            $model->is_delivery_done = SellOrder::DELIVERY_DONE;
-            $model->is_job_card_done = SellOrder::JOB_CARD_NOT_DONE;
-            $model->is_partial_invoice = SellOrder::PARTIAL_INVOICE_NOT_DONE;
-            $model->is_partial_delivery = SellOrder::PARTIAL_DELIVERY_NOT_DONE;
-            $model->bom_complete = SellOrder::BOM_NOT_COMPLETE;
             $model->total_due = $_POST['SellOrder']['grand_total'];
             $model->so_no = date('y') . date('m') . str_pad($model->max_sl_no, 5, "0", STR_PAD_LEFT);
             $inv_sl = Inventory::maxSlNo();
-            if ($model->save()) {
-                foreach ($_POST['SellOrderDetails']['temp_model_id'] as $key => $model_id) {
-                    $purchasePrice = $_POST['SellOrderDetails']['temp_pp'][$key];
-                    if (!$purchasePrice > 0) {
-                        $purchasePrice = ProdModels::model()->findByPk($model_id)->purchase_price;
-                    }
-                    $product = ProdModels::model()->findByPk($model_id);
-                    $model2 = new SellOrderDetails();
-                    $model2->sell_order_id = $model->id;
-                    $model2->model_id = $model_id;
-                    $model2->qty = $_POST['SellOrderDetails']['temp_qty'][$key];
-                    $model2->warranty = $_POST['SellOrderDetails']['temp_warranty'][$key];
-                    $model2->amount = $_POST['SellOrderDetails']['temp_unit_price'][$key];
-                    $model2->product_sl_no = $_POST['SellOrderDetails']['temp_product_sl_no'][$key];
-                    $model2->row_total = $_POST['SellOrderDetails']['temp_row_total'][$key];
-                    $model2->color = $_POST['SellOrderDetails']['temp_color'][$key];
-                    $model2->note = $_POST['SellOrderDetails']['temp_note'][$key];
-                    $model2->costing = round(($model2->qty * $purchasePrice), 2);
-                    if (!$model2->save()) {
-                        var_dump($model2->getErrors());
-                        exit;
-                    } else {
+            $transaction = Yii::app()->db->beginTransaction();
+            try {
+                if ($model->save()) {
+                    // count total $_POST['SellOrderDetails']['temp_model_id']
+                    $total_item = count($_POST['SellOrderDetails']['temp_model_id']);
+                    $per_item_discount = $model->discount_amount / $total_item;
+                    foreach ($_POST['SellOrderDetails']['temp_model_id'] as $key => $model_id) {
+
+                        $percentage_discount = ($per_item_discount / $_POST['SellOrderDetails']['temp_unit_price'][$key]) * 100;
+
+
+                        $purchasePrice = $_POST['SellOrderDetails']['temp_pp'][$key];
+                        if (!$purchasePrice > 0) {
+                            $purchasePrice = ProdModels::model()->findByPk($model_id)->purchase_price;
+                        }
+                        $product = ProdModels::model()->findByPk($model_id);
+                        $model2 = new SellOrderDetails();
+                        $model2->sell_order_id = $model->id;
+                        $model2->model_id = $model_id;
+                        $model2->qty = $_POST['SellOrderDetails']['temp_qty'][$key];
+                        $model2->warranty = $_POST['SellOrderDetails']['temp_warranty'][$key];
+                        $model2->amount = $_POST['SellOrderDetails']['temp_unit_price'][$key];
+                        $model2->product_sl_no = $_POST['SellOrderDetails']['temp_product_sl_no'][$key];
+                        $model2->row_total = $_POST['SellOrderDetails']['temp_row_total'][$key];
+                        $model2->color = $_POST['SellOrderDetails']['temp_color'][$key];
+                        $model2->note = $_POST['SellOrderDetails']['temp_note'][$key];
+                        $model2->discount_amount = $per_item_discount;
+                        $model2->discount_percentage = $percentage_discount;
+                        $model2->pp = $purchasePrice;
+                        $model2->costing = round(($model2->qty * $purchasePrice), 2);
+                        if (!$model2->save()) {
+                            $transaction->rollBack();
+                            throw new CHttpException(500, sprintf('Error in saving order details! %s <br>', json_encode($model2->getErrors())));
+                        }
                         if ($model->order_type == SellOrder::NEW_ORDER) {
                             if ($product->stockable) {
                                 $inventory = new Inventory();
@@ -117,27 +123,55 @@ class SellOrderController extends Controller
                                 $inventory->source_id = $model2->id;
                                 $inventory->master_id = $model->id;
                                 if (!$inventory->save()) {
-                                    var_dump($inventory->getErrors());
-                                    exit;
+                                    $transaction->rollBack();
+                                    throw new CHttpException(500, 'Error in saving inventory! <br> ' . json_encode($inventory->getErrors()));
                                 }
                             }
                         }
+
+                        $costing += $model2->costing;
+                        ProdModels::model()->updateProductPrice($model2->model_id, $model2->amount);
                     }
-                    $costing += $model2->costing;
-                    ProdModels::model()->updateProductPrice($model2->model_id, $model2->amount);
+                    $model->costing = $costing;
+                    $model->save();
+
+                    if ($model->cash_due == Lookup::CASH) {
+                        $moneyReceipt = new MoneyReceipt();
+                        $moneyReceipt->customer_id = $model->customer_id;
+                        $moneyReceipt->invoice_id = $model->id;
+                        $moneyReceipt->max_sl_no = MoneyReceipt::maxSlNo();
+                        $moneyReceipt->mr_no = "MR-" . date('y') . "-" . date('m') . "-" . str_pad($model->max_sl_no, 5, "0", STR_PAD_LEFT);
+                        $moneyReceipt->amount = $model->total_due;
+                        $moneyReceipt->payment_type = 1; // cash
+                        $moneyReceipt->date = $model->date;
+                        $moneyReceipt->is_approved = 0;
+                        $moneyReceipt->remarks = "Cash payment for sales order no: " . $model->so_no . " on " . $model->date . " by " . Yii::app()->user->name;
+                        if (!$moneyReceipt->save()) {
+                            $transaction->rollBack();
+                            throw new CHttpException(500, 'Error in saving money receipt! <br> ' . json_encode($moneyReceipt->getErrors()));
+                        }
+                    }
+
+                    $transaction->commit();
+
+
+                    // if cash order then create money receipt
+                    echo CJSON::encode(array(
+                        'status' => 'success',
+                        'soReportInfo' => $this->renderPartial('voucherPreview', array('data' => $model, 'new' => true), true, true), //
+                    ));
+                    Yii::app()->end();
+                } else {
+                    $error = CActiveForm::validate($model);
+                    if ($error != '[]')
+                        echo $error;
+                    Yii::app()->end();
                 }
-                $model->costing = $costing;
-                $model->save();
-                echo CJSON::encode(array(
-                    'status' => 'success',
-                    'soReportInfo' => $this->renderPartial('voucherPreview', array('data' => $model, 'new' => true), true, true), //
-                ));
-                Yii::app()->end();
-            } else {
-                $error = CActiveForm::validate($model);
-                if ($error != '[]')
-                    echo $error;
-                Yii::app()->end();
+            } catch (PDOException $e) {
+                $transaction->rollBack();
+                throw new CHttpException(500, $e->getMessage());
+            } catch (Exception $e) {
+                throw new CHttpException(500, $e->getMessage());
             }
         }
         $this->pageTitle = 'CREATE ORDER';
@@ -174,67 +208,71 @@ class SellOrderController extends Controller
         }
 
         $costing = 0;
-        if (isset($_POST['SellOrder'], $_POST['SellOrderDetails'])) {
-            $model->attributes = $_POST['SellOrder'];
-            $model->discount_percentage = 0;
-            $model->discount_amount = $_POST['SellOrder']['discount_amount'];
-            $model->is_invoice_done = SellOrder::INVOICE_DONE;
-            $model->is_delivery_done = SellOrder::DELIVERY_DONE;
-            $model->is_job_card_done = SellOrder::JOB_CARD_DONE;
-            $model->is_partial_invoice = SellOrder::PARTIAL_INVOICE_DONE;
-            $model->is_partial_delivery = SellOrder::PARTIAL_DELIVERY_DONE;
-            $model->bom_complete = SellOrder::BOM_COMPLETE;
-            $model->total_due = $_POST['SellOrder']['grand_total'] - $model->total_paid;
-            if ($model->save()) {
-                $details_id_arr = [];
-                foreach ($_POST['SellOrderDetails']['temp_model_id'] as $key => $model_id) {
-                    $product_sl_no = $_POST['SellOrderDetails']['temp_product_sl_no'][$key];
-                    $purchasePrice = $_POST['SellOrderDetails']['temp_pp'][$key];
-                    if (!$purchasePrice > 0) {
-                        $purchasePrice = ProdModels::model()->findByPk($model_id)->purchase_price;
+        $transaction = Yii::app()->db->beginTransaction();
+        try {
+            if (isset($_POST['SellOrder'], $_POST['SellOrderDetails'])) {
+                $model->attributes = $_POST['SellOrder'];
+                $model->discount_percentage = 0;
+                $model->discount_amount = $_POST['SellOrder']['discount_amount'];
+                $model->total_due = $_POST['SellOrder']['grand_total'] - $model->total_paid;
+                if ($model->save()) {
+                    $total_item = count($_POST['SellOrderDetails']['temp_model_id']);
+                    $per_item_discount = $model->discount_amount / $total_item;
+                    $details_id_arr = [];
+                    foreach ($_POST['SellOrderDetails']['temp_model_id'] as $key => $model_id) {
+                        $product_sl_no = $_POST['SellOrderDetails']['temp_product_sl_no'][$key];
+                        $purchasePrice = $_POST['SellOrderDetails']['temp_pp'][$key];
+                        $percentage_discount = ($per_item_discount / $_POST['SellOrderDetails']['temp_unit_price'][$key]) * 100;
+
+                        if (!$purchasePrice > 0) {
+                            $purchasePrice = ProdModels::model()->findByPk($model_id)->purchase_price;
+                        }
+                        $model2 = SellOrderDetails::model()->findByAttributes(['model_id' => $model_id, 'sell_order_id' => $model->id, 'product_sl_no' => $product_sl_no]);
+                        if (!$model2)
+                            $model2 = new SellOrderDetails();
+                        $model2->sell_order_id = $model->id;
+                        $model2->model_id = $model_id;
+                        $model2->qty = $_POST['SellOrderDetails']['temp_qty'][$key];
+                        $model2->amount = $_POST['SellOrderDetails']['temp_unit_price'][$key];
+                        $model2->row_total = $_POST['SellOrderDetails']['temp_row_total'][$key];
+                        $model2->color = $_POST['SellOrderDetails']['temp_color'][$key];
+                        $model2->note = $_POST['SellOrderDetails']['temp_note'][$key];
+                        $model2->warranty = $_POST['SellOrderDetails']['temp_warranty'][$key];
+                        $model2->discount_amount = $per_item_discount;
+                        $model2->discount_percentage = $percentage_discount;
+                        $model2->pp = $purchasePrice;
+                        $model2->costing = round(($model2->qty * $purchasePrice), 2);
+                        $model2->product_sl_no = $product_sl_no;
+                        if (!$model2->save()) {
+                            $transaction->rollBack();
+                            throw new CHttpException(500, sprintf('Error in saving order details! %s <br>', json_encode($model2->getErrors())));
+                        }
+
+                        ProdModels::model()->updateProductPrice($model2->model_id, $model2->amount);
+
+                        $details_id_arr[] = $model2->id;
+                        $costing += $model2->costing;
                     }
-                    $model2 = SellOrderDetails::model()->findByAttributes(['model_id' => $model_id, 'sell_order_id' => $model->id, 'product_sl_no' => $product_sl_no]);
-                    if (!$model2)
-                        $model2 = new SellOrderDetails();
-                    $model2->sell_order_id = $model->id;
-                    $model2->model_id = $model_id;
-                    $model2->qty = $_POST['SellOrderDetails']['temp_qty'][$key];
-                    $model2->amount = $_POST['SellOrderDetails']['temp_unit_price'][$key];
-                    $model2->row_total = $_POST['SellOrderDetails']['temp_row_total'][$key];
-                    $model2->color = $_POST['SellOrderDetails']['temp_color'][$key];
-                    $model2->note = $_POST['SellOrderDetails']['temp_note'][$key];
-                    $model2->warranty = $_POST['SellOrderDetails']['temp_warranty'][$key];
-                    $model2->costing = round(($model2->qty * $purchasePrice), 2);
-                    $model2->product_sl_no = $product_sl_no;
-                    if (!$model2->save()) {
-                        var_dump($model2->getErrors());
-                        exit;
+                    if (count($details_id_arr) > 0) {
+                        $criteriaDel = new CDbCriteria;
+                        $criteriaDel->addNotInCondition('id', $details_id_arr);
+                        $criteriaDel->addColumnCondition(['sell_order_id' => $id]);
+                        SellOrderDetails::model()->deleteAll($criteriaDel);
                     }
 
-                    ProdModels::model()->updateProductPrice($model2->model_id, $model2->amount);
+                    $delete_inv_arr = [];
+                    $criteria2 = new CDbCriteria();
+                    $criteria2->addColumnCondition(['sell_order_id' => $id]);
+                    $sellOrderDetails = SellOrderDetails::model()->findAll($criteria2);
 
-                    $details_id_arr[] = $model2->id;
-                    $costing += $model2->costing;
-                }
-                if (count($details_id_arr) > 0) {
-                    $criteriaDel = new CDbCriteria;
-                    $criteriaDel->addNotInCondition('id', $details_id_arr);
-                    $criteriaDel->addColumnCondition(['sell_order_id' => $id]);
-                    SellOrderDetails::model()->deleteAll($criteriaDel);
-                }
-
-                $delete_inv_arr = [];
-                $criteria2 = new CDbCriteria();
-                $criteria2->addColumnCondition(['sell_order_id' => $id]);
-                $sellOrderDetails = SellOrderDetails::model()->findAll($criteria2);
-
-                $inv_sl = Inventory::maxSlNo();
-                foreach ($sellOrderDetails as $detail) {
-                    $product = ProdModels::model()->findByPk($detail->model_id);
-                    $inventory = Inventory::model()->findByAttributes(['model_id' => $detail->model_id, 'stock_status' => Inventory::SALES_DELIVERY, 'source_id' => $detail->id, 'product_sl_no' => $detail->product_sl_no]);
-                    if (!$inventory) {
-                        if ($product->stockable) {
+                    $inv_sl = Inventory::maxSlNo();
+                    foreach ($sellOrderDetails as $detail) {
+                        $product = ProdModels::model()->findByPk($detail->model_id);
+                        $inventory = Inventory::model()->findByAttributes(['model_id' => $detail->model_id, 'stock_status' => Inventory::SALES_DELIVERY, 'source_id' => $detail->id, 'product_sl_no' => $detail->product_sl_no]);
+                        if (!$inventory) {
                             $inventory = new Inventory();
+                        }
+                        if ($product->stockable) {
                             $inventory->sl_no = $inv_sl;
                             $inventory->date = $model->date;
                             $inventory->challan_no = $model->so_no;
@@ -249,50 +287,59 @@ class SellOrderController extends Controller
                             $inventory->source_id = $detail->id;
                             $inventory->master_id = $id;
                             if (!$inventory->save()) {
-                                var_dump($inventory->getErrors());
-                                exit;
+                                $transaction->rollBack();
+                                throw new CHttpException(500, sprintf('Error in saving inventory! %s <br>', json_encode($inventory->getErrors())));
                             }
+
                         }
+                        if ($inventory)
+                            $delete_inv_arr[] = $inventory->id;
                     }
-                    if ($inventory)
-                        $delete_inv_arr[] = $inventory->id;
-                }
-                if (count($delete_inv_arr) > 0) {
-                    $criteriaDel = new CDbCriteria;
-                    $criteriaDel->addNotInCondition('id', $delete_inv_arr);
-                    $criteriaDel->addColumnCondition(['master_id' => $id, 'stock_status' => Inventory::SALES_DELIVERY]);
-                    Inventory::model()->deleteAll($criteriaDel);
-                }
+                    if (count($delete_inv_arr) > 0) {
+                        $criteriaDel = new CDbCriteria;
+                        $criteriaDel->addNotInCondition('id', $delete_inv_arr);
+                        $criteriaDel->addColumnCondition(['master_id' => $id, 'stock_status' => Inventory::SALES_DELIVERY]);
+                        Inventory::model()->deleteAll($criteriaDel);
+                    }
 
-                $model->costing = $costing;
-                $model->save();
+                    $model->costing = $costing;
+                    $model->save();
+                    $transaction->commit();
 
-                echo CJSON::encode(array(
-                    'status' => 'success',
-                    'soReportInfo' => $this->renderPartial('voucherPreview', array('data' => $model, 'new' => true), true, true), //
-                ));
-                Yii::app()->end();
-            } else {
-                $error = CActiveForm::validate($model);
-                if ($error != '[]')
-                    echo $error;
-                Yii::app()->end();
+
+                    echo CJSON::encode(array(
+                        'status' => 'success',
+                        'soReportInfo' => $this->renderPartial('voucherPreview', array('data' => $model, 'new' => true), true, true), //
+                    ));
+                    Yii::app()->end();
+                } else {
+                    $error = CActiveForm::validate($model);
+                    if ($error != '[]')
+                        echo $error;
+                    Yii::app()->end();
+                }
             }
-        }
 
 //        if ($model->total_paid == 0) {
 
-        $criteria = new CDbCriteria();
-        $criteria->select = "t.*, pm.model_name, pm.code";
-        $criteria->addColumnCondition(['sell_order_id' => $id]);
-        $criteria->join = " INNER JOIN prod_models pm on t.model_id = pm.id ";
-        $criteria->order = "pm.model_name ASC, t.product_sl_no ASC";
-        $this->pageTitle = 'UPDATE ORDER';
-        $this->render('update', array(
-            'model' => $model,
-            'model2' => $model2,
-            'model3' => SellOrderDetails::model()->findAll($criteria),
-        ));
+            $criteria = new CDbCriteria();
+            $criteria->select = "t.*, pm.model_name, pm.code";
+            $criteria->addColumnCondition(['sell_order_id' => $id]);
+            $criteria->join = " INNER JOIN prod_models pm on t.model_id = pm.id ";
+            $criteria->order = "pm.model_name ASC, t.product_sl_no ASC";
+            $this->pageTitle = 'UPDATE ORDER';
+            $this->render('update', array(
+                'model' => $model,
+                'model2' => $model2,
+                'model3' => SellOrderDetails::model()->findAll($criteria),
+            ));
+        } catch (PDOException $e) {
+            $transaction->rollBack();
+            throw new CHttpException(500, $e->getMessage());
+        } catch (Exception $e) {
+            $transaction->rollBack();
+            throw new CHttpException(500, $e->getMessage());
+        }
         /* } else {
              $status = ['status' => 'danger', 'message' => 'You can not update this order(' . $model->so_no . ') now!'];
              Yii::app()->user->setFlash($status['status'], $status['message']);
@@ -308,18 +355,25 @@ class SellOrderController extends Controller
     public function actionDelete($id)
     {
 
-        $criteria = new CDbCriteria();
-        $criteria->addColumnCondition(['sell_order_id' => $id]);
-        $sellOrderDetail = SellOrderDetails::model()->findAll($criteria);
-        if ($sellOrderDetail) {
-            foreach ($sellOrderDetail as $item) {
-                $inventory = Inventory::model()->findByAttributes(['source_id' => $item->id, 'stock_status' => Inventory::SALES_DELIVERY]); // 'master_id' => $id,
-                if ($inventory) {
-                    $inventory->delete();
+        $transaction = Yii::app()->db->beginTransaction();
+        try {
+            $criteria = new CDbCriteria();
+            $criteria->addColumnCondition(['sell_order_id' => $id]);
+            $sellOrderDetail = SellOrderDetails::model()->findAll($criteria);
+            if ($sellOrderDetail) {
+                foreach ($sellOrderDetail as $item) {
+                    $inventory = Inventory::model()->findByAttributes(['source_id' => $item->id, 'stock_status' => Inventory::SALES_DELIVERY]); // 'master_id' => $id,
+                    if ($inventory) {
+                        $inventory->delete();
+                    }
+                    $item->delete();
                 }
-                $item->delete();
+                $this->loadModel($id)->delete();
             }
-            $this->loadModel($id)->delete();
+
+        } catch (Exception $e) {
+            $transaction->rollBack();
+            throw new CHttpException(500, $e->getMessage());
         }
 
         // if AJAX request (triggered by deletion via admin grid view), we should not redirect the browser

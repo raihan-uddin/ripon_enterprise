@@ -41,8 +41,8 @@ $form = $this->beginWidget('CActiveForm', array(
                       style="color: red; width: 100%"> <?php echo $form->error($model, 'company_contact_no'); ?></span>
             </div>
             <div class="form-group col-xs-12 col-sm-6 col-lg-4">
-                <?php echo $form->labelEx($model, 'contact_number_2'); ?>
-                <?php echo $form->textField($model, 'contact_number_2', array('maxlength' => 255, 'class' => 'form-control')); ?>
+                <?php echo $form->labelEx($model, 'opening_amount'); ?>
+                <?php echo $form->textField($model, 'opening_amount', array('maxlength' => 255, 'class' => 'form-control')); ?>
                 <span class="help-block"
                       style="color: red; width: 100%"> <?php echo $form->error($model, 'contact_number_2'); ?></span>
             </div>

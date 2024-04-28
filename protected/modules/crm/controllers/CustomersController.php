@@ -44,7 +44,26 @@ class CustomersController extends Controller
             $model->customer_code = "CUS" . str_pad($model->max_sl_no, 5, "0", STR_PAD_LEFT);
             $valid = $model->validate();
             if ($valid) {
-                $model->save();
+                if ($model->save()) {
+                    if ($model->opening_amount > 0) {
+                        // create a new sell order
+                        $sellOrder = new SellOrder();
+                        $sellOrder->date = date('Y-m-d');
+                        $sellOrder->customer_id = $model->id;
+                        $sellOrder->order_type = SellOrder::NEW_ORDER;
+                        $sellOrder->grand_total = $model->opening_amount;
+                        $sellOrder->total_due = $model->opening_amount;
+                        $sellOrder->total_amount = $model->opening_amount;
+                        $sellOrder->costing = 0;
+                        $sellOrder->is_paid = SellOrder::DUE;
+                        $sellOrder->is_opening = 1;
+                        $sellOrder->total_paid = 0;
+                        $sellOrder->max_sl_no = SellOrder::maxSlNo();
+                        $sellOrder->so_no = "OP" . str_pad($sellOrder->max_sl_no, 5, "0", STR_PAD_LEFT);
+                        $sellOrder->cash_due = Lookup::DUE;
+                        $sellOrder->save();
+                    }
+                }
                 //do anything here
 
                 echo CJSON::encode(array(
@@ -76,6 +95,25 @@ class CustomersController extends Controller
             $model->max_sl_no = Customers::maxSlNo();
             $model->customer_code = "CUS" . str_pad($model->max_sl_no, 5, "0", STR_PAD_LEFT);
             if ($model->save()) {
+                if ($model->opening_amount > 0) {
+                    // create a new sell order
+                    $sellOrder = new SellOrder();
+                    $sellOrder->date = date('Y-m-d');
+                    $sellOrder->customer_id = $model->id;
+                    $sellOrder->order_type = SellOrder::NEW_ORDER;
+                    $sellOrder->grand_total = $model->opening_amount;
+                    $sellOrder->total_due = $model->opening_amount;
+                    $sellOrder->total_amount = $model->opening_amount;
+                    $sellOrder->costing = 0;
+                    $sellOrder->is_paid = SellOrder::DUE;
+                    $sellOrder->is_opening = 1;
+                    $sellOrder->total_paid = 0;
+                    $sellOrder->max_sl_no = SellOrder::maxSlNo();
+                    $sellOrder->so_no = date('y') . date('m') . str_pad($model->max_sl_no, 5, "0", STR_PAD_LEFT);
+                    $sellOrder->cash_due = Lookup::DUE;
+                    $sellOrder->save();
+                }
+
                 if (Yii::app()->request->isAjaxRequest) {
                     echo CJSON::encode(array(
                         'status' => 'success',
@@ -120,6 +158,27 @@ class CustomersController extends Controller
         if (isset($_POST['Customers'])) {
             $model->attributes = $_POST['Customers'];
             if ($model->save()) {
+                if ($model->opening_amount > 0) {
+                    $sellOrder = SellOrder::model()->findByAttributes(array('customer_id' => $model->id, 'is_opening' => 1,));
+                    if (!$sellOrder) {
+                        $sellOrder = new SellOrder();
+                        $sellOrder->date = date('Y-m-d');
+                        $sellOrder->customer_id = $model->id;
+                        $sellOrder->order_type = SellOrder::NEW_ORDER;
+                        $sellOrder->is_opening = 1;
+                        $sellOrder->max_sl_no = SellOrder::maxSlNo();
+                        $sellOrder->so_no = date('y') . date('m') . str_pad($model->max_sl_no, 5, "0", STR_PAD_LEFT);
+                        $sellOrder->cash_due = Lookup::DUE;
+                    }
+
+                    $sellOrder->grand_total = $model->opening_amount;
+                    $sellOrder->total_due = $model->opening_amount;
+                    $sellOrder->total_amount = $model->opening_amount;
+                    $sellOrder->costing = 0;
+                    $sellOrder->is_paid = SellOrder::DUE;
+                    $sellOrder->total_paid = 0;
+                    $sellOrder->save();
+                }
                 if (Yii::app()->request->isAjaxRequest) {
                     // Stop jQuery from re-initialization
                     Yii::app()->clientScript->scriptMap['jquery.js'] = false;

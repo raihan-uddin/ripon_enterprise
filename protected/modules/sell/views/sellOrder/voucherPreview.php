@@ -58,7 +58,7 @@
     }
 </style>
 
-<div class="card card-success">
+<div class="card card-success  table-responsive">
     <div class="card-header">
         <h3 class="card-title">Preview</h3>
 
@@ -101,7 +101,6 @@
                 'id' => 'print-div'         //id of the print link
             ));
             echo "</div><br><br><br>";
-
 
             $customer = Customers::model()->findByPk($data->customer_id);
             ?>
@@ -183,7 +182,7 @@
                         $delivery_charge = $data->delivery_charge;
                         $discount_amount = $data->discount_amount;
                         $criteria = new CDbCriteria();
-                        $criteria->select = "pm.model_name, pm.code, pm.image, sum(t.qty) as qty, t.amount,
+                        $criteria->select = "pm.model_name, pm.code, pm.image, sum(t.qty) as qty, t.amount, t.discount_amount,
                                             t.note, sum(t.row_total) as row_total,  sum(costing) as costing,
                                             GROUP_CONCAT(product_sl_no ORDER BY product_sl_no SEPARATOR ', ') as product_sl_no, 
                                             GROUP_CONCAT(t.warranty ORDER BY t.warranty SEPARATOR ', ') as warranty,
@@ -227,16 +226,17 @@
                                     <td style="text-align: right;"> TK <?= number_format($dt->row_total, 2) ?></td>
                                     <?php
                                     if ($showProfitLossSummary) {
-                                        $netIncome = $dt->row_total - $dt->costing;
+                                        $netIncome = $dt->row_total - ($dt->costing + $dt->discount_amount);
                                         ?>
-                                        <td style="text-align: right;"> TK <?= number_format($netIncome, 2) ?></td>
+                                        <td style="text-align: right;"> TK <?= number_format($netIncome, 2) ?>
+                                        </td>
                                         <?php
                                     }
                                     ?>
                                 </tr>
                                 <?php
                                 $row_total += $dt->row_total;
-                                $totalCosting += $dt->costing;
+                                $totalCosting += ($dt->costing);
                             }
                             if ($totalCosting != $data->costing) {
                                 $data->costing = $totalCosting;
@@ -414,7 +414,7 @@
 show profit loss summary on profitLossText div using javascript  must be show after loading the page
 <script>
     $(document).ready(function () {
-        var profitLoss = <?= $row_total - $totalCosting ?>;
+        var profitLoss = <?= $row_total - $totalCosting - $discount_amount ?>;
         // if profit then show green color else show red color
         if (profitLoss > 0) {
             $('#profitLossText').css('color', 'green');

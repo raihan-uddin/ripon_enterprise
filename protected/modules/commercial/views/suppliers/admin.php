@@ -97,7 +97,7 @@ endforeach;
 //                    'company_fax',
 //                    'company_email',
                     'company_web',
-//                    'opening_amount',
+                    'opening_amount',
                     array
                     (
                         'header' => 'Options',

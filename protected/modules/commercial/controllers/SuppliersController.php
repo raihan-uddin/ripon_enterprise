@@ -68,6 +68,21 @@ class SuppliersController extends Controller
         if (isset($_POST['Suppliers'])) {
             $model->attributes = $_POST['Suppliers'];
             if ($model->save()) {
+                if ($model->opening_amount > 0) {
+                    // create a new purchase order
+                    $purchaseOrder = new PurchaseOrder();
+                    $purchaseOrder->supplier_id = $model->id;
+                    $purchaseOrder->order_type = 1;
+                    $purchaseOrder->is_opening = 1;
+                    $purchaseOrder->date = date('Y-m-d');
+                    $purchaseOrder->max_sl_no = PurchaseOrder::maxSlNo();
+                    $purchaseOrder->po_no = "OP" . date('y') . "-" . date('m') . str_pad($model->max_sl_no, 5, "0", STR_PAD_LEFT);
+                    $purchaseOrder->total_amount = $model->opening_amount;
+                    $purchaseOrder->grand_total = $model->opening_amount;
+                    $purchaseOrder->cash_due = 82;
+                    $purchaseOrder->is_paid = PurchaseOrder::DUE;
+                    $purchaseOrder->save();
+                }
                 if (Yii::app()->request->isAjaxRequest) {
                     $data = Suppliers::model()->findByPk($model->id);
                     echo CJSON::encode(array(
@@ -112,7 +127,24 @@ class SuppliersController extends Controller
             $model->attributes = $_POST['Suppliers'];
             $valid = $model->validate();
             if ($valid) {
-                $model->save();
+                if ($model->save()) {
+                    if ($model->opening_amount > 0) {
+                        // create a new purchase order
+                        $purchaseOrder = new PurchaseOrder();
+
+                        $purchaseOrder->supplier_id = $model->id;
+                        $purchaseOrder->order_type = 1;
+                        $purchaseOrder->is_opening = 1;
+                        $purchaseOrder->date = date('Y-m-d');
+                        $purchaseOrder->max_sl_no = PurchaseOrder::maxSlNo();
+                        $purchaseOrder->po_no = "OP" . date('y') . "-" . date('m') . str_pad($model->max_sl_no, 5, "0", STR_PAD_LEFT);
+                        $purchaseOrder->total_amount = $model->opening_amount;
+                        $purchaseOrder->grand_total = $model->opening_amount;
+                        $purchaseOrder->cash_due = 82;
+                        $purchaseOrder->is_paid = PurchaseOrder::DUE;
+                        $purchaseOrder->save();
+                    }
+                }
                 //do anything here
 
                 echo CJSON::encode(array(
@@ -147,6 +179,24 @@ class SuppliersController extends Controller
         if (isset($_POST['Suppliers'])) {
             $model->attributes = $_POST['Suppliers'];
             if ($model->save()) {
+                if ($model->opening_amount > 0) {
+                    $purchaseOrder = PurchaseOrder::model()->findByAttributes(array('supplier_id' => $model->id, 'is_opening' => 1, 'order_type' => 1));
+                    if (!$purchaseOrder) {
+                        $purchaseOrder = new PurchaseOrder();
+                        $purchaseOrder->supplier_id = $model->id;
+                        $purchaseOrder->order_type = 1;
+                        $purchaseOrder->is_opening = 1;
+                        $purchaseOrder->date = date('Y-m-d');
+                        $purchaseOrder->max_sl_no = PurchaseOrder::maxSlNo();
+                        $purchaseOrder->po_no = "OP" . date('y') . "-" . date('m') . str_pad($model->max_sl_no, 5, "0", STR_PAD_LEFT);
+                    }
+
+                    $purchaseOrder->total_amount = $model->opening_amount;
+                    $purchaseOrder->grand_total = $model->opening_amount;
+                    $purchaseOrder->cash_due = 82;
+                    $purchaseOrder->is_paid = PurchaseOrder::DUE;
+                    $purchaseOrder->save();
+                }
                 if (Yii::app()->request->isAjaxRequest) {
                     // Stop jQuery from re-initialization
                     Yii::app()->clientScript->scriptMap['jquery.js'] = false;
@@ -180,7 +230,8 @@ class SuppliersController extends Controller
      * If deletion is successful, the browser will be redirected to the 'admin' page.
      * @param integer $id the ID of the model to be deleted
      */
-    public function actionDelete($id)
+    public
+    function actionDelete($id)
     {
 
         $purchaseItemsData = PurchaseOrder::model()->findByAttributes(array('supplier_id' => $id));
@@ -202,7 +253,8 @@ class SuppliersController extends Controller
     /**
      * Manages all models.
      */
-    public function actionAdmin()
+    public
+    function actionAdmin()
     {
         $model = new Suppliers('search');
         $model->unsetAttributes();  // clear any default values
@@ -221,7 +273,8 @@ class SuppliersController extends Controller
      * If the data model is not found, an HTTP exception will be raised.
      * @param integer the ID of the model to be loaded
      */
-    public function loadModel($id)
+    public
+    function loadModel($id)
     {
         $model = Suppliers::model()->findByPk($id);
         if ($model === null)
@@ -233,7 +286,8 @@ class SuppliersController extends Controller
      * Performs the AJAX validation.
      * @param CModel the model to be validated
      */
-    protected function performAjaxValidation($model)
+    protected
+    function performAjaxValidation($model)
     {
         if (isset($_POST['ajax']) && $_POST['ajax'] === 'suppliers-form') {
             echo CActiveForm::validate($model);

@@ -113,7 +113,7 @@ class SiteController extends Controller
 
         // calculate total sales amount with the profit
         $totalSalesSummary = Yii::app()->db->createCommand()
-            ->select('ROUND(SUM(grand_total)) as total_amount, ROUND(SUM(costing)) as cogs')
+            ->select('ROUND(SUM(total_amount)) as total_amount, ROUND(SUM(costing)) as cogs, ROUND(SUM(discount_amount)) as discount_amount')
             ->from('sell_order')
             ->where('order_type = :type AND date BETWEEN :start_date AND :end_date',
                 array(
@@ -123,6 +123,7 @@ class SiteController extends Controller
                 ))
             ->queryRow();
         $totalCogsValue = $totalSalesSummary['cogs'];
+        $totalSaleDiscountValue = $totalSalesSummary['discount_amount'];
         $totalSalesValue = $totalSalesSummary['total_amount'];
 
         // calculate total purchase amount
@@ -171,6 +172,7 @@ class SiteController extends Controller
 
         $this->renderPartial('profitLossSummary', array(
             'totalSalesValue' => $totalSalesValue,
+            'totalSaleDiscountValue' => $totalSaleDiscountValue,
             'totalCogsValue' => $totalCogsValue,
             'totalPurchaseValue' => $totalPurchaseSummary,
             'totalExpenseValue' => $totalExpenseSummary,

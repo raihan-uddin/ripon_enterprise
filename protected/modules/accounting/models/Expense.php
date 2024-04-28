@@ -125,6 +125,11 @@ class Expense extends CActiveRecord
         $criteria->select = "t.*";
         $criteria->join = " ";
 
+        // show only logged in user's data if not admin
+        if (!Yii::app()->user->checkAccess('Admin')) {
+            $criteria->addColumnCondition(['t.created_by' => Yii::app()->user->id]);
+        }
+
 
         if (($this->created_by) != "") {
             $criteria->join .= " INNER JOIN users u on t.created_by = u.id ";
