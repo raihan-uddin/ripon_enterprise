@@ -51,6 +51,10 @@ class ExpenseController extends RController
      */
     public function actionCreate()
     {
+        if (Yii::app()->request->isAjaxRequest) {
+            Yii::app()->clientScript->scriptMap['jquery.js'] = false;
+        }
+
         $model = new Expense();
         $model2 = new ExpenseDetails();
 
@@ -137,7 +141,7 @@ class ExpenseController extends RController
                         $amount = $_POST['ExpenseDetails']['temp_amount'][$key];
                         // find the old data by expense_id & expense_head_id
                         $model2 = ExpenseDetails::model()->findByAttributes(['expense_id' => $model->id, 'expense_head_id' => $expense_head_id]);
-                        if (!$model2){
+                        if (!$model2) {
                             $model2 = new ExpenseDetails();
                         }
                         $model2->expense_id = $model->id;
@@ -187,6 +191,10 @@ class ExpenseController extends RController
      */
     public function actionDelete($id)
     {
+        if (Yii::app()->request->isAjaxRequest) {
+            Yii::app()->clientScript->scriptMap['jquery.js'] = false;
+        }
+
 //        $this->loadModel($id)->delete();
         // we only allow deletion via POST request
         if (Yii::app()->request->isPostRequest) {
@@ -224,11 +232,20 @@ class ExpenseController extends RController
 
     public function actionVoucherPreview()
     {
-        $entry_no = isset($_POST['entry_no']) ? trim($_POST['entry_no']) : "";
+        if (Yii::app()->request->isAjaxRequest) {
+            Yii::app()->clientScript->scriptMap['jquery.js'] = false;
+        }
 
-        if (strlen($entry_no) > 0) {
+        $entry_no = isset($_POST['entry_no']) ? trim($_POST['entry_no']) : "";
+        $invoiceId = isset($_POST['invoiceId']) ? trim($_POST['invoiceId']) : "";
+
+        if (strlen($entry_no) > 0 || $invoiceId > 0) {
             $criteria = new CDbCriteria;
-            $criteria->addColumnCondition(['entry_no' => $entry_no]);
+            if ($invoiceId > 0)
+                $criteria->addColumnCondition(['id' => $invoiceId]);
+            else
+                $criteria->addColumnCondition(['entry_no' => $entry_no]);
+
             $data = Expense::model()->findByAttributes([], $criteria);
             if ($data) {
                 echo $this->renderPartial("voucherPreview", array('data' => $data,), true, true);

@@ -564,33 +564,6 @@ class ReportController extends RController
         Yii::app()->end();
     }
 
-    public function actionSaleInvoiceDetailsPreview()
-    {
-        $invoiceId = $_POST['invoiceId'];
-
-        if (Yii::app()->request->isAjaxRequest) {
-            Yii::app()->clientScript->scriptMap['jquery.js'] = false;
-        }
-
-        if ($invoiceId) {
-            $criteria = new CDbCriteria;
-            $criteria->addColumnCondition(['id' => $invoiceId]);
-            $data = SellOrder::model()->findByAttributes([], $criteria);
-
-            if ($data) {
-                echo $this->renderPartial("application.modules.sell.views.sellOrder.voucherPreview", array('data' => $data, 'preview_type' => SellOrder::NORMAL_PAD_PRINT, 'show_profit' => true), true, true);
-            } else {
-                header('Content-type: application/json');
-                echo CJSON::encode(array(
-                    'status' => 'error',
-                ));
-            }
-            Yii::app()->end();
-        } else {
-            echo '<div class="alert alert-danger" role="alert">Please select sales invoice no!</div>';
-        }
-    }
-
     public function actionPurchaseReport()
     {
         $model = new Inventory();
@@ -643,32 +616,6 @@ class ReportController extends RController
         $this->render('purchaseDetailsReport', array('model' => $model));
     }
 
-    public function actionPurchaseInvoiceDetailsPreview()
-    {
-        $invoiceId = $_POST['invoiceId'];
-
-        if (Yii::app()->request->isAjaxRequest) {
-            Yii::app()->clientScript->scriptMap['jquery.js'] = false;
-        }
-
-        if ($invoiceId) {
-            $criteria = new CDbCriteria;
-            $criteria->addColumnCondition(['id' => $invoiceId]);
-            $data = PurchaseOrder::model()->findByAttributes([], $criteria);
-
-            if ($data) {
-                echo $this->renderPartial("application.modules.commercial.views.purchaseOrder.voucherPreview", array('data' => $data,), true, true);
-            } else {
-                header('Content-type: application/json');
-                echo CJSON::encode(array(
-                    'status' => 'error',
-                ));
-            }
-            Yii::app()->end();
-        } else {
-            echo '<div class="alert alert-danger" role="alert">Please select purchase invoice no!</div>';
-        }
-    }
 
     public function actionPurchaseDetailsReportView()
     {
@@ -856,31 +803,73 @@ class ReportController extends RController
         Yii::app()->end();
     }
 
-
-    public function actionExpensePreview()
+    public function actionProductPerformanceReport()
     {
-        $invoiceId = $_POST['invoiceId'];
+        $model = new Inventory();
+        $this->pageTitle = 'PRODUCT PERFORMANCE REPORT';
+        $this->render('productPerformanceReport', array('model' => $model));
+    }
 
+    public function actionProductPerformanceReportView()
+    {
         if (Yii::app()->request->isAjaxRequest) {
             Yii::app()->clientScript->scriptMap['jquery.js'] = false;
         }
 
-        if ($invoiceId) {
-            $criteria = new CDbCriteria;
-            $criteria->addColumnCondition(['id' => $invoiceId]);
-            $data = Expense::model()->findByAttributes([], $criteria);
+        date_default_timezone_set("Asia/Dhaka");
+        $dateFrom = $_POST['Inventory']['date_from'];
+        $dateTo = $_POST['Inventory']['date_to'];
+        $model_id = $_POST['Inventory']['model_id'];
+        $manufacturer_id = $_POST['Inventory']['manufacturer_id'];
+        $item_id = $_POST['Inventory']['item_id'];
+        $brand_id = $_POST['Inventory']['brand_id'];
+        $supplier_id = $_POST['Inventory']['supplier_id'];
+        $created_by = $_POST['Inventory']['created_by'];
 
-            if ($data) {
-                echo $this->renderPartial("application.modules.accounting.views.expense.voucherPreview", array('data' => $data,), true, true);
-            } else {
-                header('Content-type: application/json');
-                echo CJSON::encode(array(
-                    'status' => 'error',
-                ));
+        $message = "";
+        $data = NULL;
+
+        if ($dateFrom != "" && $dateTo != '') {
+            $message .= "<br>  Date: " . date('d/m/Y', strtotime($dateFrom)) . "-" . date('d/m/Y', strtotime($dateTo));
+
+            $criteria = new CDbCriteria();
+            $criteria->addBetweenCondition('t.date', $dateFrom, $dateTo);
+            if ($model_id > 0) {
+                $criteria->addColumnCondition(['t.model_id' => $model_id]);
             }
+            if ($manufacturer_id > 0) {
+                $criteria->addColumnCondition(['pm.manufacturer_id' => $manufacturer_id]);
+            }
+            if ($item_id > 0) {
+                $criteria->addColumnCondition(['pm.item_id' => $item_id]);
+            }
+            if ($brand_id > 0) {
+                $criteria->addColumnCondition(['pm.brand_id' => $brand_id]);
+            }
+            if ($supplier_id > 0) {
+                $criteria->addColumnCondition(['t.supplier_id' => $supplier_id]);
+            }
+            if ($created_by > 0) {
+                $criteria->addColumnCondition(['t.created_by' => $created_by]);
+            }
+            $criteria->join .= " INNER JOIN suppliers c on t.supplier_id = c.id ";
+            $criteria->join .= " INNER JOIN purchase_order_details pod on pod.order_id = t.id ";
+            $criteria->join .= " INNER JOIN prod_models pm on pod.model_id = pm.id ";
+            $criteria->join .= " INNER JOIN units u on pm.unit_id = u.id ";
+            $criteria->select = "t.*, 
+                                pod.product_sl_no, pod.qty, pod.unit_price, pod.row_total,
+                                c.company_name as company_name, c.company_contact_no as contact_no, 
+                                pm.model_name as product_name, pm.code as product_code, u.label";
+            $criteria->order = 't.date asc';
+            $data = PurchaseOrder::model()->findAll($criteria);
+
+            echo $this->renderPartial('productPerformanceReportView', array(
+                'data' => $data,
+                'message' => $message,
+            ), true, true);
             Yii::app()->end();
-        } else {
-            echo '<div class="alert alert-danger" role="alert">Please select expense no!</div>';
         }
     }
+
+
 }

@@ -75,7 +75,7 @@ endforeach;
 ////                'prevPageLabel'=>'<',
 ////                'nextPageLabel'=>'>',
 //                ),
-//                'template' => "{pager}{summary}{items}{summary}{pager}",
+                'template' => "{pager}{summary}{items}{summary}{pager}",
                 'columns' => array(
                     'company_name',
                     'company_address',

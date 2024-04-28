@@ -209,7 +209,7 @@ echo "</div>";
         var $this = $(this);
         $this.html('<i class="fa fa-spinner fa-spin"></i>');
         $.ajax({
-            url: '<?= Yii::app()->createUrl("report/purchaseInvoiceDetailsPreview") ?>',
+            url: '<?= Yii::app()->createUrl("commercial/purchaseOrder/voucherPreview") ?>',
             type: 'POST',
             data: {
                 invoiceId: invoiceId

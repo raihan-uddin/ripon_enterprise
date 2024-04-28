@@ -86,18 +86,6 @@
                 'id' => 'print-div'         //id of the print link
             ));
             echo "</div>";
-            $yourCompany = YourCompany::model()->findByAttributes(['is_active' => YourCompany::ACTIVE]);
-            $company_name = $company_location = $company_road = $company_house = $company_contact = $company_email = $company_web = $company_trn_no = "N/A";
-            if ($yourCompany) {
-                $company_name = $yourCompany->company_name;
-                $company_location = $yourCompany->location;
-                $company_road = $yourCompany->road;
-                $company_house = $yourCompany->house;
-                $company_contact = $yourCompany->contact;
-                $company_email = $yourCompany->email;
-                $company_web = $yourCompany->web;
-                $company_trn_no = $yourCompany->trn_no;
-            }
 
             $customer = Suppliers::model()->findByPk($data->supplier_id);
             ?>
@@ -109,7 +97,7 @@
                         <img src="<?= Yii::app()->theme->baseUrl . "/images/logo.png" ?>"
                              style="width: 130px; height: 100px; float: left" alt="">
                     </td>
-                    <td style="text-align: center; border: 1px solid white;" colspan="3"><h3>PURCHASE ORDER</h3></td>
+                    <td style="text-align: center; border: 1px solid white;" colspan="3"><h5>PURCHASE ORDER</h5></td>
                 </tr>
                 <tr>
                     <td colspan="3" style="border-right: white; text-align: left; border-left: 1px solid white; border-right: 1px solid white; background: white;">
@@ -170,7 +158,7 @@
                         ?>
                         <tr>
                             <td style="text-align: center;"><?= $i++ ?></td>
-                            <td colspan="2">
+                            <td colspan="2" style="text-align: left;">
                                 <?= $dt->model_name ?>
                                 <?php
                                 if (strlen($dt->product_sl_no) > 0) {
@@ -178,9 +166,9 @@
                                 }
                                 ?>
                             </td>
-                            <td style="text-align: center;"><?= $dt->qty ?></td>
-                            <td style="text-align: right;"><?= $dt->unit_price ?></td>
-                            <td style="text-align: right;"><?= $dt->row_total ?></td>
+                            <td style="text-align: center;"><?= number_format($dt->qty, 2) ?></td>
+                            <td style="text-align: right;"><?= number_format($dt->unit_price , 2)?></td>
+                            <td style="text-align: right;"><?= number_format($dt->row_total, 2) ?></td>
                         </tr>
                         <?php
                         $row_total += $dt->row_total;
@@ -198,7 +186,7 @@
                 }
                 ?>
                 <tr>
-                    <td rowspan="3" colspan="3">
+                    <td rowspan="3" colspan="3" style="text-align: left;">
                         <div>Total Amount In Words:</div>
                         <div>BDT:
                             <?php
@@ -214,15 +202,15 @@
                         </div>
                     </td>
                     <td colspan="2">Sub Total</td>
-                    <td style="text-align: right;"><?= $row_total ?></td>
+                    <td style="text-align: right;"><?= number_format($row_total, 2) ?></td>
                 </tr>
                 <tr>
                     <td colspan="2">Vat</td>
-                    <td style="text-align: right;"><?= $vat ?></td>
+                    <td style="text-align: right;"><?= number_format($vat, 2) ?></td>
                 </tr>
                 <tr>
                     <td colspan="2">Grand Total</td>
-                    <td style="text-align: right;"><?= $data->grand_total ?></td>
+                    <td style="text-align: right;"><?= number_format($data->grand_total, 2 ) ?></td>
                 </tr>
                 <tr>
                     <td colspan="6" style="height: 150px; vertical-align: bottom; text-align: left; border: 1px solid white; background: white;">

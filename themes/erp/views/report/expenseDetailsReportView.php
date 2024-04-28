@@ -44,24 +44,7 @@
 
 <?php
 date_default_timezone_set("Asia/Dhaka");
-$yourCompanyInfo = YourCompany::model()->findByAttributes(array('is_active' => YourCompany::ACTIVE,));
-if ($yourCompanyInfo) {
-    $yourCompanyName = $yourCompanyInfo->company_name;
-    $yourCompanyLocation = $yourCompanyInfo->location;
-    $yourCompanyRoad = $yourCompanyInfo->road;
-    $yourCompanyHouse = $yourCompanyInfo->house;
-    $yourCompanyContact = $yourCompanyInfo->contact;
-    $yourCompanyEmail = $yourCompanyInfo->email;
-    $yourCompanyWeb = $yourCompanyInfo->web;
-} else {
-    $yourCompanyName = 'N/A';
-    $yourCompanyLocation = 'N/A';
-    $yourCompanyRoad = 'N/A';
-    $yourCompanyHouse = 'N/A';
-    $yourCompanyContact = 'N/A';
-    $yourCompanyEmail = 'N/A';
-    $yourCompanyWeb = 'N/A';
-}
+
 
 echo "<div class='printBtn' style='width: unset;'>";
 echo "  <img class='exportToExcel' id='exportToExcel'  src='" . Yii::app()->theme->baseUrl . "/images/excel.png' title='EXPORT TO EXCEL'>";
@@ -134,27 +117,13 @@ echo "</div>";
 
         </tbody>
     </table>
-
-    <table class="headerTab table table-bordered " style="float: left; width: 100%;">
-        <tr>
-            <td style="padding-top: 40px; text-align: left;"></td>
-            <td style="padding-top: 40px; text-align: right;"></td>
-            <td style="padding-top: 40px; text-align: center;"></td>
-            <td style="padding-top: 40px; text-align: center;"></td>
-        </tr>
-        <tr>
-            <th style="text-decoration: overline; text-align: left;">Prepared By</th>
-            <th style="text-decoration: overline;text-align: center;">Checked By</th>
-            <th style="text-decoration: overline;text-align: center;">Head of Department</th>
-            <th style="text-decoration: overline; text-align: right;">Approved By</th>
-        </tr>
-    </table>
 </div>
 
+
 <!--        modal-->
-<div class="modal fade" id="information-modal" tabindex="-1" role="dialog"
+<div class="modal fade" id="information-modal" tabindex="-1" data-backdrop="static" role="dialog"
      aria-labelledby="information-modal" aria-hidden="true">
-    <div class="modal-dialog modal-xl" role="document">
+    <div class="modal-dialog modal-dialog-centered modal-xl" role="document">
         <div class="modal-content">
             <div class="modal-header">
                 <h5 class="modal-title" id="exampleModalLabel">Invoice</h5>
@@ -208,7 +177,7 @@ echo "</div>";
         var $this = $(this);
         $this.html('<i class="fa fa-spinner fa-spin"></i>');
         $.ajax({
-            url: '<?= Yii::app()->createUrl("report/expensePreview") ?>',
+            url: '<?= Yii::app()->createUrl("accounting/expense/voucherPreview") ?>',
             type: 'POST',
             data: {
                 invoiceId: invoiceId

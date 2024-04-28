@@ -16,7 +16,8 @@ class SellOrderController extends RController
     {
         return array(
             'rights
-            -VoucherPreview, -SinglePreview, 
+            -VoucherPreview
+            -SinglePreview, 
             -SoDetails',
         );
     }
@@ -402,14 +403,18 @@ class SellOrderController extends RController
     {
         $so_no = isset($_POST['so_no']) ? trim($_POST['so_no']) : "";
         $preview_type = isset($_POST['preview_type']) ? trim($_POST['preview_type']) : 0;
+        $invoiceId = isset($_POST['invoiceId']) ? trim($_POST['invoiceId']) : 0;
 
         if (Yii::app()->request->isAjaxRequest) {
             Yii::app()->clientScript->scriptMap['jquery.js'] = false;
         }
 
-        if ($so_no && $preview_type > 0) {
+        if (($so_no && $preview_type > 0) || $invoiceId > 0) {
             $criteria = new CDbCriteria;
-            $criteria->addColumnCondition(['so_no' => $so_no]);
+            if ($invoiceId > 0) {
+                $criteria->addColumnCondition(['t.id' => $invoiceId]);
+            } else
+                $criteria->addColumnCondition(['t.so_no' => $so_no]);
             $data = SellOrder::model()->findByAttributes([], $criteria);
 
             if ($data) {

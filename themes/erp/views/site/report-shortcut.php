@@ -1,9 +1,11 @@
 <div class="row">
     <div class="margin p-2">
         <?php
+        $stockReportPermission = Yii::app()->createUrl("inventory/inventory/stockReport");
+        $productPerformanceReportPermission = Yii::app()->createUrl("report/productPerformanceReport");
         if (
-            Yii::app()->user->checkAccess('Inventory.Inventory.StockReport')
-//            || Yii::app()->user->checkAccess('Report.AdminMoneyReceipt')
+            $stockReportPermission ||
+            $productPerformanceReportPermission
         ) {
             ?>
             <div class="btn-group">
@@ -13,11 +15,23 @@
                     Inventory Report
                 </button>
                 <div class="dropdown-menu" role="menu">
-                    <a class="dropdown-item" href="<?= Yii::app()->createUrl("inventory/inventory/stockReport") ?>">Stock
-                        Report</a>
-                    <a class="dropdown-item disabled"
-                       href="<?= Yii::app()->createUrl("inventory/inventory/stockReport") ?>">Product Performance
-                        Report</a>
+                    <?php
+                    if ($stockReportPermission) {
+                        ?>
+                        <a class="dropdown-item" href="<?= Yii::app()->createUrl("inventory/inventory/stockReport") ?>">Stock
+                            Report</a>
+                        <?php
+                    }
+                    ?>
+                    <?php
+                    if ($productPerformanceReportPermission) {
+                        ?>
+                        <a class="dropdown-item"
+                           href="<?= Yii::app()->createUrl("report/productPerformanceReport") ?>">Product Performance
+                            Report</a>
+                        <?php
+                    }
+                    ?>
                     <a class="dropdown-item disabled"
                        href="<?= Yii::app()->createUrl("inventory/inventory/stockReport") ?>">Slow
                         Moving Report</a>
@@ -27,14 +41,22 @@
         }
         ?>
         <?php
+        $collectionReportPermission = Yii::app()->createUrl("report/collectionReport");
+        $customerDueReportPermission = Yii::app()->createUrl("report/customerDueReport");
+        $customerLedgerPermission = Yii::app()->createUrl("report/customerLedger");
+        $paymentReportPermission = Yii::app()->createUrl("report/paymentReport");
+        $supplierDueReportPermission = Yii::app()->createUrl("report/supplierDueReport");
+        $supplierLedgerPermission = Yii::app()->createUrl("report/supplierLedger");
+        $dayInOutReportPermission = Yii::app()->createUrl("report/dayInOutReport");
+
         if (
-            Yii::app()->user->checkAccess('Report.CollectionReport')
-            || Yii::app()->user->checkAccess('Report.CustomerDueReport')
-            || Yii::app()->user->checkAccess('Report.CustomerLedger')
-            || Yii::app()->user->checkAccess('Report.PaymentReport')
-            || Yii::app()->user->checkAccess('Report.SupplierDueReport')
-            || Yii::app()->user->checkAccess('Report.SupplierLedger')
-            || Yii::app()->user->checkAccess('Report.DayInOutReport')
+            $collectionReportPermission
+            || $customerDueReportPermission
+            || $customerLedgerPermission
+            || $paymentReportPermission
+            || $supplierDueReportPermission
+            || $supplierLedgerPermission
+            || $dayInOutReportPermission
         ) {
             ?>
             <div class="btn-group">
@@ -43,25 +65,84 @@
                     Ledger Reports
                 </button>
                 <div class="dropdown-menu" role="menu">
-                    <a class="dropdown-item" href="<?= Yii::app()->createUrl("report/collectionReport") ?>">Collection
-                        Report</a>
-                    <a class="dropdown-item" href="<?= Yii::app()->createUrl("report/customerDueReport") ?>">Customer
-                        Due
-                        Report</a>
-                    <a class="dropdown-item" href="<?= Yii::app()->createUrl("report/customerLedger") ?>">Customer
-                        Ledger</a>
-                    <div class="dropdown-divider"></div>
-                    <a class="dropdown-item" href="<?= Yii::app()->createUrl("report/paymentReport") ?>">Payment
-                        Report</a>
-                    <a class="dropdown-item" href="<?= Yii::app()->createUrl("report/supplierDueReport") ?>">Supplier
-                        Due
-                        Report</a>
-                    <a class="dropdown-item" href="<?= Yii::app()->createUrl("report/supplierLedger") ?>">Supplier
-                        Ledger</a>
+                    <?php
+                    if ($collectionReportPermission) {
+                        ?>
+                        <a class="dropdown-item" href="<?= Yii::app()->createUrl("report/collectionReport") ?>">Collection
+                            Report</a>
+                        <?php
+                    }
+                    ?>
+                    <?php
+                    if ($customerDueReportPermission) {
+                        ?>
+                        <a class="dropdown-item" href="<?= Yii::app()->createUrl("report/customerDueReport") ?>">Customer
+                            Due
+                            Report</a>
+                        <?php
+                    }
+                    ?>
 
-                    <div class="dropdown-divider"></div>
-                    <a class="dropdown-item" href="<?= Yii::app()->createUrl("report/dayInOutReport") ?>">Day In/Out
-                        Report</a>
+                    <?php
+                    if ($customerLedgerPermission) {
+                        ?>
+                        <a class="dropdown-item" href="<?= Yii::app()->createUrl("report/customerLedger") ?>">Customer
+                            Ledger</a>
+                        <?php
+                    }
+                    ?>
+                    <?php
+                    if ($paymentReportPermission || $supplierDueReportPermission || $supplierLedgerPermission) {
+                        ?>
+                        <div class="dropdown-divider"></div>
+                        <?php
+                    }
+                    ?>
+                    <?php
+                    if ($paymentReportPermission) {
+                        ?>
+                        <a class="dropdown-item" href="<?= Yii::app()->createUrl("report/paymentReport") ?>">Payment
+                            Report</a>
+                        <?php
+                    }
+                    ?>
+
+                    <?php
+                    if ($supplierDueReportPermission) {
+                        ?>
+                        <a class="dropdown-item" href="<?= Yii::app()->createUrl("report/supplierDueReport") ?>">Supplier
+                            Due
+                            Report</a>
+                        <?php
+                    }
+                    ?>
+
+                    <?php
+                    if ($supplierLedgerPermission) {
+                        ?>
+                        <a class="dropdown-item" href="<?= Yii::app()->createUrl("report/supplierLedger") ?>">Supplier
+                            Ledger</a>
+                        <?php
+                    }
+                    ?>
+
+                    <?php
+                    if ($dayInOutReportPermission) {
+                        ?>
+                        <div class="dropdown-divider"></div>
+                        <?php
+                    }
+                    ?>
+
+                    <?php
+                    if ($dayInOutReportPermission) {
+                        ?>
+                        <a class="dropdown-item" href="<?= Yii::app()->createUrl("report/dayInOutReport") ?>">Day In/Out
+                            Report</a>
+                        <?php
+                    }
+                    ?>
+
                 </div>
             </div>
             <?php

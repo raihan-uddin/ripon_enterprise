@@ -16,7 +16,8 @@ class PurchaseOrderController extends Controller
 
     {
         return array(
-            'rights-VoucherPreview',
+            'rights
+            -VoucherPreview',
         );
     }
 
@@ -359,10 +360,14 @@ class PurchaseOrderController extends Controller
             Yii::app()->clientScript->scriptMap['jquery.js'] = false;
         }
         $po_no = isset($_POST['po_no']) ? trim($_POST['po_no']) : "";
+        $invoiceId = isset($_POST['invoiceId']) ? trim($_POST['invoiceId']) : "";
 
-        if ($po_no != "") {
+        if ($po_no != "" || $invoiceId > 0) {
             $criteria = new CDbCriteria;
-            $criteria->addColumnCondition(['po_no' => $po_no]);
+            if ($invoiceId != "")
+                $criteria->addColumnCondition(['id' => $invoiceId]);
+            else
+                $criteria->addColumnCondition(['po_no' => $po_no]);
             $data = PurchaseOrder::model()->findByAttributes([], $criteria);
 
 

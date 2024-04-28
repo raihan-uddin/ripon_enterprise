@@ -139,7 +139,7 @@ if (Yii::app()->user->checkAccess('Accounting.MoneyReceipt.VoucherPreview')) {
 ////                'prevPageLabel'=>'<',
 ////                'nextPageLabel'=>'>',
 //            ),
-//            'template' => "{pager}{summary}{items}{summary}{pager}",
+            'template' => "{pager}{summary}{items}{summary}{pager}",
             'columns' => array(
 //                'id',
                 array(

@@ -1,0 +1,377 @@
+<link rel="stylesheet" href="<?php echo Yii::app()->theme->baseUrl; ?>/css/report.css" type="text/css" media="screen"/>
+<style>
+    .reportHeader {
+        text-align: center !important;
+    }
+</style>
+<?php
+$this->widget('application.components.BreadCrumb', array(
+    'crumbs' => array(
+        array('name' => 'Report', 'url' => array('')),
+        array('name' => 'Sales', 'url' => array('')),
+        array('name' => 'Product Performance Report',),
+    ),
+//    'delimiter' => ' &rarr; ',
+));
+?>
+<?php
+$form = $this->beginWidget('CActiveForm', array(
+    'id' => 'inventory-form',
+));
+?>
+<div class="card card-primary">
+    <div class="card-header">
+        <h3 class="card-title">Search Conditions (PRODUCT PERFORMANCE REPORT)</h3>
+        <div class="card-tools">
+            <button type="button" class="btn btn-tool" data-card-widget="collapse">
+                <i class="fa fa-minus"></i>
+            </button>
+            <!--            <button type="button" class="btn btn-tool" data-card-widget="remove">-->
+            <!--                <i class="fa fa-times"></i>-->
+            <!--            </button>-->
+        </div>
+    </div>
+
+    <div class="card-body">
+        <div class="row">
+
+            <div class="col-sm-12 col-md-2">
+                <div class="form-group" style="">
+                    <?php echo $form->labelEx($model, 'date_from', ['class' => 'col-form-label']); ?>
+                    <div class="input-group" id="date_from" data-target-input="nearest">
+                        <?php echo $form->textField($model, 'date_from', array('class' => 'form-control datetimepicker-input', 'placeholder' => 'YYYY-MM-DD', 'value' => date('Y-m-d'))); ?>
+                    </div>
+                    <span class="help-block"
+                          style="color: red; width: 100%"> <?php echo $form->error($model, 'date_from'); ?></span>
+                </div>
+            </div>
+
+            <div class="col-sm-12 col-md-2">
+                <div class="form-group" style="">
+                    <?php echo $form->labelEx($model, 'date_to', ['class' => 'col-form-label']); ?>
+                    <div class="input-group" id="date_to" data-target-input="nearest">
+                        <?php echo $form->textField($model, 'date_to', array('class' => 'form-control datetimepicker-input', 'placeholder' => 'YYYY-MM-DD', 'value' => date('Y-m-d'))); ?>
+                    </div>
+                    <span class="help-block"
+                          style="color: red; width: 100%"> <?php echo $form->error($model, 'date_to'); ?></span>
+                </div>
+            </div>
+
+            <div class="col-sm-12 col-md-2">
+                <div class="form-group" style="">
+                    <?php echo $form->labelEx($model, 'model_id', ['class' => 'col-form-label']); ?>
+                    <div class="input-group" id="model_id" data-target-input="nearest">
+                        <input type="text" id="model_id_text" class="form-control">
+                        <?php echo $form->hiddenField($model, 'model_id', array('class' => 'form-control',)); ?>
+                        <div class="input-group-append" onclick="clearProduct()">
+                            <div class="input-group-text"><i class="fa fa-refresh"></i></div>
+                        </div>
+                    </div>
+                    <span class="help-block"
+                          style="color: red; width: 100%"> <?php echo $form->error($model, 'date_to'); ?></span>
+                    <script>
+                        $(document).ready(function () {
+                            $('#model_id_text').autocomplete({
+                                source: function (request, response) {
+                                    var search = request.term;
+                                    $.post('<?php echo Yii::app()->baseUrl ?>/index.php/prodModels/Jquery_showprodSearch', {
+                                            "q": search,
+                                        },
+                                        function (data) {
+                                            response(data);
+                                        }, "json");
+                                },
+                                minLength: 1,
+                                select: function (event, ui) {
+                                    $('#model_id_text').val(ui.item.value);
+                                    $('#Inventory_model_id').val(ui.item.id);
+                                }
+                            }).data("ui-autocomplete")._renderItem = function (ul, item) {
+                                return $("<li></li>")
+                                    .data("item.autocomplete", item)
+                                    .append(`<a><img style="height: 50px; width: 50px;" src="${item.img}"> ${item.name} <br><i><small>${item.code}</small></i> </a>`)
+                                    .appendTo(ul);
+                            };
+
+                        });
+                    </script>
+                </div>
+            </div>
+
+            <div class="col-sm-12 col-md-2">
+                <div class="form-group" style="">
+                    <?php echo $form->labelEx($model, 'manufacturer_id', ['class' => 'col-form-label']); ?>
+                    <div class="input-group" id="manufacturer_id" data-target-input="nearest">
+                        <?php
+                        echo $form->dropDownList(
+                            $model, 'manufacturer_id', CHtml::listData(Company::model()->findAll(array('order' => 'name ASC')), 'id', 'name'), array(
+                            'prompt' => 'Select',
+                            'class' => 'form-control',
+                        ));
+                        ?>
+                        <!--                        <div class="input-group-append">-->
+                        <!--                            <div class="input-group-text"><i class="fa fa-calendar"></i></div>-->
+                        <!--                        </div>-->
+                    </div>
+                    <span class="help-block"
+                          style="color: red; width: 100%"> <?php echo $form->error($model, 'manufacturer_id'); ?></span>
+                </div>
+            </div>
+
+            <div class="col-sm-12 col-md-2">
+                <div class="form-group" style="">
+                    <?php echo $form->labelEx($model, 'item_id', ['class' => 'col-form-label']); ?>
+                    <div class="input-group" id="item_id" data-target-input="nearest">
+                        <?php
+                        echo $form->dropDownList(
+                            $model, 'item_id', CHtml::listData(ProdItems::model()->findAll(array('order' => 'item_name ASC')), 'id', 'item_name'), array(
+                            'prompt' => 'Select',
+                            'class' => 'form-control',
+                            'ajax' => array(
+                                'type' => 'POST',
+                                'dataType' => 'json',
+                                'url' => CController::createUrl('/prodModels/subCatOfThisCat'),
+                                'success' => 'function(data) {
+                                                $("#Inventory_brand_id").html(data.subCatList);
+                                         }',
+                                'data' => array(
+                                    'catId' => 'js:jQuery("#Inventory_item_id").val()',
+                                ),
+                                'beforeSend' => 'function(){
+                                                    document.getElementById("Inventory_brand_id").style.background="url(' . Yii::app()->theme->baseUrl . '/images/ajax-loader.gif) no-repeat #FFFFFF 80% 1px";   
+                                         }',
+                                'complete' => 'function(){
+                                            document.getElementById("Inventory_brand_id").style.background="url(' . Yii::app()->theme->baseUrl . '/images/downDrop.png) no-repeat #FFFFFF 98% 2px"; 
+                                        }',
+                            ),
+                        ));
+                        ?>
+                    </div>
+                    <span class="help-block"
+                          style="color: red; width: 100%"> <?php echo $form->error($model, 'item_id'); ?></span>
+                </div>
+            </div>
+
+            <div class="col-sm-12 col-md-2">
+                <div class="form-group" style="">
+                    <?php echo $form->labelEx($model, 'brand_id', ['class' => 'col-form-label']); ?>
+                    <div class="input-group" id="brand_id" data-target-input="nearest">
+                        <?php
+                        echo $form->dropDownList(
+                            $model, 'brand_id', CHtml::listData(ProdBrands::model()->findAll(array('order' => 'brand_name ASC')), 'id', 'brand_name'), array(
+                            'prompt' => 'Select',
+                            'class' => 'form-control',
+                        ));
+                        ?>
+                    </div>
+                    <span class="help-block"
+                          style="color: red; width: 100%"> <?php echo $form->error($model, 'brand_id'); ?></span>
+                </div>
+            </div>
+
+
+            <div class="col-sm-12 col-md-2">
+                <div class="form-group" style="">
+                    <?php echo $form->labelEx($model, 'supplier_id', ['class' => 'col-form-label']); ?>
+                    <div class="input-group" id="supplier_id" data-target-input="nearest">
+                        <input type="text" id="supplier_id_text" class="form-control">
+                        <?php echo $form->hiddenField($model, 'supplier_id', array('class' => 'form-control',)); ?>
+                        <div class="input-group-append" onclick="clearProduct()">
+                            <div class="input-group-text"><i class="fa fa-refresh"></i></div>
+                        </div>
+                    </div>
+                    <span class="help-block"
+                          style="color: red; width: 100%"> <?php echo $form->error($model, 'customer_id'); ?></span>
+                    <script>
+                        $(document).ready(function () {
+                            $('#supplier_id_text').autocomplete({
+                                source: function (request, response) {
+                                    var search = request.term;
+                                    $.post('<?php echo Yii::app()->baseUrl ?>/index.php/commercial/suppliers/jquery_supplierSearch', {
+                                            "q": search,
+                                        },
+                                        function (data) {
+                                            response(data);
+                                        }, "json");
+                                },
+                                minLength: 1,
+                                select: function (event, ui) {
+                                    $('#supplier_id_text').val(ui.item.value);
+                                    $('#Inventory_supplier_id').val(ui.item.id);
+                                }
+                            })
+                        });
+                    </script>
+                </div>
+            </div>
+
+            <div class="col-sm-12 col-md-2">
+                <div class="form-group" style="">
+                    <?php echo $form->labelEx($model, 'created_by', ['class' => 'col-form-label']); ?>
+                    <div class="input-group" id="created_by" data-target-input="nearest">
+                        <input type="text" id="created_by_text" class="form-control">
+                        <?php echo $form->hiddenField($model, 'created_by', array('class' => 'form-control',)); ?>
+                        <div class="input-group-append" onclick="clearUser()">
+                            <div class="input-group-text"><i class="fa fa-refresh"></i></div>
+                        </div>
+                    </div>
+                    <span class="help-block"
+                          style="color: red; width: 100%"> <?php echo $form->error($model, 'created_by'); ?></span>
+                    <script>
+                        $(document).ready(function () {
+                            $('#created_by_text').autocomplete({
+                                source: function (request, response) {
+                                    var search = request.term;
+                                    $.post('<?php echo Yii::app()->baseUrl ?>/index.php/users/jquery_userSearch', {
+                                            "q": search,
+                                        },
+                                        function (data) {
+                                            response(data);
+                                        }, "json");
+                                },
+                                minLength: 1,
+                                select: function (event, ui) {
+                                    $('#created_by_text').val(ui.item.value);
+                                    $('#Inventory_created_by').val(ui.item.id);
+                                }
+                            })
+                        });
+                    </script>
+                </div>
+            </div>
+        </div>
+    </div>
+    <div class="card-footer">
+        <?php
+        echo CHtml::submitButton('Search', array(
+                'ajax' => array(
+                    'type' => 'POST',
+                    'url' => CController::createUrl('/report/productPerformanceReportView'),
+                    'beforeSend' => 'function(){
+                                if($("#Inventory_date_from").val()=="" || $("#Inventory_date_to").val()==""){
+                                    toastr.error("Warning! Please select date range!");
+                                    return false;
+                                }else{
+                                    $(".ajaxLoaderResultView").show();
+                                    $("#reportSearchButton").prop("disabled", true);
+                                    $("#reportSearchButton").val("Please wait ...");
+                                }
+                            }',
+                    'error' => 'function(XMLHttpRequest, textStatus, errorThrown){
+                                $(".ajaxLoaderResultView").hide();
+					           // showErrorText(XMLHttpRequest, textStatus, errorThrown);
+					            $("#reportSearchButton").prop("disabled", false);
+                                $("#reportSearchButton").val("Search");
+                                
+                                 // Code to handle errors
+                                toastr.error(XMLHttpRequest.responseText); // Displaying error message using Toastr
+                                // Optionally, you can display additional error details
+                                console.error(XMLHttpRequest.statusText);
+                                console.error(XMLHttpRequest.status);
+                                console.error(XMLHttpRequest.responseText);
+						    }',
+                    'complete' => 'function(){
+                                $(".ajaxLoaderResultView").hide();
+					            $("#reportSearchButton").prop("disabled", false);
+                                $("#reportSearchButton").val("Search");
+                            }',
+                    'done' => 'function(data){
+                                $(".ajaxLoaderResultView").hide();
+					            $("#reportSearchButton").prop("disabled", false);
+                                $("#reportSearchButton").val("Search");
+						    }',
+                    'update' => '#resultDiv',
+                ),
+                'class' => 'btn btn-success btn-md',
+                'id' => 'reportSearchButton',
+            )
+        );
+        ?>
+
+        <span id="ajaxLoaderMR" class="ajaxLoaderMR" style="display: none;">
+            <i class="fa fa-spinner fa-spin fa-2x"></i>
+        </span>
+    </div>
+</div>
+
+
+<div class="card">
+    <div class="card-header">
+    </div>
+
+    <div class="card-body">
+        <div id="resultDiv"></div>
+    </div>
+</div>
+
+<?php $this->endWidget(); ?>
+<script>
+    var startDate = moment().startOf('month').format('YYYY-MM-DD');
+    var endDate = moment().format('YYYY-MM-DD');
+
+    var picker = new Lightpick({
+        field: document.getElementById('Inventory_date_from'),
+        // minDate: moment(),
+        onSelect: function (date) {
+            document.getElementById('Inventory_date_from').value = date.format('YYYY-MM-DD');
+        }
+    });
+    picker.setStartDate(startDate);
+
+    var picker2 = new Lightpick({
+        field: document.getElementById('Inventory_date_to'),
+        // minDate: moment(),
+        onSelect: function (date) {
+            document.getElementById('Inventory_date_to').value = date.format('YYYY-MM-DD');
+        }
+    });
+    picker2.setStartDate(endDate);
+
+    $("#resetBtn").click(function () {
+        $("#inventory-form")[0].reset();
+        $("#Inventory_date_from").val("");
+        $("#Inventory_date_to").val("");
+        clearProduct();
+        clearUser();
+    });
+
+    function clearProduct() {
+        $("#customer_id_text").val("");
+        $("#Inventory_customer_id").val("");
+    }
+
+    function clearUser() {
+        $("#created_by_text").val("");
+        $("#Inventory_created_by").val("");
+    }
+</script>
+
+
+<style>
+    .report-search {
+        border-collapse: collapse;
+        width: 100%;
+        text-align: center;
+    }
+
+    .report-search tr td {
+        width: 14%;
+        padding: 5px;
+        border: 1px solid gray;
+    }
+
+    .report-search tr td input[type="text"], .report-search tr td select {
+        width: 95%;
+        text-align: center;
+        height: 23px;
+    }
+
+    .resetBtn {
+        height: 28px;
+    }
+
+    .ui-datepicker {
+        z-index: 2 !important;
+    }
+</style>
+

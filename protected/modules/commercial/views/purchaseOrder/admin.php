@@ -150,7 +150,7 @@ endforeach;
 ////                'prevPageLabel'=>'<',
 ////                'nextPageLabel'=>'>',
 //            ),
-//            'template' => "{pager}{summary}{items}{summary}{pager}",
+            'template' => "{pager}{summary}{items}{summary}{pager}",
             'columns' => array(
                 array(
                     'name' => 'date',
