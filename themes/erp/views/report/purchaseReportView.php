@@ -122,6 +122,15 @@ echo "</div>";
 
             }
         }
+        if (!$rowFound) {
+            ?>
+            <tr>
+                <td colspan='12' style='text-align: center; font-size: 18px; text-transform: uppercase; '>
+                    <div class='alert alert-warning'><i class='fa fa-exclamation-triangle'></i> No result found !</div>
+                </td>
+            </tr>
+            <?php
+        }
         ?>
 
         <tr>
@@ -133,21 +142,6 @@ echo "</div>";
         </tr>
 
         </tbody>
-    </table>
-
-    <table class="headerTab table table-bordered " style="float: left; width: 100%;">
-        <tr>
-            <td style="padding-top: 40px; text-align: left;"></td>
-            <td style="padding-top: 40px; text-align: right;"></td>
-            <td style="padding-top: 40px; text-align: center;"></td>
-            <td style="padding-top: 40px; text-align: center;"></td>
-        </tr>
-        <tr>
-            <th style="text-decoration: overline; text-align: left;">Prepared By</th>
-            <th style="text-decoration: overline;text-align: center;">Checked By</th>
-            <th style="text-decoration: overline;text-align: center;">Head of Department</th>
-            <th style="text-decoration: overline; text-align: right;">Approved By</th>
-        </tr>
     </table>
 </div>
 

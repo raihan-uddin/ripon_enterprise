@@ -44,24 +44,6 @@
 
 <?php
 date_default_timezone_set("Asia/Dhaka");
-$yourCompanyInfo = YourCompany::model()->findByAttributes(array('is_active' => YourCompany::ACTIVE,));
-if ($yourCompanyInfo) {
-    $yourCompanyName = $yourCompanyInfo->company_name;
-    $yourCompanyLocation = $yourCompanyInfo->location;
-    $yourCompanyRoad = $yourCompanyInfo->road;
-    $yourCompanyHouse = $yourCompanyInfo->house;
-    $yourCompanyContact = $yourCompanyInfo->contact;
-    $yourCompanyEmail = $yourCompanyInfo->email;
-    $yourCompanyWeb = $yourCompanyInfo->web;
-} else {
-    $yourCompanyName = 'N/A';
-    $yourCompanyLocation = 'N/A';
-    $yourCompanyRoad = 'N/A';
-    $yourCompanyHouse = 'N/A';
-    $yourCompanyContact = 'N/A';
-    $yourCompanyEmail = 'N/A';
-    $yourCompanyWeb = 'N/A';
-}
 
 echo "<div class='printBtn' style='width: unset;'>";
 echo "  <img class='exportToExcel' id='exportToExcel'  src='" . Yii::app()->theme->baseUrl . "/images/excel.png' title='EXPORT TO EXCEL'>";
@@ -87,7 +69,9 @@ echo "</div>";
            id="table-1">
         <thead>
         <tr>
-            <td colspan="10" style="font-size:16px; font-weight:bold; text-align:center"><?php echo $message; ?>
+            <td colspan="10" style="font-size:16px; font-weight:bold; text-align:center">
+                PURCHASE DETAILS REPORT -
+                <?php echo $message; ?>
             </td>
         </tr>
         <tr class="titlesTr sticky">
@@ -130,6 +114,16 @@ echo "</div>";
 
             }
         }
+
+        if (!$rowFound) {
+            ?>
+            <tr>
+                <td colspan='12' style='text-align: center; font-size: 18px; text-transform: uppercase; '>
+                    <div class='alert alert-warning'><i class='fa fa-exclamation-triangle'></i> No result found !</div>
+                </td>
+            </tr>
+            <?php
+        }
         ?>
 
         <tr>
@@ -140,21 +134,6 @@ echo "</div>";
         </tr>
 
         </tbody>
-    </table>
-
-    <table class="headerTab table table-bordered " style="float: left; width: 100%;">
-        <tr>
-            <td style="padding-top: 40px; text-align: left;"></td>
-            <td style="padding-top: 40px; text-align: right;"></td>
-            <td style="padding-top: 40px; text-align: center;"></td>
-            <td style="padding-top: 40px; text-align: center;"></td>
-        </tr>
-        <tr>
-            <th style="text-decoration: overline; text-align: left;">Prepared By</th>
-            <th style="text-decoration: overline;text-align: center;">Checked By</th>
-            <th style="text-decoration: overline;text-align: center;">Head of Department</th>
-            <th style="text-decoration: overline; text-align: right;">Approved By</th>
-        </tr>
     </table>
 </div>
 

@@ -106,16 +106,18 @@ echo "</div>";
         $rowFound = false;
         $groundTotal = 0;
         $row_closing = 0;
-        ?>
-        <tr>
-            <td></td>
-            <td style="text-align: center;">Opening</td>
-            <td colspan="3"></td>
-            <td style="text-align: right;"><?= number_format($opening) ?></td>
-            <td></td>
-        </tr>
+        if ($opening) {
+            ?>
+            <tr>
+                <td></td>
+                <td style="text-align: center;">Opening</td>
+                <td colspan="3"></td>
+                <td style="text-align: right;"><?= number_format($opening) ?></td>
+                <td></td>
+            </tr>
 
-        <?php
+            <?php
+        }
         $row_closing += $opening;
         if ($data) {
             foreach ($data as $dmr) {
@@ -140,8 +142,14 @@ echo "</div>";
                     <td style="text-align: right;"><?php echo number_format($row_closing, 2); ?></td>
                 </tr>
                 <?php
-
             }
+        }
+        if (!$rowFound) {
+            echo "<tr>
+                    <td colspan='7' style='text-align: center; font-size: 18px; text-transform: uppercase; font-weight: bold;'>
+                        <div class='alert alert-warning'><i class='fa fa-exclamation-triangle'></i> No result found !</div>
+                    </td>
+                </tr>";
         }
         ?>
 

@@ -135,7 +135,8 @@ echo "</div>";
         if (!$rowFound) {
             ?>
             <tr>
-                <td colspan="8">
+                <td colspan="8"
+                    style='text-align: center; font-size: 18px; text-transform: uppercase; font-weight: bold;'>
                     <div class="alert alert-warning"><i class="fa fa-exclamation-triangle"></i> No result found !</div>
                 </td>
             </tr>

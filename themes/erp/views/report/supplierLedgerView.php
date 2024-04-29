@@ -96,16 +96,18 @@ echo "</div>";
         $rowFound = false;
         $groundTotal = 0;
         $row_closing = 0;
-        ?>
-        <tr>
-            <td></td>
-            <td style="text-align: center;">Opening</td>
-            <td colspan="3"></td>
-            <td style="text-align: right;"><?= number_format($opening) ?></td>
-            <td></td>
-        </tr>
+        if ($opening) {
+            ?>
+            <tr>
+                <td></td>
+                <td style="text-align: center;">Opening</td>
+                <td colspan="3"></td>
+                <td style="text-align: right;"><?= number_format($opening) ?></td>
+                <td></td>
+            </tr>
 
-        <?php
+            <?php
+        }
         $total_purchase = $total_payment = 0;
         $row_closing += $opening;
         if ($data) {
@@ -132,6 +134,15 @@ echo "</div>";
                 <?php
 
             }
+        }
+        if (!$rowFound) {
+            ?>
+            <tr>
+                <td colspan='8' style='text-align: center; font-size: 18px; text-transform: uppercase; '>
+                    <div class='alert alert-warning'><i class='fa fa-exclamation-triangle'></i> No result found !</div>
+                </td>
+            </tr>
+            <?php
         }
         ?>
         <tr>

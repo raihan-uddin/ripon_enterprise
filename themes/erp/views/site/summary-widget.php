@@ -55,7 +55,6 @@
 
         // Show spinner or loading text in the modal body & button disabled
         $('#profit-loss-summary-modal .modal-body').html('<div class="spinner-border" role="status"><span class="sr-only">Loading...</span></div>');
-        $('#profit-loss-summary-modal .modal-footer button').prop('disabled', true).html('<span class="spinner-border spinner-border-sm" role="status" aria-hidden="true"></span> Loading...');
         $('#profit-loss-summary-btn').prop('disabled', true).html('<span class="spinner-border spinner-border-sm" role="status" aria-hidden="true"></span> Loading...');
 
         $.ajax({
@@ -68,10 +67,9 @@
             success: function (response) {
                 // Hide spinner or loading text
                 $('#profit-loss-summary-modal .modal-body').html(response);
-                // Enable the button
-                $('#profit-loss-summary-modal .modal-footer button').prop('disabled', false).html('Submit');
+
                 // Enable profit-loss-summary-btn
-                $('#profit-loss-summary-btn').prop('disabled', false).html('Submit');
+                $('#profit-loss-summary-btn').prop('disabled', false).html('Search');
                 // Show the modal
                 $('#profit-loss-summary-modal').modal('show');
                 // Change the modal title to the selected date range
@@ -82,10 +80,8 @@
                 toastr.error('An error occurred. Please try again later.');
                 // Hide spinner or loading text
                 $('#profit-loss-summary-modal .modal-body').html(response);
-                // Enable the button
-                $('#profit-loss-summary-modal .modal-footer button').prop('disabled', false).html('Submit');
                 // Enable profit-loss-summary-btn
-                $('#profit-loss-summary-btn').prop('disabled', false).html('Submit');
+                $('#profit-loss-summary-btn').prop('disabled', false).html('Search');
             }
         });
     });

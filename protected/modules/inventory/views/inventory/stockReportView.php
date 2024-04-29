@@ -179,7 +179,7 @@ echo "</div>";
                     <td style="text-align: center;"><?php echo is_numeric($dmr->sell_price) ? number_format($dmr->sell_price, 2) : ''; ?></td>
                     <td style="text-align: right;"><?php echo is_numeric($stockSaleValue) ? number_format($stockSaleValue, 2) : ''; ?></td>
                     <td style="text-align: right;"><?php echo is_numeric($cpp) ? number_format($cpp, 2) : ''; ?></td>
-                    <td style="text-align: right;"><?php echo is_numeric($row_stock_closing_value) ? number_format($row_stock_closing_value, 2) : '';; ?></td>
+                    <td style="text-align: right;"><?php echo is_numeric($row_stock_closing_value) ? number_format($row_stock_closing_value, 2) : ''; ?></td>
                 </tr>
                 <?php
             }
@@ -189,7 +189,8 @@ echo "</div>";
         if (!$rowFound) {
             ?>
             <tr>
-                <td colspan="13">
+                <td colspan="13"
+                    style='text-align: center; font-size: 18px; text-transform: uppercase; font-weight: bold;'>
                     <div class="alert alert-warning"><i class="fa fa-exclamation-triangle"></i> No result found !</div>
                 </td>
             </tr>
