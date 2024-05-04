@@ -123,7 +123,7 @@ class PurchaseOrder extends CActiveRecord
             'vat_amount' => 'Vat',
             'discount_percentage' => 'Discount Percentage',
             'discount' => 'Discount',
-            'is_paid' => 'Is Paid',
+            'is_paid' => 'Paid?',
             'is_all_received' => 'Is All Received',
             'cash_due' => 'Cash Due',
             'created_by' => 'Created By',
@@ -173,7 +173,7 @@ class PurchaseOrder extends CActiveRecord
             $criteria->addColumnCondition(['t.created_by' => Yii::app()->user->id]);
         }
 
-        if (($this->customer_id) != "") {
+        if (($this->supplier_id) != "") {
             $criteria->join .= " INNER JOIN suppliers s on t.supplier_id = s.id ";
             $criteria->compare('s.company_name', ($this->supplier_id), true);
         }

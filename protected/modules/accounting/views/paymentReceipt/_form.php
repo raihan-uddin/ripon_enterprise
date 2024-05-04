@@ -23,8 +23,8 @@ $this->widget('application.components.BreadCrumb', array(
         <a class="btn  btn-warning" type="button" id="btnReload"
            href="<?= Yii::app()->request->requestUri ?>"><i class="fa fa-refresh"></i> Reload
         </a>
-        <button class="btn  btn-danger" type="button" id="btnReset"><i class="fa fa-remove"></i> Reset
-        </button>
+<!--        <button class="btn  btn-danger" type="button" id="btnReset"><i class="fa fa-remove"></i> Reset-->
+<!--        </button>-->
 
         <a class="btn btn-success text-right" type="button"
            href="<?= Yii::app()->baseUrl . '/index.php/accounting/paymentReceipt/admin' ?>"><i class="fa fa-home"></i>
@@ -74,9 +74,9 @@ $this->widget('application.components.BreadCrumb', array(
                                 'class' => 'form-control',
                             ));
                             ?>
-                           <!-- <div class="input-group-append">
-                                <div class="input-group-text"><i class="fa fa fa-credit-card"></i></div>
-                            </div>-->
+                            <!-- <div class="input-group-append">
+                                 <div class="input-group-text"><i class="fa fa fa-credit-card"></i></div>
+                             </div>-->
                         </div>
                     </div>
                     <span class="help-block"
@@ -240,6 +240,7 @@ $this->widget('application.components.BreadCrumb', array(
                     <thead>
                     <tr class="table-info">
                         <th class="text-center" style="width: 3%;">#</th>
+                        <th class="text-center" style="width: 5%;">ID</th>
                         <th class="text-center" style="width: 10%;">PO No</th>
                         <th class="text-center" style="width: 10%;">PO Date</th>
                         <th class="text-center" style="width: 10%;">PO Amount</th>
@@ -255,7 +256,10 @@ $this->widget('application.components.BreadCrumb', array(
                     $i = 1;
                     $invoice_total = $invoice_total_due = 0;
                     $criteriaInv = new CDbCriteria();
-                    $criteriaInv->addColumnCondition(['is_paid' => PurchaseOrder::DUE]);
+                    $criteriaInv->addColumnCondition(['supplier_id' => $model2->id]);
+                    if ($order_id > 0) {
+                        $criteriaInv->addColumnCondition(['id' => $order_id]);
+                    }
                     $dataInv = PurchaseOrder::model()->findAll($criteriaInv);
                     if ($dataInv) {
                         foreach ($dataInv as $inv) {
@@ -268,6 +272,7 @@ $this->widget('application.components.BreadCrumb', array(
                                 ?>
                                 <tr class="item">
                                     <td class="text-center sl-no" style="vertical-align: middle;"><?= $i++ ?></td>
+                                    <td class="text-center invoiceDetails" style="vertical-align: middle; cursor: zoom-in;"><?= $inv->id ?></td>
                                     <td class="text-center" style="vertical-align: middle;">
                                         <?= $inv->po_no ?>
                                         <?php echo $form->hiddenField($model, 'order_id[]', array('class' => 'form-control', 'readonly' => true, 'value' => $inv->id)); ?>
@@ -300,14 +305,14 @@ $this->widget('application.components.BreadCrumb', array(
                     } else {
                         ?>
                         <tr>
-                            <td colspan="8" class="text-center">No data found!</td>
+                            <td colspan="9" class="text-center">No data found!</td>
                         </tr>
                         <?php
                     }
                     ?>
                     <tfoot>
                     <tr>
-                        <th colspan="3" class="text-right" style="vertical-align: middle">Calculation</th>
+                        <th colspan="4" class="text-right" style="vertical-align: middle">Calculation</th>
                         <th style="vertical-align: middle;">
                             <?php echo $form->textField($model, 'invoice_total[]', array('class' => 'form-control text-center', 'value' => $invoice_total, 'readonly' => true)); ?>
                         </th>
@@ -577,12 +582,22 @@ $this->widget('application.components.BreadCrumb', array(
             $(this).closest('tr').find('.amount').trigger('keyup');
             supplierCurrentDueAmounts += due;
         });
-        if(amt > supplierCurrentDueAmounts){
+        if (amt > supplierCurrentDueAmounts) {
             toastr.error("Collected amount is greater than customer due amount.");
             $("#MoneyReceipt_collected_amt").val("");
         }
         calculateTotal();
         calculateRemainingAMount();
+    }
+
+    function calculateRemainingAMount(){
+        let currentDue = parseFloat($("#PaymentReceipt_invoice_total_due").val());
+        let currentPayment = parseFloat($("#PaymentReceipt_total_paid_amount").val());
+
+        currentDue = isNaN(currentDue) ? 0 : currentDue;
+        currentPayment = isNaN(currentPayment) ? 0 : currentPayment;
+        let rem_amount = currentDue - (currentPayment);
+        $('#PaymentReceipt_rem_total_amount').val(rem_amount);
     }
 </script>
 
@@ -624,7 +639,6 @@ $this->beginWidget('zii.widgets.jui.CJuiDialog', array(
 <?php $this->endWidget(); ?>
 
 
-
 <!--        modal-->
 <div class="modal fade" id="information-modal-payment-receipt" tabindex="-1" data-backdrop="static" role="dialog"
      aria-labelledby="information-modal-payment-receipt" aria-hidden="true">
@@ -645,4 +659,51 @@ $this->beginWidget('zii.widgets.jui.CJuiDialog', array(
         </div>
     </div>
 </div>
+
+
+<!--        modal-->
+<div class="modal fade" id="information-modal" tabindex="-1" data-backdrop="static" role="dialog"
+     aria-labelledby="information-modal" aria-hidden="true">
+    <div class="modal-dialog modal-dialog-centered modal-xl" role="document">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title" id="exampleModalLabel">Invoice</h5>
+                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                    <span aria-hidden="true">&times;</span>
+                </button>
+            </div>
+            <div class="modal-body text-center">
+                <p>Loading...</p> <!-- this will be replaced by the response from the server -->
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
+            </div>
+        </div>
+    </div>
+</div>
+<script>
+    $('#list').off('click', '.invoiceDetails').on('click', '.invoiceDetails', function () {
+
+        var invoiceId = $(this).text();
+        var $this = $(this);
+        $this.html('<i class="fa fa-spinner fa-spin"></i>');
+        $.ajax({
+            url: '<?= Yii::app()->createUrl("commercial/purchaseOrder/voucherPreview") ?>',
+            type: 'POST',
+            data: {
+                invoiceId: invoiceId
+            },
+            success: function (response) {
+                $('#information-modal').modal('show');
+                $('#information-modal .modal-body').html(response);
+                $this.html(invoiceId);
+            },
+            error: function () {
+                $this.html(invoiceId);
+                toastr.error('Something went wrong');
+            }
+        });
+    });
+</script>
+</script>
 
