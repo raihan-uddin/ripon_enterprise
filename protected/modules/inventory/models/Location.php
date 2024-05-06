@@ -71,11 +71,13 @@ class Location extends CActiveRecord
 
     public function beforeSave()
     {
+        $dateTime = date('Y-m-d H:i:s');
+
         if ($this->isNewRecord) {
-            $this->created_at = new CDbExpression('NOW()');
+            $this->created_at = $dateTime;
             $this->created_by = Yii::app()->user->id;
         } else {
-            $this->updated_at = new CDbExpression('NOW()');
+            $this->updated_at = $dateTime;
             $this->updated_by = Yii::app()->user->id;
         }
         return parent::beforeSave();

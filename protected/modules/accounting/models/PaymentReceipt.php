@@ -227,14 +227,24 @@ class PaymentReceipt extends CActiveRecord
     {
         // set default time zone to asia/dhaka
         date_default_timezone_set('Asia/Dhaka');
+        $dateTime = date('Y-m-d H:i:s');
+
+
+        $businessId = Yii::app()->user->getState('business_id');
+        $branchId = Yii::app()->user->getState('branch_id');
+
+        $this->business_id = $businessId;
+        $this->branch_id = $branchId;
+
+
         if (($this->cheque_date) == "") {
             $this->cheque_date = NULL;
         }
         if ($this->isNewRecord) {
-            $this->created_at = new CDbExpression('NOW()');
+            $this->created_at = $dateTime;
             $this->created_by = Yii::app()->user->id;
         } else {
-            $this->updated_at = new CDbExpression('NOW()');
+            $this->updated_at = $dateTime;
             $this->updated_by = Yii::app()->user->id;
         }
         return parent::beforeSave();

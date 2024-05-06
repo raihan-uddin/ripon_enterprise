@@ -457,6 +457,15 @@ Yii::app()->clientScript->registerCoreScript("jquery.ui");
                                             },
                                             function (data) {
                                                 response(data);
+
+                                                // Check if there's only one item and trigger select event
+                                                if (data.length === 1 && data[0].id) {
+                                                    // Trigger select event
+                                                    $('#model_id_text').autocomplete('option', 'select').call($('#model_id_text')[0], null, {
+                                                        item: data[0]
+                                                    });
+                                                }
+
                                             }, "json");
                                     },
                                     minLength: 1,
@@ -464,9 +473,17 @@ Yii::app()->clientScript->registerCoreScript("jquery.ui");
                                     select: function (event, ui) {
                                         $('#model_id_text').val(ui.item.value);
                                         $('#PurchaseOrderDetails_model_id').val(ui.item.id);
+                                        $('#PurchaseOrderDetails_amount').val(ui.item.purchasePrice);
+                                        $('.current-pp').html("P.P:" + ui.item.purchasePrice);
                                         // $('#PurchaseOrderDetails_amount').val(ui.item.sell_price);
                                         $('#PurchaseOrderDetails_unit_id').val(ui.item.unit_id);
                                         $('#product_unit_text').html($('#PurchaseOrderDetails_unit_id option:selected').text());
+
+                                        // Move cursor to the next visible input field
+                                        var $form = $('#model_id_text').closest('form');
+                                        var $inputs = $form.find(':input:visible:not([disabled])');
+                                        var currentIndex = $inputs.index($('#model_id_text'));
+                                        $inputs.eq(currentIndex + 1).focus();
                                     }
                                 }).data("ui-autocomplete")._renderItem = function (ul, item) {
                                     // Use Bootstrap styling for the autocomplete results
@@ -534,6 +551,8 @@ Yii::app()->clientScript->registerCoreScript("jquery.ui");
                                 <span class="input-group-text" id="amount"><i class="fa fa-money"></i> </span>
                             </div>
                         </div>
+                        <span class="help-block current-pp"
+                              style="color: green; width: 100%; font-size: 12px;"> </span>
                         <span class="help-block"
                               style="color: red; width: 100%"> <?php echo $form->error($model2, 'amount'); ?></span>
                     </div>

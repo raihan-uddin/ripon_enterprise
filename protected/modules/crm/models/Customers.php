@@ -139,6 +139,8 @@ class Customers extends CActiveRecord
 
     public function beforeSave()
     {
+        $dateTime = date('Y-m-d H:i:s');
+
         $this->company_name = strtoupper($this->company_name);
         if ($this->status != self::ACTIVE) {
             $this->status = self::INACTIVE;
@@ -146,10 +148,10 @@ class Customers extends CActiveRecord
             $this->status = self::ACTIVE;
         }
         if ($this->isNewRecord) {
-            $this->created_datetime = new CDbExpression('NOW()');
+            $this->created_datetime = $dateTime;
             $this->created_by = Yii::app()->user->id;
         } else {
-            $this->updated_datetime = new CDbExpression('NOW()');
+            $this->updated_datetime = $dateTime;
             $this->updated_by = Yii::app()->user->id;
         }
         return parent::beforeSave();
