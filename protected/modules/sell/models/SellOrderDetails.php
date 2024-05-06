@@ -54,8 +54,8 @@ class SellOrderDetails extends CActiveRecord
 		// will receive user inputs.
 		return array(
             array('sell_order_id, model_id, qty, amount, row_total', 'required'),
-            array('sell_order_id, model_id, is_delivery_done, pp, is_invoice_done, created_by, updated_by, warranty', 'numerical', 'integerOnly' => true),
-            array('discount_amount, discount_percentage', 'numerical'),
+            array('sell_order_id, model_id, is_delivery_done, is_invoice_done, created_by, updated_by, warranty', 'numerical', 'integerOnly' => true),
+            array('discount_amount, discount_percentage, pp', 'numerical'),
             array('qty, amount, row_total, costing', 'numerical'),
             array('created_at, updated_at, color, note, product_sl_no', 'safe'),
             // The following rule is used by search().
