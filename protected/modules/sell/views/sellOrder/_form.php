@@ -853,11 +853,11 @@ Yii::app()->clientScript->registerCoreScript("jquery.ui");
                         <input type="text" class="form-control text-center temp_qty" value="${qty}" name="SellOrderDetails[temp_qty][]">
                     </td>
                     <td class="text-center">
-                        <input type="text" class="form-control temp_unit_price" value="${unit_price}" name="SellOrderDetails[temp_unit_price][]" >
+                        <input type="text" class="form-control temp_unit_price text-right" value="${unit_price}" name="SellOrderDetails[temp_unit_price][]" >
                         <input type="hidden" class="form-control text-center temp-costing" value="${pp}" name="SellOrderDetails[temp_pp][]">
                     </td>
                     <td class="text-center">
-                       <input type="text" readonly class="form-control row-total" value="${row_total}" name="SellOrderDetails[temp_row_total][]" >
+                       <input type="text" readonly class="form-control row-total text-right" value="${row_total}" name="SellOrderDetails[temp_row_total][]" >
                     </td>
                     <td>
                         <button type="button" class="btn btn-danger dlt"><i class="fa fa-trash-o"></i> </button>

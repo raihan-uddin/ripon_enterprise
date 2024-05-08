@@ -25,6 +25,7 @@
  */
 class MoneyReceipt extends CActiveRecord
 {
+    public $ids;
     public $order_type;
     public $cash_due;
     public $exp_delivery_date;
@@ -192,6 +193,7 @@ class MoneyReceipt extends CActiveRecord
         $criteria = new CDbCriteria;
         $criteria->select = "t.*";
         $criteria->join = " ";
+        $criteria->addColumnCondition(['t.is_deleted' => 0, 't.business_id' => Yii::app()->user->getState('business_id')]);
 
         if (($this->invoice_id) != "") {
             $criteria->join .= " INNER JOIN invoice inv on t.invoice_id = inv.id ";
@@ -258,7 +260,7 @@ class MoneyReceipt extends CActiveRecord
     {
         $criteria = new CDbCriteria();
         $criteria->select = "CAST(SUM(COALESCE(amount, 0) + COALESCE(discount, 0)) AS DECIMAL(10,2)) AS amount";
-        $criteria->addColumnCondition(['t.invoice_id' => $invoice_id]);
+        $criteria->addColumnCondition(['t.invoice_id' => $invoice_id, 't.is_deleted' => 0]);
         $data = self::model()->findByAttributes([], $criteria);
         $collectionAmt = 0;
         if ($data)
@@ -271,12 +273,14 @@ class MoneyReceipt extends CActiveRecord
     public function totalPaidAmountAndDiscountOfThisInvoice($invoice_id)
     {
         $criteria = new CDbCriteria();
-        $criteria->select = " SUM(COALESCE(amount, 0)) AS amount, SUM(COALESCE(discount, 0)) AS discount";
-        $criteria->addColumnCondition(['t.invoice_id' => $invoice_id]);
+        $criteria->select = " SUM(COALESCE(amount, 0)) AS amount, SUM(COALESCE(discount, 0)) AS discount, GROUP_CONCAT(id) as ids";
+        $criteria->addColumnCondition(['t.invoice_id' => $invoice_id, 't.is_deleted' => 0]);
         $data = self::model()->findByAttributes([], $criteria);
         return [
             'collection_amt' => $data ? $data->amount : 0,
-            'collection_disc' => $data ? $data->discount : 0
+            'collection_disc' => $data ? $data->discount : 0,
+            'ids' => $data ? $data->ids : 0,
+            'mr_count' => $data ? count(explode(',', $data->ids)) : 0,
         ];
     }
 }

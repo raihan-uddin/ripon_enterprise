@@ -133,16 +133,16 @@ return array(
         ),
 
         'session' => array(
-            'timeout' => 21600, //3 hours
+            'timeout' => 60 * 60 * 24 * 60, // Set the session timeout to 60 days
             'cookieParams' => array(
-                'lifetime' => 21600, //hours
+                'lifetime' => 60 * 60 * 24 * 60, // Set the cookie lifetime to 60 days
             ),
         ),
         'user' => array(
             'class' => 'RWebUser',
-            'authTimeout' => 21600, // auto-logout after 3 hours  (value in seconds)
+            'authTimeout' => 60 * 60 * 24 * 60, // 60 days
             'allowAutoLogin' => true,
-            'autoUpdateFlash' => false, // add this line to disable the flash counter
+            'autoUpdateFlash' => true, // add this line to disable the flash counter
             'loginUrl' => array('/site/login'),
             'loginRequiredAjaxResponse' => 'Session timed out. Please login again to continue.',
         ),
