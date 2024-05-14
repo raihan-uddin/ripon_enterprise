@@ -376,6 +376,7 @@ class SellOrderController extends RController
                 }
                 $this->loadModel($id)->delete();
             }
+            $transaction->commit();
 
         } catch (Exception $e) {
             $transaction->rollBack();
