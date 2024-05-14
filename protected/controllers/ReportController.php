@@ -144,7 +144,7 @@ class ReportController extends RController
                     WHERE is_deleted = 0
                     " . ($customer_id > 0 ? " AND customer_id = $customer_id" : "") . "
                 ) AS t
-            inner join customers c on t.customer_id = c.id
+            LEFT JOIN customers c on t.customer_id = c.id
             GROUP BY 
                 customer_id
             HAVING 
@@ -406,7 +406,7 @@ class ReportController extends RController
                 $criteria->addColumnCondition(['t.created_by' => $created_by]);
             }
             $criteria->join = " INNER JOIN users u on t.created_by = u.id ";
-            $criteria->join .= " INNER JOIN customers c on t.customer_id = c.id ";
+            $criteria->join .= " LEFT JOIN customers c on t.customer_id = c.id ";
             $criteria->select = "t.*, u.username, c.company_name as customer_name, c.company_contact_no as contact_no";
             $criteria->order = 't.date asc';
             $data = MoneyReceipt::model()->findAll($criteria);
@@ -505,7 +505,7 @@ class ReportController extends RController
             if ($created_by > 0) {
                 $criteria->addColumnCondition(['t.created_by' => $created_by]);
             }
-            $criteria->join .= " INNER JOIN customers c on t.customer_id = c.id ";
+            $criteria->join .= " LEFT JOIN customers c on t.customer_id = c.id ";
             $criteria->select = "t.*, c.company_name as customer_name, c.owner_mobile_no as contact_no";
             $criteria->order = 't.date asc';
             $data = SellOrder::model()->findAll($criteria);
@@ -561,7 +561,7 @@ class ReportController extends RController
             }
             $criteria->join .= " INNER JOIN sell_order_details sod on t.id = sod.sell_order_id ";
             $criteria->join .= " INNER JOIN prod_models p on sod.model_id = p.id ";
-            $criteria->join .= " INNER JOIN customers c on t.customer_id = c.id ";
+            $criteria->join .= " LEFT JOIN customers c on t.customer_id = c.id ";
             $criteria->select = "t.*, c.company_name as customer_name, c.owner_mobile_no as contact_no, 
                                 p.model_name as product_name, p.code as product_code, p.purchase_price as current_pp, p.sell_price as current_sp,
                                 sod.product_sl_no, sod.qty, sod.amount,  sod.row_total, sod.costing";

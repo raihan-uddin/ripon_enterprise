@@ -54,8 +54,8 @@ class SellOrderDetails extends CActiveRecord
 		// will receive user inputs.
 		return array(
             array('sell_order_id, model_id, qty, amount, row_total', 'required'),
-            array('sell_order_id, model_id, is_delivery_done, pp, is_invoice_done, created_by, updated_by, warranty', 'numerical', 'integerOnly' => true),
-            array('discount_amount, discount_percentage', 'numerical'),
+            array('sell_order_id, model_id, is_delivery_done, is_invoice_done, created_by, updated_by, warranty', 'numerical', 'integerOnly' => true),
+            array('discount_amount, discount_percentage, pp', 'numerical'),
             array('qty, amount, row_total, costing', 'numerical'),
             array('created_at, updated_at, color, note, product_sl_no', 'safe'),
             // The following rule is used by search().
@@ -152,12 +152,25 @@ class SellOrderDetails extends CActiveRecord
 
     public function beforeSave()
     {
+
+        // set default time zone to asia/dhaka
+        date_default_timezone_set('Asia/Dhaka');
+        $dateTime = date('Y-m-d H:i:s');
+
+
+        $businessId = Yii::app()->user->getState('business_id');
+        $branchId = Yii::app()->user->getState('branch_id');
+
+        $this->business_id = $businessId;
+        $this->branch_id = $branchId;
+
+
         if ($this->isNewRecord) {
-            $this->created_at = new CDbExpression('NOW()');
+            $this->created_at = $dateTime;
             $this->created_by = Yii::app()->user->id;
         }else {
             $this->updated_by = Yii::app()->user->id;
-            $this->updated_at = new CDbExpression('NOW()');
+            $this->updated_at = $dateTime;
         }
         return parent::beforeSave();
     }

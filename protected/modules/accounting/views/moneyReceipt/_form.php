@@ -23,8 +23,8 @@ $this->widget('application.components.BreadCrumb', array(
         <a class="btn  btn-warning" type="button" id="btnReload"
            href="<?= Yii::app()->request->requestUri ?>"><i class="fa fa-refresh"></i> Reload
         </a>
-        <button class="btn  btn-danger" type="button" id="btnReset"><i class="fa fa-remove"></i> Reset
-        </button>
+<!--        <button class="btn  btn-danger" type="button" id="btnReset"><i class="fa fa-remove"></i> Reset-->
+<!--        </button>-->
 
         <a class="btn btn-success text-right" type="button"
            href="<?= Yii::app()->baseUrl . '/index.php/accounting/moneyReceipt/admin' ?>"><i class="fa fa-home"></i>

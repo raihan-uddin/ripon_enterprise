@@ -72,6 +72,12 @@ class ProdItems extends CActiveRecord
 
     public function beforeSave()
     {
+        $businessId = Yii::app()->user->getState('business_id');
+        $branchId = Yii::app()->user->getState('branch_id');
+
+        $this->business_id = $businessId;
+        $this->branch_id = $branchId;
+
         $this->item_name = strtoupper($this->item_name);
         return parent::beforeSave();
     }

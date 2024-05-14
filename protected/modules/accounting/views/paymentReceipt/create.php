@@ -4,4 +4,4 @@
 /* @var $model2 Suppliers */
 ?>
 
-<?php $this->renderPartial('_form', array('model' => $model, 'model2' => $model2, 'id' => $id,)); ?>
+<?php $this->renderPartial('_form', array('model' => $model, 'model2' => $model2, 'id' => $id, 'order_id' => $order_id)); ?>

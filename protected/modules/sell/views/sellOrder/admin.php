@@ -60,6 +60,15 @@ if (Yii::app()->user->checkAccess('Sell.Order.VoucherPreview')) {
                 'method' => 'get',
             )); ?>
             <div class="row">
+                <!--<div class="col-md-2 col-sm-12">
+                    <div class="input-group mb-3">
+                        <input type="text" class="form-control" id="daterange-picker" placeholder="Select Date Range"
+                               aria-label="Select Date Range" aria-describedby="basic-addon2">
+                    </div>
+                    <span class="help-block"
+                          style="color: red; width: 100%"> <?php /*echo $form->error($model, 'date'); */?></span>
+
+                </div>-->
                 <div class="col-md-2 col-sm-12">
                     <div class="input-group">
                         <div class="input-group-prepend">
@@ -101,30 +110,32 @@ if (Yii::app()->user->checkAccess('Sell.Order.VoucherPreview')) {
                         "Print", Yii::app()->createUrl('/sell/sellOrder/voucherPreview'), array(
                         'type' => 'POST',
                         'beforeSend' => "function(){
-                        let so_no = $('#SellOrder_so_no').val();
-                        if(so_no == ''){
-                        toastr.error('Please insert so no!');
-                            return false;
-                        }
-                        $('#overlay').fadeIn(300);　 
-                     }",
+                            let so_no = $('#SellOrder_so_no').val();
+                            let dateRange = $('#daterange-picker').val();
+                            if(so_no == '' && dateRange == ''){
+                                toastr.error('Please insert so no or select date range!');
+                                return false;
+                            }
+                            $('#overlay').fadeIn(300);　 
+                        }",
                         'success' => "function( data ){
-                        if(data.status=='error'){
-                            toastr.error('No data found!');
-                        } else {
-//                         $('#viewDialog').dialog('open');   
-//                         $('#AjFlash').html(data).show();
-                            $('#information-modal').modal('show');
-                            $('#information-modal .modal-body').html(data);    
-                        }      
-                        $('#overlay').fadeOut(300);　                                                         
-                    }",
+                            if(data.status=='error'){
+                                toastr.error('No data found!');
+                            } else {
+        //                         $('#viewDialog').dialog('open');   
+        //                         $('#AjFlash').html(data).show();
+                                $('#information-modal').modal('show');
+                                $('#information-modal .modal-body').html(data);    
+                            }      
+                            $('#overlay').fadeOut(300);　                                                         
+                        }",
                         'complete' => "function(){
-                        $('#overlay').fadeOut(300);　      
-                    }",
+                            $('#overlay').fadeOut(300);　      
+                        }",
                         'data' => array(
                             'so_no' => 'js:jQuery("#SellOrder_so_no").val()',
                             'preview_type' => 'js:jQuery("#SellOrder_print_type").val()',
+                            'date_range' => 'js:jQuery("#daterange-picker").val()',
                             'printOrPreview' => 'print',
                         )
                     ), array(
@@ -255,7 +266,6 @@ if (Yii::app()->user->checkAccess('Sell.Order.VoucherPreview')) {
                     'value' => 'SellOrder::model()->isPaid($data->is_paid)',
                     'type' => 'raw',
                     'htmlOptions' => ['class' => 'text-center']
-
                 ),
                 /* array(
                      'name' => 'bom_complete',
@@ -293,27 +303,26 @@ if (Yii::app()->user->checkAccess('Sell.Order.VoucherPreview')) {
                             'label' => '<i class="fa fa-file-pdf-o fa-2x" style="color: green; cursor: pointer; "></i>&nbsp;&nbsp;',
                             'imageUrl' => false,
                             'options' => array('rel' => 'tooltip', 'data-toggle' => 'tooltip', 'title' => Yii::t('app', 'Preview Invoice')),
-                            'url' => 'Yii::app()->controller->createUrl("singlePreview",array("id"=>$data->id))',
-                            'click' => "function(){
-//                                    $('#viewDialog').dialog('open');
-                                    $.fn.yiiGridView.update('sell-order-grid', {
-                                        type:'POST',
-                                        url:$(this).attr('href'),
-                                        success:function(data) {
-                                             $('#ajaxLoaderView').hide();  
-                                              //$('#AjFlash').html(data).fadeIn().animate({opacity: 1.0}, 3000).fadeOut('slow');
-                                              // $('#AjFlash').html(data).show();
-                                              
-                                              $('#information-modal').modal('show');
+//                            'url' => 'Yii::app()->controller->createUrl("voucherPreview",array("invoiceId"=>$data->id))',
+                            // Remove the 'url' attribute
+                            'click' => "function() {
+                                // Get the invoice ID
+                                var invoiceId = $(this).closest('tr').find('td:first').text();
+                                // Send a POST request to the controller action
+                                $.post('" . Yii::app()->controller->createUrl('voucherPreview') . "', { invoiceId: invoiceId })
+                                    .done(function(data) {
+                                        $('#ajaxLoaderView').hide();  
+                                         $('#information-modal').modal('show');
                                               $('#information-modal .modal-body').html(data);   
-                                        },
-                                        beforeSend: function(){
-                                            $('#ajaxLoaderView').show();
-                                        }
                                     })
-                                    return false;
-                              }
-                     ",
+                                    .fail(function(xhr) {
+                                         // Parse the error message from the server response
+                                        var errorMessage = xhr.responseText;
+                                        // Show toaster message with the error
+                                        toastr.error('Error: ' + errorMessage);
+                                    });
+                                return false; // Prevent the default link behavior
+                            }",
                         ),
                     )
                 ),
@@ -335,7 +344,7 @@ if (Yii::app()->user->checkAccess('Sell.Order.VoucherPreview')) {
                             'label' => '<i class="fa fa-pencil-square-o fa-2x" style="color: black;"></i>&nbsp;&nbsp;',
                             'imageUrl' => false,
                             'options' => array('rel' => 'tooltip', 'data-toggle' => 'tooltip', 'title' => Yii::t('app', 'Edit')),
-                            'visible' => '$data->is_paid == 0 ? TRUE : FALSE',
+//                            'visible' => '$data->is_paid == 0 ? TRUE : FALSE',
                         ),
                         'delete' => array(
                             'label' => '<i class="fa fa-trash fa-2x" style="color: red;"></i>&nbsp;&nbsp;',
@@ -397,3 +406,14 @@ $this->beginWidget('zii.widgets.jui.CJuiDialog', array(
 
 </div>
 <?php $this->endWidget('zii.widgets.jui.CJuiDialog'); ?>
+
+<script>
+  /*  var picker = new Lightpick({
+        field: document.getElementById('daterange-picker'),
+        singleDate: false,
+        inline: false,
+        numberOfMonths: 2,
+        numberOfColumns: 2,
+        // selectForward: true,
+    });*/
+</script>

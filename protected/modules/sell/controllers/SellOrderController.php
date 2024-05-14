@@ -160,11 +160,13 @@ class SellOrderController extends RController
 
                     $transaction->commit();
 
+                    $data = SellOrder::model()->findAllByAttributes(['id' => $model->id]);
+
 
                     // if cash order then create money receipt
                     echo CJSON::encode(array(
                         'status' => 'success',
-                        'soReportInfo' => $this->renderPartial('voucherPreview', array('data' => $model, 'new' => true), true, true), //
+                        'soReportInfo' => $this->renderPartial('voucherPreview', array('data' => $data, 'new' => true), true, true), //
                     ));
                     Yii::app()->end();
                 } else {
@@ -313,9 +315,12 @@ class SellOrderController extends RController
                     $transaction->commit();
 
 
+                    $data = SellOrder::model()->findAllByAttributes(['id' => $model->id]);
+
+
                     echo CJSON::encode(array(
                         'status' => 'success',
-                        'soReportInfo' => $this->renderPartial('voucherPreview', array('data' => $model, 'new' => true), true, true), //
+                        'soReportInfo' => $this->renderPartial('voucherPreview', array('data' => $data, 'new' => true), true, true), //
                     ));
                     Yii::app()->end();
                 } else {
@@ -410,19 +415,50 @@ class SellOrderController extends RController
         $so_no = isset($_POST['so_no']) ? trim($_POST['so_no']) : "";
         $preview_type = isset($_POST['preview_type']) ? trim($_POST['preview_type']) : 0;
         $invoiceId = isset($_POST['invoiceId']) ? trim($_POST['invoiceId']) : 0;
+        if (isset($_GET['invoiceId']) && $_GET['invoiceId'] > 0) {
+            $invoiceId = $_GET['invoiceId'];
+        }
         $show_profit = isset($_POST['show_profit']) ? trim($_POST['show_profit']) : 0;
+        $date_range = isset($_POST['date_range']) ? trim($_POST['date_range']) : '';
+        // remove ... from date range
+        $date_range = str_replace('...', '', $date_range);
+        $date_range = explode(' - ', $date_range);
 
-        if (Yii::app()->request->isAjaxRequest) {
-            Yii::app()->clientScript->scriptMap['jquery.js'] = false;
+        $from_date = isset($date_range[0]) ? $date_range[0] : '';
+        $to_date = isset($date_range[1]) ? $date_range[1] : '';
+        if (empty($to_date)) {
+            $to_date = $from_date;
+        }
+        if (!empty($from_date) && !empty($to_date)) {
+            // posted data was in d/m/Y format need data in Y-m-d format
+            // 02/05/2024  replace / with - and then convert to Y-m-d format
+            $from_date = date('Y-m-d', strtotime(str_replace('/', '-', $from_date)));
+            $to_date = date('Y-m-d', strtotime(str_replace('/', '-', $to_date)));
         }
 
-        if (($so_no && $preview_type > 0) || $invoiceId > 0) {
+
+        if (Yii::app()->request->isAjaxRequest) {
+            // Stop jQuery from re-initialization
+            Yii::app()->clientScript->scriptMap['jquery.js'] = false;
+            Yii::app()->clientScript->scriptMap['jquery.min.js'] = false;
+//            Yii::app()->clientScript->scriptMap['jquery.yiiactiveform.js'] = false;
+            Yii::app()->clientScript->scriptMap['jquery-ui-i18n.min.js'] = false;
+            Yii::app()->clientScript->scriptMap['jquery-ui-timepicker-addon.js'] = false;
+            Yii::app()->clientScript->scriptMap['jquery-ui.min.js'] = false;
+        }
+
+        if (($so_no && $preview_type > 0) || $invoiceId > 0 || !empty($from_date) && !empty($to_date)){
             $criteria = new CDbCriteria;
             if ($invoiceId > 0) {
                 $criteria->addColumnCondition(['t.id' => $invoiceId]);
-            } else
+            }
+            if (!empty($so_no)){
                 $criteria->addColumnCondition(['t.so_no' => $so_no]);
-            $data = SellOrder::model()->findByAttributes([], $criteria);
+            }
+            if ($from_date && $to_date) {
+                $criteria->addBetweenCondition('t.date', $from_date, $to_date);
+            }
+            $data = SellOrder::model()->findAllByAttributes([], $criteria);
 
             if ($data) {
                 echo $this->renderPartial("voucherPreview", array('data' => $data, 'preview_type' => $preview_type, 'show_profit' => $show_profit), true, true);
@@ -438,28 +474,6 @@ class SellOrderController extends RController
         }
     }
 
-
-    public function actionSinglePreview($id)
-    {
-        if (Yii::app()->request->isAjaxRequest) {
-            // Stop jQuery from re-initialization
-            Yii::app()->clientScript->scriptMap['jquery.js'] = false;
-            Yii::app()->clientScript->scriptMap['jquery.min.js'] = false;
-//            Yii::app()->clientScript->scriptMap['jquery.yiiactiveform.js'] = false;
-            Yii::app()->clientScript->scriptMap['jquery-ui-i18n.min.js'] = false;
-            Yii::app()->clientScript->scriptMap['jquery-ui-timepicker-addon.js'] = false;
-            Yii::app()->clientScript->scriptMap['jquery-ui.min.js'] = false;
-        }
-        $criteria = new CDbCriteria;
-        $criteria->addColumnCondition(['id' => $id]);
-        $data = SellOrder::model()->findByAttributes([], $criteria);
-        echo $this->renderPartial('voucherPreview', array('data' => $data, 'preview_type' => SellOrder::NORMAL_ORDER_PRINT), true, true);
-
-        if (!isset($_GET['ajax'])) {
-            $this->redirect(Yii::app()->request->urlReferrer);
-        }
-
-    }
 
 
 }

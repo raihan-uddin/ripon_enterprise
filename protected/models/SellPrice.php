@@ -89,6 +89,14 @@ class SellPrice extends CActiveRecord
     {
         // set default time zone to asia/dhaka
         date_default_timezone_set('Asia/Dhaka');
+        $dateTime = date('Y-m-d H:i:s');
+
+        $businessId = Yii::app()->user->getState('business_id');
+        $branchId = Yii::app()->user->getState('branch_id');
+
+        $this->business_id = $businessId;
+        $this->branch_id = $branchId;
+
         if ($this->is_active) {
             $prodModel = ProdModels::model()->findByPk($this->model_id);
             if ($prodModel) {
@@ -97,10 +105,10 @@ class SellPrice extends CActiveRecord
             }
         }
         if ($this->isNewRecord) {
-            $this->add_time = new CDbExpression('NOW()');
+            $this->add_time = $dateTime;
             $this->add_by = Yii::app()->user->getId();
         } else {
-            $this->update_time = new CDbExpression('NOW()');
+            $this->update_time = $dateTime;
             $this->update_by = Yii::app()->user->getId();
         }
         return parent::beforeSave();

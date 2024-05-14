@@ -36,7 +36,7 @@ class PaymentReceiptController extends RController
      * If creation is successful, the browser will be redirected to the 'view' page.
      */
 
-    public function actionCreate($id)
+    public function actionCreate($id, $order_id = 0)
     {
         $model = new PaymentReceipt();
         $model2 = Suppliers::model()->findByPk($id);
@@ -127,6 +127,7 @@ class PaymentReceiptController extends RController
             'model' => $model,
             'model2' => $model2,
             'id' => $id,
+            'order_id' => $order_id,
         ));
     }
 
@@ -241,6 +242,157 @@ class PaymentReceiptController extends RController
             Yii::app()->end();
         } else {
             echo '<div class="alert alert-danger" role="alert">Please select  PR no!</div>';
+        }
+    }
+
+
+    public function actionFixPaymentIssue()
+    {
+        $sql = "SELECT id, date, supplier_id, amount, max_sl_no, pr_no, payment_type, bank_id, cheque_no, cheque_date, discount, remarks, created_by, created_at FROM payment_receipt_cp where is_deleted = 0";
+        $data = Yii::app()->db->createCommand($sql)->queryAll();
+        if ($data) {
+            $transaction = Yii::app()->db->beginTransaction();
+            try {
+                foreach ($data as $dt) {
+                    $supplier_id = $dt['supplier_id'];
+                    $currentPaidAmt = $dt['amount'];
+                    $date = $dt['date'];
+                    $max_sl_no = $dt['max_sl_no'];
+                    $pr_no = $dt['pr_no'];
+                    $payment_type = $dt['payment_type'];
+                    $bank_id = $dt['bank_id'];
+                    $cheque_no = $dt['cheque_no'];
+                    $cheque_date = $dt['cheque_date'];
+                    $discount = $dt['discount'];
+                    $remarks = $dt['remarks'];
+                    $created_by = $dt['created_by'];
+                    $created_at = $dt['created_at'];
+
+                    echo sprintf("Supplier ID: %s, Amount: %s, Date: %s, Max SL No: %s, PR No: %s, Payment Type: %s, <br>", $supplier_id, $currentPaidAmt, $date, $max_sl_no, $pr_no, $payment_type);
+
+                    // get all the order id of this supplier
+                    $criteria = new CDbCriteria();
+                    $criteria->select = "id, grand_total, is_paid, date, max_sl_no, po_no, supplier_id";
+                    $criteria->addColumnCondition(['supplier_id' => $supplier_id, 'is_paid' => PurchaseOrder::DUE, 'is_deleted' => 0]);
+                    $po_data = PurchaseOrder::model()->findAll($criteria);
+                    if ($po_data) {
+                        $newPaidAmt = $currentPaidAmt;
+                        foreach ($po_data as $po) {
+                            $po_id = $po->id;
+                            $po_amount = $po->grand_total;
+                            $total_mr = PaymentReceipt::model()->totalPaidAmountOfThisOrder($po_id);
+                            $rem = $po_amount - $total_mr;
+                            $newPaidAmt = round(($newPaidAmt - $po_amount), 2);
+                            if ($newPaidAmt < 0) {
+                                $newPaidAmt = 0;
+                                echo sprintf("........................<br>");
+                                echo sprintf("Paid amount is now less than 0! breaking the operation<br>");
+                                echo sprintf("........................<br>");
+                                break;
+                            }
+                            $model = new PaymentReceipt();
+                            if ($newPaidAmt > $po_amount) {
+                                echo sprintf("New Paid Amount is greater than the order amount! <br>");
+                                echo sprintf("Order ID: %s, Paid Amount: %s, Remaining Amount: %s, New Paid Amount: %s, <br>", $po_id, $total_mr, $rem, $newPaidAmt);
+                                $model->date = $date;
+                                $model->supplier_id = $supplier_id;
+                                $model->order_id = $po_id;
+                                $model->max_sl_no = $max_sl_no;
+                                $model->pr_no = $pr_no;
+                                $model->amount = $po_amount;
+                                $model->payment_type = $payment_type;
+                                $model->bank_id = $bank_id;
+                                $model->cheque_no = $cheque_no;
+                                $model->cheque_date = $cheque_date;
+                                $model->discount = $discount;
+                                $model->remarks = $remarks;
+                                $model->created_by = $created_by;
+                                $model->created_at = $created_at;
+                                if (!$model->save()) {
+                                    $transaction->rollBack();
+                                    throw new CHttpException(500, sprintf('Error in saving payment receipt! greater than the order amount. %s <br>', json_encode($model->getErrors())));
+                                }
+                                $po->is_paid = PurchaseOrder::PAID;
+                                if (!$po->save(false)) {
+                                    $transaction->rollBack();
+                                    throw new CHttpException(500, sprintf('Error in saving purchase order! greater than the order amount. %s <br>', json_encode($po->getErrors())));
+                                }
+                            } elseif ($newPaidAmt == $po_amount) {
+                                echo sprintf("New Paid Amount is equal to the order amount! <br>");
+                                echo sprintf("Order ID: %s, Paid Amount: %s, Remaining Amount: %s, New Paid Amount: %s, <br>", $po_id, $total_mr, $rem, $newPaidAmt);
+                                $model->date = $date;
+                                $model->supplier_id = $supplier_id;
+                                $model->order_id = $po_id;
+                                $model->max_sl_no = $max_sl_no;
+                                $model->pr_no = $pr_no;
+                                $model->amount = $po_amount;
+                                $model->payment_type = $payment_type;
+                                $model->bank_id = $bank_id;
+                                $model->cheque_no = $cheque_no;
+                                $model->cheque_date = $cheque_date;
+                                $model->discount = $discount;
+                                $model->remarks = $remarks;
+                                $model->created_by = $created_by;
+                                $model->created_at = $created_at;
+                                if (!$model->save()) {
+                                    $transaction->rollBack();
+                                    throw new CHttpException(500, sprintf('Error in saving payment receipt! equal to the order amount! %s <br>', json_encode($model->getErrors())));
+                                }
+                                $po->is_paid = PurchaseOrder::PAID;
+                                if (!$po->save(false)) {
+                                    $transaction->rollBack();
+                                    throw new CHttpException(500, sprintf('Error in saving purchase order! equal to the order amount! %s <br>', json_encode($po->getErrors())));
+                                }
+                                break;
+                            } else {
+                                echo sprintf("New Paid Amount is less than the order amount! <br>");
+                                echo sprintf("Order ID: %s, Paid Amount: %s, Remaining Amount: %s, New Paid Amount: %s, <br>", $po_id, $total_mr, $rem, $newPaidAmt);
+                                $model = new PaymentReceipt();
+                                $model->date = $date;
+                                $model->supplier_id = $supplier_id;
+                                $model->order_id = $po_id;
+                                $model->max_sl_no = $max_sl_no;
+                                $model->pr_no = $pr_no;
+                                $model->amount = $newPaidAmt;
+                                $model->payment_type = $payment_type;
+                                $model->bank_id = $bank_id;
+                                $model->cheque_no = $cheque_no;
+                                $model->cheque_date = $cheque_date;
+                                $model->discount = $discount;
+                                $model->remarks = $remarks;
+                                $model->created_by = $created_by;
+                                $model->created_at = $created_at;
+                                if (!$model->save()) {
+                                    $transaction->rollBack();
+                                    throw new CHttpException(500, sprintf('Error in saving payment receipt! less than the order amount! %s <br>', json_encode($model->getErrors())));
+                                }
+                                $po->is_paid = PurchaseOrder::DUE;
+                                if (!$po->save(false)) {
+                                    $transaction->rollBack();
+                                    throw new CHttpException(500, sprintf('Error in saving purchase order! less than the order amount! %s <br>', json_encode($po->getErrors())));
+                                }
+                                break;
+                            }
+                        }
+                    }
+
+                    // update the payment receipt_cp table is_deleted = 1 by  id
+                    $sql = "UPDATE payment_receipt_cp SET is_deleted = 1 WHERE id = :id";
+                    $params = [':id' => $dt['id']];
+                    Yii::app()->db->createCommand($sql)->execute($params);
+
+
+                }
+                $transaction->commit();
+                echo "Data fixed successfully!";
+            } catch (PDOException $e) {
+                $transaction->rollBack();
+                throw new CHttpException(500, $e->getMessage());
+            } catch (Exception $e) {
+                throw new CHttpException(500, $e->getMessage());
+            }
+        } else {
+            echo "No data found!";
         }
     }
 }

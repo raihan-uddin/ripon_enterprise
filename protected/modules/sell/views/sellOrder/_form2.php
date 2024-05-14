@@ -49,9 +49,9 @@ Yii::app()->clientScript->registerCoreScript("jquery.ui");
                     <div class="col-sm-8">
                         <div class="input-group" id="entry_date" data-target-input="nearest">
                             <?php echo $form->textField($model, 'date', array('class' => 'form-control datetimepicker-input', 'placeholder' => 'YYYY-MM-DD', 'value' => $model->date)); ?>
-                            <div class="input-group-append">
+                            <!--<div class="input-group-append">
                                 <div class="input-group-text"><i class="fa fa-calendar"></i></div>
-                            </div>
+                            </div>-->
                         </div>
                     </div>
                     <span class="help-block"
@@ -616,7 +616,7 @@ Yii::app()->clientScript->registerCoreScript("jquery.ui");
 
                                     </td>
                                     <td class="text-center">
-                                        <input type="text" class="form-control temp_unit_price"
+                                        <input type="text" class="form-control temp_unit_price text-right"
                                                value="<?= $m3->amount ?>"
                                                name="SellOrderDetails[temp_unit_price][]">
 
@@ -625,7 +625,7 @@ Yii::app()->clientScript->registerCoreScript("jquery.ui");
                                                name=SellOrderDetails[temp_pp][]">
                                     </td>
                                     <td class="text-center">
-                                        <input type="text" class="form-control row-total" readonly
+                                        <input type="text" class="form-control row-total text-right" readonly
                                                value="<?= $m3->row_total ?>"
                                                name="SellOrderDetails[temp_row_total][]">
 
@@ -664,10 +664,15 @@ Yii::app()->clientScript->registerCoreScript("jquery.ui");
                 $totalMrData = MoneyReceipt::model()->totalPaidAmountAndDiscountOfThisInvoice($model->id);
                 $totalMr = $totalMrData['collection_amt'];
                 $totalMrDiscount = $totalMrData['collection_disc'];
+                $mr_count = $totalMrData['mr_count'];
                 if ($totalMr > 0) {
                     ?>
-                    <div class="alert alert-danger">
-                        You've already collect <?= number_format($totalMr, 2) ?> from this invoice.
+                    <div class="alert alert-info font-weight-bold">
+                        You've already collect <strong><?= number_format($totalMr, 2) ?></strong> from this invoice.
+                        <br>
+                        Total discount: <?= number_format($totalMrDiscount, 2) ?>
+                        <br>
+                        Total number of MR: <strong class="mr-count"><?= $mr_count ?></strong>
                         <input type="hidden" id="collectedAmount" value="<?= $totalMr ?>">
                     </div>
                     <?php
@@ -868,11 +873,11 @@ Yii::app()->clientScript->registerCoreScript("jquery.ui");
                         <input type="text" class="form-control text-center temp_qty" value="${qty}" name="SellOrderDetails[temp_qty][]">
                     </td>
                     <td class="text-center">
-                        <input type="text" class="form-control temp_unit_price" value="${unit_price}" name="SellOrderDetails[temp_unit_price][]" >
+                        <input type="text" class="form-control temp_unit_price text-right" value="${unit_price}" name="SellOrderDetails[temp_unit_price][]" >
                         <input type="hidden" class="form-control text-center temp-costing" value="${pp}" name="SellOrderDetails[temp_pp][]">
                     </td>
                     <td class="text-center">
-                       <input type="text" readonly class="form-control row-total" value="${row_total}" name="SellOrderDetails[temp_row_total][]" >
+                       <input type="text" readonly class="form-control row-total  text-right" value="${row_total}" name="SellOrderDetails[temp_row_total][]" >
                     </td>
                     <td>
                         <button type="button" class="btn btn-danger dlt"><i class="fa fa-trash-o"></i> </button>

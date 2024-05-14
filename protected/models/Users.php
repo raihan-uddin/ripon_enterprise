@@ -85,6 +85,8 @@ class Users extends CActiveRecord
     {
         // set default time zone to asia/dhaka
         date_default_timezone_set('Asia/Dhaka');
+        $dateTime = date('Y-m-d H:i:s');
+
         if ($this->password != "") {
             $this->password = $pass = md5($this->password);
             $this->activkey = $apiKey = self::hashPassword($pass);
@@ -98,10 +100,10 @@ class Users extends CActiveRecord
             $this->apiKey = $this->password;
 
         if ($this->isNewRecord) {
-            $this->create_time = ($this->create_time == "") ? new CDbExpression('NOW()') : $this->create_time;
+            $this->create_time = ($this->create_time == "") ? $dateTime : $this->create_time;
             $this->create_by = ($this->create_by == "") ? Yii::app()->user->name : $this->create_by;
         } else {
-            $this->update_time = new CDbExpression('NOW()');
+            $this->update_time = $dateTime;
             $this->update_by = Yii::app()->user->name;
         }
         return parent::beforeSave();

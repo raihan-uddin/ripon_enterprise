@@ -63,11 +63,20 @@ class Suppliers extends CActiveRecord
 
     public function beforeSave()
     {
+        $dateTime = date('Y-m-d H:i:s');
+
+        $businessId = Yii::app()->user->getState('business_id');
+        $branchId = Yii::app()->user->getState('branch_id');
+
+        $this->business_id = $businessId;
+        $this->branch_id = $branchId;
+
+
         if ($this->isNewRecord) {
-            $this->created_datetime = new CDbExpression('NOW()');
+            $this->created_datetime = $dateTime;
             $this->created_by = Yii::app()->user->id;
         } else {
-            $this->updated_datetime = new CDbExpression('NOW()');
+            $this->updated_datetime = $dateTime;
             $this->updated_by = Yii::app()->user->id;
         }
         return parent::beforeSave();

@@ -24,7 +24,7 @@ if ($yourCompany) {
 <div style="width: 100%; float: left; clear: right;">
     <div style="width: 30%; float: left; clear: right;">
         <img src="<?= Yii::app()->theme->baseUrl . "/images/voucher-logo.png" ?>"
-             style="width: 160px; height: 120px;">
+             style="width: 160px; height: 120px;" alt="">
     </div>
     <div style="width: 70%; float: left; clear: right; text-align: right; font-size: 12px;">
         <span>INVOICE</span> <br>

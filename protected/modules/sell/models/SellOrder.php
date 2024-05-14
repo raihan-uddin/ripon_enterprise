@@ -189,12 +189,6 @@ class SellOrder extends CActiveRecord
         return $data ? $data->so_no : "N/A";
     }
 
-    public function jobCard($id)
-    {
-        $data = self::model()->findByPk($id);
-        return $data ? $data->job_no : "";
-    }
-
     public static function maxSlNo()
     {
         $criteria = new CDbCriteria();
@@ -281,135 +275,31 @@ class SellOrder extends CActiveRecord
         ));
     }
 
-    public function searchProductionOrder()
-    {
-
-        $criteria = new CDbCriteria;
-        $criteria->select = "t.*";
-        $criteria->join = " ";
-        $criteria->addColumnCondition(['order_type' => self::NEW_ORDER]);
-        $criteria->addCondition("job_max_sl_no > 0");
-
-        if (($this->customer_id) != "") {
-            $criteria->join .= " INNER JOIN customers c on t.customer_id = c.id ";
-            $criteria->compare('c.company_name', ($this->customer_id), true);
-        }
-
-        $criteria->compare('id', $this->id);
-        $criteria->compare('date', $this->date);
-        $criteria->compare('delivery_charge', $this->delivery_charge);
-        $criteria->compare('is_paid', $this->is_paid);
-        $criteria->compare('order_type', $this->order_type);
-        $criteria->compare('max_sl_no', $this->max_sl_no);
-        $criteria->compare('so_no', $this->so_no);
-        $criteria->compare('job_no', $this->job_no);
-        $criteria->compare('cash_due', $this->cash_due);
-        $criteria->compare('job_card_date', $this->job_card_date);
-        $criteria->compare('job_max_sl_no', $this->job_max_sl_no);
-        $criteria->compare('vat_percentage', $this->vat_percentage);
-        $criteria->compare('vat_amount', $this->vat_amount);
-        $criteria->compare('bom_complete', $this->bom_complete);
-        $criteria->compare('exp_delivery_date', $this->exp_delivery_date);
-        $criteria->compare('discount_percentage', $this->discount_percentage);
-        $criteria->compare('discount_amount', $this->discount_amount);
-        $criteria->compare('grand_total', $this->grand_total);
-        $criteria->compare('is_invoice_done', $this->is_invoice_done);
-        $criteria->compare('is_job_card_done', $this->is_job_card_done);
-        $criteria->compare('is_delivery_done', $this->is_delivery_done);
-        $criteria->compare('is_partial_delivery', $this->is_partial_delivery);
-        $criteria->compare('is_partial_invoice', $this->is_partial_invoice);
-        $criteria->compare('is_all_issue_done', $this->is_all_issue_done);
-        $criteria->compare('is_all_production_done', $this->is_all_production_done);
-        $criteria->compare('created_by', $this->created_by);
-        $criteria->compare('created_at', $this->created_at, true);
-        $criteria->compare('updated_by', $this->updated_by);
-        $criteria->compare('updated_at', $this->updated_at, true);
-        $criteria->compare('total_amount', $this->total_amount, true);
-        $criteria->compare('order_note', $this->order_note, true);
-        $criteria->compare('costing', $this->costing, true);
-
-        return new CActiveDataProvider($this, array(
-            'criteria' => $criteria,
-            'pagination' => array(
-                'pageSize' => 50,
-            ),
-            'sort' => array(
-                'defaultOrder' => 'id DESC',
-            ),
-        ));
-    }
-
-    public function searchPendingDelivery()
-    {
-
-        $criteria = new CDbCriteria;
-        $criteria->select = "t.*";
-        $criteria->join = " ";
-        $criteria->addColumnCondition(['is_delivery_done' => SellOrder::DELIVERY_NOT_DONE]);
-
-        if (($this->customer_id) != "") {
-            $criteria->join .= " INNER JOIN customers c on t.customer_id = c.id ";
-            $criteria->compare('c.company_name', ($this->customer_id), true);
-        }
-
-        $criteria->compare('id', $this->id);
-        $criteria->compare('date', $this->date);
-        $criteria->compare('order_type', $this->order_type);
-        $criteria->compare('max_sl_no', $this->max_sl_no);
-        $criteria->compare('is_all_production_done', $this->is_all_production_done);
-        $criteria->compare('is_all_issue_done', $this->is_all_issue_done);
-        $criteria->compare('so_no', $this->so_no);
-        $criteria->compare('is_paid', $this->is_paid);
-        $criteria->compare('job_no', $this->job_no);
-        $criteria->compare('delivery_charge', $this->delivery_charge);
-        $criteria->compare('cash_due', $this->cash_due);
-        $criteria->compare('job_card_date', $this->job_card_date);
-        $criteria->compare('job_max_sl_no', $this->job_max_sl_no);
-        $criteria->compare('vat_percentage', $this->vat_percentage);
-        $criteria->compare('vat_amount', $this->vat_amount);
-        $criteria->compare('bom_complete', $this->bom_complete);
-        $criteria->compare('exp_delivery_date', $this->exp_delivery_date);
-        $criteria->compare('discount_percentage', $this->discount_percentage);
-        $criteria->compare('discount_amount', $this->discount_amount);
-        $criteria->compare('grand_total', $this->grand_total);
-        $criteria->compare('is_invoice_done', $this->is_invoice_done);
-        $criteria->compare('is_job_card_done', $this->is_job_card_done);
-        $criteria->compare('is_delivery_done', $this->is_delivery_done);
-        $criteria->compare('is_partial_delivery', $this->is_partial_delivery);
-        $criteria->compare('is_partial_invoice', $this->is_partial_invoice);
-        $criteria->compare('created_by', $this->created_by);
-        $criteria->compare('created_at', $this->created_at, true);
-        $criteria->compare('updated_by', $this->updated_by);
-        $criteria->compare('updated_at', $this->updated_at, true);
-        $criteria->compare('total_amount', $this->total_amount, true);
-        $criteria->compare('order_note', $this->order_note, true);
-        $criteria->compare('costing', $this->costing, true);
-
-        return new CActiveDataProvider($this, array(
-            'criteria' => $criteria,
-            'pagination' => array(
-                'pageSize' => 50,
-            ),
-            'sort' => array(
-                'defaultOrder' => 'id DESC',
-            ),
-        ));
-    }
-
 
     public function beforeSave()
     {
         // set default time zone to asia/dhaka
         date_default_timezone_set('Asia/Dhaka');
+
+        $dateTime = date('Y-m-d H:i:s');
+
+
+        $businessId = Yii::app()->user->getState('business_id');
+        $branchId = Yii::app()->user->getState('branch_id');
+
+        $this->business_id = $businessId;
+        $this->branch_id = $branchId;
+
+
         if (($this->exp_delivery_date) == '') {
             $this->exp_delivery_date = NULL;
         }
         if ($this->isNewRecord) {
-            $this->created_at = new CDbExpression('NOW()');
+            $this->created_at = $dateTime;
             $this->created_by = Yii::app()->user->id;
         } else {
             $this->updated_by = Yii::app()->user->id;
-            $this->updated_at = new CDbExpression('NOW()');
+            $this->updated_at = $dateTime;
         }
         return parent::beforeSave();
     }
@@ -435,15 +325,6 @@ class SellOrder extends CActiveRecord
         return $string;
     }
 
-    public function bomStatus($value)
-    {
-        if ($value != self::BOM_COMPLETE) {
-            $string = "<span class='badge badge-danger'>NOT COMPLETE</span>";
-        } else {
-            $string = "<span class='badge badge-success'>COMPLETE</span>";
-        }
-        return $string;
-    }
 
     public function isPaid($value)
     {
@@ -455,13 +336,5 @@ class SellOrder extends CActiveRecord
         return $string;
     }
 
-    public function jobStatus($value)
-    {
-        if ($value != self::JOB_CARD_DONE) {
-            $string = "<span class='badge badge-danger'>NOT STARTED</span>";
-        } else {
-            $string = "<span class='badge badge-success'>STARTED</span>";
-        }
-        return $string;
-    }
+
 }

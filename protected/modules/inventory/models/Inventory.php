@@ -228,13 +228,15 @@ class Inventory extends CActiveRecord
 
     public function beforeSave()
     {
+        $dateTime = date('Y-m-d H:i:s');
+
         // set default time zone to asia/dhaka
         date_default_timezone_set('Asia/Dhaka');
         if ($this->isNewRecord) {
-            $this->create_time = new CDbExpression('NOW()');
+            $this->create_time = $dateTime;
             $this->create_by = Yii::app()->user->id;
         } else {
-            $this->update_time = new CDbExpression('NOW()');
+            $this->update_time = $dateTime;
             $this->update_by = Yii::app()->user->id;
         }
         return parent::beforeSave();

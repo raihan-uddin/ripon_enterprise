@@ -152,6 +152,7 @@ endforeach;
 //            ),
             'template' => "{pager}{summary}{items}{summary}{pager}",
             'columns' => array(
+                'id',
                 array(
                     'name' => 'date',
                     'htmlOptions' => ['class' => 'text-center']
@@ -213,6 +214,13 @@ endforeach;
                     'htmlOptions' => ['class' => 'text-center']
                 ),
                 array(
+                    'name' => 'is_paid',
+                    'filter' => [PurchaseOrder::PAID => 'PAID', PurchaseOrder::DUE => 'DUE'],
+                    'value' => 'SellOrder::model()->isPaid($data->is_paid)',
+                    'type' => 'raw',
+                    'htmlOptions' => ['class' => 'text-center']
+                ),
+                array(
                     'name' => 'created_by',
                     'value' => 'Users::model()->nameOfThis($data->created_by)',
                     'htmlOptions' => ['class' => 'text-center']
@@ -224,10 +232,17 @@ endforeach;
                 array
                 (
                     'header' => 'Options',
-                    'template' => '{update}{delete}', // {delete}
+                    'template' => '{createPr}{update}{delete}', // {delete}
                     'class' => 'CButtonColumn',
                     'htmlOptions' => ['style' => 'width: 120px;', 'class' => 'text-center'],
                     'buttons' => array(
+                        'createPr' => array(
+                            'label' => '<i class="fa fa-money fa-2x" style="color: green;"></i>&nbsp;&nbsp;',
+                            'imageUrl' => false,
+                            'options' => array('rel' => 'tooltip', 'data-toggle' => 'tooltip', 'title' => Yii::t('app', 'Create PR')),
+                            'url' => 'Yii::app()->controller->createUrl("/accounting/paymentReceipt/create",array("id"=>$data->supplier_id, "order_id"=>$data->id))',
+                            'visible' => '$data->is_paid == 0 ? TRUE : FALSE',
+                        ),
                         'update' => array(
                             'label' => '<i class="fa fa-pencil-square-o fa-2x" style="color: black;"></i>&nbsp;&nbsp;',
                             'imageUrl' => false,

@@ -70,8 +70,12 @@ class SiteController extends Controller
             // validate user input and redirect to the previous page if valid
             if ($model->validate() && $model->login()) {
                 LoginHistory::saveLoginInformation();
-                //set session variable
-                Yii::app()->user->setState("notice_first_time_" . Yii::app()->user->id, true);
+
+                $user = Users::model()->findByPk(Yii::app()->user->id);
+
+                Yii::app()->user->setState('business_id', $user->business_id);
+                Yii::app()->user->setState('branch_id', $user->branch_id);
+
                 $this->redirect(Yii::app()->createUrl('site/dashBoard'));
             } else {
                 $remarks = "";

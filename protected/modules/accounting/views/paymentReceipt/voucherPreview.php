@@ -107,7 +107,7 @@
         <?php
         foreach ($data as $dt) {
             ?>
-            <div class='printAllTableForThisReport' style="width: 8.5in;">
+            <div class='printAllTableForThisReport table-responsive' style="width: 8.5in;">
                 <table style="width: 100%; border-collapse: collapse; font-size: 15px;" class="item-list">
                     <tr>
                         <td>

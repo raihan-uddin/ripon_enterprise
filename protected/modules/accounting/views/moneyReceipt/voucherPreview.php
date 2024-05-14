@@ -112,7 +112,7 @@
         <?php
         foreach ($data as $dt) {
             ?>
-            <div class='printAllTableForThisReport' style="width: 8.5in;">
+            <div class='printAllTableForThisReport table-responsive' style="width: 8.5in;">
                 <table style="width: 100%; border-collapse: collapse; font-size: 15px;" class="item-list">
                     <tr>
                         <td>
@@ -195,7 +195,7 @@
                                     <div style="width: 78%; float: left; clear: right; border-bottom: 1px dotted black; text-align: center;">
                                         &nbsp;&nbsp;&nbsp;<?= number_format($dt->amount, 2) ?>/=&nbsp;&nbsp;&nbsp;
                                         <?php
-                                        if ($dt->discount > 0){
+                                        if ($dt->discount > 0) {
                                             echo sprintf("Discount: %s/=", number_format($dt->discount, 2));
                                         }
                                         ?>

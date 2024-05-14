@@ -132,6 +132,14 @@ class ProdModels extends CActiveRecord
     {
         // set default time zone to asia/dhaka
         date_default_timezone_set('Asia/Dhaka');
+        $dateTime = date('Y-m-d H:i:s');
+
+        $businessId = Yii::app()->user->getState('business_id');
+        $branchId = Yii::app()->user->getState('branch_id');
+
+        $this->business_id = $businessId;
+        $this->branch_id = $branchId;
+
         $this->model_name = strtoupper($this->model_name);
         if (!$this->sell_price > 0) {
             $this->sell_price = NULL;
@@ -142,13 +150,13 @@ class ProdModels extends CActiveRecord
         }
 
         if ($this->isNewRecord) {
-            $this->created_at = new CDbExpression('NOW()');
+            $this->created_at = $dateTime;
             $this->created_by = Yii::app()->user->id;
             if ($this->item_id == 1) {
                 $this->stockable = 0;
             }
         } else {
-            $this->updated_at = new CDbExpression('NOW()');
+            $this->updated_at = $dateTime;
             $this->updated_by = Yii::app()->user->id;
         }
         return parent::beforeSave();
