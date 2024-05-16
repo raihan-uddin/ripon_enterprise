@@ -63,7 +63,7 @@ class ProfileController extends Controller
 	 */
 	public function actionChangepassword() {
 		$model = new UserChangePassword;
-		if (Yii::app()->user->id) {
+		if (Yii::app()->user->getState('user_id')) {
 			
 			// ajax validator
 			if(isset($_POST['ajax']) && $_POST['ajax']==='changepassword-form')
@@ -75,7 +75,7 @@ class ProfileController extends Controller
 			if(isset($_POST['UserChangePassword'])) {
 					$model->attributes=$_POST['UserChangePassword'];
 					if($model->validate()) {
-						$new_password = User::model()->notsafe()->findbyPk(Yii::app()->user->id);
+						$new_password = User::model()->notsafe()->findbyPk(Yii::app()->user->getState('user_id'));
 						$new_password->password = UserModule::encrypting($model->password);
 						$new_password->activkey=UserModule::encrypting(microtime().$model->password);
 						$new_password->save();
@@ -96,7 +96,7 @@ class ProfileController extends Controller
 	{
 		if($this->_model===null)
 		{
-			if(Yii::app()->user->id)
+			if(Yii::app()->user->getState('user_id'))
 				$this->_model=Yii::app()->controller->module->user();
 			if($this->_model===null)
 				$this->redirect(Yii::app()->controller->module->loginUrl);

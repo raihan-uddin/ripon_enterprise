@@ -121,7 +121,7 @@ endforeach;
                     'template' => '{makeSuperAdmin}{revokeSuperAdmin}', //{delete}
                     'afterDelete' => 'function(link,success,data){ if(success) $("#statusMsg").html(data); }',
                     'class' => 'CButtonColumn',
-                    'visible' => Users::superuserStatus(Yii::app()->user->id) == true,
+                    'visible' => Users::superuserStatus(Yii::app()->user->getState('user_id')) == true,
                     'buttons' => array(
                         'makeSuperAdmin' => array(
                             'label' => '<span class="badge badge-danger">Make SuperAdmin</span>&nbsp;&nbsp;',

@@ -41,7 +41,7 @@ class LoginHistory extends CActiveRecord
     public static function saveLoginInformation($data = [])
     {
         $dateTime = date('Y-m-d H:i:s');
-        $user_id = Yii::app()->user->id;
+        $user_id = Yii::app()->user->getState('user_id');
 
         $location = self::locationInformation();
         $browserInformation = self::browserInformation();

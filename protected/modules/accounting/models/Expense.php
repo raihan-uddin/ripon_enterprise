@@ -127,7 +127,7 @@ class Expense extends CActiveRecord
 
         // show only logged in user's data if not admin
         if (!Yii::app()->user->checkAccess('Admin')) {
-            $criteria->addColumnCondition(['t.created_by' => Yii::app()->user->id]);
+            $criteria->addColumnCondition(['t.created_by' => Yii::app()->user->getState('user_id')]);
         }
 
 
@@ -173,10 +173,10 @@ class Expense extends CActiveRecord
 
         if ($this->isNewRecord) {
             $this->created_at = $dateTime;
-            $this->created_by = Yii::app()->user->id;
+            $this->created_by = Yii::app()->user->getState('user_id');
         } else {
             $this->updated_at = $dateTime;
-            $this->updated_by = Yii::app()->user->id;
+            $this->updated_by = Yii::app()->user->getState('user_id');
         }
         return parent::beforeSave();
     }

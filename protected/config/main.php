@@ -94,25 +94,6 @@ return array(
     ),
 // application components
     'components' => array(
-        'ePdf' => array(
-            'class' => 'ext.yii-pdf.EYiiPdf',
-            'params' => array(
-                'HTML2PDF' => array(
-                    'librarySourcePath' => 'application.vendors.html2pdf.*',
-                    'classFile' => 'html2pdf.class.php', // For adding to Yii::$classMap
-                    'defaultParams' => array(// More info: http://wiki.spipu.net/doku.php?id=html2pdf:en:v4:accueil
-                        'unicode' => true, // TRUE means clustering the input text IS unicode (default = true)
-                        'encoding' => 'UTF-8', // charset encoding; Default is UTF-8
-                    )
-                )
-            ),
-        ),
-        'image' => array(
-            'class' => 'application.extensions.image.CImageComponent',
-            'driver' => 'GD',
-            'params' => array('directory' => '/opt/local/bin'),
-        ),
-
         'cache' => array(
             'class' => 'CDbCache',
             'connectionID' => 'db', // <<< THIS IS THE ISSUE
@@ -131,20 +112,27 @@ return array(
                 ),
             ),
         ),
-
         'session' => array(
+            'class' => 'CHttpSession', // You can change this to CHttpSession if you prefer using file-based sessions
+//            'connectionID' => 'db',
+//            'autoCreateSessionTable' => true,
+            'autoStart' => true, // Whether to automatically start the session when the application starts
             'timeout' => 60 * 60 * 24 * 60, // Set the session timeout to 60 days
+            'cookieMode' => 'only', // Set to 'only' to allow only cookies to store session IDs, 'allow' to allow both cookies and URL parameters, 'none' to disable session cookies
             'cookieParams' => array(
                 'lifetime' => 60 * 60 * 24 * 60, // Set the cookie lifetime to 60 days
             ),
+
         ),
         'user' => array(
             'class' => 'RWebUser',
             'authTimeout' => 60 * 60 * 24 * 60, // 60 days
             'allowAutoLogin' => true,
-            'autoUpdateFlash' => true, // add this line to disable the flash counter
+//            'autoUpdateFlash' => true, // add this line to disable the flash counter
             'loginUrl' => array('/site/login'),
             'loginRequiredAjaxResponse' => 'Session timed out. Please login again to continue.',
+            'autoRenewCookie' => true, // Whether to automatically renew the session cookie upon each user request
+
         ),
         'authManager' => array(
             'class' => 'RDbAuthManager',

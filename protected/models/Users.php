@@ -55,7 +55,7 @@ class Users extends CActiveRecord
 
     public function findPasswords($attribute, $params)
     {
-        $user = self::model()->findByPk(Yii::app()->user->id);
+        $user = self::model()->findByPk(Yii::app()->user->getState('user_id'));
         if ($user->password != md5($this->old_password)) {
             $this->addError($attribute, 'Old password is incorrect.');
         }
@@ -266,7 +266,7 @@ class Users extends CActiveRecord
     public static function userDropDownList()
     {
         $criteria = new CDbCriteria();
-        $user_id = Yii::app()->user->id;
+        $user_id = Yii::app()->user->getState('user_id');
         if (in_array($user_id, self::DEV_SUPERADMIN_ID_ARR)) {
             // only for developers
         } else {

@@ -31,7 +31,7 @@ class LoginController extends Controller
 	}
 	
 	private function lastViset() {
-		$lastVisit = User::model()->notsafe()->findByPk(Yii::app()->user->id);
+		$lastVisit = User::model()->notsafe()->findByPk(Yii::app()->user->getState('user_id'));
 		$lastVisit->lastvisit = time();
 		$lastVisit->save();
 	}

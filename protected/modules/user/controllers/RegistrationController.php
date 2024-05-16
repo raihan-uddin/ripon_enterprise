@@ -31,7 +31,7 @@ class RegistrationController extends Controller
 				Yii::app()->end();
 			}
 			
-		    if (Yii::app()->user->id) {
+		    if (Yii::app()->user->getState('user_id')) {
 		    	$this->redirect(Yii::app()->controller->module->profileUrl);
 		    } else {
 		    	if(isset($_POST['RegistrationForm'])) {

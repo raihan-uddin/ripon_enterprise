@@ -242,10 +242,10 @@ class PaymentReceipt extends CActiveRecord
         }
         if ($this->isNewRecord) {
             $this->created_at = $dateTime;
-            $this->created_by = Yii::app()->user->id;
+            $this->created_by = Yii::app()->user->getState('user_id');
         } else {
             $this->updated_at = $dateTime;
-            $this->updated_by = Yii::app()->user->id;
+            $this->updated_by = Yii::app()->user->getState('user_id');
         }
         return parent::beforeSave();
     }

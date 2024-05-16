@@ -149,10 +149,10 @@ class Customers extends CActiveRecord
         }
         if ($this->isNewRecord) {
             $this->created_datetime = $dateTime;
-            $this->created_by = Yii::app()->user->id;
+            $this->created_by = Yii::app()->user->getState('user_id');
         } else {
             $this->updated_datetime = $dateTime;
-            $this->updated_by = Yii::app()->user->id;
+            $this->updated_by = Yii::app()->user->getState('user_id');
         }
         return parent::beforeSave();
     }

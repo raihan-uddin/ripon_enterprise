@@ -220,7 +220,7 @@ class SellOrder extends CActiveRecord
         $criteria->addColumnCondition(['t.is_deleted' => 0]);
 
         if (!Yii::app()->user->checkAccess('Admin')) {
-            $criteria->addColumnCondition(['t.created_by' => Yii::app()->user->id]);
+            $criteria->addColumnCondition(['t.created_by' => Yii::app()->user->getState('user_id')]);
         }
 
         if (($this->customer_id) != "") {
@@ -296,9 +296,9 @@ class SellOrder extends CActiveRecord
         }
         if ($this->isNewRecord) {
             $this->created_at = $dateTime;
-            $this->created_by = Yii::app()->user->id;
+            $this->created_by = Yii::app()->user->getState('user_id');
         } else {
-            $this->updated_by = Yii::app()->user->id;
+            $this->updated_by = Yii::app()->user->getState('user_id');
             $this->updated_at = $dateTime;
         }
         return parent::beforeSave();

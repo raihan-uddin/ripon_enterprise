@@ -106,7 +106,7 @@ $this->widget('application.components.BreadCrumb', array(
                     <?php echo $form->labelEx($model, 'received_by', ['class' => 'col-sm-12 col-md-3 col-form-label']); ?>
                     <div class="col-sm-12 col-md-9">
                         <div class="input-group" id="customer_id" data-target-input="nearest">
-                            <?php echo $form->textField($model, 'received_by', array('class' => 'form-control', 'readonly' => true, 'value' => Users::model()->nameOfThis(Yii::app()->user->id))); ?>
+                            <?php echo $form->textField($model, 'received_by', array('class' => 'form-control', 'readonly' => true, 'value' => Users::model()->nameOfThis(Yii::app()->user->getState('user_id')))); ?>
                             <div class="input-group-append">
                                 <div class="input-group-text"><i class="fa fa-user"></i></div>
                             </div>

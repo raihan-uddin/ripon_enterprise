@@ -73,6 +73,7 @@ class SiteController extends Controller
 
                 $user = Users::model()->findByPk(Yii::app()->user->id);
 
+                Yii::app()->user->setState('user_id', $user->id);
                 Yii::app()->user->setState('business_id', $user->business_id);
                 Yii::app()->user->setState('branch_id', $user->branch_id);
 

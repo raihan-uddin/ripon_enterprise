@@ -193,7 +193,7 @@ class Inventory extends CActiveRecord
         }
 
         if (!Yii::app()->user->checkAccess('Admin')) {
-            $criteria->addColumnCondition(['t.created_by' => Yii::app()->user->id]);
+            $criteria->addColumnCondition(['t.created_by' => Yii::app()->user->getState('user_id')]);
         }
 
         $criteria->compare('id', $this->id);
@@ -234,10 +234,10 @@ class Inventory extends CActiveRecord
         date_default_timezone_set('Asia/Dhaka');
         if ($this->isNewRecord) {
             $this->create_time = $dateTime;
-            $this->create_by = Yii::app()->user->id;
+            $this->create_by = Yii::app()->user->getState('user_id');
         } else {
             $this->update_time = $dateTime;
-            $this->update_by = Yii::app()->user->id;
+            $this->update_by = Yii::app()->user->getState('user_id');
         }
         return parent::beforeSave();
     }

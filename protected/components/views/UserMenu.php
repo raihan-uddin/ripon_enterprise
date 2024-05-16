@@ -9,8 +9,8 @@ $this->widget('application.extensions.mbmenu.MbMenu', array(
                     'items' => array(
                         ['label' => Yii::t('app', 'MANAGE USERS'), 'url' => ['/users/admin'], 'visible' => Yii::app()->user->checkAccess('Users.Admin')],
                         ['label' => Yii::t('app', 'MANAGE PERMISSION'), 'url' => ['/rights'], 'visible' => Yii::app()->user->checkAccess('rights')],
-                        ['label' => Yii::t('app', 'BUSINESS'), 'url' => ['/business'], 'visible' => Yii::app()->user->id = 1],
-                        ['label' => Yii::t('app', 'BRANCH'), 'url' => ['/branch'], 'visible' => Yii::app()->user->id = 1],
+                        ['label' => Yii::t('app', 'BUSINESS'), 'url' => ['/business'], 'visible' => Yii::app()->user->getState('user_id')],
+                        ['label' => Yii::t('app', 'BRANCH'), 'url' => ['/branch'], 'visible' => Yii::app()->user->getState('user_id')],
                     ),
                 ),
                 array('label' => 'EXPENSE',

@@ -79,7 +79,7 @@ Yii::app()->clientScript->registerCoreScript("jquery.ui");
                         <?php echo $form->labelEx($model, 'created_by', ['class' => 'col-sm-12 col-md-3 col-form-label']); ?>
                         <div class="col-sm-12 col-md-9">
                             <div class="input-group" id="customer_id" data-target-input="nearest">
-                                <?php echo $form->textField($model, 'created_by_text', array('class' => 'form-control', 'readonly' => true, 'value' => Users::model()->nameOfThis(Yii::app()->user->id))); ?>
+                                <?php echo $form->textField($model, 'created_by_text', array('class' => 'form-control', 'readonly' => true, 'value' => Users::model()->nameOfThis(Yii::app()->user->getState('user_id')))); ?>
                                 <div class="input-group-append">
                                     <div class="input-group-text"><i class="fa fa-user"></i></div>
                                 </div>

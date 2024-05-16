@@ -9,7 +9,7 @@ class RecoveryController extends Controller
 	 */
 	public function actionRecovery () {
 		$form = new UserRecoveryForm;
-		if (Yii::app()->user->id) {
+		if (Yii::app()->user->getState('user_id')) {
 		    	$this->redirect(Yii::app()->controller->module->returnUrl);
 		    } else {
 				$email = ((isset($_GET['email']))?$_GET['email']:'');
