@@ -188,7 +188,7 @@ class SuppliersController extends RController
                         $purchaseOrder->is_opening = 1;
                         $purchaseOrder->date = date('Y-m-d');
                         $purchaseOrder->max_sl_no = PurchaseOrder::maxSlNo();
-                        $purchaseOrder->po_no = "OP" . date('y') . "-" . date('m') . str_pad($model->max_sl_no, 5, "0", STR_PAD_LEFT);
+                        $purchaseOrder->po_no = "OP" . date('y') . "-" . date('m') . str_pad($purchaseOrder->max_sl_no, 5, "0", STR_PAD_LEFT);
                     }
 
                     $purchaseOrder->total_amount = $model->opening_amount;
