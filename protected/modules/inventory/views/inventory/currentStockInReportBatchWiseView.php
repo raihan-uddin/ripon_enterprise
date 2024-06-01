@@ -4,73 +4,8 @@
 /** @var integer $end_date */
 ?>
 
-<style>
-    table.summaryTab {
-        float: left;
-        width: 100%;
-        margin-bottom: 10px;
-        font-size: 12px;
-        border: none;
-        border-collapse: collapse;
-    }
-
-    table.summaryTab tr {
-        border: 1px dotted #a6a6a6;
-    }
-
-    table.summaryTab tr td,
-    table.summaryTab tr th {
-        padding: 5px;
-        font-size: 12px;
-        border: 1px solid #a6a6a6;
-        text-align: left;
-    }
-
-    table.summaryTab tr th {
-        background-color: #c0c0c0;
-        font-weight: bold;
-        border: 1px solid #a6a6a6;
-        text-align: center;
-    }
-
-    }
-
-    .final-result tbody tr:hover {
-        background: #dedede;
-        transition: background-color 100ms;
-    }
-
-    table tr {
-        transition: background-color 0.3s; /* Add transition for smooth effect */
-    }
-
-    table tr:hover {
-        background-color: #f0f0f0;
-    }
-</style>
-
-
-<?php
-
-//echo "<div class='printBtn' style='width: unset;'>";
-//$this->widget('ext.mPrint.mPrint', array(
-//    'title' => ' ', //the title of the document. Defaults to the HTML title
-//    'tooltip' => 'Print', //tooltip message of the print icon. Defaults to 'print'
-//    'text' => '', //text which will appear beside the print icon. Defaults to NULL
-//    'element' => '.printAllTableForThisReport', //the element to be printed.
-//    'exceptions' => array(//the element/s which will be ignored
-//
-//    ),
-//    'publishCss' => TRUE, //publish the CSS for the whole page?
-//    'visible' => !Yii::app()->user->isGuest, //should this be visible to the current user?
-//    'alt' => 'print', //text which will appear if image can't be loaded
-//    'debug' => FALSE, //enable the debugger to see what you will get
-//    'id' => 'print-div2'         //id of the print link
-//));
-//echo "</div>";
-?>
 <div class='printAllTableForThisReport table-responsive'>
-    <table class="summaryTab final-result" id="table-1">
+    <table class="table table-responsive-sm table-sm table-striped table-bordered table-hover   " id="table-1">
         <thead>
         <tr>
             <td colspan="9"
@@ -81,9 +16,9 @@
                 }
 
                 if ($start_date == $end_date) {
-                    echo "<br> Date: " . date('d-m-y', $start_date);
+                    echo "<sub> Date: " . date('d-m-y', $start_date) . "</sub>";
                 } else {
-                    echo "<br>  Date: " . date('d-m-y', $start_date) . " to " . date('d-m-y', $end_date);
+                    echo "<sub>  Date: " . date('d-m-y', $start_date) . " to " . date('d-m-y', $end_date) . "</sub>";
                 }
                 ?>
             </td>
@@ -129,9 +64,9 @@
                     <td><?= date('d-m-y', strtotime($d->date)) ?></td>
                     <td>
                         <?php
-//                        if ($d->stock_in == Inventory::PURCHASE_RECEIVE)
-                            echo Inventory::model()->getStatus($d->stock_status);
-//                        else echo "ADJUSTMENT";
+                        //                        if ($d->stock_in == Inventory::PURCHASE_RECEIVE)
+                        echo Inventory::model()->getStatus($d->stock_status);
+                        //                        else echo "ADJUSTMENT";
                         ?>
                     </td>
                     <td><?= $d->master_id > 0 ? $d->master_id : ''; ?></td>

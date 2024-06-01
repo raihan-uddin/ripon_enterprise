@@ -818,74 +818,6 @@ class ReportController extends RController
         Yii::app()->end();
     }
 
-    public function actionProductPerformanceReport()
-    {
-        $model = new Inventory();
-        $this->pageTitle = 'PRODUCT PERFORMANCE REPORT';
-        $this->render('productPerformanceReport', array('model' => $model));
-    }
-
-    public function actionProductPerformanceReportView()
-    {
-        if (Yii::app()->request->isAjaxRequest) {
-            Yii::app()->clientScript->scriptMap['jquery.js'] = false;
-        }
-
-        date_default_timezone_set("Asia/Dhaka");
-        $dateFrom = $_POST['Inventory']['date_from'];
-        $dateTo = $_POST['Inventory']['date_to'];
-        $model_id = $_POST['Inventory']['model_id'];
-        $manufacturer_id = $_POST['Inventory']['manufacturer_id'];
-        $item_id = $_POST['Inventory']['item_id'];
-        $brand_id = $_POST['Inventory']['brand_id'];
-        $supplier_id = $_POST['Inventory']['supplier_id'];
-        $created_by = $_POST['Inventory']['created_by'];
-
-        $message = "";
-        $data = NULL;
-
-        if ($dateFrom != "" && $dateTo != '') {
-            $message .= "<br>  Date: " . date('d/m/Y', strtotime($dateFrom)) . "-" . date('d/m/Y', strtotime($dateTo));
-
-            $criteria = new CDbCriteria();
-            $criteria->addBetweenCondition('t.date', $dateFrom, $dateTo);
-            if ($model_id > 0) {
-                $criteria->addColumnCondition(['t.model_id' => $model_id]);
-            }
-            if ($manufacturer_id > 0) {
-                $criteria->addColumnCondition(['pm.manufacturer_id' => $manufacturer_id]);
-            }
-            if ($item_id > 0) {
-                $criteria->addColumnCondition(['pm.item_id' => $item_id]);
-            }
-            if ($brand_id > 0) {
-                $criteria->addColumnCondition(['pm.brand_id' => $brand_id]);
-            }
-            if ($supplier_id > 0) {
-                $criteria->addColumnCondition(['t.supplier_id' => $supplier_id]);
-            }
-            if ($created_by > 0) {
-                $criteria->addColumnCondition(['t.created_by' => $created_by]);
-            }
-            $criteria->join .= " INNER JOIN suppliers c on t.supplier_id = c.id ";
-            $criteria->join .= " INNER JOIN purchase_order_details pod on pod.order_id = t.id ";
-            $criteria->join .= " INNER JOIN prod_models pm on pod.model_id = pm.id ";
-            $criteria->join .= " INNER JOIN units u on pm.unit_id = u.id ";
-            $criteria->select = "t.*, 
-                                pod.product_sl_no, pod.qty, pod.unit_price, pod.row_total,
-                                c.company_name as company_name, c.company_contact_no as contact_no, 
-                                pm.model_name as product_name, pm.code as product_code, u.label";
-            $criteria->order = 't.date asc';
-            $data = PurchaseOrder::model()->findAll($criteria);
-
-            echo $this->renderPartial('productPerformanceReportView', array(
-                'data' => $data,
-                'message' => $message,
-            ), true, true);
-            Yii::app()->end();
-        }
-    }
-
     public function actionProductStockLedgerView()
     {
         if (Yii::app()->request->isAjaxRequest) {
@@ -905,7 +837,7 @@ class ReportController extends RController
             $criteria->addBetweenCondition('t.date', $dateFrom, $dateTo);
         }
         $criteria->join .= " INNER JOIN prod_models pm on t.model_id = pm.id ";
-        $criteria->join .= " INNER JOIN units u on pm.unit_id = u.id ";
+        $criteria->join .= " LEFT JOIN units u on pm.unit_id = u.id ";
         $criteria->join .= " LEFT JOIN sell_order so on t.master_id = so.id and t.stock_status = 3";
         $criteria->join .= " LEFT JOIN sell_order_details sod on t.source_id = sod.id and t.stock_status = 3";
         $criteria->join .= " LEFT JOIN customers c on so.customer_id = c.id";
@@ -926,7 +858,9 @@ class ReportController extends RController
             ), true, true);
         } else {
             echo '<div class="alert alert-danger alert-dismissible fade show" role="alert">
-                        NO DATA FOUND!
+                        <strong>Sorry!</strong> No data found.
+                        <br>
+                        <span class="text-uppercase">Search Params: Product ID: ' . $model_id . ', Date From: ' . $dateFrom . ', Date To: ' . $dateTo . '</span>
                         <button type="button" class="close" data-dismiss="alert" aria-label="Close">
                             <span aria-hidden="true">&times;</span>
                         </button>

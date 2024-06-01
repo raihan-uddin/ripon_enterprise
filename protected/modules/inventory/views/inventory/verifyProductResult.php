@@ -126,7 +126,14 @@ $model_id = end($data)->model_id;
 </div>
 
 <script>
+    let anyLedgerCall = false;
     $('body #table-1').off('click', '.customer_ledger').on('click', '.customer_ledger', function () {
+        if (anyLedgerCall) {
+            toastr.warning('Please wait for the previous request to complete');
+            return;
+        }
+        anyLedgerCall = true;
+
         let currentText = $(this).text();
         let customer_id = $(this).data('id');
         let $this = $(this);
@@ -148,12 +155,21 @@ $model_id = end($data)->model_id;
             error: function () {
                 $this.html(currentText);
                 toastr.error('Something went wrong');
+            },
+            complete: function () {
+                anyLedgerCall = false;
             }
         });
     });
 
 
     $('body #table-1').off('click', '.supplier_ledger').on('click', '.supplier_ledger', function () {
+        if (anyLedgerCall) {
+            toastr.warning('Please wait for the previous request to complete');
+            return;
+        }
+        anyLedgerCall = true;
+
         let currentText = $(this).text();
         let supplier_id = $(this).data('id');
         let $this = $(this);
@@ -175,13 +191,24 @@ $model_id = end($data)->model_id;
             error: function () {
                 $this.html(currentText);
                 toastr.error('Something went wrong');
+            },
+            complete: function () {
+                anyLedgerCall = false;
             }
         });
+
     });
 
     $('body').off('click', '#showProductLedger').on('click', '#showProductLedger', showProductLedger);
 
     function showProductLedger() {
+
+        if (anyLedgerCall) {
+            toastr.warning('Please wait for the previous request to complete');
+            return;
+        }
+        anyLedgerCall = true;
+
         let model_id = $('#showProductLedger').data('id');
         let $this = $('#showProductLedger');
         $this.html('<i class="fa fa-spinner fa-spin"></i>');
@@ -199,6 +226,9 @@ $model_id = end($data)->model_id;
             error: function () {
                 $this.html('<i class="fa fa-reorder"></i>');
                 toastr.error('Something went wrong');
+            },
+            complete: function () {
+                anyLedgerCall = false;
             }
         });
     }

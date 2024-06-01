@@ -24,13 +24,13 @@
                     }
                     ?>
                     <?php
-                    if ($productPerformanceReportPermission) {
-                        ?>
-                        <a class="dropdown-item"
-                           href="<?= Yii::app()->createUrl("report/productPerformanceReport") ?>">Product Performance
-                            Report</a>
-                        <?php
-                    }
+//                    if ($productPerformanceReportPermission) {
+//                        ?>
+<!--                        <a class="dropdown-item"-->
+<!--                           href="--><?php //= Yii::app()->createUrl("report/productPerformanceReport") ?><!--">Product Performance-->
+<!--                            Report</a>-->
+<!--                        --><?php
+//                    }
                     ?>
                     <a class="dropdown-item disabled"
                        href="<?= Yii::app()->createUrl("inventory/inventory/stockReport") ?>">Slow

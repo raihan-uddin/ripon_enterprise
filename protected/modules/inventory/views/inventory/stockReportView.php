@@ -220,7 +220,7 @@ echo "</div>";
     <div class="modal-dialog modal-dialog-centered modal-xl" role="document">
         <div class="modal-content">
             <div class="modal-header">
-                <h5 class="modal-title" id="exampleModalLabel">Preview</h5>
+                <h5 class="modal-title" id="exampleModalLabel">LEDGER</h5>
                 <button type="button" class="close" data-dismiss="modal" aria-label="Close">
                     <span aria-hidden="true">&times;</span>
                 </button>
@@ -247,6 +247,9 @@ echo "</div>";
 </style>
 
 <script>
+
+    let anyLedgerCall = false;
+
     $(function () {
         $(".exportToExcel").click(function (e) {
             var table = $('.table2excel');
@@ -270,6 +273,12 @@ echo "</div>";
 
 
     function currentStockPreview(element, product_id, start_date, end_date) {
+        if (anyLedgerCall) {
+            toastr.warning('Please wait for the previous request to complete');
+            return;
+        }
+        anyLedgerCall = true;
+
         var invoiceId = element.innerHTML;
         element.innerHTML = '<i class="fa fa-spinner fa-spin"></i>';
         $.ajax({
@@ -286,11 +295,20 @@ echo "</div>";
             error: function () {
                 element.innerHTML = invoiceId;
                 toastr.error('Something went wrong');
+            },
+            complete: function () {
+                anyLedgerCall = false;
             }
         });
     }
 
     function currentStockOutPreview(element, product_id, start_date, end_date) {
+        if (anyLedgerCall) {
+            toastr.warning('Please wait for the previous request to complete');
+            return;
+        }
+        anyLedgerCall = true;
+
         var invoiceId = element.innerHTML;
         element.innerHTML = '<i class="fa fa-spinner fa-spin"></i>';
         $.ajax({
@@ -309,11 +327,19 @@ echo "</div>";
             error: function () {
                 element.innerHTML = invoiceId;
                 toastr.error('Something went wrong');
+            },
+            complete: function () {
+                anyLedgerCall = false;
             }
         });
     }
 
     function currentStockInPreview(element, product_id, start_date, end_date) {
+
+        if (anyLedgerCall) {
+            toastr.warning('Please wait for the previous request to complete');
+            return;
+        }
 
         var invoiceId = element.innerHTML;
         element.innerHTML = '<i class="fa fa-spinner fa-spin"></i>';
@@ -333,6 +359,9 @@ echo "</div>";
             error: function () {
                 element.innerHTML = invoiceId;
                 toastr.error('Something went wrong');
+            },
+            complete: function () {
+                anyLedgerCall = false;
             }
         });
     }
@@ -358,6 +387,11 @@ echo "</div>";
     $('body').off('click', '.showProductLedger').on('click', '.showProductLedger', showProductLedger);
 
     function showProductLedger() {
+        if (anyLedgerCall) {
+            toastr.warning('Please wait for the previous request to complete');
+            return;
+        }
+
         let model_id = $(this).data('id');
         let currentText = $(this).text();
         let $this = $(this);
@@ -378,6 +412,9 @@ echo "</div>";
             error: function () {
                 $this.html(currentText);
                 toastr.error('Something went wrong');
+            },
+            complete: function () {
+                anyLedgerCall = false;
             }
         });
     }
