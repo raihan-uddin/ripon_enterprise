@@ -488,7 +488,7 @@ class ReportController extends RController
         $dateFrom = $_POST['Inventory']['date_from'];
         $dateTo = $_POST['Inventory']['date_to'];
         $customer_id = $_POST['Inventory']['customer_id'];
-        $created_by = isset($_POST['Inventory']['created_by'])? $_POST['Inventory']['created_by'] : 0;
+        $created_by = isset($_POST['Inventory']['created_by']) ? $_POST['Inventory']['created_by'] : 0;
 
         $message = "";
         $data = NULL;
@@ -884,6 +884,55 @@ class ReportController extends RController
             ), true, true);
             Yii::app()->end();
         }
+    }
+
+    public function actionProductStockLedgerView()
+    {
+        if (Yii::app()->request->isAjaxRequest) {
+            Yii::app()->clientScript->scriptMap['jquery.js'] = false;
+        }
+
+        $model_id = $_POST['Inventory']['model_id'];
+        $dateFrom = isset($_POST['Inventory']['date_from']) ? $_POST['Inventory']['date_from'] : "";
+        $dateTo = isset($_POST['Inventory']['date_to']) ? $_POST['Inventory']['date_to'] : "";
+
+        $criteria = new CDbCriteria();
+        $criteria->addColumnCondition(['t.is_deleted' => 0]);
+        if ($model_id > 0) {
+            $criteria->addColumnCondition(['t.model_id' => $model_id]);
+        }
+        if ($dateFrom != "" && $dateTo != '') {
+            $criteria->addBetweenCondition('t.date', $dateFrom, $dateTo);
+        }
+        $criteria->join .= " INNER JOIN prod_models pm on t.model_id = pm.id ";
+        $criteria->join .= " INNER JOIN units u on pm.unit_id = u.id ";
+        $criteria->join .= " LEFT JOIN sell_order so on t.master_id = so.id and t.stock_status = 3";
+        $criteria->join .= " LEFT JOIN sell_order_details sod on t.source_id = sod.id and t.stock_status = 3";
+        $criteria->join .= " LEFT JOIN customers c on so.customer_id = c.id";
+        $criteria->join .= " LEFT JOIN purchase_order po on t.master_id = po.id and t.stock_status = 1";
+        $criteria->join .= " LEFT JOIN suppliers s on po.supplier_id = s.id";
+        $criteria->select = "t.*, pm.model_name as product_name, pm.code as product_code, u.label,
+                                c.company_name as customer_name, c.id as customer_id, c.customer_code, c.owner_mobile_no as customer_contact_no,
+                                s.company_name as supplier_name, s.id as supplier_id, s.company_contact_no as supplier_contact_no, 
+                                po.po_no, so.so_no as invoice_no, sod.warranty as sales_warranty";
+        $criteria->order = 't.date desc';
+        $data = Inventory::model()->findAll($criteria);
+        if ($data) {
+            echo $this->renderPartial('productStockLedgerView', array(
+                'data' => $data,
+                'model_id' => $model_id,
+                'dateFrom' => $dateFrom,
+                'dateTo' => $dateTo,
+            ), true, true);
+        } else {
+            echo '<div class="alert alert-danger alert-dismissible fade show" role="alert">
+                        NO DATA FOUND!
+                        <button type="button" class="close" data-dismiss="alert" aria-label="Close">
+                            <span aria-hidden="true">&times;</span>
+                        </button>
+                    </div>';
+        }
+        Yii::app()->end();
     }
 
 

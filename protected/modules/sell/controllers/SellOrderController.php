@@ -120,6 +120,7 @@ class SellOrderController extends RController
                                 $inventory->purchase_price = $purchasePrice;
                                 $inventory->row_total = $model2->row_total;
                                 $inventory->product_sl_no = $model2->product_sl_no;
+                                $inventory->warranty = $model2->warranty;
                                 $inventory->stock_status = Inventory::SALES_DELIVERY;
                                 $inventory->source_id = $model2->id;
                                 $inventory->master_id = $model->id;
@@ -447,12 +448,12 @@ class SellOrderController extends RController
             Yii::app()->clientScript->scriptMap['jquery-ui.min.js'] = false;
         }
 
-        if (($so_no && $preview_type > 0) || $invoiceId > 0 || !empty($from_date) && !empty($to_date)){
+        if (($so_no && $preview_type > 0) || $invoiceId > 0 || !empty($from_date) && !empty($to_date)) {
             $criteria = new CDbCriteria;
             if ($invoiceId > 0) {
                 $criteria->addColumnCondition(['t.id' => $invoiceId]);
             }
-            if (!empty($so_no)){
+            if (!empty($so_no)) {
                 $criteria->addColumnCondition(['t.so_no' => $so_no]);
             }
             if ($from_date && $to_date) {
@@ -473,7 +474,6 @@ class SellOrderController extends RController
             echo '<div class="alert alert-danger" role="alert">Please select sales invoice no!</div>';
         }
     }
-
 
 
 }

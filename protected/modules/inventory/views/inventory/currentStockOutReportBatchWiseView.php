@@ -147,9 +147,9 @@ if ($yourCompanyInfo) {
                     <td><?= date('d-m-y', strtotime($d->date)) ?></td>
                     <td>
                         <?php
-                        if ($d->stock_in == 0)
+//                        if ($d->stock_in == 0)
                             echo Inventory::model()->getStatus($d->stock_status);
-                        else echo "ADJUSTMENT";
+//                        else echo "ADJUSTMENT";
                         ?>
                     </td>
                     <td><?= $d->master_id > 0 ? $d->master_id : ''; ?></td>

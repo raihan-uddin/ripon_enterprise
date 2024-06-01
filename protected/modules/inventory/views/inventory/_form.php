@@ -212,7 +212,7 @@ $form = $this->beginWidget('CActiveForm', array(
                     if(data.status=="success"){
                         $("#formResult").fadeIn();
                         $("#formResult").html("Data saved successfully.");
-                        toastr.success("Data saved successfully.")
+                        toastr.success("Data saved successfully.");
                         $("#prod-items-form")[0].reset();
                         $("#formResult").animate({opacity:1.0},1000).fadeOut("slow");
                         $("#list tbody").empty();

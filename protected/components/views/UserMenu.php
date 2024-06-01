@@ -1,4 +1,6 @@
 <?php
+$loggedUser = Yii::app()->user->getState('user_id');
+$developerUserIds = [1];
 $this->widget('application.extensions.mbmenu.MbMenu', array(
 
     'items' => array(
@@ -9,8 +11,8 @@ $this->widget('application.extensions.mbmenu.MbMenu', array(
                     'items' => array(
                         ['label' => Yii::t('app', 'MANAGE USERS'), 'url' => ['/users/admin'], 'visible' => Yii::app()->user->checkAccess('Users.Admin')],
                         ['label' => Yii::t('app', 'MANAGE PERMISSION'), 'url' => ['/rights'], 'visible' => Yii::app()->user->checkAccess('rights')],
-                        ['label' => Yii::t('app', 'BUSINESS'), 'url' => ['/business'], 'visible' => Yii::app()->user->getState('user_id')],
-                        ['label' => Yii::t('app', 'BRANCH'), 'url' => ['/branch'], 'visible' => Yii::app()->user->getState('user_id')],
+                        ['label' => Yii::t('app', 'BUSINESS'), 'url' => ['/business'], 'visible' => in_array($loggedUser, $developerUserIds)],
+                        ['label' => Yii::t('app', 'BRANCH'), 'url' => ['/branch'], 'visible' => in_array($loggedUser, $developerUserIds)],
                     ),
                 ),
                 array('label' => 'EXPENSE',
@@ -50,6 +52,7 @@ $this->widget('application.extensions.mbmenu.MbMenu', array(
                 array('label' => 'STOCK',
                     'items' => array(
                         ['label' => Yii::t('app', 'MANAGE'), 'url' => ['/inventory/inventory/admin'], 'visible' => Yii::app()->user->checkAccess('Inventory.Inventory.Admin')],
+                        ['label' => Yii::t('app', 'VERIFY PRODUCT'), 'url' => ['/inventory/inventory/verifyProduct'], 'visible' => Yii::app()->user->checkAccess('Inventory.Inventory.VerifyProduct')],
                     ),
                 ),
             ),

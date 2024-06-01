@@ -175,11 +175,7 @@ echo "</div>";
                         <?= strtotime($startDate) ?>,
                         <?= strtotime($endDate) ?> )"
                         ><?php echo $dmr->stock_out; ?></a></td>
-                    <td style="text-align: center;" class="showProductLedger" data-id="<?= $dmr->model_id ?>">
-                        <a href="#">
-                            <?php echo $closing; ?>
-                        </a>
-                    </td>
+                    <td style="text-align: center;"><?php echo $closing; ?></td>
                     <td style="text-align: center;"><?php echo is_numeric($dmr->sell_price) ? number_format($dmr->sell_price, 2) : ''; ?></td>
                     <td style="text-align: right;"><?php echo is_numeric($stockSaleValue) ? number_format($stockSaleValue, 2) : ''; ?></td>
                     <td style="text-align: right;"><?php echo is_numeric($cpp) ? number_format($cpp, 2) : ''; ?></td>
@@ -355,30 +351,4 @@ echo "</div>";
         // Initial execution to show all rows
         $('input[value="all"]').change();
     });
-    $('body').off('click', '.showProductLedger').on('click', '.showProductLedger', showProductLedger);
-
-    function showProductLedger() {
-        let model_id = $(this).data('id');
-        let currentText = $(this).text();
-        let $this = $(this);
-        $this.html('<i class="fa fa-spinner fa-spin"></i>');
-        $.ajax({
-            url: '<?= Yii::app()->createUrl("report/productStockLedgerView") ?>',
-            type: 'POST',
-            data: {
-                'Inventory[model_id]': model_id,
-                'Inventory[date_from]': '<?= $startDate ?>',
-                'Inventory[date_to]': '<?= $endDate ?>'
-            },
-            success: function (response) {
-                $('#information-modal').modal('show');
-                $('#information-modal .modal-body').html(response);
-                $this.html(currentText);
-            },
-            error: function () {
-                $this.html(currentText);
-                toastr.error('Something went wrong');
-            }
-        });
-    }
 </script>

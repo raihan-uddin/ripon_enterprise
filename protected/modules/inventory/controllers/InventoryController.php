@@ -145,6 +145,44 @@ class InventoryController extends RController
         ));
     }
 
+    public function actionVerifyProduct()
+    {
+        $model = new Inventory('search');
+        // check if request is ajax
+        if (Yii::app()->request->isAjaxRequest) {
+            $product_sl = isset($_POST['product_sl']) ? $_POST['product_sl'] : "";
+            $criteria = new CDbCriteria();
+            $criteria->select = "t.*, pm.model_name, 
+                                c.company_name as customer_name, c.id as customer_id, c.customer_code, c.owner_mobile_no as customer_contact_no,
+                                s.company_name as supplier_name, s.id as supplier_id, s.company_contact_no as supplier_contact_no, 
+                                po.po_no, so.so_no as invoice_no, sod.warranty as sales_warranty";
+            $criteria->join = " INNER JOIN prod_models pm on t.model_id = pm.id";
+            $criteria->join .= " LEFT JOIN sell_order so on t.master_id = so.id and t.stock_status = 3";
+            $criteria->join .= " LEFT JOIN sell_order_details sod on t.source_id = sod.id and t.stock_status = 3";
+            $criteria->join .= " LEFT JOIN customers c on so.customer_id = c.id";
+            $criteria->join .= " LEFT JOIN purchase_order po on t.master_id = po.id and t.stock_status = 1";
+            $criteria->join .= " LEFT JOIN suppliers s on po.supplier_id = s.id";
+            $criteria->addColumnCondition(['t.product_sl_no' => trim($product_sl)]);
+            $data = Inventory::model()->findAll($criteria);
+            if ($data) {
+                echo $this->renderPartial('verifyProductResult', array('model' => $model, 'data' => $data, 'product_sl' => $product_sl), true, true);
+            } else {
+                echo '<div class="alert alert-danger alert-dismissible fade show" role="alert">
+                        <strong>SL No: ' . $product_sl . '</strong> not found!
+                        <button type="button" class="close" data-dismiss="alert" aria-label="Close">
+                            <span aria-hidden="true">&times;</span>
+                        </button>
+                    </div>';
+            }
+            Yii::app()->end();
+        }
+
+        $this->pageTitle = "PRODUCT VERIFY";
+        $this->render('_verifyProduct', array(
+            'model' => $model,
+        ));
+    }
+
     /**
      * Returns the data model based on the primary key given in the GET variable.
      * If the data model is not found, an HTTP exception will be raised.

@@ -50,10 +50,17 @@ class Inventory extends CActiveRecord
     public $unit_id;
     public $item_id;
     public $brand_id;
+    public $supplier_name;
+    public $customer_name;
     public $image;
     public $stock;
     public $closing_stock;
     public $expense_head_id;
+    public $sales_warranty;
+    public $supplier_contact_no;
+    public $customer_contact_no;
+    public $product_name;
+    public $product_code;
     public $manufacturer_id;
 
     public static function maxSlNo()
