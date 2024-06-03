@@ -237,6 +237,15 @@ $form = $this->beginWidget('CActiveForm', array(
                 <span class="help-block"
                       style="color: red; width: 100%"> <?php echo $form->error($model, 'code'); ?></span>
             </div>
+
+            <div class="form-group col-sm-12 col-md-6 col-lg-4">
+                <?php echo $form->labelEx($model, 'warranty'); ?>
+                <?php echo $form->textField($model, 'warranty', array('maxlength' => 255, 'class' => 'form-control')); ?>
+                <span class="help-block"
+                      style="color: red; width: 100%"> <?php echo $form->error($model, 'warranty'); ?></span>
+            </div>
+
+
             <div class="form-group col-sm-12 col-md-6 col-lg-4" style="">
                 <?php echo $form->labelEx($model, 'unit_id'); ?>
                 <div class="input-group" data-target-input="nearest">
@@ -351,13 +360,6 @@ $form = $this->beginWidget('CActiveForm', array(
 
 
             <div class="form-group col-sm-12 col-md-6 col-lg-4">
-                <?php echo $form->labelEx($model, 'description'); ?>
-                <?php echo $form->textArea($model, 'description', array('maxlength' => 255, 'class' => 'form-control', 'style' => 'height: 200px;')); ?>
-                <span class="help-block"
-                      style="color: red; width: 100%"> <?php echo $form->error($model, 'description'); ?></span>
-            </div>
-
-            <div class="form-group col-sm-12 col-md-6 col-lg-4">
                 <?php echo $form->labelEx($model, 'stockable'); ?>
                 <?php
                 echo $form->dropDownList(
@@ -393,6 +395,12 @@ $form = $this->beginWidget('CActiveForm', array(
                 ?>
                 <span class="help-block"
                       style="color: red; width: 100%"> <?php echo $form->error($model, 'status'); ?></span>
+            </div>
+            <div class="form-group col-sm-12 col-md-6 col-lg-4">
+                <?php echo $form->labelEx($model, 'description'); ?>
+                <?php echo $form->textArea($model, 'description', array('maxlength' => 255, 'class' => 'form-control', 'style' => 'height: 80px;')); ?>
+                <span class="help-block"
+                      style="color: red; width: 100%"> <?php echo $form->error($model, 'description'); ?></span>
             </div>
         </div>
     </div>

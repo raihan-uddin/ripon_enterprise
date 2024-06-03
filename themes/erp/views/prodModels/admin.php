@@ -124,6 +124,11 @@ endforeach;
                     'value' => '$data->status == 1 ? "ACTIVE" : "INACTIVE"',
                     'filter' => [1 => "ACTIVE", 0 => "INACTIVE"],
                 ),
+
+                array(
+                    'name' => 'warranty',
+                ),
+
                 /*
                   array(
                   'name'=>'activePrice',

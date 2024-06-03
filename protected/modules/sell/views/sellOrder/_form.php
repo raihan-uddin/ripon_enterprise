@@ -437,6 +437,7 @@ Yii::app()->clientScript->registerCoreScript("jquery.ui");
                                         $('#model_id_text').val(ui.item.value);
                                         $('#SellOrderDetails_model_id').val(ui.item.id);
                                         $('#SellOrderDetails_amount').val(ui.item.sell_price);
+                                        $('#SellOrderDetails_warranty').val(ui.item.warranty);
                                         showPurchasePrice(ui.item.purchasePrice);
                                         showCurrentStock(ui.item.stock);
 
@@ -531,6 +532,7 @@ Yii::app()->clientScript->registerCoreScript("jquery.ui");
                                         $('#SellOrderDetails_amount').val(sp);
                                         $('#SellOrderDetails_qty').val(1);
                                         $('#SellOrderDetails_row_total').val(sp);
+                                        $('#SellOrderDetails_warranty').val(ui.item.warranty);
                                         // $('.product_unit_text').html($('#Inventory_unit_id option:selected').text());
                                         showPurchasePrice(ui.item.purchasePrice);
                                         showCurrentStock(ui.item.stock);

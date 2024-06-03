@@ -470,14 +470,14 @@ $this->widget('application.components.BreadCrumb', array(
 <script>
     var picker = new Lightpick({
         field: document.getElementById('entry_date'),
-        minDate: moment(),
+        // minDate: moment(),
         onSelect: function (date) {
             document.getElementById('MoneyReceipt_date').value = date.format('YYYY-MM-DD');
         }
     });
     var picker = new Lightpick({
         field: document.getElementById('cheque_date'),
-        minDate: moment(),
+        // minDate: moment(),
         onSelect: function (date) {
             document.getElementById('MoneyReceipt_cheque_date').value = date.format('YYYY-MM-DD');
         }
