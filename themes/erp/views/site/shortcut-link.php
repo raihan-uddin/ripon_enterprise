@@ -19,9 +19,9 @@ $endDate = date('Y-m-t');
     }
     ?>
     <?php
-    if (Yii::app()->user->checkAccess('Crm.Customers.Admin')) {
+    if (Yii::app()->user->checkAccess('Sell.Customers.Admin')) {
         ?>
-        <a class="btn btn-app bg-success" href="<?= Yii::app()->createUrl("crm/customers/admin") ?>">
+        <a class="btn btn-app bg-success" href="<?= Yii::app()->createUrl("sell/customers/admin") ?>">
             <span class="badge bg-purple"><?= Customers::model()->count() ?></span>
             <i class="fa fa-users"></i> Customers
         </a>

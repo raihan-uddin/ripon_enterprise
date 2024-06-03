@@ -22,7 +22,7 @@ $('.search-form form').submit(function(){
 });
 ");
 
-if (Yii::app()->user->checkAccess('Crm.CrmBank.Create')) {
+if (Yii::app()->user->checkAccess('Sell.CrmBank.Create')) {
     echo $this->renderPartial('_form', array('model' => $model));
 }
 ?>

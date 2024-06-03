@@ -142,7 +142,7 @@ Yii::app()->clientScript->registerCoreScript("jquery.ui");
                                         function addDistributor() {
                                             <?php
                                             echo CHtml::ajax(array(
-                                                'url' => array('/crm/customers/createCustomerFromOutSide'),
+                                                'url' => array('/sell/customers/createCustomerFromOutSide'),
                                                 'data' => "js:$(this).serialize()",
                                                 'type' => 'post',
                                                 'dataType' => 'json',
@@ -186,7 +186,7 @@ Yii::app()->clientScript->registerCoreScript("jquery.ui");
                             $('#customer_id_text').autocomplete({
                                 source: function (request, response) {
                                     var search = request.term;
-                                    $.post('<?php echo Yii::app()->baseUrl ?>/index.php/crm/customers/Jquery_customerSearch', {
+                                    $.post('<?php echo Yii::app()->baseUrl ?>/index.php/sell/customers/Jquery_customerSearch', {
                                             "q": search,
                                         },
                                         function (data) {

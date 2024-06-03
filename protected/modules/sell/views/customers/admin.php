@@ -24,7 +24,7 @@ $('.search-form form').submit(function(){
 
 echo $this->renderPartial('_form', array('model' => $model));
 ?>
-<?php echo CHtml::link('Manage Contact Persons', array('/crm/customerContactPersons/admin'), array('class' => 'btn btn-warning mb-2')); ?>
+<?php echo CHtml::link('Manage Contact Persons', array('/sell/customerContactPersons/admin'), array('class' => 'btn btn-warning mb-2')); ?>
     <style>
         #statusMsg {
             width: 97%;

@@ -62,8 +62,8 @@ $this->widget('application.extensions.mbmenu.MbMenu', array(
             'items' => array(
                 array('label' => 'CONFIG',
                     'items' => array(
-                        ['label' => Yii::t('app', 'CUSTOMER'), 'url' => ['/crm/customers/admin'], 'visible' => Yii::app()->user->checkAccess('Crm.Customers.Admin')],
-                        ['label' => Yii::t('app', 'BANK'), 'url' => ['/crm/crmBank/admin'], 'visible' => Yii::app()->user->checkAccess('Crm.CrmBank.Admin')],
+                        ['label' => Yii::t('app', 'CUSTOMER'), 'url' => ['/sell/customers/admin'], 'visible' => Yii::app()->user->checkAccess('Sell.Customers.Admin')],
+                        ['label' => Yii::t('app', 'BANK'), 'url' => ['/sell/crmBank/admin'], 'visible' => Yii::app()->user->checkAccess('Sell.CrmBank.Admin')],
                     ),
                 ),
                 array('label' => 'ORDER',

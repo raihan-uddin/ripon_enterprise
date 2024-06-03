@@ -173,7 +173,7 @@ $this->widget('application.components.BreadCrumb', array(
                                 function addProdItem() {
                                     <?php
                                     echo CHtml::ajax(array(
-                                        'url' => array('/crm/crmBank/CreateBankFromOutSide'),
+                                        'url' => array('/sell/crmBank/CreateBankFromOutSide'),
                                         'data' => "js:$(this).serialize()",
                                         'type' => 'post',
                                         'dataType' => 'json',

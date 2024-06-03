@@ -39,7 +39,7 @@ endforeach;
 ?>
 
 <?php echo $this->renderPartial('_form', array('model' => $model)); ?>
-<?php echo CHtml::link('Back To Customers', array('/crm/customers/admin'), array('class' => 'btn btn-warning mb-2')); ?>
+<?php echo CHtml::link('Back To Customers', array('/sell/customers/admin'), array('class' => 'btn btn-warning mb-2')); ?>
 
 <div id="statusMsg"></div>
 <div class="card card-primary">

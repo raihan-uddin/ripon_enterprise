@@ -80,7 +80,7 @@ $form = $this->beginWidget('CActiveForm', array(
                             $('#customer_id_text').autocomplete({
                                 source: function (request, response) {
                                     var search = request.term;
-                                    $.post('<?php echo Yii::app()->baseUrl ?>/index.php/crm/customers/Jquery_customerSearch', {
+                                    $.post('<?php echo Yii::app()->baseUrl ?>/index.php/sell/customers/Jquery_customerSearch', {
                                             "q": search,
                                         },
                                         function (data) {
