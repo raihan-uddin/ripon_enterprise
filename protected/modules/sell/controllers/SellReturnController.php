@@ -27,7 +27,8 @@ class SellReturnController extends RController
 	 */
 	public function actionCreate()
 	{
-		$model=new SellReturn;
+		$model=new SellReturn();
+        $model2 = new SellReturnDetails();
 
 		// Uncomment the following line if AJAX validation is needed
 		// $this->performAjaxValidation($model);
@@ -39,8 +40,10 @@ class SellReturnController extends RController
 				$this->redirect(array('view','id'=>$model->id));
 		}
 
-		$this->render('create',array(
+        $this->pageTitle = "SELL RETURN CREATE";
+		$this->render('_form',array(
 			'model'=>$model,
+            'model2' => $model2,
 		));
 	}
 

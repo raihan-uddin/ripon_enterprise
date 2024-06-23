@@ -2,9 +2,9 @@
 $loggedUser = Yii::app()->user->getState('user_id');
 $developerUserIds = [1];
 $this->widget('application.extensions.mbmenu.MbMenu', array(
-
     'items' => array(
         array('label' => 'DASHBOARD', 'url' => array('/site/index')),
+
         array('label' => 'COMMON',
             'items' => array(
                 array('label' => 'USER',
@@ -70,6 +70,13 @@ $this->widget('application.extensions.mbmenu.MbMenu', array(
                     'items' => array(
                         ['label' => Yii::t('app', 'CREATE'), 'url' => ['/sell/sellOrder/create'], 'visible' => Yii::app()->user->checkAccess('Sell.SellOrder.Create')],
                         ['label' => Yii::t('app', 'MANAGE'), 'url' => ['/sell/sellOrder/admin'], 'visible' => Yii::app()->user->checkAccess('Sell.SellOrder.Admin')],
+
+                    ),
+                ),
+                array('label' => 'RETURN/REPLACEMENT',
+                    'items' => array(
+                        ['label' => Yii::t('app', 'CREATE'), 'url' => ['/sell/sellReturn/create'], 'visible' => Yii::app()->user->checkAccess('Sell.SellReturn.Create')],
+                        ['label' => Yii::t('app', 'MANAGE'), 'url' => ['/sell/sellReturn/admin'], 'visible' => Yii::app()->user->checkAccess('Sell.SellReturn.Admin')],
 
                     ),
                 ),
@@ -141,6 +148,7 @@ $this->widget('application.extensions.mbmenu.MbMenu', array(
                 ),
             ),
         ),
+
         array('label' => 'LOGOUT (' . strtoupper(Yii::app()->user->name) . ')', 'url' => array('/site/logout')),
     ),
 ));

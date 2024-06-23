@@ -26,6 +26,11 @@
  */
 class SellReturnDetails extends CActiveRecord
 {
+    public $qty;
+    public $amount;
+    public $pp;
+    public $warranty;
+    public $color;
 	/**
 	 * @return string the associated database table name
 	 */
@@ -73,7 +78,7 @@ class SellReturnDetails extends CActiveRecord
 		return array(
 			'id' => 'ID',
 			'return_id' => 'Return',
-			'model_id' => 'Model',
+			'model_id' => 'Product',
 			'return_qty' => 'Return Qty',
 			'sell_price' => 'Sell Price',
 			'purchase_price' => 'Purchase Price',
