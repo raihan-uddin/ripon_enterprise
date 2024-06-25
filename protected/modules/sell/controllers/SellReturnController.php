@@ -40,8 +40,8 @@ class SellReturnController extends RController
 				$this->redirect(array('view','id'=>$model->id));
 		}
 
-        $this->pageTitle = "SELL RETURN CREATE";
-		$this->render('_form',array(
+        $this->pageTitle = "CASH RETURN CREATE";
+        $this->render('_formCashReturn', array(
 			'model'=>$model,
             'model2' => $model2,
 		));

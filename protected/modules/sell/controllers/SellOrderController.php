@@ -17,7 +17,8 @@ class SellOrderController extends RController
         return array(
             'rights
             -VoucherPreview
-            -SinglePreview, 
+            -SinglePreview
+            -Jquery_showSoldProdSlNoSearch
             -SoDetails',
         );
     }
@@ -473,6 +474,88 @@ class SellOrderController extends RController
         } else {
             echo '<div class="alert alert-danger" role="alert">Please select sales invoice no!</div>';
         }
+    }
+
+    public function actionJquery_showSoldProdSlNoSearch()
+    {
+        $search_prodName = trim($_POST['q']);
+        $model_id = isset($_POST['model_id']) ? trim($_POST['model_id']) : 0;
+
+        $criteria2 = new CDbCriteria();
+        $criteria2->compare('product_sl_no', $search_prodName);
+        if ($model_id > 0) {
+            $criteria2->addColumnCondition(['model_id' => $model_id]);
+        }
+        $criteria2->addCondition("product_sl_no IS NOT NULL");
+
+        $criteria = new CDbCriteria();
+        $criteria->mergeWith($criteria2);
+        $criteria->select = "pm.code, pm.model_name, pm.id, pm.item_id, pm.brand_id, pm.unit_id, pm.warranty, pm.image, product_sl_no, t.costing as pp, t.amount as pp";
+        $criteria->order = "product_sl_no asc";
+        $criteria->join = "INNER JOIN prod_models pm on t.model_id = pm.id ";
+        $criteria->group = 't.model_id, t.product_sl_no';
+        $criteria->limit = 20;
+        $criteria->addCondition('product_sl_no IS NOT NULL AND product_sl_no != ""');
+        $prodInfos = SellOrderDetails::model()->findAll($criteria);
+        if ($prodInfos) {
+            foreach ($prodInfos as $prodInfo) {
+                $code = $prodInfo->code;
+                $value = "$prodInfo->product_sl_no";
+                $label = "$prodInfo->model_name || $code";
+                $id = $prodInfo->id;
+                $name = $prodInfo->model_name;
+                $product_sl_no = $prodInfo->product_sl_no;
+                $item_id = $prodInfo->item_id;
+                $brand_id = $prodInfo->brand_id;
+                $unit_id = $prodInfo->unit_id;
+                $warranty = $prodInfo->warranty;
+                $purchase_price = $prodInfo->purchase_price;
+                $activeInfos = SellPrice::model()->activeInfos($prodInfo->id);
+                $sellPrice = $sellDiscount = 0;
+                if ($activeInfos) {
+                    $sellPrice = $activeInfos->sell_price;
+                    $sellDiscount = $activeInfos->discount;
+                }
+                $imageWithUrl = $prodInfo->image != "" ? Yii::app()->baseUrl . "/uploads/products/$prodInfo->image" : Yii::app()->theme->baseUrl . "/images/no-image.jpg";
+                $results[] = array(
+                    'id' => $id,
+                    'product_sl_no' => $product_sl_no,
+                    'stock' => $prodInfo->stock,
+                    'name' => $name,
+                    'value' => $value,
+                    'label' => $label,
+                    'item_id' => $item_id,
+                    'brand_id' => $brand_id,
+                    'code' => $code,
+                    'warranty' => $warranty,
+                    'sell_price' => $sellPrice,
+                    'unit_id' => $unit_id,
+                    'purchasePrice' => $purchase_price,
+                    'sellDiscount' => $sellDiscount,
+                    'img' => $imageWithUrl,
+                );
+            }
+        } else {
+            $imageWithUrl = Yii::app()->theme->baseUrl . "/images/no-image.jpg";
+            $results[] = array(
+                'id' => '',
+                'product_sl_no' => '',
+                'name' => 'No data found!',
+                'value' => 'No data found!',
+                'label' => 'No data found!',
+                'purchasePrice' => '',
+                'item_id' => '',
+                'brand_id' => '',
+                'code' => '',
+                'warranty' => '',
+                'sell_price' => '',
+                'unit_id' => '',
+                'sellDiscount' => '',
+                'stock' => '',
+                'img' => $imageWithUrl,
+            );
+        }
+        echo json_encode($results);
     }
 
 

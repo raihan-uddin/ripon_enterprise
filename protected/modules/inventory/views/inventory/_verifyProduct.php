@@ -78,6 +78,7 @@ $form = $this->beginWidget('CActiveForm', array(
     $(document).ready(function () {
         $('#product_sl_no_text').focus();
     });
+
     $(document).keypress(function (event) {
         let keycode = (event.keyCode ? event.keyCode : event.which);
         if (keycode == '13') {
