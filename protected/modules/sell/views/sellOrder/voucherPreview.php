@@ -266,6 +266,12 @@
                             </tr>
                             <?php
                         }
+                        $actualGrandTotal = ROUND((($row_total + $vat + $delivery_charge) - $discount_amount), 2);
+                        if ($actualGrandTotal != $item->grand_total) {
+                            $item->grand_total = $actualGrandTotal;
+                            $item->total_due = $actualGrandTotal;
+                            $item->save();
+                        }
                         ?>
                         <tr>
                             <td rowspan="<?= $footerRowSpan ?>>" colspan="2"
