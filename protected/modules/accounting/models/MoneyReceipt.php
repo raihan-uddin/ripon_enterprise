@@ -195,10 +195,7 @@ class MoneyReceipt extends CActiveRecord
         $criteria->join = " ";
         $criteria->addColumnCondition(['t.is_deleted' => 0, 't.business_id' => Yii::app()->user->getState('business_id')]);
 
-        if (($this->invoice_id) != "") {
-            $criteria->join .= " INNER JOIN invoice inv on t.invoice_id = inv.id ";
-            $criteria->compare('inv.invoice_no', ($this->invoice_id), true);
-        }
+
         if (($this->customer_id) != "") {
             $criteria->join .= " INNER JOIN customers c on t.customer_id = c.id ";
             $criteria->compare('c.company_name', ($this->customer_id), true);
@@ -208,6 +205,7 @@ class MoneyReceipt extends CActiveRecord
             $criteria->compare('u.username', ($this->created_by), true);
         }
         $criteria->compare('id', $this->id);
+        $criteria->compare('invoice_id', $this->invoice_id);
         $criteria->compare('date', $this->date, true);
         $criteria->compare('max_sl_no', $this->max_sl_no);
         $criteria->compare('mr_no', $this->mr_no, true);

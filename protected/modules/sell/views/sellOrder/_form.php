@@ -528,7 +528,6 @@ Yii::app()->clientScript->registerCoreScript("jquery.ui");
                                             sp = prev_sell_price
                                         else
                                             sp = ui.item.sell_price
-                                        console.log(`Prev Product ID: ${prev_product_id}, Prev Sell Price: ${prev_sell_price}, Current Product ID: ${ui.item.id}, Current Sell Price: ${ui.item.sell_price}`);
                                         $('#SellOrderDetails_amount').val(sp);
                                         $('#SellOrderDetails_qty').val(1);
                                         $('#SellOrderDetails_row_total').val(sp);

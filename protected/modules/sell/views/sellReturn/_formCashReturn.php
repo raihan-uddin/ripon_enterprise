@@ -9,7 +9,7 @@
 $this->widget('application.components.BreadCrumb', array(
     'crumbs' => array(
         array('name' => 'Sales', 'url' => array('admin')),
-        array('name' => 'Return-Replacement', 'url' => array('admin')),
+        array('name' => 'Return', 'url' => array('admin')),
         array('name' => 'Create'),
     ),
 //    'delimiter' => ' &rarr; ',
@@ -235,7 +235,7 @@ Yii::app()->clientScript->registerCoreScript("jquery.ui");
                 </div>
                 <div class="card-body">
                     <div class="row">
-                        <div class="form-group col-sm-12 col-md-2">
+                        <div class="form-group col-sm-12 col-md-3">
                             <?php echo $form->labelEx($model2, 'model_id'); ?>
                             <div class="input-group" data-target-input="nearest">
                                 <div class="input-group-prepend">
@@ -356,7 +356,6 @@ Yii::app()->clientScript->registerCoreScript("jquery.ui");
                                             var $inputs = $form.find(':input:visible:not([disabled])');
                                             var currentIndex = $inputs.index($('#model_id_text'));
                                             $inputs.eq(currentIndex + 1).focus();
-                                            ifDamageReturnOnProductAdd();
                                         }
                                     }).data("ui-autocomplete")._renderItem = function (ul, item) {
                                         // Use Bootstrap styling for the autocomplete results
@@ -413,11 +412,11 @@ Yii::app()->clientScript->registerCoreScript("jquery.ui");
                                                 // Check if there's only one item and trigger select event
                                                 if (data.length === 1 && data[0].id) {
                                                     $('#model_id_text').val(data[0].label);
-                                                    $('#replace_model_id_text').val(ui.item.label);
+                                                    $('#replace_model_id_text').val(data[0].label);
                                                     $('#product_sl_no').val(data[0].product_sl_no);
                                                     $('#SellReturnDetails_model_id').val(data[0].sell_price);
-                                                    $('#SellReturnDetails_amount').val(data[0].product_sl_no);
-                                                    $('#SellReturnDetails_qty').val(1);
+                                                    $('#SellReturnDetails_amount').val(data[0].sell_price).change();
+                                                    $('#SellReturnDetails_qty').val(1).change();
                                                     // $('#SellReturnDetails_row_total').val(sp);
                                                     showPurchasePrice(data[0].purchasePrice);
 
@@ -425,6 +424,8 @@ Yii::app()->clientScript->registerCoreScript("jquery.ui");
                                                     $('#product_sl_no').autocomplete('option', 'select').call($('#product_sl_no')[0], null, {
                                                         item: data[0]
                                                     });
+
+                                                    addToList();
                                                 }
                                             }, "json");
                                         },
@@ -445,7 +446,7 @@ Yii::app()->clientScript->registerCoreScript("jquery.ui");
                                             var currentIndex = $inputs.index($('#product_sl_no'));
                                             $inputs.eq(currentIndex + 1).focus();
 
-                                            // addToList();
+                                            addToList();
                                         }
                                     }).data("ui-autocomplete")._renderItem = function (ul, item) {
                                         var listItem = $("<li class='list-group-item p-2'></li>")
@@ -470,7 +471,7 @@ Yii::app()->clientScript->registerCoreScript("jquery.ui");
 
                             </script>
                         </div>
-                        <div class="form-group col-sm-12 col-md-2">
+                        <div class="form-group col-sm-12 col-md-1">
                             <?php echo $form->labelEx($model2, 'qty'); ?>
                             <?php echo $form->textField($model2, 'qty', array('maxlength' => 255, 'class' => 'form-control qty-amount')); ?>
                             <!-- Display Stock without margin and padding -->
@@ -479,7 +480,7 @@ Yii::app()->clientScript->registerCoreScript("jquery.ui");
                             <span class="help-block"
                                   style="color: red; width: 100%"> <?php echo $form->error($model2, 'qty'); ?></span>
                         </div>
-                        <div class="form-group col-sm-12 col-md-2 cash-return">
+                        <div class="form-group col-sm-12 col-md-1 cash-return">
                             <?php echo $form->labelEx($model2, 'amount'); ?>
                             <?php echo $form->textField($model2, 'amount', array('maxlength' => 255, 'class' => 'form-control qty-amount')); ?>
                             <!-- Display Costing Amount without margin and padding -->
@@ -489,7 +490,7 @@ Yii::app()->clientScript->registerCoreScript("jquery.ui");
                             <span class="help-block"
                                   style="color: red; width: 100%"> <?php echo $form->error($model2, 'amount'); ?></span>
                         </div>
-                        <div class="form-group col-sm-12 col-md-2 cash-return">
+                        <div class="form-group col-sm-12 col-md-1 cash-return">
                             <?php echo $form->labelEx($model2, 'row_total'); ?>
                             <?php echo $form->textField($model2, 'row_total', array('maxlength' => 255, 'class' => 'form-control', 'readonly' => true)); ?>
                             <span class="help-block"
@@ -510,7 +511,7 @@ Yii::app()->clientScript->registerCoreScript("jquery.ui");
                     </div>
                     <div class="row">
                         <div class="table table-responsive">
-                            <table class="table table-bordered table-striped table-valign-middle" id="list">
+                            <table class="table table-bordered table-striped table-valign-middle table-sm" id="list">
                                 <thead class="table-info">
                                 <tr>
                                     <th style="width: 2%;">SL</th>
@@ -526,6 +527,90 @@ Yii::app()->clientScript->registerCoreScript("jquery.ui");
 
                                 </tbody>
                             </table>
+                        </div>
+                    </div>
+
+                    <div class="row">
+                        <div class="col-md-12">
+                            <?php echo $form->textArea($model, 'remarks', array('class' => 'form-control', 'placeholder' => 'Return Note')); ?>
+                        </div>
+                        <span class="help-block"
+                              style="color: red; width: 100%"> <?php echo $form->error($model, 'remarks'); ?></span>
+                    </div>
+                </div>
+
+                <div class="card-footer">
+                    <div class="col-md-12">
+                        <?php
+                        echo CHtml::ajaxSubmitButton('Save', CHtml::normalizeUrl(array('/sell/sellReturn/create', 'render' => true)), array(
+                            'dataType' => 'json',
+                            'type' => 'post',
+                            'success' => 'function(data) {
+                                $("#ajaxLoader").hide();  
+                                if(data.status=="success"){
+                                    $("#formResult").fadeIn();
+                                    $("#formResult").html("Data saved successfully.");
+                                    toastr.success("Data saved successfully.");
+                                    $("#bom-form")[0].reset();
+                                    $("#formResult").animate({opacity:1.0},1000).fadeOut("slow");
+                                    $("#list").empty();
+                                    // $("#soReportDialogBox").dialog("open");
+                                    //$("#AjFlashReportSo").html(data.soReportInfo).show();
+                                    $("#information-modal").modal("show");
+                                    $("#information-modal .modal-body").html(data.soReportInfo);  
+                                }else{
+                                    //$("#formResultError").html("Data not saved. Please solve the following errors.");
+                                    $.each(data, function(key, val) {
+                                        $("#bom-form #"+key+"_em_").html(""+val+"");                                                    
+                                        $("#bom-form #"+key+"_em_").show();
+                                    });
+                                }       
+                            }',
+                            'beforeSend' => 'function(){  
+                                let count_item =  $(".item").length; 
+                                let date = $("#SellReturn_return_date").val();  
+                                let customer_id = $("#SellReturn_customer_id").val();  
+                                let grand_total = $("#SellReturn_return_amount").val();  
+                                if(date == ""){
+                                    toastr.error("Please insert date.");
+                                    return false;
+                                }else if(customer_id == ""){
+                                    toastr.error("Please select customer from the list!");
+                                    return false;
+                                }else if(count_item <= 0){
+                                    toastr.error("Please add products to list.");
+                                    return false;
+                                }else if(grand_total == "" || grand_total <= 0){
+                                    toastr.error("Total return amount is 0");
+                                    return false;
+                                }else {                
+                                    $("#overlay").fadeIn(300);　   
+                                    $("#ajaxLoader").show();
+                                }
+                             }',
+                            'error' => 'function(xhr, status, error) { 
+                                // Code to handle errors
+                                toastr.error(xhr.responseText); // Displaying error message using Toastr
+                                // Optionally, you can display additional error details
+                                console.error(xhr.statusText);
+                                console.error(xhr.status);
+                                console.error(xhr.responseText);
+                            
+                                $("#overlay").fadeOut(300);
+                          }',
+                            'complete' => 'function() {
+                                    $("#overlay").fadeOut(300);
+                                 $("#ajaxLoaderReport").hide(); 
+                              }',
+                        ), array('class' => 'btn btn-primary btn-md'));
+                        ?>
+                    </div>
+                    <div class="col-md-12 mt-1">
+                        <span id="ajaxLoaderMR" class="ajaxLoaderMR" style="display: none;">
+                            <i class="fa fa-spinner fa-spin fa-2x"></i>
+                        </span>
+                        <div id="formResult" class="ajaxTargetDiv"></div>
+                        <div id="formResultError" class="ajaxTargetDivErr alert alert-danger  d-none" role="alert">
                         </div>
                     </div>
                 </div>
@@ -561,6 +646,12 @@ Yii::app()->clientScript->registerCoreScript("jquery.ui");
 
 <script>
 
+    $(document).ready(function () {
+        $("input:text").focus(function () {
+            $(this).select();
+        });
+    });
+
     var picker = new Lightpick({
         field: document.getElementById('entry_date'),
         minDate: moment(),
@@ -580,6 +671,7 @@ Yii::app()->clientScript->registerCoreScript("jquery.ui");
         $("#SellReturnDetails_model_id").val('');
         resetProductSlNo();
         showPurchasePrice(0);
+        tableSerial();
     }
 
 
@@ -649,6 +741,98 @@ Yii::app()->clientScript->registerCoreScript("jquery.ui");
         // clear the input field & focus on it
         // $('#product_sl_no_text').val('');
         $('#product_sl_no_text').focus();
+    }
+
+    $("#list").on("click", ".dlt", function () {
+        $(this).closest("tr").remove();
+        tableSerial();
+        // calculateTotal();
+    });
+
+    function addToList() {
+        let model_id = $('#SellReturnDetails_model_id').val();
+        let product_sl_no = $('#product_sl_no').val();
+        let qty = $('#SellReturnDetails_qty').val();
+        let amount = $('#SellReturnDetails_amount').val();
+        let row_total = $('#SellReturnDetails_row_total').val();
+        let pp = $('#SellReturnDetails_pp').val();
+
+        if (model_id === '' || qty === '' || amount === '' || row_total === '') {
+            toastr.error('Please fill all the fields');
+            return;
+        }
+
+        let sl = $('#list tr').length;
+        let html = `<tr class="item">
+                <td class="serial"></td>
+                <td>
+                     <input type="hidden" name="SellReturnDetails[model_id][]" value="${model_id}">
+                    ${$('#model_id_text').val()}
+                </td>
+                <td>
+                    <input type="text" name="SellReturnDetails[product_sl_no][]" class="form-control" value="${product_sl_no}">
+                </td>
+                <td>
+                    <input type="text" name="SellReturnDetails[qty][]" class="form-control text-center temp_qty" value="${qty}">
+                </td>
+                <td>
+                    <input type="text" name="SellReturnDetails[amount][]" class="form-control temp_unit_price text-right" value="${amount}">
+                </td>
+                <td>
+                    <input type="text" name="SellReturnDetails[row_total][]" class="form-control row-total text-right" value="${row_total}">
+                </td>
+                <td>
+                    <button type="button" class="btn btn-danger dlt"><i class="fa fa-trash"></i></button>
+                </td>
+            </tr>`;
+        $('#list tbody').prepend(html);
+        resetDataAfterAdd();
+        tableSerial();
+    }
+
+    function resetDataAfterAdd() {
+        console.log('resetDataAfterAdd');
+        $("#product_sl_no").val();
+        $("#SellReturnDetails_qty").val();
+        $("#SellReturnDetails_amount").val();
+        $("#SellReturnDetails_row_total").val();
+    }
+
+    function tableSerial() {
+        //  get the table tbody tr length
+        var i = $('#list tbody tr').length;
+        $('#list tbody tr').each(function () {
+            $(this).find('.serial').text(i);
+            i--;
+        });
+    }
+
+    $("#SellReturnDetails_qty").on('change keyup', function () {
+        let qty = $(this).val();
+        let price = $("#SellReturnDetails_amount").val();
+        let row_total = calculateRowTotal(qty, price);
+        $("#SellReturnDetails_row_total").val(row_total);
+        console.log('amount row total: ' + row_total + ', price: ' + price + ', qty: ' + qty);
+    });
+
+    $("#SellReturnDetails_amount").on('change keyup', function () {
+        let price = $(this).val();
+        let qty = $("#SellReturnDetails_qty").val();
+
+        let row_total = calculateRowTotal(qty, price);
+        $("#SellReturnDetails_row_total").val(row_total);
+        console.log('amount row total: ' + row_total + ', price: ' + price + ', qty: ' + qty);
+    });
+
+
+    function calculateRowTotal(qty, price) {
+        let unitQty = parseFloat(qty);
+        unitQty = isNaN(unitQty) ? 0 : unitQty;
+
+        let unitPrice = parseFloat(price);
+        unitPrice = isNaN(unitPrice) ? 0 : unitPrice;
+
+        return (unitQty * unitPrice).toFixed(2);
     }
 
 </script>

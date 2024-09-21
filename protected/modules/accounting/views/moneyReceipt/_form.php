@@ -253,6 +253,9 @@ $this->widget('application.components.BreadCrumb', array(
                     <tbody>
                     </tbody>
                     <?php
+                    // update previous is_paid = 0 where total_due > 0
+                    SellOrder::model()->updateAll(array('is_paid' => SellOrder::DUE), 'total_due > 0');
+                    
                     $i = 1;
                     $invoice_total = $invoice_total_due = 0;
                     $criteriaInv = new CDbCriteria();
@@ -267,6 +270,7 @@ $this->widget('application.components.BreadCrumb', array(
                         foreach ($dataInv as $inv) {
                             $invoice_amount = $inv->grand_total;
                             $paid_amount = MoneyReceipt::model()->totalPaidAmountOfThisInvoice($inv->id);
+
                             $due = $invoice_amount - $paid_amount;
                             if ($due > 0) {
                                 $invoice_total += $invoice_amount;

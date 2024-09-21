@@ -259,7 +259,8 @@ class InventoryController extends RController
 
         $criteria = new CDbCriteria();
         $criteria->mergeWith($criteria2);
-        $criteria->select = "pm.code, pm.model_name, pm.id, pm.item_id, pm.brand_id, pm.unit_id, pm.warranty, pm.image, product_sl_no, SUM(t.stock_in - t.stock_out) as stock, t.purchase_price";
+        $criteria->select = "pm.code, pm.model_name, pm.id, pm.item_id, pm.brand_id, pm.unit_id, pm.warranty, pm.image, 
+                            product_sl_no, SUM(t.stock_in - t.stock_out) as stock, t.purchase_price, pm.sell_price";
         $criteria->order = "product_sl_no asc";
         $criteria->join = "INNER JOIN prod_models pm on t.model_id = pm.id ";
         if ($show_all == 2) {
@@ -282,12 +283,9 @@ class InventoryController extends RController
                 $unit_id = $prodInfo->unit_id;
                 $warranty = $prodInfo->warranty;
                 $purchase_price = $prodInfo->purchase_price;
-                $activeInfos = SellPrice::model()->activeInfos($prodInfo->id);
-                $sellPrice = $sellDiscount = 0;
-                if ($activeInfos) {
-                    $sellPrice = $activeInfos->sell_price;
-                    $sellDiscount = $activeInfos->discount;
-                }
+                $sellPrice = $prodInfo->sell_price;
+                $sellDiscount = 0;
+
                 $imageWithUrl = $prodInfo->image != "" ? Yii::app()->baseUrl . "/uploads/products/$prodInfo->image" : Yii::app()->theme->baseUrl . "/images/no-image.jpg";
                 $results[] = array(
                     'id' => $id,
