@@ -228,8 +228,8 @@ class SellOrder extends CActiveRecord
             $criteria->compare('c.company_name', ($this->customer_id), true);
         }
 
-        $criteria->compare('id', $this->id);
-        $criteria->compare('date', $this->date, true);
+        $criteria->compare('t.id', $this->id);
+        $criteria->compare('t.date', $this->date, true);
         $criteria->compare('order_type', $this->order_type);
         $criteria->compare('delivery_charge', $this->delivery_charge);
         $criteria->compare('max_sl_no', $this->max_sl_no);

@@ -61,15 +61,16 @@ $model_id = end($data)->model_id;
                                         <?= sprintf("%s | %s | %s", $d->supplier_name, $d->supplier_contact_no, $d->supplier_id) ?>
                                     </td>
                                     <?php
-                                }
-                                ?>
-                                <?php
-                                if ($d->customer_id > 0) {
+                                } else if ($d->customer_id > 0) {
                                     ?>
                                     <td class="text-center text-uppercase customer_ledger"
                                         data-id="<?= $d->customer_id ?>">
                                         <?= sprintf("%s | %s | %s", $d->customer_name, $d->customer_contact_no, $d->customer_id) ?>
                                     </td>
+                                    <?php
+                                } else {
+                                    ?>
+                                    <td class="text-center" title="Stock Adjustment">N/A</td>
                                     <?php
                                 }
                                 ?>

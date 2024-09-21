@@ -90,7 +90,10 @@ class MoneyReceiptController extends RController
                                 $dt->is_paid = SellOrder::PAID;
                                 $dt->total_paid = $total_mr;
                                 $dt->total_due = $rem;
-                                $dt->save();
+                                if (!$dt->save()) {
+                                    $transaction->rollBack();
+                                    throw new CHttpException(500, sprintf('Error in saving order details! %s <br>', json_encode($dt->getErrors())));
+                                }
                             }
                         }
                     }

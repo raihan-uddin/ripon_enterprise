@@ -37,6 +37,8 @@ class Inventory extends CActiveRecord
     const JOB_CARD_ISSUE = 10;
     const PRODUCTION = 20;
 
+    const SHOW_ALL_PRODUCT_SL_NO = 2;
+
     public $model_name;
     public $code;
     public $name;

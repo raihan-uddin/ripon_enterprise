@@ -266,6 +266,12 @@
                             </tr>
                             <?php
                         }
+                        $actualGrandTotal = ROUND((($row_total + $vat + $delivery_charge) - $discount_amount), 2);
+                        if ($actualGrandTotal != $item->grand_total) {
+                            $item->grand_total = $actualGrandTotal;
+                            $item->total_due = $actualGrandTotal;
+                            $item->save();
+                        }
                         ?>
                         <tr>
                             <td rowspan="<?= $footerRowSpan ?>>" colspan="2"
@@ -333,7 +339,7 @@
                                     $prev_sell_value = $sellOrder ? $sellOrder->grand_total : 0;
 
                                     $criteriaMr = new CDbCriteria();
-                                    $criteriaMr->select = "SUM(amount + discount) as amount";
+                                    $criteriaMr->select = "SUM(amount) + SUM(discount) as amount";
                                     $criteriaMr->addColumnCondition(['t.customer_id' => $item->customer_id]);
                                     $criteriaMr->addCondition("invoice_id != '$item->id' ");
                                     $moneyReceipt = MoneyReceipt::model()->findByAttributes([], $criteriaMr);
@@ -351,7 +357,14 @@
 
                                     $current_due_amount = $previous_due_amount + $item->grand_total - $current_collection - $current_collection_discount;
                                     ?>
-                                    TK <?= number_format($previous_due_amount, 2) ?></td>
+                                    TK <?= number_format($previous_due_amount, 2) ?>
+                                    <!--                                    <br>-->
+                                    <!--                                    <div style="width: 100%; border: 1px solid black;">-->
+                                    <!--                                        --><?php
+                                    //                                        echo sprintf('%.2f', $prev_sell_value) . ' - ' . sprintf('%.2f', $prev_collection) . ' = ' . sprintf('%.2f', $previous_due_amount);
+                                    //                                        ?>
+                                    <!--                                    </div>-->
+                                </td>
                             </tr>
                             <tr style="font-weight: bold;">
                                 <td colspan="2" style="border: none; background: white;"></td>

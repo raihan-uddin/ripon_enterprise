@@ -248,6 +248,7 @@ class InventoryController extends RController
     {
         $search_prodName = trim($_POST['q']);
         $model_id = isset($_POST['model_id']) ? trim($_POST['model_id']) : 0;
+        $show_all = isset($_POST['show_all']) ? trim($_POST['show_all']) : Inventory::SHOW_ALL_PRODUCT_SL_NO;
 
         $criteria2 = new CDbCriteria();
         $criteria2->compare('product_sl_no', $search_prodName);
@@ -258,10 +259,13 @@ class InventoryController extends RController
 
         $criteria = new CDbCriteria();
         $criteria->mergeWith($criteria2);
-        $criteria->select = "pm.code, pm.model_name, pm.id, pm.item_id, pm.brand_id, pm.unit_id, pm.warranty, pm.image, product_sl_no, SUM(t.stock_in - t.stock_out) as stock, t.purchase_price";
+        $criteria->select = "pm.code, pm.model_name, pm.id, pm.item_id, pm.brand_id, pm.unit_id, pm.warranty, pm.image, 
+                            product_sl_no, SUM(t.stock_in - t.stock_out) as stock, t.purchase_price, pm.sell_price";
         $criteria->order = "product_sl_no asc";
         $criteria->join = "INNER JOIN prod_models pm on t.model_id = pm.id ";
-        $criteria->having = 'stock > 0';
+        if ($show_all == 2) {
+            $criteria->having = 'stock > 0';
+        }
         $criteria->group = 't.model_id, t.product_sl_no';
         $criteria->limit = 20;
         $criteria->addCondition('product_sl_no IS NOT NULL AND product_sl_no != ""');
@@ -279,12 +283,9 @@ class InventoryController extends RController
                 $unit_id = $prodInfo->unit_id;
                 $warranty = $prodInfo->warranty;
                 $purchase_price = $prodInfo->purchase_price;
-                $activeInfos = SellPrice::model()->activeInfos($prodInfo->id);
-                $sellPrice = $sellDiscount = 0;
-                if ($activeInfos) {
-                    $sellPrice = $activeInfos->sell_price;
-                    $sellDiscount = $activeInfos->discount;
-                }
+                $sellPrice = $prodInfo->sell_price;
+                $sellDiscount = 0;
+
                 $imageWithUrl = $prodInfo->image != "" ? Yii::app()->baseUrl . "/uploads/products/$prodInfo->image" : Yii::app()->theme->baseUrl . "/images/no-image.jpg";
                 $results[] = array(
                     'id' => $id,
