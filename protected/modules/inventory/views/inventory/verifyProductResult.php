@@ -29,6 +29,7 @@ $model_id = end($data)->model_id;
                     <tr class="text-uppercase">
                         <th>Date</th>
                         <th>Customer/Supplier</th>
+                        <th> Sale / Purchase Id </th>
                         <th>Stock In</th>
                         <th>Stock Out</th>
                         <th class="text-center">P.P</th>
@@ -49,6 +50,18 @@ $model_id = end($data)->model_id;
                             $expired_class = "";
                             if ($warranty_month > 0 && strtotime($warranty_expire_date) < strtotime(date('Y-m-d'))) {
                                 $expired_class = "bg-danger";
+                            }
+                            $stockStatus  = $d->stock_status;
+                            $masterId = $d->master_id;
+                            $showSalePurchaseReturnPreview  = false;
+                            $purchasePreview  = false;
+                            $salesPreview = false;
+                            if($stockStatus == Inventory::PURCHASE_RECEIVE && $masterId > 0){
+                                $showSalePurchaseReturnPreview = true;
+                                $purchasePreview = true;
+                            } else if($stockStatus == Inventory::SALES_DELIVERY && $masterId > 0){
+                                $showSalePurchaseReturnPreview = true;
+                                $salesPreview = true;
                             }
                             ?>
                             <tr>
@@ -73,7 +86,9 @@ $model_id = end($data)->model_id;
                                     <td class="text-center" title="Stock Adjustment">N/A</td>
                                     <?php
                                 }
+
                                 ?>
+                                // todo: show purchase & sales preview
                                 <td class="text-center"><?= $d->stock_in > 0 ? number_format($d->stock_in) : '' ?></td>
                                 <td class="text-center"><?= $d->stock_out > 0 ? number_format($d->stock_out) : '' ?></td>
                                 <td class="text-right"><?= number_format($d->purchase_price, 2) ?></td>

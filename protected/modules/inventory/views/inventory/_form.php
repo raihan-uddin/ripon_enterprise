@@ -351,7 +351,7 @@ $form = $this->beginWidget('CActiveForm', array(
                 <tr class="item">
                     <td>${model_id_text}</td>
                     <td class="text-center">
-                            <input type="text" class="form-control text-center" value="${product_sl_no}" name="Inventory[temp_product_sl_no][] readonly">
+                            <input type="text" class="form-control text-center" value="${product_sl_no}" name="Inventory[temp_product_sl_no][]" readonly>
                     </td>
                     <td class="text-center">
                         <div class="input-group">

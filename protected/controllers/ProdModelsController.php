@@ -68,12 +68,10 @@ class ProdModelsController extends RController
                 $brand_id = $prodInfo->brand_id;
                 $unit_id = $prodInfo->unit_id;
                 $warranty = $prodInfo->warranty;
-                $activeInfos = SellPrice::model()->activeInfos($prodInfo->id);
-                $sellPrice = $sellDiscount = 0;
-                if ($activeInfos) {
-                    $sellPrice = $activeInfos->sell_price;
-                    $sellDiscount = $activeInfos->discount;
-                }
+
+                $sellPrice = $prodInfo->sell_price;
+                $sellDiscount = 0;
+
                 $imageWithUrl = $prodInfo->image != "" ? Yii::app()->baseUrl . "/uploads/products/$prodInfo->image" : Yii::app()->theme->baseUrl . "/images/no-image.jpg";
                 $results[] = array(
                     'id' => $id,
