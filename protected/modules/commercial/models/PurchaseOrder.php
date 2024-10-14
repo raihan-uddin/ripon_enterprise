@@ -261,4 +261,17 @@ class PurchaseOrder extends CActiveRecord
         $data = self::model()->findByPk($id);
         return $data ? $data->po_no : "";
     }
+
+    public function totalPurchase($supplierId)
+    {
+        $criteria = new CDbCriteria();
+        $criteria->select = "SUM(grand_total) as grand_total";
+        if(is_array($supplierId)){
+            $criteria->addInCondition('supplier_id', $supplierId);
+        } else {
+            $criteria->addColumnCondition(['supplier_id' => $supplierId]);
+        }
+        $data = self::model()->findByAttributes([], $criteria);
+        return $data ? $data->total : 0;
+    }
 }

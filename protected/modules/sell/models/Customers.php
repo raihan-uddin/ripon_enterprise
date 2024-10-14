@@ -68,7 +68,7 @@ class Customers extends CActiveRecord
         return array(
             array('company_name', 'required'),
             array('opening_amount, max_sl_no, status', 'numerical'),
-            array('company_name', 'length', 'max' => 255),
+            array('company_name, supplier_id', 'length', 'max' => 255),
             array('company_contact_no, company_fax', 'length', 'max' => 255),
             array('company_email, company_web', 'length', 'max' => 50),
             array('company_address, owner_person, owner_mobile_no, city, state, zip, trn_no, customer_code', 'safe'),
@@ -76,7 +76,7 @@ class Customers extends CActiveRecord
 //            array('company_web', 'url', 'defaultScheme' => 'http'),
             // The following rule is used by search().
             // Please remove those attributes that should not be searched.
-            array('id,  company_name, company_address, trn_no, owner_mobile_no, max_sl_no, customer_code, city, state, zip, owner_person, company_contact_no, company_fax, company_email, company_web', 'safe', 'on' => 'search'),
+            array('id,  company_name, company_address, trn_no, supplier_id, owner_mobile_no, max_sl_no, customer_code, city, state, zip, owner_person, company_contact_no, company_fax, company_email, company_web', 'safe', 'on' => 'search'),
         );
     }
 
@@ -134,6 +134,7 @@ class Customers extends CActiveRecord
             'created_datetime' => 'Created Datetime',
             'updated_by' => 'Updated By',
             'updated_datetime' => 'Updated Datetime',
+            'supplier_id' => 'Supplier IDs',
         );
     }
 
@@ -217,6 +218,7 @@ class Customers extends CActiveRecord
         $criteria->compare('company_fax', $this->company_fax, true);
         $criteria->compare('company_email', $this->company_email, true);
         $criteria->compare('company_web', $this->company_web, true);
+        $criteria->compare('supplier_id', $this->supplier_id, true);
         $criteria->compare('city', $this->city, true);
         $criteria->compare('state', $this->state, true);
         $criteria->compare('zip', $this->zip, true);
@@ -237,6 +239,47 @@ class Customers extends CActiveRecord
                 'defaultOrder' => 'id DESC',
             ),
         ));
+    }
+
+
+    public function getCurrentDue($customer_id){
+        $customer = self::model()->findByPk($customer_id);
+        if($customer){
+            $opening_amount = $customer->opening_amount;
+
+            $totalSales = SellOrder::model()->totalSales($customer_id);
+
+            $totalCollection = MoneyReceipt::model()->totalCollection($customer_id)['total_collection'];
+
+            $supplierPaidBalance = 0;
+            
+            //  get supplier info
+            $supplier_ids = explode(',', $customer->supplier_id);
+            if (count($supplier_ids) > 1) {
+                $supplierOpeningAmount = 0;
+                $supplier_ids = array_map('trim', $supplier_ids);
+
+                $suppliers = Suppliers::model()->findAllByAttributes(['id' => $supplier_ids]);
+                // opening amount of suppliers
+                foreach ($suppliers as $supplier) {
+                    $supplierOpeningAmount += $supplier->opening_amount;
+                }
+
+                // get total purchase amount
+                $totalPurchase = PurchaseOrder::model()->totalPurchase($supplier_ids);
+
+                $totalPayment = PaymentReceipt::model()->totalPayment($supplier_ids)['total_paid_amount'];
+
+                $supplierPaidBalance = ($supplierOpeningAmount + $totalPurchase) - $totalPayment;
+                
+            }
+
+            $currentDue = ($opening_amount + $totalSales) - ($totalCollection + $supplierPaidBalance);
+
+            return $currentDue;
+        }
+
+        return 0;
     }
 
 }

@@ -54,6 +54,7 @@ class MoneyReceipt extends CActiveRecord
     public $tmp_invoice_id;
     public $total_discount_amount;
     public $collected_amt;
+    public $current_due;
 
     const CASH = 1;
     const CHECK = 2;
@@ -79,7 +80,7 @@ class MoneyReceipt extends CActiveRecord
         // NOTE: you should only define rules for those attributes that
         // will receive user inputs.
         return array(
-            array('date, customer_id, invoice_id, max_sl_no, mr_no, payment_type, amount', 'required'),
+            array('date, customer_id, max_sl_no, mr_no, payment_type, amount', 'required'),
             array('customer_id, invoice_id, max_sl_no, payment_type, bank_id, is_approved, created_by, updated_by', 'numerical', 'integerOnly' => true),
             array('amount, discount', 'numerical'),
             array('mr_no, cheque_no', 'length', 'max' => 255),
@@ -279,6 +280,26 @@ class MoneyReceipt extends CActiveRecord
             'collection_disc' => $data ? $data->discount : 0,
             'ids' => $data ? $data->ids : 0,
             'mr_count' => $data ? count(explode(',', $data->ids)) : 0,
+        ];
+    }
+
+    public function totalCollection($customer_id){
+        if($customer_id == 0){
+            return [
+                'collection_amt' => 0,
+                'collection_disc' => 0,
+                'total_collection' => 0,
+            ];
+        }
+        $criteria = new CDbCriteria();
+        $criteria->select = " SUM(COALESCE(amount, 0)) AS amount, SUM(COALESCE(discount, 0)) AS discount";
+        $criteria->addColumnCondition(['t.customer_id' => $customer_id, 't.is_deleted' => 0]);
+        $data = self::model()->findByAttributes([], $criteria);
+
+        return [
+            'collection_amt' => $data ? $data->amount : 0,
+            'collection_disc' => $data ? $data->discount : 0,
+            'total_collection' => $data ? $data->amount + $data->discount : 0,
         ];
     }
 }

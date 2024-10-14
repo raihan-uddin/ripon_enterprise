@@ -60,6 +60,7 @@ class SellOrder extends CActiveRecord
     public $product_code;
     public $qty;
     public $amount;
+    public $total_sales;
 
     const INVOICE_DONE = 1;
     const INVOICE_NOT_DONE = 0;
@@ -336,5 +337,12 @@ class SellOrder extends CActiveRecord
         return $string;
     }
 
+    public function totalSales($customer_id){
+        $criteria = new CDbCriteria();
+        $criteria->select = "SUM(grand_total) as total_sales";
+        $criteria->addColumnCondition(['customer_id' => $customer_id]);
+        $data = self::model()->findByAttributes([], $criteria);
+        return $data ? $data->total_sales : 0;
+    }
 
 }
