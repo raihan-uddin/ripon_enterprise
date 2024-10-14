@@ -87,6 +87,22 @@ endforeach;
                     'state',
                     'zip',
                     'trn_no',
+					array(
+                        'header' => 'New Collection',
+                        'htmlOptions' => array('style' => 'width:100px', 'class' => 'text-center'),
+                        'template' => '{createMr}',
+                        // 'template' => '{view}{update}{addContactPerson}{contactPersons}{delete}',
+                        //'template' => '{view}{update}{delete}{addContactPerson}{contactPersons}',
+                        'class' => 'CButtonColumn',
+                        'buttons' => array(
+                            'createMr' => array(
+                                'label' => '<i class="fa fa-usd fa-2x" style="color: green;"></i>&nbsp;&nbsp;',
+                                'imageUrl' => false,
+                                'options' => array('rel' => 'tooltip', 'data-toggle' => 'tooltip', 'title' => Yii::t('app', 'Create MR New')),
+                                'url' => 'Yii::app()->controller->createUrl("/accounting/moneyReceipt/createNew",array("id"=>$data->id))',
+                            ),
+                        )
+                    ),
 
                     array(
                         'header' => 'Options',

@@ -112,6 +112,7 @@ endforeach;
                     'owner_person',
                     'owner_mobile_no',
                     'opening_amount',
+                    'supplier_id',
 //                    'state',
 //                    'zip',
 //                    'trn_no',

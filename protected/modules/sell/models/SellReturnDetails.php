@@ -88,7 +88,7 @@ class SellReturnDetails extends CActiveRecord
 			'note' => 'Note',
 			'discount_amount' => 'Discount Amount',
 			'discount_percentage' => 'Discount Percentage',
-			'replace_model_id' => 'Replace Model',
+			'replace_model_id' => 'Replace Product',
 			'replace_product_sl_no' => 'Replace Product Sl No',
 			'created_by' => 'Created By',
 			'created_at' => 'Created At',

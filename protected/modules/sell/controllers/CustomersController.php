@@ -42,6 +42,7 @@ class CustomersController extends RController
             $model->attributes = $_POST['Customers'];
             $model->max_sl_no = Customers::maxSlNo();
             $model->customer_code = "CUS" . str_pad($model->max_sl_no, 5, "0", STR_PAD_LEFT);
+            $model->supplier_id = $_POST['Customers']['supplier_id'];
             $valid = $model->validate();
             if ($valid) {
                 if ($model->save()) {
@@ -94,6 +95,7 @@ class CustomersController extends RController
             $model->attributes = $_POST['Customers'];
             $model->max_sl_no = Customers::maxSlNo();
             $model->customer_code = "CUS" . str_pad($model->max_sl_no, 5, "0", STR_PAD_LEFT);
+            $model->supplier_id = $_POST['Customers']['supplier_id'];
             if ($model->save()) {
                 if ($model->opening_amount > 0) {
                     // create a new sell order
@@ -157,6 +159,7 @@ class CustomersController extends RController
 
         if (isset($_POST['Customers'])) {
             $model->attributes = $_POST['Customers'];
+            $model->supplier_id = $_POST['Customers']['supplier_id'];
             if ($model->save()) {
                 if ($model->opening_amount > 0) {
                     $sellOrder = SellOrder::model()->findByAttributes(array('customer_id' => $model->id, 'is_opening' => 1,));

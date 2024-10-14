@@ -263,4 +263,31 @@ class PaymentReceipt extends CActiveRecord
         return $prAmount;
     }
 
+
+    public function totalPayment($supplier_id){
+        $criteria = new CDbCriteria();
+        $criteria->select = "SUM(amount) as amount, SUM(discount) as discount";
+        if(is_array($supplier_id)){
+            $criteria->addInCondition('supplier_id', $supplier_id);
+        } else {
+            $criteria->addColumnCondition(['supplier_id' => $supplier_id]);
+        }
+        $data = self::model()->findByAttributes([], $criteria);
+        
+        $paid_amt = 0;
+        $discount = 0;
+        $total_paid_amount = 0;
+        if($data){
+            $paid_amt = $data->amount;
+            $discount = $data->discount;
+            $total_paid_amount = $paid_amt + $discount;
+        }
+        return [
+            'paid_amt' => $paid_amt,
+            'discount' => $discount,
+            'total_paid_amount' => $total_paid_amount
+        ];
+        
+    }
+
 }

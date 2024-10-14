@@ -33,10 +33,15 @@ class SellReturn extends CActiveRecord
     const CASH_RETURN = 1;
     const DAMAGE_RETURN = 2;
 
+    const RETURN_STATUS_PENDING = 1;
+    const RETURN_STATUS_APPROVED = 2;
+    const RETURN_STATUS_REJECTED = 3;
+
+
 
     const RETURN_TYPE_ARR = [
         self::CASH_RETURN => "CASH RETURN",
-        self::DAMAGE_RETURN => "DAMAGE RETURN",
+        self::DAMAGE_RETURN => "PRODUCT RETURN",
     ];
 
     /**
@@ -144,5 +149,28 @@ class SellReturn extends CActiveRecord
     public static function model($className = __CLASS__)
     {
         return parent::model($className);
+    }
+
+    public function beforeSave()
+    {
+        // set default time zone to asia/dhaka
+        date_default_timezone_set('Asia/Dhaka');
+
+        $dateTime = date('Y-m-d H:i:s');
+
+        $businessId = Yii::app()->user->getState('business_id');
+        $branchId = Yii::app()->user->getState('branch_id');
+
+        $this->business_id = $businessId;
+        $this->branch_id = $branchId;
+
+        if ($this->isNewRecord) {
+            $this->created_at = $dateTime;
+            $this->created_by = Yii::app()->user->getState('user_id');
+        } else {
+            $this->updated_by = Yii::app()->user->getState('user_id');
+            $this->updated_at = $dateTime;
+        }
+        return parent::beforeSave();
     }
 }

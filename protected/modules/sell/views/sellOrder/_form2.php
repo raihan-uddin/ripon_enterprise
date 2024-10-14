@@ -590,7 +590,7 @@ Yii::app()->clientScript->registerCoreScript("jquery.ui");
                                 <tr class="item">
                                     <td class="serial"></td>
                                     <td>
-                                        <?= $m3->model_name ?>
+                                        <?= $m3->model_name . " || " . $m3->code ?>
                                         <input type="hidden" class="form-control" value="<?= $m3->model_id ?>"
                                                name="SellOrderDetails[temp_model_id][]">
                                     </td>

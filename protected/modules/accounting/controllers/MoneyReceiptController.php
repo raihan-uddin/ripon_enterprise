@@ -122,9 +122,12 @@ class MoneyReceiptController extends RController
                 }
             }
         } catch (PDOException $e) {
-            $transaction->rollBack();
+            if($transaction->active)
+                $transaction->rollBack();
             throw new CHttpException(500, $e->getMessage());
         } catch (Exception $e) {
+            if($transaction->active)
+                $transaction->rollBack();
             throw new CHttpException(500, $e->getMessage());
         }
 
@@ -134,6 +137,87 @@ class MoneyReceiptController extends RController
             'model' => $model,
             'model2' => $model2,
             'sell_id' => $sell_id,
+            'id' => $id,
+        ));
+    }
+
+    public function actionCreateNew($id){
+        $model = new MoneyReceipt;
+        $model->scenario = 'custom_form_save';
+        $model2 = Customers::model()->findByPk($id);
+
+        // if $model2 is not found then throw 404 error
+        if (!$model2)
+            throw new CHttpException(404, 'The requested page does not exist.');
+
+        // Uncomment the following line if AJAX validation is needed
+        $this->performAjaxValidation($model);
+        if (Yii::app()->request->isAjaxRequest) {
+            // Stop jQuery from re-initialization
+            // Yii::app()->clientScript->scriptMap['jquery.js'] = false;
+            if (isset($_POST['MoneyReceipt'])) {
+                
+                $transaction = Yii::app()->db->beginTransaction();
+                try {
+                    
+                    $model->attributes = $_POST['MoneyReceipt'];
+                    $model->max_sl_no = MoneyReceipt::maxSlNo();
+                    $model->mr_no = "MR-" . date('y') . "-" . date('m') . "-" . str_pad($model->max_sl_no, 5, "0", STR_PAD_LEFT);
+                    $model->amount = $_POST['MoneyReceipt']['amount'];
+                    $model->discount = $_POST['MoneyReceipt']['discount'];
+                    $model->date = $_POST['MoneyReceipt']['date'];
+                    $model->payment_type = $_POST['MoneyReceipt']['payment_type'];
+                    $model->customer_id = $id;
+                    $model->bank_id = $_POST['MoneyReceipt']['bank_id'];
+                    $model->cheque_no = $_POST['MoneyReceipt']['cheque_no'];
+                    $model->remarks = $_POST['MoneyReceipt']['remarks'];
+                    $model->cheque_date = $_POST['MoneyReceipt']['cheque_date'];
+                    if(!$model->save()){
+                        $error = CActiveForm::validate($model);
+                        if ($error != '[]')
+                            echo $error;
+                        Yii::app()->end();
+                    }
+                    $transaction->commit();
+                    
+
+                    $criteria = new CDbCriteria;
+                    $criteria->select = "SUM(amount) as amount, sum(discount) as discount, customer_id, date, mr_no, bank_id, cheque_no, cheque_date, remarks, created_by";
+                    $criteria->addColumnCondition(['customer_id' => $model->customer_id, 'mr_no' => $model->mr_no]);
+                    $criteria->group = 'customer_id, mr_no';
+                    $dataMr = MoneyReceipt::model()->findAll($criteria);
+                    echo CJSON::encode(array(
+                        'status' => 'success',
+                        'soReportInfo' => $this->renderPartial('voucherPreview', array('data' => $dataMr, 'new' => true), true, true), //
+                    ));
+                    Yii::app()->end();
+                    
+                }
+                catch (PDOException $e) {
+                    if($transaction->active)
+                        $transaction->rollBack();
+                    throw new CHttpException(500, $e->getMessage());
+                } catch (Exception $e) {
+                    if($transaction->active)
+                        $transaction->rollBack();
+                    throw new CHttpException(500, $e->getMessage());
+                }
+            } else {
+                $error = CActiveForm::validate($model);
+                $error2 = CActiveForm::validate($model2);
+                if ($error != '[]')
+                    echo $error;
+                if ($error2 != '[]')
+                    echo $error2;
+                Yii::app()->end();
+            }
+        }
+
+
+        $this->pageTitle = "MR CREATE";
+        $this->render('_formNew', array(
+            'model' => $model,
+            'model2' => $model2,
             'id' => $id,
         ));
     }

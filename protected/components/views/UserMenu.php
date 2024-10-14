@@ -76,6 +76,7 @@ $this->widget('application.extensions.mbmenu.MbMenu', array(
                 array('label' => 'RETURN/REPLACEMENT',
                     'items' => array(
                         ['label' => Yii::t('app', 'CASH RETURN'), 'url' => ['/sell/sellReturn/create'], 'visible' => Yii::app()->user->checkAccess('Sell.SellReturn.Create')],
+                        ['label' => Yii::t('app', 'PRODUCT RETURN'), 'url' => ['/sell/sellReturn/createProductReturn'], 'visible' => Yii::app()->user->checkAccess('Sell.SellReturn.CreateProductReturn')],
                         ['label' => Yii::t('app', 'MANAGE'), 'url' => ['/sell/sellReturn/admin'], 'visible' => Yii::app()->user->checkAccess('Sell.SellReturn.Admin')],
 
                     ),

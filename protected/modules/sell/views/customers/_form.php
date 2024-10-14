@@ -7,6 +7,11 @@ $form = $this->beginWidget('CActiveForm', array(
     'clientOptions' => array('validateOnSubmit' => true),
 ));
 ?>
+<style>
+    .hidden {
+        display: none;
+    }
+</style>
 
 <script>
     $(".alert").animate({opacity: 1.0}, 3000).fadeOut("slow");
@@ -50,6 +55,13 @@ $form = $this->beginWidget('CActiveForm', array(
                       style="color: red; width: 100%"> <?php echo $form->error($model, 'owner_mobile_no'); ?></span>
             </div>
 
+            <div class="form-group  col-sm-6 col-md-3" title="ID example: 1, 2, 3">
+                <?php echo $form->labelEx($model, 'supplier_id'); ?>
+                <?php echo $form->textField($model, 'supplier_id', array('maxlength' => 255, 'class' => 'form-control', 'placeholder' => '1,2,3')); ?>
+                <span class="help-block"
+                      style="color: red; width: 100%"> <?php echo $form->error($model, 'supplier_id'); ?></span>
+            </div>
+
             <div class="form-group  col-sm-6 col-md-3">
                 <?php echo $form->labelEx($model, 'opening_amount'); ?>
                 <?php echo $form->textField($model, 'opening_amount', array('maxlength' => 255, 'class' => 'form-control')); ?>
@@ -69,19 +81,19 @@ $form = $this->beginWidget('CActiveForm', array(
                       style="color: red; width: 100%"> <?php echo $form->error($model, 'company_web'); ?></span>
             </div>
 
-            <div class="form-group  col-sm-6 col-md-3">
+            <div class="form-group  col-sm-6 col-md-3 hidden">
                 <?php echo $form->labelEx($model, 'zip'); ?>
                 <?php echo $form->textField($model, 'zip', array('maxlength' => 255, 'class' => 'form-control')); ?>
                 <span class="help-block"
                       style="color: red; width: 100%"> <?php echo $form->error($model, 'zip'); ?></span>
             </div>
-            <div class="form-group  col-sm-6 col-md-3">
+            <div class="form-group  col-sm-6 col-md-3 hidden">
                 <?php echo $form->labelEx($model, 'state'); ?>
                 <?php echo $form->textField($model, 'state', array('maxlength' => 255, 'class' => 'form-control')); ?>
                 <span class="help-block"
                       style="color: red; width: 100%"> <?php echo $form->error($model, 'state'); ?></span>
             </div>
-            <div class="form-group  col-sm-6 col-md-3">
+            <div class="form-group  col-sm-6 col-md-3 hidden">
                 <?php echo $form->labelEx($model, 'city'); ?>
                 <?php echo $form->textField($model, 'city', array('maxlength' => 255, 'class' => 'form-control')); ?>
                 <span class="help-block"

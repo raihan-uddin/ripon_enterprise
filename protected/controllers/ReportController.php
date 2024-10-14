@@ -73,7 +73,7 @@ class ReportController extends RController
                     FROM sell_order
                     WHERE date BETWEEN '$dateFrom' AND '$dateTo' " . ($customer_id > 0 ? " AND customer_id = $customer_id AND is_deleted = 0" : "") . "
                     UNION
-                    SELECT GROUP_CONCAT(DISTINCT id SEPARATOR ',') as id, date, GROUP_CONCAT(DISTINCT invoice_id SEPARATOR ',') AS order_no, customer_id, SUM(amount) as amount, 'collection', created_at
+                    SELECT GROUP_CONCAT(DISTINCT id SEPARATOR ',') as id, date, GROUP_CONCAT(DISTINCT invoice_id SEPARATOR ',') AS order_no, customer_id, SUM(COALESCE(amount, 0)) + SUM(COALESCE(discount, 0)) AS amount, 'collection', created_at
                     FROM money_receipt
                     WHERE date BETWEEN '$dateFrom' AND '$dateTo' " . ($customer_id > 0 ? " AND customer_id = $customer_id AND is_deleted = 0" : "") . "
                     GROUP BY customer_id, date
