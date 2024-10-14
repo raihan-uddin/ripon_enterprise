@@ -226,9 +226,51 @@ class SellOrderController extends RController
                 $model->discount_amount = $_POST['SellOrder']['discount_amount'];
                 $model->total_due = $_POST['SellOrder']['grand_total'] - $model->total_paid;
                 if ($model->save()) {
+
                     $total_item = count($_POST['SellOrderDetails']['temp_model_id']);
                     $per_item_discount = $model->discount_amount / $total_item;
-                    $details_id_arr = [];
+
+                    // save all order details first on the SellOrderDetailsBackup table & then delete
+
+                    $criteria = new CDbCriteria();
+                    $criteria->addColumnCondition(['sell_order_id' => $id, 'is_deleted' => 0]);
+                    $sellOrderDetailsBackup = SellOrderDetails::model()->findAll($criteria);
+                    foreach ($sellOrderDetailsBackup as $item) {
+                        $model2 = new SellOrderDetailsBackup();
+                        $model2->sell_order_id = $item->sell_order_id;
+                        $model2->model_id = $item->model_id;
+                        $model2->product_sl_no = $item->product_sl_no;
+                        $model2->qty = $item->qty;
+                        $model2->warranty = $item->warranty;
+                        $model2->amount = $item->amount;
+                        $model2->row_total = $item->row_total;
+                        $model2->pp = $item->pp;
+                        $model2->costing = $item->costing;
+                        $model2->color = $item->color;
+                        $model2->note = $item->note;
+                        $model2->discount_amount = $item->discount_amount;
+                        $model2->discount_percentage = $item->discount_percentage;
+                        $model2->is_delivery_done = $item->is_delivery_done;
+                        $model2->is_invoice_done = $item->is_invoice_done;
+                        $model2->created_by = $item->created_by;
+                        $model2->created_at = $item->created_at;
+                        $model2->updated_by = $item->updated_by;
+                        $model2->updated_at = $item->updated_at;
+                        $model2->is_deleted = 1;
+                        $model2->business_id = $item->business_id;
+                        $model2->branch_id = $item->branch_id;
+                        $model2->updated_by = Yii::app()->user->id;
+                        $model2->updated_at = $model->updated_at;
+                        if (!$model2->save()) {
+                            $transaction->rollBack();
+                            throw new CHttpException(500, sprintf('Error in saving order details backup! %s <br>', json_encode($model2->getErrors())));
+                        }
+                    }
+
+                    $criteriaDel = new CDbCriteria;
+                    $criteriaDel->addColumnCondition(['sell_order_id' => $id, 'is_deleted' => 0]);
+                    SellOrderDetails::model()->deleteAll($criteriaDel);
+                    
                     foreach ($_POST['SellOrderDetails']['temp_model_id'] as $key => $model_id) {
                         $product_sl_no = $_POST['SellOrderDetails']['temp_product_sl_no'][$key];
                         $purchasePrice = $_POST['SellOrderDetails']['temp_pp'][$key];
@@ -237,9 +279,8 @@ class SellOrderController extends RController
                         if (!$purchasePrice > 0) {
                             $purchasePrice = ProdModels::model()->findByPk($model_id)->purchase_price;
                         }
-                        $model2 = SellOrderDetails::model()->findByAttributes(['model_id' => $model_id, 'sell_order_id' => $model->id, 'product_sl_no' => $product_sl_no, 'is_deleted' => 0]);
-                        if (!$model2)
-                            $model2 = new SellOrderDetails();
+                        
+                        $model2 = new SellOrderDetails();
                         $model2->sell_order_id = $model->id;
                         $model2->model_id = $model_id;
                         $model2->qty = $_POST['SellOrderDetails']['temp_qty'][$key];
@@ -263,25 +304,21 @@ class SellOrderController extends RController
                         $details_id_arr[] = $model2->id;
                         $costing += $model2->costing;
                     }
-                    if (count($details_id_arr) > 0) {
-                        $criteriaDel = new CDbCriteria;
-                        $criteriaDel->addNotInCondition('id', $details_id_arr);
-                        $criteriaDel->addColumnCondition(['sell_order_id' => $id, 'is_deleted' => 0]);
-                        SellOrderDetails::model()->deleteAll($criteriaDel);
-                    }
-
-                    $delete_inv_arr = [];
+                    
                     $criteria2 = new CDbCriteria();
                     $criteria2->addColumnCondition(['sell_order_id' => $id, 'is_deleted' => 0]);
                     $sellOrderDetails = SellOrderDetails::model()->findAll($criteria2);
 
+                    // delete all inventory for this order
+                    $criteriaDel = new CDbCriteria;
+                    $criteriaDel->addColumnCondition(['master_id' => $id, 'stock_status' => Inventory::SALES_DELIVERY, 'is_deleted' => 0]);
+                    Inventory::model()->deleteAll($criteriaDel);
+
                     $inv_sl = Inventory::maxSlNo();
                     foreach ($sellOrderDetails as $detail) {
                         $product = ProdModels::model()->findByPk($detail->model_id);
-                        $inventory = Inventory::model()->findByAttributes(['model_id' => $detail->model_id, 'stock_status' => Inventory::SALES_DELIVERY, 'source_id' => $detail->id, 'product_sl_no' => $detail->product_sl_no, 'is_deleted' => 0]);
-                        if (!$inventory) {
-                            $inventory = new Inventory();
-                        }
+                       
+                        $inventory = new Inventory();
                         if ($product->stockable) {
                             $inventory->sl_no = $inv_sl;
                             $inventory->date = $model->date;
@@ -300,22 +337,12 @@ class SellOrderController extends RController
                                 $transaction->rollBack();
                                 throw new CHttpException(500, sprintf('Error in saving inventory! %s <br>', json_encode($inventory->getErrors())));
                             }
-
                         }
-                        if ($inventory)
-                            $delete_inv_arr[] = $inventory->id;
-                    }
-                    if (count($delete_inv_arr) > 0) {
-                        $criteriaDel = new CDbCriteria;
-                        $criteriaDel->addNotInCondition('id', $delete_inv_arr);
-                        $criteriaDel->addColumnCondition(['master_id' => $id, 'stock_status' => Inventory::SALES_DELIVERY, 'is_deleted' => 0]);
-                        Inventory::model()->deleteAll($criteriaDel);
                     }
 
                     $model->costing = $costing;
                     $model->save();
                     $transaction->commit();
-
 
                     $data = SellOrder::model()->findAllByAttributes(['id' => $model->id]);
 
@@ -347,10 +374,16 @@ class SellOrderController extends RController
                 'model3' => SellOrderDetails::model()->findAll($criteria),
             ));
         } catch (PDOException $e) {
-            $transaction->rollBack();
+            if ($transaction->active) {
+                $transaction->rollBack();
+            }
             throw new CHttpException(500, $e->getMessage());
         } catch (Exception $e) {
-            $transaction->rollBack();
+            if ($transaction->active) {
+                $transaction->rollBack();
+            }
+             // Handle the exception (e.g., log it or display a message)
+            Yii::log($e->getMessage(), CLogger::LEVEL_ERROR);
             throw new CHttpException(500, $e->getMessage());
         }
         /* } else {
