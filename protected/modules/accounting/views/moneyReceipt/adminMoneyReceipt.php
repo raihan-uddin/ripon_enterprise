@@ -1,11 +1,11 @@
 <?php
 $this->widget('application.components.BreadCrumb', array(
-    'crumbs' => array(
-        array('name' => 'Sales', 'url' => array('')),
-        array('name' => 'Collection', 'url' => array('admin')),
-        array('name' => 'MR Create'),
-    ),
-//    'delimiter' => ' &rarr; ',
+  'crumbs' => array(
+    array('name' => 'Sales', 'url' => array('')),
+    array('name' => 'Collection', 'url' => array('admin')),
+    array('name' => 'MR Create'),
+  ),
+  //    'delimiter' => ' &rarr; ',
 ));
 ?>
 <?php
@@ -27,25 +27,25 @@ $('.search-form form').submit(function(){
 <?php
 $user = Yii::app()->getUser();
 foreach ($user->getFlashKeys() as $key):
-    if ($user->hasFlash($key)): ?>
-        <div class="alert alert-<?php echo $key; ?> alert-dismissible">
-            <button type="button" class="close" data-dismiss="alert" aria-hidden="true">×</button>
-            <?php echo $user->getFlash($key); ?>
-        </div>
-    <?php
-    endif;
+  if ($user->hasFlash($key)): ?>
+    <div class="alert alert-<?php echo $key; ?> alert-dismissible">
+      <button type="button" class="close" data-dismiss="alert" aria-hidden="true">×</button>
+      <?php echo $user->getFlash($key); ?>
+    </div>
+<?php
+  endif;
 endforeach;
 ?>
-    <div id="statusMsg"></div>
-    <div class="card card-primary">
-        <div class="card-header">
-            <h3 class="card-title">Create MR</h3>
+<div id="statusMsg"></div>
+<div class="card card-primary">
+  <div class="card-header">
+    <h3 class="card-title">Create MR</h3>
 
-            <div class="card-tools">
-                <button type="button" class="btn btn-tool" data-card-widget="collapse">
-                    <i class="fa fa-minus"></i>
-                </button>
-                <!--<button type="button" class="btn btn-tool" data-card-widget="remove">
+    <div class="card-tools">
+      <button type="button" class="btn btn-tool" data-card-widget="collapse">
+        <i class="fa fa-minus"></i>
+      </button>
+      <!--<button type="button" class="btn btn-tool" data-card-widget="remove">
                     <i class="fa fa-times"></i>
                 </button>-->
             </div>
@@ -59,21 +59,6 @@ endforeach;
                 'cssFile' => Yii::app()->theme->baseUrl . '/css/gridview/styles.css',
                 'htmlOptions' => array('class' => 'table-responsive grid-view'),
                 'itemsCssClass' => 'table table-sm table-hover table-striped table-condensed table-bordered dataTable dtr-inline',
-//            'loadingCssClass' => 'fa fa-spinner fa-spin fa-2x',
-//                'pager' => array(            //  pager like twitter bootstrap
-//                    'htmlOptions' => array('class' => 'pagination  justify-content-end'),
-////                'header'=>'',
-////                'cssFile'=>false,
-////                'maxButtonCount'=>24,
-////                'selectedPageCssClass'=>'active',
-////                'hiddenPageCssClass'=>'disabled',
-////                'firstPageCssClass'=>'previous',
-////                'lastPageCssClass'=>'next',
-////                'firstPageLabel'=>'<<',
-////                'lastPageLabel'=>'>>',
-////                'prevPageLabel'=>'<',
-////                'nextPageLabel'=>'>',
-//                ),
                 'template' => "{pager}{summary}{items}{summary}{pager}",
                 'columns' => array(
                     'company_name',
@@ -104,71 +89,71 @@ endforeach;
                         )
                     ),*/
 
-                    array(
-                        'header' => 'Options',
-                        'htmlOptions' => array('style' => 'width:100px', 'class' => 'text-center'),
-                        'template' => '{createMr}',
-                        // 'template' => '{view}{update}{addContactPerson}{contactPersons}{delete}',
-                        //'template' => '{view}{update}{delete}{addContactPerson}{contactPersons}',
-                        'class' => 'CButtonColumn',
-                        'buttons' => array(
-                            'createMr' => array(
-                                'label' => '<i class="fa fa-money fa-2x" style="color: green;"></i>&nbsp;&nbsp;',
-                                'imageUrl' => false,
-                                'options' => array('rel' => 'tooltip', 'data-toggle' => 'tooltip', 'title' => Yii::t('app', 'Create MR')),
-                                'url' => 'Yii::app()->controller->createUrl("/accounting/moneyReceipt/create",array("id"=>$data->id))',
-                            ),
-                        )
-                    ),
-
-                )
-            ));
-            ?>
-        </div>
-    </div>
+					array(
+						'header' => 'Options',
+						'htmlOptions' => array('style' => 'width:100px', 'class' => 'text-center'),
+						'template' => '{createMr}',
+						// 'template' => '{view}{update}{addContactPerson}{contactPersons}{delete}',
+						//'template' => '{view}{update}{delete}{addContactPerson}{contactPersons}',
+						'class' => 'CButtonColumn',
+						'buttons' => array(
+							'createMr' => array(
+							'label' => '<i class="fa fa-money fa-2x" style="color: green;"></i>&nbsp;&nbsp;',
+							'imageUrl' => false,
+							'options' => array('rel' => 'tooltip', 'data-toggle' => 'tooltip', 'title' => Yii::t('app', 'Create MR')),
+							'url' => 'Yii::app()->controller->createUrl("/accounting/moneyReceipt/create",array("id"=>$data->id))',
+							),
+						)
+					),
+				),
+    		));
+    		?>
+		</div>
+  </div>
+</div>
 
 
 <?php
 $this->beginWidget('zii.widgets.jui.CJuiDialog', array(
-    'id' => 'viewDialog',
-    'options' => array(
-        'title' => 'Viewing Single Data',
-        'autoOpen' => false,
-        'modal' => true,
-        'width' => 'auto',
-        'resizable' => false,
-    ),
+  'id' => 'viewDialog',
+  'options' => array(
+    'title' => 'Viewing Single Data',
+    'autoOpen' => false,
+    'modal' => true,
+    'width' => 'auto',
+    'resizable' => false,
+  ),
 ));
 ?>
-    <div id="ajaxLoaderView" style="display: none;"><img
-                src="<?php echo Yii::app()->theme->baseUrl; ?>/images/ajax-loader.gif"/></div>
-    <div id='AjFlash' style="display:none; margin-top: 20px;">
+<div id="ajaxLoaderView" style="display: none;"><img
+    src="<?php echo Yii::app()->theme->baseUrl; ?>/images/ajax-loader.gif" /></div>
+<div id='AjFlash' style="display:none; margin-top: 20px;">
 
-    </div>
+</div>
 <?php $this->endWidget('zii.widgets.jui.CJuiDialog'); ?>
 
 <?php
 $this->beginWidget('zii.widgets.jui.CJuiDialog', array(
-    'id' => 'update-dialog',
-    'options' => array(
-        'title' => 'Update Customer Info',
-        'autoOpen' => false,
-        'modal' => true,
-        'width' => 'auto',
-        'resizable' => false,
-    ),
+  'id' => 'update-dialog',
+  'options' => array(
+    'title' => 'Update Customer Info',
+    'autoOpen' => false,
+    'modal' => true,
+    'width' => 'auto',
+    'resizable' => false,
+  ),
 ));
 ?>
-    <div class="update-dialog-content"></div>
+<div class="update-dialog-content"></div>
 <?php $this->endWidget(); ?>
 
 <?php
 $updateJS = CHtml::ajax(array(
-    'url' => "js:url",
-    'data' => "js:form.serialize() + action",
-    'type' => 'post',
-    'dataType' => 'json',
-    'success' => "function( data )
+  'url' => "js:url",
+  'data' => "js:form.serialize() + action",
+  'type' => 'post',
+  'dataType' => 'json',
+  'success' => "function( data )
   {
     if( data.status == 'failure' )
     {
@@ -223,39 +208,37 @@ jQuery( function($){
 ");
 ?>
 
-    <style>
+<style>
+  /* disable selected for merged cells */
+  .grid-view td.merge {
+    background: none repeat scroll 0 0 #F8F8F8;
+  }
+</style>
 
-
-        /* disable selected for merged cells */
-        .grid-view td.merge {
-            background: none repeat scroll 0 0 #F8F8F8;
-        }
-    </style>
-
-    <!--Contact person dialog box---------------------------------------------------------------------->
+<!--Contact person dialog box---------------------------------------------------------------------->
 
 <?php
 $this->beginWidget('zii.widgets.jui.CJuiDialog', array(
-    'id' => 'addContactPerson-dialog',
-    'options' => array(
-        'title' => 'ADD Contact Person',
-        'autoOpen' => false,
-        'modal' => true,
-        'width' => 'auto',
-        'resizable' => false,
-    ),
+  'id' => 'addContactPerson-dialog',
+  'options' => array(
+    'title' => 'ADD Contact Person',
+    'autoOpen' => false,
+    'modal' => true,
+    'width' => 'auto',
+    'resizable' => false,
+  ),
 ));
 ?>
-    <div class="addContactPerson-dialog-content"></div>
+<div class="addContactPerson-dialog-content"></div>
 <?php $this->endWidget(); ?>
 
 <?php
 $addContactPersonJS = CHtml::ajax(array(
-    'url' => "js:url",
-    'data' => "js:form.serialize() + action",
-    'type' => 'post',
-    'dataType' => 'json',
-    'success' => "function( data )
+  'url' => "js:url",
+  'data' => "js:form.serialize() + action",
+  'type' => 'post',
+  'dataType' => 'json',
+  'success' => "function( data )
   {
     if( data.status == 'failure' )
     {
