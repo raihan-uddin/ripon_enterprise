@@ -87,7 +87,7 @@ endforeach;
                     'state',
                     'zip',
                     'trn_no',
-					array(
+					/*array(
                         'header' => 'New Collection',
                         'htmlOptions' => array('style' => 'width:100px', 'class' => 'text-center'),
                         'template' => '{createMr}',
@@ -102,7 +102,7 @@ endforeach;
                                 'url' => 'Yii::app()->controller->createUrl("/accounting/moneyReceipt/createNew",array("id"=>$data->id))',
                             ),
                         )
-                    ),
+                    ),*/
 
                     array(
                         'header' => 'Options',
