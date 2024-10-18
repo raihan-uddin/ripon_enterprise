@@ -943,6 +943,16 @@ Yii::app()->clientScript->registerCoreScript("jquery.ui");
     });
 
     tableSerial();
+
+    
+    $(document).keypress(function (event) {
+        let keycode = (event.keyCode ? event.keyCode : event.which);
+        if (keycode == '13') {
+            console.log('You pressed a "enter" key in somewhere');
+            addToList();
+            return false;
+        }
+    });
 </script>
 
 <?php $this->endWidget(); ?>

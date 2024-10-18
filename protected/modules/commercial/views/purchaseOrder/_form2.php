@@ -718,6 +718,10 @@ Yii::app()->clientScript->registerCoreScript("jquery.ui");
     </div>
 </div>
 <script>
+    
+    let prev_model_id = 0;
+    let prev_pp = 0;
+
     var picker = new Lightpick({
         field: document.getElementById('entry_date'),
         minDate: moment(),
@@ -833,7 +837,9 @@ Yii::app()->clientScript->registerCoreScript("jquery.ui");
                 </tr>
                 `);
             calculateTotal();
-            clearDynamicItem();
+            clearDynamicItem(product_sl_no);
+            prev_model_id = model_id;
+            prev_pp = unit_price;
         }
     }
 
@@ -883,14 +889,24 @@ Yii::app()->clientScript->registerCoreScript("jquery.ui");
     });
 
 
-    function clearDynamicItem() {
-        $("#PurchaseOrderDetails_model_id").val('');
-        $("#model_id_text").val('');
-        $("#PurchaseOrderDetails_amount").val('');
-        $("#PurchaseOrderDetails_row_total").val('');
-        $("#PurchaseOrderDetails_qty").val('');
-        $("#PurchaseOrderDetails_color").val('');
-        $("#PurchaseOrderDetails_note").val('');
+    function clearDynamicItem(product_sl_no) {
+        let pp = '';
+        if (prev_model_id == $("#PurchaseOrderDetails_model_id").val()) {
+            pp = prev_pp;
+        }
+        if (product_sl_no.length > 0) {
+            $("#PurchaseOrderDetails_product_sl_no").val('');
+            $("#PurchaseOrderDetails_product_sl_no").focus();
+        } else {
+            $("#PurchaseOrderDetails_model_id").val('');
+            $("#model_id_text").val('');
+            $("#PurchaseOrderDetails_product_sl_no").val('');
+            $("#PurchaseOrderDetails_amount").val('');
+            $("#PurchaseOrderDetails_row_total").val(pp);
+            $("#PurchaseOrderDetails_qty").val('');
+            $("#PurchaseOrderDetails_color").val('');
+            $("#PurchaseOrderDetails_note").val('');
+        }
     }
 
     function calculateTotal() {
@@ -933,6 +949,16 @@ Yii::app()->clientScript->registerCoreScript("jquery.ui");
     }
 
     tableSerial();
+
+    
+    $(document).keypress(function (event) {
+        let keycode = (event.keyCode ? event.keyCode : event.which);
+        if (keycode == '13') {
+            console.log('You pressed a "enter" key in somewhere');
+            addToList();
+            return false;
+        }
+    });
 </script>
 
 <?php $this->endWidget(); ?>
