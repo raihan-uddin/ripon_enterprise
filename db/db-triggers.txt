@@ -1,0 +1,20 @@
+DELIMITER //
+
+CREATE TRIGGER after_purchase_order_details_delete
+AFTER DELETE ON purchase_order_details
+FOR EACH ROW
+BEGIN
+    INSERT INTO purchase_order_details_backup (
+        id, order_id, model_id, product_sl_no, qty, unit_price, note, 
+        row_total, warranty, is_all_received, created_by, created_at, 
+        updated_by, updated_at, business_id, branch_id, is_deleted
+    ) VALUES (
+        OLD.id, OLD.order_id, OLD.model_id, OLD.product_sl_no, OLD.qty, 
+        OLD.unit_price, OLD.note, OLD.row_total, OLD.warranty, 
+        OLD.is_all_received, OLD.created_by, OLD.created_at, 
+        OLD.updated_by, OLD.updated_at, OLD.business_id, 
+        OLD.branch_id, OLD.is_deleted
+    );
+END//
+
+DELIMITER ;

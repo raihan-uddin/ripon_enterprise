@@ -1,5 +1,5 @@
 <div class="row">
-    <div class="margin p-2">
+    <div class="col-lg-4 col-md-6 col-sm-12 margin p-2">
         <div class="input-group mb-3">
             <input type="text" class="form-control" id="summary-daterange" placeholder="Select Date Range" value="<?= sprintf("%s - %s", date('d/m/Y'), date('d/m/Y')) ?>"
                    aria-label="Select Date Range" aria-describedby="basic-addon2">

@@ -59,6 +59,8 @@ class PurchaseOrderController extends RController
             $model->is_all_received = PurchaseOrder::ALL_RECEIVED;
             try {
                 if (!$model->save()) {
+                    // Rollback transaction if an error occurred
+                    $transaction->rollback();
                     $error = CActiveForm::validate($model);
                     if ($error != '[]')
                         echo $error;
@@ -78,7 +80,8 @@ class PurchaseOrderController extends RController
                     $model2->note = $_POST['PurchaseOrderDetails']['temp_note'][$key];
                     $model2->is_all_received = PurchaseOrder::ALL_RECEIVED;
                     if (!$model2->save()) {
-                        var_dump($model2->getErrors());
+                        //  Rollback transaction if an error occurred
+                        $transaction->rollback();
                         throw new Exception('Error in saving Purchase Order Details!');
                     }
                     $inv = new Inventory();
@@ -98,6 +101,8 @@ class PurchaseOrderController extends RController
                     $inv->master_id = $model->id;
                     $inv->remarks = $model2->note;
                     if (!$inv->save()) {
+                        // Rollback transaction if an error occurred
+                        $transaction->rollback();
                         throw new Exception('Error in saving Inventory!');
                     }
                 }
@@ -105,6 +110,8 @@ class PurchaseOrderController extends RController
                 if ($model->cash_due == Lookup::CASH) {
                     $model->is_paid = PurchaseOrder::PAID;
                     if (!$model->save()) {
+                        // Rollback transaction if an error occurred
+                        $transaction->rollback();
                         throw new Exception('Error in saving Purchase Order paid/due!');
                     }
 
@@ -118,6 +125,8 @@ class PurchaseOrderController extends RController
                     $payment->payment_type = Lookup::PAYMENT_CASH;
                     $payment->amount = $model->grand_total;
                     if (!$payment->save()) {
+                        // Rollback transaction if an error occurred
+                        $transaction->rollback();
                         throw new Exception('Error in saving Payment Receipt!');
                     }
                 }
@@ -171,6 +180,8 @@ class PurchaseOrderController extends RController
         $model2 = new PurchaseOrderDetails();
         if (Yii::app()->request->isAjaxRequest) {
             Yii::app()->clientScript->scriptMap['jquery.js'] = false;
+            Yii::app()->clientScript->scriptMap['jquery-ui.min.js'] = false;
+            Yii::app()->clientScript->scriptMap['jquery.yiiactiveform.js'] = false;
         }
         if (isset($_POST['PurchaseOrder'], $_POST['PurchaseOrderDetails'])) {
             $currentInvoiceValue = $_POST['PurchaseOrder']['grand_total'];
@@ -193,22 +204,39 @@ class PurchaseOrderController extends RController
             $transaction = Yii::app()->db->beginTransaction();
             try {
                 if (!$model->save()) {
+                    // Rollback transaction if an error occurred
+                    $transaction->rollback();
                     $error = CActiveForm::validate($model);
                     if ($error != '[]')
                         echo $error;
                     Yii::app()->end();
                 }
+                
+                // now delete all the previous data of this order from PurchaseOrderDetails table & Inventory table
+                // $detailsDelete = PurchaseOrderDetails::model()->deleteAll(['order_id' => $id]);
+                $detailsDelete = PurchaseOrderDetails::model()->deleteAll('order_id = :order_id', [':order_id' => $id]);
+
+                if ($detailsDelete == 0) {
+                    // Rollback transaction if an error occurred
+                    $transaction->rollback();
+                    throw new Exception('Error in deleting Purchase Order Details!');
+                }
+                $dataInvDelete = Inventory::model()->deleteAll('master_id = :master_id AND stock_status = :stock_status', [':master_id' => $id, ':stock_status' => Inventory::PURCHASE_RECEIVE]);
+                // $dataInvDelete = Inventory::model()->deleteAll(['master_id' => $id, 'stock_status' => Inventory::PURCHASE_RECEIVE]);
+                if ($dataInvDelete == 0) {
+                    // Rollback transaction if an error occurred
+                    $transaction->rollback();
+                    throw new Exception('Error in deleting Inventory!');
+                }
+                
+
                 $sl_no = Inventory::maxSlNo();
                 $challan_no = "PUR-" . str_pad($sl_no, 6, '0', STR_PAD_LEFT);
-                $details_id_arr = [];
                 foreach ($_POST['PurchaseOrderDetails']['temp_model_id'] as $key => $model_id) {
                     $product = ProdModels::model()->findByPk($model_id);
                     $product_sl_no = $_POST['PurchaseOrderDetails']['temp_product_sl_no'][$key];
-                    $criteria = new CDbCriteria();
-                    $criteria->addColumnCondition(['order_id' => $id, 'model_id' => $model_id, 'product_sl_no' => $product_sl_no]);
-                    $model2 = PurchaseOrderDetails::model()->findByAttributes([], $criteria);
-                    if (!$model2)
-                        $model2 = new PurchaseOrderDetails();
+                    
+                    $model2 = new PurchaseOrderDetails();
                     $model2->order_id = $model->id;
                     $model2->model_id = $model_id;
                     $model2->qty = $_POST['PurchaseOrderDetails']['temp_qty'][$key];
@@ -216,49 +244,47 @@ class PurchaseOrderController extends RController
                     $model2->unit_price = $_POST['PurchaseOrderDetails']['temp_unit_price'][$key];
                     $model2->row_total = $_POST['PurchaseOrderDetails']['temp_row_total'][$key];
                     $model2->note = $_POST['PurchaseOrderDetails']['temp_note'][$key];
-                    if ($model2->save()) {
-                        $criteriaInv = new CDbCriteria();
-                        $criteriaInv->addColumnCondition(['source_id' => $model2->id, 'model_id' => $model_id, 'product_sl_no' => $product_sl_no]);
-                        $inv = Inventory::model()->findByAttributes([], $criteriaInv);
-                        if (!$inv)
-                            $inv = new Inventory();
-                        else {
-                            $challan_no = $inv->challan_no;
-                            $sl_no = $inv->sl_no;
-                        }
-                        $inv->model_id = $model_id;
-                        $inv->date = $model->date;
-                        $inv->sl_no = $sl_no;
-                        $inv->challan_no = $challan_no;
-                        $inv->store_id = $model->store_id;
-                        $inv->location_id = $model->location_id;
-                        $inv->stock_in = $model2->qty;
-                        $inv->sell_price = $product->sell_price;
-                        $inv->row_total = $model2->row_total;
-                        $inv->purchase_price = $model2->unit_price;
-                        $inv->product_sl_no = $model2->product_sl_no;
-                        $inv->stock_status = Inventory::PURCHASE_RECEIVE;
-                        $inv->source_id = $model2->id;
-                        $inv->master_id = $model->id;
-                        $inv->remarks = $model2->note;
-                        $inv->save();
-
+                    if (!$model2->save()) {
+                        // get validation errors
+                        $errors = $model2->getErrors();
+                        // log or display the errors for debugging
+                        Yii::log(CVarDumper::dumpAsString($errors), CLogger::LEVEL_ERROR, 'application');
+                        // Rollback transaction if an error occurred
+                        $transaction->rollback();
+                        throw new Exception('Error in saving Purchase Order Details:' . CVarDumper::dumpAsString($errors));
                     }
-                    $details_id_arr[] = $model2->id;
-                }
-                if (count($details_id_arr) > 0) {
-                    $criteriaDel = new CDbCriteria;
-                    $criteriaDel->addNotInCondition('id', $details_id_arr);
-                    $criteriaDel->addColumnCondition(['order_id' => $id]);
-                    PurchaseOrderDetails::model()->deleteAll($criteriaDel);
-
-                    $criteriaInvDel = new CDbCriteria;
-                    $criteriaInvDel->addNotInCondition('source_id', $details_id_arr);
-                    $criteriaInvDel->addColumnCondition(['master_id' => $id]);
-                    Inventory::model()->deleteAll($criteriaInvDel);
-                }
+                    
+                    $inv = new Inventory();
+                    $challan_no = $challan_no;
+                    $sl_no = $sl_no;
+                    $inv->model_id = $model_id;
+                    $inv->date = $model->date;
+                    $inv->sl_no = $sl_no;
+                    $inv->challan_no = $challan_no;
+                    $inv->store_id = $model->store_id;
+                    $inv->location_id = $model->location_id;
+                    $inv->stock_in = $model2->qty;
+                    $inv->sell_price = $product->sell_price;
+                    $inv->row_total = $model2->row_total;
+                    $inv->purchase_price = $model2->unit_price;
+                    $inv->product_sl_no = $model2->product_sl_no;
+                    $inv->stock_status = Inventory::PURCHASE_RECEIVE;
+                    $inv->source_id = $model2->id;
+                    $inv->master_id = $model->id;
+                    $inv->remarks = $model2->note;
+                    if(!$inv->save()){
+                        // Get validation errors
+                        $errors = $inv->getErrors();
+                        // Log or display the errors for debugging
+                        Yii::log(CVarDumper::dumpAsString($errors), CLogger::LEVEL_ERROR, 'application');
+                        // Rollback transaction if an error occurred
+                        $transaction->rollback();
+                        throw new Exception('Error in saving Inventory:' . CVarDumper::dumpAsString($errors));
+                    }
+                }                
 
                 $transaction->commit();
+
                 echo CJSON::encode(array(
                     'status' => 'success',
                     'soReportInfo' => $this->renderPartial('voucherPreview', array('data' => $model, 'new' => true), true, true), //
@@ -268,6 +294,7 @@ class PurchaseOrderController extends RController
             } catch (Exception $e) {
                 // Rollback transaction if an error occurred
                 $transaction->rollback();
+                throw new Exception('fucking Details!');
 
                 // Return JSON response with error message
                 echo CJSON::encode(array(
@@ -283,11 +310,13 @@ class PurchaseOrderController extends RController
         $criteria->addColumnCondition(['order_id' => $id]);
         $criteria->join = " INNER JOIN prod_models pm on t.model_id = pm.id ";
         $criteria->order = "pm.model_name ASC";
+        $data = PurchaseOrderDetails::model()->findAll($criteria);
+
         $this->pageTitle = 'UPDATE ORDER';
         $this->render('update', array(
             'model' => $model,
             'model2' => $model2,
-            'model3' => PurchaseOrderDetails::model()->findAll($criteria),
+            'model3' => $data,
         ));
     }
 

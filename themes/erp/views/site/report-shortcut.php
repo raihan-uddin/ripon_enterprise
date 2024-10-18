@@ -8,7 +8,7 @@
             $productPerformanceReportPermission
         ) {
             ?>
-            <div class="btn-group">
+            <div class="btn-group pr-2 pb-2">
                 <button type="button" class="btn btn-primary dropdown-toggle" data-toggle="dropdown"
                         aria-haspopup="true"
                         aria-expanded="false">
@@ -22,15 +22,6 @@
                             Report</a>
                         <?php
                     }
-                    ?>
-                    <?php
-//                    if ($productPerformanceReportPermission) {
-//                        ?>
-<!--                        <a class="dropdown-item"-->
-<!--                           href="--><?php //= Yii::app()->createUrl("report/productPerformanceReport") ?><!--">Product Performance-->
-<!--                            Report</a>-->
-<!--                        --><?php
-//                    }
                     ?>
                     <a class="dropdown-item disabled"
                        href="<?= Yii::app()->createUrl("inventory/inventory/stockReport") ?>">Slow
@@ -59,7 +50,7 @@
             || $dayInOutReportPermission
         ) {
             ?>
-            <div class="btn-group">
+            <div class="btn-group pr-2 pb-2">
                 <button type="button" class="btn btn-info dropdown-toggle" data-toggle="dropdown" aria-haspopup="true"
                         aria-expanded="false">
                     Ledger Reports
@@ -159,7 +150,7 @@
             ?>
 
 
-            <div class="btn-group">
+            <div class="btn-group pr-2 pb-2">
                 <button type="button" class="btn btn-warning dropdown-toggle" data-toggle="dropdown"
                         aria-haspopup="true"
                         aria-expanded="false">

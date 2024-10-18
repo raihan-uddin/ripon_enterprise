@@ -508,14 +508,14 @@ Yii::app()->clientScript->registerCoreScript("jquery.ui");
 
                         <div class="input-group">
                             <?php echo $form->textField($model2, 'amount', array('maxlength' => 255, 'class' => 'form-control qty-amount')); ?>
-                            <span class="help-block current-pp"
-                                  style="color: green; width: 100%; font-size: 12px;"> </span>
                             <div class="input-group-append">
                                 <span class="input-group-text" id="amount"><i class="fa fa-money"></i> </span>
                             </div>
                         </div>
+                        <span class="help-block current-pp"
+                            style="color: green; width: 100%; font-size: 12px;"> </span>
                         <span class="help-block"
-                              style="color: red; width: 100%"> <?php echo $form->error($model2, 'amount'); ?></span>
+                            style="color: red; width: 100%"> <?php echo $form->error($model2, 'amount'); ?></span>
                     </div>
                     <div class="form-group col-xs-12 col-md-2">
                         <?php echo $form->labelEx($model2, 'row_total'); ?>

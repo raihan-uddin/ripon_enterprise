@@ -305,6 +305,7 @@ class SellOrderController extends RController
                         $costing += $model2->costing;
                     }
                     
+                    // get current saved data
                     $criteria2 = new CDbCriteria();
                     $criteria2->addColumnCondition(['sell_order_id' => $id, 'is_deleted' => 0]);
                     $sellOrderDetails = SellOrderDetails::model()->findAll($criteria2);
@@ -317,7 +318,7 @@ class SellOrderController extends RController
                     $inv_sl = Inventory::maxSlNo();
                     foreach ($sellOrderDetails as $detail) {
                         $product = ProdModels::model()->findByPk($detail->model_id);
-                       
+
                         $inventory = new Inventory();
                         if ($product->stockable) {
                             $inventory->sl_no = $inv_sl;
@@ -386,11 +387,6 @@ class SellOrderController extends RController
             Yii::log($e->getMessage(), CLogger::LEVEL_ERROR);
             throw new CHttpException(500, $e->getMessage());
         }
-        /* } else {
-             $status = ['status' => 'danger', 'message' => 'You can not update this order(' . $model->so_no . ') now!'];
-             Yii::app()->user->setFlash($status['status'], $status['message']);
-             $this->redirect(isset($_POST['returnUrl']) ? $_POST['returnUrl'] : array('admin'));
-         }*/
     }
 
     /**
