@@ -289,8 +289,9 @@
                                     echo $inword;
                                     ?>
                                 </div>
-                                <div>
-                                    Order Note: <?=  $item->order_note ?>
+                                <br><br>
+                                <div style="font-weight: normal;">
+                                    Note: <?=  $item->order_note ?>
                                 </div>
                             </td>
                             <td colspan="2" style="border: none; background: white;">Sub Total</td>
