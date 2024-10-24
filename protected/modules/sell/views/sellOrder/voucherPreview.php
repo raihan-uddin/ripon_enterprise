@@ -226,7 +226,7 @@
                                             $dataArrayWarranty = explode(', ', $dt->warranty);
                                             $dataArrayWarrantyUnique = array_unique($dataArrayWarranty);
                                             $dataArrayWarrantyUnique = array_values($dataArrayWarrantyUnique);
-//                                            print_r($dataArrayWarrantyUnique);
+
                                             $warranty = implode(', ', $dataArrayWarrantyUnique);
                                             echo "<br><b>Warranty: </b> <i>$warranty Month</i>";
                                         }
@@ -288,6 +288,9 @@
                                     }
                                     echo $inword;
                                     ?>
+                                </div>
+                                <div>
+                                    Order Note: <?=  $item->order_note ?>
                                 </div>
                             </td>
                             <td colspan="2" style="border: none; background: white;">Sub Total</td>
