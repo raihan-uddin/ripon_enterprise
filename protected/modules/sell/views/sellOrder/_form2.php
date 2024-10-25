@@ -917,8 +917,23 @@ Yii::app()->clientScript->registerCoreScript("jquery.ui");
         qty = qty > 0 ? qty : 0;
         unit_price = unit_price > 0 ? unit_price : 0;
         $(this).closest("tr").find(".row-total").val((qty * unit_price).toFixed(2));
+        changeUnitPriceForSameModel($(this).closest("tr").find(".temp_qty").val(), unit_price);
         calculateTotal();
     });
+
+    function changeUnitPriceForSameModel(model_id, price){
+         // find all same model id and change the price except the current row
+        $(".temp_qty").each(function(){
+            if($(this).closest("tr").find(".temp_qty").val() == model_id){
+                if($(this).closest("tr").find(".temp_unit_price").val() != price){
+                    $(this).closest("tr").find(".temp_unit_price").val(price);
+                    let qty = parseFloat($(this).val());
+                    qty = qty > 0 ? qty : 0;
+                    $(this).closest("tr").find(".row-total").val((qty * price).toFixed(2));
+                }
+            }
+        });
+    }
 
 
     function calculateVat() {
@@ -1079,9 +1094,11 @@ Yii::app()->clientScript->registerCoreScript("jquery.ui");
 
         let loss = parseFloat(grand_total - total_costing);
         if (loss < 0) {
+            toastr.clear(); // Clear existing toasts to prevent duplicates
             toastr.error("You are going to loss " + parseFloat(loss).toFixed(2) + " BDT from this invoice!");
+        } else {
+            toastr.clear(); // Clear existing toasts to prevent duplicates
         }
-
     }
 
     document.addEventListener('DOMContentLoaded', function () {
