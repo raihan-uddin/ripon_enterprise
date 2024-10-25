@@ -60,20 +60,11 @@ if (Yii::app()->user->checkAccess('Sell.Order.VoucherPreview')) {
                 'method' => 'get',
             )); ?>
             <div class="row">
-                <!--<div class="col-md-2 col-sm-12">
-                    <div class="input-group mb-3">
-                        <input type="text" class="form-control" id="daterange-picker" placeholder="Select Date Range"
-                               aria-label="Select Date Range" aria-describedby="basic-addon2">
-                    </div>
-                    <span class="help-block"
-                          style="color: red; width: 100%"> <?php /*echo $form->error($model, 'date'); */?></span>
-
-                </div>-->
                 <div class="col-md-2 col-sm-12">
                     <div class="input-group">
                         <div class="input-group-prepend">
                             <span class="input-group-text"
-                                  id="basic-addon1">SO No</span>
+                                id="basic-addon1">SO No</span>
                         </div>
                         <?php /** @var mixed $model */
                         echo $form->textField($model, 'so_no', array('maxlength' => 255, 'class' => 'form-control', "aria-describedby" => "basic-addon1")); ?>
@@ -93,8 +84,6 @@ if (Yii::app()->user->checkAccess('Sell.Order.VoucherPreview')) {
                             $model, 'print_type', [
                             SellOrder::NORMAL_ORDER_PRINT => 'NORMAL PRINT',
                             SellOrder::NORMAL_PAD_PRINT => 'PAD PRINT',
-//                            SellOrder::PRODUCTION_ORDER_PRINT => 'PRODUCTION ORDER',
-//                            SellOrder::ORDER_BOM => 'JOB CARD',
                         ], array('class' => 'form-control',));
                         ?>
                     </div>
@@ -122,8 +111,6 @@ if (Yii::app()->user->checkAccess('Sell.Order.VoucherPreview')) {
                             if(data.status=='error'){
                                 toastr.error('No data found!');
                             } else {
-        //                         $('#viewDialog').dialog('open');   
-        //                         $('#AjFlash').html(data).show();
                                 $('#information-modal').modal('show');
                                 $('#information-modal .modal-body').html(data);    
                             }      
@@ -159,9 +146,6 @@ if (Yii::app()->user->checkAccess('Sell.Order.VoucherPreview')) {
             <button type="button" class="btn btn-tool" data-card-widget="collapse">
                 <i class="fa fa-minus"></i>
             </button>
-            <!--<button type="button" class="btn btn-tool" data-card-widget="remove">
-                <i class="fa fa-times"></i>
-            </button>-->
         </div>
     </div>
     <div class="card-body">
@@ -173,25 +157,6 @@ if (Yii::app()->user->checkAccess('Sell.Order.VoucherPreview')) {
             'htmlOptions' => array('class' => 'table-responsive grid-view'),
             'itemsCssClass' => 'table table-sm table-hover table-striped table-condensed table-bordered dataTable dtr-inline',
             'mergeColumns' => array('order_type', 'date'),
-//            'loadingCssClass' => 'fa fa-spinner fa-spin fa-2x',
-//            'pager' => array(            //  pager like twitter bootstrap
-//                'htmlOptions' => array('class' => 'pagination  justify-content-end'),
-//                'header' => '',
-//                'cssFile' => false,
-//                'maxButtonCount' => 10,
-//                'selectedPageCssClass' => 'page-item active', //default "selected"
-//                'nextPageCssClass' => 'page-item',//default "next"
-//                'hiddenPageCssClass' => 'page-item disabled',//default "hidden"
-//                'firstPageCssClass' => 'page-item previous', //default "first"\
-//                'lastPageCssClass' => 'page-item last', //default "last"
-//                'internalPageCssClass' => 'page-item',//default "page"
-//                'previousPageCssClass' => 'page-item',//default "previours"\
-//                'firstPageLabel' => '<<',
-//                'lastPageLabel' => '>>',
-//                'prevPageLabel' => '<',
-//                'nextPageLabel' => '>',
-////                'footer'=>'End',//defalut empty
-//            ),
             'template' => "{pager}\n\n{summary}{items}{summary}\n{pager}",
             'summaryText' => "<div class='dataTables_info' role='status' aria-live='polite'><p>Displaying {start}-{end} of {page} result(s)</p></div>",
             'emptyText' => "<div class='alert alert-warning text-center' role='alert'><i class='icon fa fa-exclamation-triangle'></i>No results found.</div>",
@@ -213,36 +178,11 @@ if (Yii::app()->user->checkAccess('Sell.Order.VoucherPreview')) {
                     'name' => 'so_no',
                     'htmlOptions' => ['class' => 'text-center']
                 ),
-                /* array(
-                     'name' => 'job_no',
-                     'htmlOptions' => ['class' => 'text-center']
-                 ),*/
                 array(
                     'name' => 'customer_id',
                     'value' => 'Customers::model()->nameOfThis($data->customer_id)',
                     'htmlOptions' => ['class' => 'text-center']
                 ),
-                /* array(
-                     'name' => 'discount_percentage',
-                     'htmlOptions' => ['class' => 'text-center']
-                 ),
-                 array(
-                     'name' => 'discount_amount',
-                     'htmlOptions' => ['class' => 'text-center']
-                 ),
-                 */
-                /*array(
-                    'name' => 'vat_percentage',
-                    'htmlOptions' => ['class' => 'text-center']
-                ),*/
-                /*array(
-                    'name' => 'delivery_charge',
-                    'htmlOptions' => ['class' => 'text-center']
-                ),*/
-                /*array(
-                    'name' => 'vat_amount',
-                    'htmlOptions' => ['class' => 'text-center']
-                ),*/
                 array(
                     'name' => 'discount_amount',
                     'htmlOptions' => ['class' => 'text-center']
@@ -267,28 +207,6 @@ if (Yii::app()->user->checkAccess('Sell.Order.VoucherPreview')) {
                     'type' => 'raw',
                     'htmlOptions' => ['class' => 'text-center']
                 ),
-                /* array(
-                     'name' => 'bom_complete',
-                     'value' => 'SellOrder::model()->bomStatus($data->bom_complete)',
-                     'type' => 'raw',
-                     'filter' => [SellOrder::BOM_COMPLETE => 'COMPLETE', SellOrder::BOM_NOT_COMPLETE => 'NOT COMPLETE'],
-                     'htmlOptions' => ['class' => 'text-center']
-                 ),*/
-                /*array(
-                    'name' => 'is_job_card_done',
-                    'value' => 'SellOrder::model()->jobStatus($data->is_job_card_done)',
-                    'type' => 'raw',
-                    'filter' => [SellOrder::JOB_CARD_DONE => 'STARTED', SellOrder::JOB_CARD_NOT_DONE => 'NOT STARTED']
-                ),*/
-                /*
-                'is_invoice_done',
-                'is_job_card_done',
-                'is_delivery_done',
-                'is_partial_delivery',
-                'is_partial_invoice',
-                'created_by',
-                'updated_by',
-                */
                 'created_at',
                 'updated_at',
                 array
@@ -303,7 +221,6 @@ if (Yii::app()->user->checkAccess('Sell.Order.VoucherPreview')) {
                             'label' => '<i class="fa fa-file-pdf-o fa-2x" style="color: green; cursor: pointer; "></i>&nbsp;&nbsp;',
                             'imageUrl' => false,
                             'options' => array('rel' => 'tooltip', 'data-toggle' => 'tooltip', 'title' => Yii::t('app', 'Preview Invoice')),
-//                            'url' => 'Yii::app()->controller->createUrl("voucherPreview",array("invoiceId"=>$data->id))',
                             // Remove the 'url' attribute
                             'click' => "function() {
                                 // Get the invoice ID
@@ -369,7 +286,7 @@ if (Yii::app()->user->checkAccess('Sell.Order.VoucherPreview')) {
 
 <!--        modal-->
 <div class="modal fade" id="information-modal" tabindex="-1" data-backdrop="static" role="dialog"
-     aria-labelledby="information-modal" aria-hidden="true">
+    aria-labelledby="information-modal" aria-hidden="true">
     <div class="modal-dialog modal-dialog-centered modal-xl" role="document">
         <div class="modal-content">
             <div class="modal-header">
@@ -406,14 +323,3 @@ $this->beginWidget('zii.widgets.jui.CJuiDialog', array(
 
 </div>
 <?php $this->endWidget('zii.widgets.jui.CJuiDialog'); ?>
-
-<script>
-  /*  var picker = new Lightpick({
-        field: document.getElementById('daterange-picker'),
-        singleDate: false,
-        inline: false,
-        numberOfMonths: 2,
-        numberOfColumns: 2,
-        // selectForward: true,
-    });*/
-</script>
