@@ -135,24 +135,15 @@ endforeach;
             'itemsCssClass' => 'table table-sm table-hover table-striped table-condensed table-bordered dataTable dtr-inline',
 
             'mergeColumns' => array('date', 'cash_due'),
-//            'loadingCssClass' => 'fa fa-spinner fa-spin fa-2x',
-//            'pager' => array(            //  pager like twitter bootstrap
-//                'htmlOptions' => array('class' => 'pagination  justify-content-end'),
-////                'header'=>'',
-////                'cssFile'=>false,
-////                'maxButtonCount'=>24,
-////                'selectedPageCssClass'=>'active',
-////                'hiddenPageCssClass'=>'disabled',
-////                'firstPageCssClass'=>'previous',
-////                'lastPageCssClass'=>'next',
-////                'firstPageLabel'=>'<<',
-////                'lastPageLabel'=>'>>',
-////                'prevPageLabel'=>'<',
-////                'nextPageLabel'=>'>',
-//            ),
             'template' => "{pager}{summary}{items}{summary}{pager}",
             'columns' => array(
-                'id',
+                array(
+                    'name' => 'id',
+                    'htmlOptions' => [
+                        'class' => 'text-center',
+                        'style' => 'width: 80px;'
+                    ]
+                ),
                 array(
                     'name' => 'date',
                     'htmlOptions' => ['class' => 'text-center']
@@ -164,14 +155,6 @@ endforeach;
                     'filter' => Lookup::items('cash_due'),
                     'htmlOptions' => ['class' => 'text-center']
                 ),
-                /*array(
-                    'name' => 'ship_by',
-                    'type' => 'raw',
-                    'value' => ' ShipBy::model()->nameOfThis($data->ship_by)',
-                    'filter' => CHtml::listData(ShipBy::model()->findAll(array('order' => 'ship_by ASC')), 'id', 'ship_by'),
-                    'htmlOptions' => ['class' => 'text-center']
-                ),*/
-//                'max_sl_no',
                 array(
                     'name' => 'po_no',
                     'htmlOptions' => ['class' => 'text-center']
@@ -179,34 +162,6 @@ endforeach;
                 array(
                     'name' => 'supplier_id',
                     'value' => 'Suppliers::model()->nameOfThis($data->supplier_id)',
-                    'htmlOptions' => ['class' => 'text-center']
-                ),
-                /*array(
-                    'name' => 'exp_receive_date',
-                    'htmlOptions' => ['class' => 'text-center']
-                ),
-                array(
-                    'name' => 'bill_to',
-                    'htmlOptions' => ['class' => 'text-center']
-                ),
-                array(
-                    'name' => 'ship_to',
-                    'htmlOptions' => ['class' => 'text-center']
-                ),*/
-                array(
-                    'name' => 'vat_percentage',
-                    'htmlOptions' => ['class' => 'text-center']
-                ),
-                array(
-                    'name' => 'vat_amount',
-                    'htmlOptions' => ['class' => 'text-center']
-                ),
-                array(
-                    'name' => 'discount_percentage',
-                    'htmlOptions' => ['class' => 'text-center']
-                ),
-                array(
-                    'name' => 'discount',
                     'htmlOptions' => ['class' => 'text-center']
                 ),
                 array(

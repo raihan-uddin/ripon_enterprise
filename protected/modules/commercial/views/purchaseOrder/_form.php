@@ -42,9 +42,6 @@ Yii::app()->clientScript->registerCoreScript("jquery.ui");
             <button type="button" class="btn btn-tool" data-card-widget="collapse">
                 <i class="fa fa-minus"></i>
             </button>
-            <!--            <button type="button" class="btn btn-tool" data-card-widget="remove">-->
-            <!--                <i class="fa fa-times"></i>-->
-            <!--            </button>-->
         </div>
     </div>
     <div class="card-body">
@@ -62,7 +59,7 @@ Yii::app()->clientScript->registerCoreScript("jquery.ui");
                         ?>
                     </div>
                     <span class="help-block"
-                          style="color: red; width: 100%"> <?php echo $form->error($model, 'order_type'); ?></span>
+                        style="color: red; width: 100%"> <?php echo $form->error($model, 'order_type'); ?></span>
                 </div>
                 <div class="form-group row">
                     <?php echo $form->labelEx($model, 'cash_due', ['class' => 'col-sm-4 col-form-label']); ?>
@@ -79,20 +76,17 @@ Yii::app()->clientScript->registerCoreScript("jquery.ui");
                         ?>
                     </div>
                     <span class="help-block"
-                          style="color: red; width: 100%"> <?php echo $form->error($model, 'cash_due'); ?></span>
+                        style="color: red; width: 100%"> <?php echo $form->error($model, 'cash_due'); ?></span>
                 </div>
-                <div class="form-group row" style="">
+                <div class="form-group row">
                     <?php echo $form->labelEx($model, 'date', ['class' => 'col-sm-4 col-form-label']); ?>
                     <div class="col-sm-8">
                         <div class="input-group" id="entry_date" data-target-input="nearest">
                             <?php echo $form->textField($model, 'date', array('class' => 'form-control datetimepicker-input', 'placeholder' => 'YYYY-MM-DD', 'value' => date('Y-m-d'))); ?>
-<!--                            <div class="input-group-append">-->
-<!--                                <div class="input-group-text"><i class="fa fa-calendar"></i></div>-->
-<!--                            </div>-->
                         </div>
                     </div>
                     <span class="help-block"
-                          style="color: red; width: 100%"> <?php echo $form->error($model, 'date'); ?></span>
+                        style="color: red; width: 100%"> <?php echo $form->error($model, 'date'); ?></span>
                 </div>
                 <div class="form-group row" style="display: none;">
                     <?php echo $form->labelEx($model, 'exp_receive_date', ['class' => 'col-sm-4 col-form-label']); ?>
@@ -105,7 +99,7 @@ Yii::app()->clientScript->registerCoreScript("jquery.ui");
                         </div>
                     </div>
                     <span class="help-block"
-                          style="color: red; width: 100%"> <?php echo $form->error($model, 'exp_receive_date'); ?></span>
+                        style="color: red; width: 100%"> <?php echo $form->error($model, 'exp_receive_date'); ?></span>
                 </div>
 
 
@@ -115,13 +109,13 @@ Yii::app()->clientScript->registerCoreScript("jquery.ui");
                         <?php echo $form->textField($model, 'bill_to', array('maxlength' => 255, 'class' => 'form-control',)); ?>
                     </div>
                     <span class="help-block"
-                          style="color: red; width: 100%"> <?php echo $form->error($model, 'bill_to'); ?></span>
+                        style="color: red; width: 100%"> <?php echo $form->error($model, 'bill_to'); ?></span>
                 </div>
 
             </div>
 
             <div class="col-xs-12 col-sm-12 col-md-4 col-lg-4">
-                <div class="form-group row" style="">
+                <div class="form-group row">
                     <?php echo $form->labelEx($model, 'supplier_id', ['class' => 'col-sm-4 col-form-label']); ?>
                     <div class="col-sm-8">
                         <div class="input-group" data-target-input="nearest">
@@ -235,7 +229,7 @@ Yii::app()->clientScript->registerCoreScript("jquery.ui");
                 </div>
 
 
-                <div class="form-group row" style="">
+                <div class="form-group row">
                     <?php echo $form->labelEx($model, 'contact_no', ['class' => 'col-sm-4 col-form-label']); ?>
                     <div class="col-sm-8">
                         <?php echo $form->textField($model, 'contact_no', array('maxlength' => 255, 'class' => 'form-control', 'readonly' => true, 'disabled' => true)); ?>
@@ -244,7 +238,7 @@ Yii::app()->clientScript->registerCoreScript("jquery.ui");
                           style="color: red; width: 100%"> <?php echo $form->error($model, 'contact_no'); ?></span>
                 </div>
 
-                <div class="form-group row" style="">
+                <div class="form-group row">
                     <?php echo $form->labelEx($model, 'address', ['class' => 'col-sm-4 col-form-label']); ?>
                     <div class="col-sm-8">
                         <?php echo $form->textField($model, 'address', array('maxlength' => 255, 'class' => 'form-control', 'readonly' => true, 'disabled' => true)); ?>
@@ -330,7 +324,7 @@ Yii::app()->clientScript->registerCoreScript("jquery.ui");
                     <span class="help-block"
                           style="color: red; width: 100%"> <?php echo $form->error($model, 'item_count'); ?></span>
                 </div>
-                <div class="form-group row" style="">
+                <div class="form-group row">
                     <?php echo $form->labelEx($model, 'total_amount', ['class' => 'col-sm-4 col-form-label']); ?>
                     <div class="col-sm-8">
                         <div class="input-group">
@@ -344,7 +338,7 @@ Yii::app()->clientScript->registerCoreScript("jquery.ui");
                           style="color: red; width: 100%"> <?php echo $form->error($model, 'total_amount'); ?></span>
                 </div>
 
-                <div class="form-group row" style="">
+                <div class="form-group row">
                     <?php echo $form->labelEx($model, 'vat', ['class' => 'col-sm-4 col-form-label']); ?>
                     <div class="col-sm-3">
                         <div class="input-group">
@@ -366,7 +360,7 @@ Yii::app()->clientScript->registerCoreScript("jquery.ui");
                           style="color: red; width: 100%"> <?php echo $form->error($model, 'vat_percentage'); ?></span>
                 </div>
 
-                <div class="form-group row" style="">
+                <div class="form-group row">
                     <?php echo $form->labelEx($model, 'grand_total', ['class' => 'col-sm-4 col-form-label']); ?>
                     <div class="col-sm-8">
                         <div class="input-group">
@@ -867,8 +861,23 @@ Yii::app()->clientScript->registerCoreScript("jquery.ui");
         let qty = parseFloat($(this).closest("tr").find(".temp_qty").val());
         let row_total = parseFloat(qty * unit_price);
         $(this).closest("tr").find(".row-total").val(row_total.toFixed(2));
+        changeUnitPriceForSameModel($(this).closest("tr").find(".tmep_model_id").val(), unit_price);
         calculateTotal();
     });
+
+    function changeUnitPriceForSameModel(model_id, price){
+        // find all same model id and change the price except the current row
+        $(".tmep_model_id").each(function(){
+            if($(this).val() == model_id){
+                if($(this).closest("tr").find(".temp_unit_price").val() != price){
+                    $(this).closest("tr").find(".temp_unit_price").val(price);
+                    let qty = parseFloat($(this).closest("tr").find(".temp_qty").val());
+                    let row_total = parseFloat(qty * price);
+                    $(this).closest("tr").find(".row-total").val(row_total.toFixed(2));
+                }
+            }
+        });
+    }
 
     function clearDynamicItem(product_sl_no) {
         let pp = '';
