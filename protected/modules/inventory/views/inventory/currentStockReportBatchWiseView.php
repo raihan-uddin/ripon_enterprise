@@ -46,16 +46,14 @@
                     </td>
                     <td style="text-align: center;"><?php echo $d->stock_in; ?></td>
                     <td style="text-align: center;">
-                        <?php
-                            if($d->product_sl_no){
-                                ?>
-                                <!-- remove from database -->
-                                <a href="#" data-model_id="<?= $model_id ?>" data-product_sl_no="<?= $d->product_sl_no ?>" class="btn btn-danger btn-sm removeProductSlFromCurrentStock" >
-                                    <i class="fa fa-trash"></i>
-                                </a>
-                                <?php
-                            }
-                        ?>
+                        <a href="#" 
+                            data-model_id="<?= $model_id ?>" 
+                            data-product_sl_no="<?= $d->product_sl_no ?>" 
+                            data-model_name = "<?= $product->model_name ?>"
+                            class="btn btn-danger btn-sm removeProductSlFromCurrentStock" >
+                            <!-- adjustment logo -->
+                            <i class="fa fa-trash"></i>
+                        </a>
                     </td>
                 </tr>
             <?php
@@ -80,28 +78,52 @@
         // body on #product_ledger .removeProductSlFromCurrentStock click
         $(document).on('click', '.removeProductSlFromCurrentStock', function (e) {
             e.preventDefault();
-            var model_id = $(this).data('model_id');
-            var product_sl_no = $(this).data('product_sl_no');
-            var url = '<?= Yii::app()->createUrl('inventory/inventory/removeProductSlFromCurrentStock') ?>';
-            var data = {model_id: model_id, product_sl_no: product_sl_no};
-            var that = $(this);
-
-            if (confirm(`Are you sure you want to remove this serial no from current stock? Serial No: ${product_sl_no}`)) {
-                var remarks = prompt("Please enter remarks for this action:");
-                // Check if user provided remarks or pressed "Cancel"
-                if (remarks !== null) {
-                            data.remarks = remarks; // Add remarks to the data being sent
-                    $.post(url, data, function (response) {
-                        if (response.status == 'success') {
-                            that.closest('tr').remove();
-                            toastr.success(response.message);
-                        } else {
-                            toastr.error(response.message);
-                        }
-                    }, 'json');
-                } else {
-                    toastr.info('Action canceled. No remarks provided.');
+            let model_id = $(this).data('model_id');
+            let product_sl_no = $(this).data('product_sl_no');
+            let url = '<?= Yii::app()->createUrl('inventory/inventory/removeProductSlFromCurrentStock') ?>';
+            let data = {model_id: model_id, product_sl_no: product_sl_no};
+            let that = $(this);
+            let stock_given = 0;
+            if (!product_sl_no) {
+                var currentStock = prompt("Please enter current stock quantity for this product:");
+                // check if numeric value is given
+                if (isNaN(currentStock)) {
+                    toastr.error('Invalid stock quantity provided. Please provide a numeric value.');
+                    return;
                 }
+                if (currentStock !== null) {
+                    data.physical_stock = currentStock;
+                    data.modify_stock = 1;
+                    stock_given = currentStock;
+                } else {
+                    toastr.info('Action canceled. No current stock quantity provided.');
+                    return;
+                }
+            }
+
+            var remarks = prompt("Please enter remarks for this action:");
+            if (remarks !== null) {
+                data.remarks = remarks;
+            } else {
+                toastr.info('Action canceled. No remarks provided.');
+                return;
+            }
+            
+            let message = `Are you sure you want to remove this serial no from current stock? Serial No: ${product_sl_no}`;
+            if (!product_sl_no) {
+                message = `Are you sure you want adjust the stock for this product? Product Name: ${$(this).data('model_name')}. Current Stock: ${stock_given}`;
+            }
+
+            if (confirm(message)) {
+                $.post(url, data, function (response) {
+                    if (response.status == 'success') {
+                        if(response.remove_rows == 1)
+                            that.closest('tr').remove();
+                        toastr.success(response.message);
+                    } else {
+                        toastr.error(response.message);
+                    }
+                }, 'json');
             }
         });
     });

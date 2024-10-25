@@ -485,36 +485,68 @@ class InventoryController extends RController
     {
         $model_id = isset($_POST['model_id']) ? $_POST['model_id'] : 0;
         $product_sl_no = isset($_POST['product_sl_no']) ? $_POST['product_sl_no'] : "";
+        $physical_stock = isset($_POST['physical_stock']) ? $_POST['physical_stock'] : 0;
+        $modify_stock_flag = isset($_POST['modify_stock']) ? $_POST['modify_stock'] : 0;
         $remarks = isset($_POST['remarks']) ? $_POST['remarks'] : "";
         $criteria = new CDbCriteria();
-        $criteria->select = "SUM(stock_in - stock_out) as stock_in";
-        $criteria->addColumnCondition(['model_id' => $model_id, 'product_sl_no' => $product_sl_no]);
+        $criteria->select = "SUM(stock_in - stock_out) as closing_stock";
+        $criteria->addColumnCondition(['model_id' => $model_id]);
+        if($product_sl_no){
+            $criteria->addColumnCondition(['product_sl_no' => $product_sl_no]);
+        }
         $data = Inventory::model()->findByAttributes([], $criteria);
-        // if stock is > 0  then  new record will be inserted with stock_out = stock_in
+        
+        $message = "Adjustment Done. Please Reopen the modal for change!";
+        $remove_rows= false;
         if($data){
             $model = new Inventory();
             $model->model_id = $model_id;
             $model->date = date('Y-m-d');
             $model->challan_no = Inventory::maxSlNo()+1;
             $model->product_sl_no = $product_sl_no;
-            if($data->stock_in > 0){
-                $model->stock_out = $data->stock_in;
+            if($modify_stock_flag > 0){
+                if($data->closing_stock > $physical_stock){
+                    $model->stock_out = $data->closing_stock - $physical_stock;
+                } else {
+                    $model->stock_in = $physical_stock - $data->closing_stock;
+                }
             } else {
-                $model->stock_in = abs($data->stock_in);
+                if($data->closing_stock > 0){
+                    $model->stock_out = $data->closing_stock;
+                } else {
+                    $model->stock_in = abs($data->closing_stock);
+                }
+                $remove_rows = 1;
             }
+            
             $model->stock_status = Inventory::MANUAL_ENTRY;
-            // $model->source_id = Inventory::SOURCE_DEFAULT;
             $product = ProdModels::model()->findByPk($model_id);
             $model->sell_price = $product->sell_price;
             $model->purchase_price = $product->purchase_price;
             $model->row_total = $model->stock_in > 0 ? round($model->stock_in * $model->sell_price, 2) : round($model->stock_out * $model->sell_price, 2);
             $model->remarks = $remarks ? $remarks :  "Serial No: $product_sl_no removed from current stock! ";
-            $model->save();
+            if($model->stock_in > 0 || $model->stock_out > 0){
+                $model->save();
+                $model->save();
+                echo CJSON::encode(array(
+                    'status' => 'success',
+                    'remove_rows' => $remove_rows,
+                    'message' => $message
+                ));
+            } else {
+                echo CJSON::encode(array(
+                    'status' => 'error',
+                    'message' => 'No stock adjustment found!',
+                    'remove_rows' => false,
+                ));
+            }
+        } else {
+            echo CJSON::encode(array(
+                'status' => 'error',
+                'message' => 'No data found!',
+                'remove_rows' => false,
+            ));
         }
-        echo CJSON::encode(array(
-            'status' => 'success',
-            'message' => 'Product SL No: ' . $product_sl_no . ' removed successfully!',
-        ));
         
         Yii::app()->end();
     }
