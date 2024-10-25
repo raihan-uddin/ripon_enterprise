@@ -18,6 +18,7 @@ class InventoryController extends RController
             'rights
             -VoucherPreview
             -Jquery_showprodSlNoSearch
+            -removeProductSlFromCurrentStock
             -Jquery_getStockQty',
         );
     }
@@ -480,6 +481,44 @@ class InventoryController extends RController
         Yii::app()->end();
     }
 
+    public function actionRemoveProductSlFromCurrentStock()
+    {
+        $model_id = isset($_POST['model_id']) ? $_POST['model_id'] : 0;
+        $product_sl_no = isset($_POST['product_sl_no']) ? $_POST['product_sl_no'] : "";
+        $remarks = isset($_POST['remarks']) ? $_POST['remarks'] : "";
+        $criteria = new CDbCriteria();
+        $criteria->select = "SUM(stock_in - stock_out) as stock_in";
+        $criteria->addColumnCondition(['model_id' => $model_id, 'product_sl_no' => $product_sl_no]);
+        $data = Inventory::model()->findByAttributes([], $criteria);
+        // if stock is > 0  then  new record will be inserted with stock_out = stock_in
+        if($data){
+            $model = new Inventory();
+            $model->model_id = $model_id;
+            $model->date = date('Y-m-d');
+            $model->challan_no = Inventory::maxSlNo()+1;
+            $model->product_sl_no = $product_sl_no;
+            if($data->stock_in > 0){
+                $model->stock_out = $data->stock_in;
+            } else {
+                $model->stock_in = abs($data->stock_in);
+            }
+            $model->stock_status = Inventory::MANUAL_ENTRY;
+            // $model->source_id = Inventory::SOURCE_DEFAULT;
+            $product = ProdModels::model()->findByPk($model_id);
+            $model->sell_price = $product->sell_price;
+            $model->purchase_price = $product->purchase_price;
+            $model->row_total = $model->stock_in > 0 ? round($model->stock_in * $model->sell_price, 2) : round($model->stock_out * $model->sell_price, 2);
+            $model->remarks = $remarks ? $remarks :  "Serial No: $product_sl_no removed from current stock! ";
+            $model->save();
+        }
+        echo CJSON::encode(array(
+            'status' => 'success',
+            'message' => 'Product SL No: ' . $product_sl_no . ' removed successfully!',
+        ));
+        
+        Yii::app()->end();
+    }
+
     public function actionFixPurchasePrice()
     {
         $criteria = new CDbCriteria();
@@ -567,7 +606,6 @@ class InventoryController extends RController
             }
             echo "Total Fixed: $total_fix";
         }
-
     }
 
 }

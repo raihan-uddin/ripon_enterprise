@@ -157,7 +157,7 @@ echo "</div>";
                     <td style="text-align: center;"><?php echo $sl++; ?></td>
                     <td style="text-align: left;">
                         <a href="#"
-                           onclick="currentStockPreview(this, <?= $dmr->model_id > 0 ? $dmr->model_id : 0 ?>);">
+                            onclick="currentStockPreview(this, <?= $dmr->model_id > 0 ? $dmr->model_id : 0 ?>);">
                             <?php echo $dmr->model_name; ?>
                         </a>
                     </td>
@@ -216,7 +216,7 @@ echo "</div>";
 
 <!--        modal-->
 <div class="modal fade" id="information-modal" tabindex="-1" data-backdrop="static" role="dialog"
-     aria-labelledby="information-modal" aria-hidden="true">
+    aria-labelledby="information-modal" aria-hidden="true">
     <div class="modal-dialog modal-dialog-centered modal-xl" role="document">
         <div class="modal-content">
             <div class="modal-header">
@@ -234,6 +234,25 @@ echo "</div>";
         </div>
     </div>
 </div>
+
+<!-- modal for stock qty modify -->
+<div class="modal fade" id="stockQtyModifyModal" tabindex="-1" role="dialog" aria-labelledby="stockQtyModifyModal"
+    aria-hidden="true">
+    <div class="modal-dialog modal-dialog-centered" role="document">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title">Stock Quantity Modify</h5>
+                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                    <span aria-hidden="true">&times;</span>
+                </button>
+            </div>
+            <div class="modal-body">
+                <p>Loading...</p> <!-- this will be replaced by the response from the server -->
+            </div>
+        </div>
+    </div>
+</div>
+
 
 
 <style>

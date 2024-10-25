@@ -3,7 +3,7 @@
 ?>
 <div class='printAllTableForThisReport table-responsive'>
     <table class="final-result table table-sm table-responsive-sm table-bordered  table-striped table-hover"
-           id="table-1"> <!--summaryTab-->
+           id="table-1 product_ledger"> <!--summaryTab-->
         <thead>
         <tr>
             <td colspan="9"
@@ -20,6 +20,7 @@
             <th style="width: 5%;">SL NO</th>
             <th>Product Serial NO</th>
             <th style="width: 10%;">Stock Qty</th>
+            <th>Action</th>
         </tr>
         </thead>
         <tbody>
@@ -44,6 +45,18 @@
                         <?php echo $d->product_sl_no ?>
                     </td>
                     <td style="text-align: center;"><?php echo $d->stock_in; ?></td>
+                    <td style="text-align: center;">
+                        <?php
+                            if($d->product_sl_no){
+                                ?>
+                                <!-- remove from database -->
+                                <a href="#" data-model_id="<?= $model_id ?>" data-product_sl_no="<?= $d->product_sl_no ?>" class="btn btn-danger btn-sm removeProductSlFromCurrentStock" >
+                                    <i class="fa fa-trash"></i>
+                                </a>
+                                <?php
+                            }
+                        ?>
+                    </td>
                 </tr>
             <?php
             endforeach;
@@ -54,7 +67,42 @@
         <tr>
             <th colspan="2">Total</th>
             <th style="text-align: center;"><?= $total ?></th>
+            <th></th>
         </tr>
         </tfoot>
     </table>
 </div>
+<script>
+    $(document).ready(function () {
+        // Clear any previous bindings to prevent duplicate requests
+        $(document).off('click', '.removeProductSlFromCurrentStock');
+
+        // body on #product_ledger .removeProductSlFromCurrentStock click
+        $(document).on('click', '.removeProductSlFromCurrentStock', function (e) {
+            e.preventDefault();
+            var model_id = $(this).data('model_id');
+            var product_sl_no = $(this).data('product_sl_no');
+            var url = '<?= Yii::app()->createUrl('inventory/inventory/removeProductSlFromCurrentStock') ?>';
+            var data = {model_id: model_id, product_sl_no: product_sl_no};
+            var that = $(this);
+
+            if (confirm(`Are you sure you want to remove this serial no from current stock? Serial No: ${product_sl_no}`)) {
+                var remarks = prompt("Please enter remarks for this action:");
+                // Check if user provided remarks or pressed "Cancel"
+                if (remarks !== null) {
+                            data.remarks = remarks; // Add remarks to the data being sent
+                    $.post(url, data, function (response) {
+                        if (response.status == 'success') {
+                            that.closest('tr').remove();
+                            toastr.success(response.message);
+                        } else {
+                            toastr.error(response.message);
+                        }
+                    }, 'json');
+                } else {
+                    toastr.info('Action canceled. No remarks provided.');
+                }
+            }
+        });
+    });
+</script>
