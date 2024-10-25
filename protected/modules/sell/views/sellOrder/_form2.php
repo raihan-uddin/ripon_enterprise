@@ -44,14 +44,11 @@ Yii::app()->clientScript->registerCoreScript("jquery.ui");
     <div class="card-body">
         <div class="row">
             <div class="col-xs-12 col-sm-12 col-md-4 col-lg-4">
-                <div class="form-group row" style="">
+                <div class="form-group row" >
                     <?php echo $form->labelEx($model, 'date', ['class' => 'col-sm-4 col-form-label']); ?>
                     <div class="col-sm-8">
                         <div class="input-group" id="entry_date" data-target-input="nearest">
                             <?php echo $form->textField($model, 'date', array('class' => 'form-control datetimepicker-input', 'placeholder' => 'YYYY-MM-DD', 'value' => $model->date)); ?>
-                            <!--<div class="input-group-append">
-                                <div class="input-group-text"><i class="fa fa-calendar"></i></div>
-                            </div>-->
                         </div>
                     </div>
                     <span class="help-block"
@@ -83,7 +80,7 @@ Yii::app()->clientScript->registerCoreScript("jquery.ui");
                         ?>
                     </div>
                     <span class="help-block"
-                          style="color: red; width: 100%"> <?php echo $form->error($model, 'cash_due'); ?></span>
+                        style="color: red; width: 100%"> <?php echo $form->error($model, 'cash_due'); ?></span>
                 </div>
                 <div class="form-group row" style="display: none;">
                     <?php echo $form->labelEx($model, 'exp_delivery_date', ['class' => 'col-sm-4 col-form-label']); ?>
@@ -96,7 +93,7 @@ Yii::app()->clientScript->registerCoreScript("jquery.ui");
                         </div>
                     </div>
                     <span class="help-block"
-                          style="color: red; width: 100%"> <?php echo $form->error($model, 'exp_delivery_date'); ?></span>
+                        style="color: red; width: 100%"> <?php echo $form->error($model, 'exp_delivery_date'); ?></span>
                 </div>
             </div>
 
@@ -105,15 +102,15 @@ Yii::app()->clientScript->registerCoreScript("jquery.ui");
 
             ?>
             <div class="col-xs-12 col-sm-12 col-md-4 col-lg-4">
-                <div class="form-group row" style="">
+                <div class="form-group row" >
                     <?php echo $form->labelEx($model, 'customer_id', ['class' => 'col-sm-4 col-form-label']); ?>
                     <div class="col-sm-8">
                         <input type="text" id="customer_id_text" class="form-control" readonly
-                               value="<?= $customer->company_name ?>">
+                            value="<?= $customer->company_name ?>">
                         <?php echo $form->hiddenField($model, 'customer_id', array('maxlength' => 255, 'class' => 'form-control')); ?>
                     </div>
                     <span class="help-block"
-                          style="color: red; width: 100%"> <?php echo $form->error($model, 'customer_id'); ?></span>
+                            style="color: red; width: 100%"> <?php echo $form->error($model, 'customer_id'); ?></span>
 
                     <script>
                         $(document).ready(function () {
@@ -154,7 +151,7 @@ Yii::app()->clientScript->registerCoreScript("jquery.ui");
                         <?php echo $form->textField($model, 'city', array('maxlength' => 255, 'class' => 'form-control', 'readonly' => true, 'disabled' => true, 'value' => $customer->city)); ?>
                     </div>
                     <span class="help-block"
-                          style="color: red; width: 100%"> <?php echo $form->error($model, 'qty'); ?></span>
+                        style="color: red; width: 100%"> <?php echo $form->error($model, 'qty'); ?></span>
                 </div>
 
                 <div class="form-group row" style="display: none;">
@@ -163,10 +160,10 @@ Yii::app()->clientScript->registerCoreScript("jquery.ui");
                         <?php echo $form->textField($model, 'state', array('maxlength' => 255, 'class' => 'form-control', 'readonly' => true, 'disabled' => true, 'value' => $customer->state)); ?>
                     </div>
                     <span class="help-block"
-                          style="color: red; width: 100%"> <?php echo $form->error($model, 'state'); ?></span>
+                        style="color: red; width: 100%"> <?php echo $form->error($model, 'state'); ?></span>
                 </div>
 
-                <div class="form-group row" style="">
+                <div class="form-group row" >
                     <?php echo $form->labelEx($model, 'total_amount', ['class' => 'col-sm-4 col-form-label']); ?>
                     <div class="col-sm-8">
                         <div class="input-group">
@@ -177,10 +174,10 @@ Yii::app()->clientScript->registerCoreScript("jquery.ui");
                         </div>
                     </div>
                     <span class="help-block"
-                          style="color: red; width: 100%"> <?php echo $form->error($model, 'total_amount'); ?></span>
+                        style="color: red; width: 100%"> <?php echo $form->error($model, 'total_amount'); ?></span>
                 </div>
 
-                <div class="form-group row" style="">
+                <div class="form-group row" >
                     <?php echo $form->labelEx($model, 'vat', ['class' => 'col-sm-4 col-form-label']); ?>
                     <div class="col-sm-3">
                         <div class="input-group">
@@ -205,7 +202,7 @@ Yii::app()->clientScript->registerCoreScript("jquery.ui");
 
 
             <div class="col-xs-12 col-sm-12 col-md-4 col-lg-4">
-                <div class="form-group row" style="">
+                <div class="form-group row" >
                     <?php echo $form->labelEx($model, 'delivery_charge', ['class' => 'col-sm-4 col-form-label']); ?>
                     <div class="col-sm-8">
                         <?php echo $form->textField($model, 'delivery_charge', array('maxlength' => 255, 'class' => 'form-control', 'onkeyup' => 'addDeliveryCharge();')); ?>
@@ -214,7 +211,7 @@ Yii::app()->clientScript->registerCoreScript("jquery.ui");
                           style="color: red; width: 100%"> <?php echo $form->error($model, 'delivery_charge'); ?></span>
                 </div>
 
-                <div class="form-group row" style="">
+                <div class="form-group row" >
                     <?php echo $form->labelEx($model, 'discount_amount', ['class' => 'col-sm-4 col-form-label']); ?>
                     <div class="col-sm-8">
                         <?php echo $form->textField($model, 'discount_amount', array('maxlength' => 255, 'class' => 'form-control', 'onkeyup' => 'addDiscount();')); ?>
@@ -233,7 +230,7 @@ Yii::app()->clientScript->registerCoreScript("jquery.ui");
                 </div>
 
 
-                <div class="form-group row" style="">
+                <div class="form-group row" >
                     <?php echo $form->labelEx($model, 'grand_total', ['class' => 'col-sm-4 col-form-label']); ?>
                     <div class="col-sm-8">
                         <div class="input-group">
@@ -261,9 +258,6 @@ Yii::app()->clientScript->registerCoreScript("jquery.ui");
                     <button type="button" class="btn btn-tool" data-card-widget="collapse">
                         <i class="fa fa-minus"></i>
                     </button>
-                    <!--            <button type="button" class="btn btn-tool" data-card-widget="remove">-->
-                    <!--                <i class="fa fa-times"></i>-->
-                    <!--            </button>-->
                 </div>
             </div>
             <div class="card-body">
@@ -276,7 +270,6 @@ Yii::app()->clientScript->registerCoreScript("jquery.ui");
                                     <?php
                                     echo CHtml::link(' <i class="fa fa-plus"></i>', "", // the link for open the dialog
                                         array(
-//                                    'class' => '',
                                             'onclick' => "{addProdModel(); $('#dialogAddProdModel').dialog('open');}"));
                                     ?>
 
@@ -330,8 +323,6 @@ Yii::app()->clientScript->registerCoreScript("jquery.ui");
                                                                 setTimeout(\"$('#dialogAddProdModel').dialog('close') \",1000);
                                                                 $('#SellOrderDetails_model_id').val(data.value);
                                                                 $('#model_id_text').val(data.label);
-//                                                                $('#SellOrderDetails_unit_id').val(data.unit_id);
-//                                                                $('#product_unit_text').html($('#SellOrderDetails_unit_id option:selected').text());
                                                             }
                                                         }",
                                             ))
