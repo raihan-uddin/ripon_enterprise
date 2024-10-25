@@ -158,8 +158,8 @@ class SellReturn extends CActiveRecord
 
         $dateTime = date('Y-m-d H:i:s');
 
-        $businessId = Yii::app()->user->getState('business_id');
-        $branchId = Yii::app()->user->getState('branch_id');
+        $businessId = Yii::app()->user->getState('business_id') ?: null;
+        $branchId = Yii::app()->user->getState('branch_id') ?: null;
 
         $this->business_id = $businessId;
         $this->branch_id = $branchId;

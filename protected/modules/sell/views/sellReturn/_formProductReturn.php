@@ -42,15 +42,12 @@ Yii::app()->clientScript->registerCoreScript("jquery.ui");
 
     <div class="card card-primary">
         <div class="card-header">
-            <h3 class="card-title"><?php echo($model->isNewRecord ? 'Create Return/Replacement' : 'Update Return/Replacement'); ?></h3>
+            <h3 class="card-title"><?php echo($model->isNewRecord ? 'Create Return / Replacement / Warranty' : 'Update Return / Replacement / Warranty'); ?></h3>
 
             <div class="card-tools">
                 <button type="button" class="btn btn-tool" data-card-widget="collapse">
                     <i class="fa fa-minus"></i>
                 </button>
-                <!--            <button type="button" class="btn btn-tool" data-card-widget="remove">-->
-                <!--                <i class="fa fa-times"></i>-->
-                <!--            </button>-->
             </div>
         </div>
         <div class="card-body">
@@ -87,9 +84,9 @@ Yii::app()->clientScript->registerCoreScript("jquery.ui");
                             style="color: red; width: 100%"> <?php echo $form->error($model, 'return_date'); ?></span>
                 </div>
 
-                <div class="form-group col-md-3 row">
-                    <?php echo $form->labelEx($model, 'customer_id', ['class' => 'col-sm-4 col-form-label']); ?>
-                    <div class="col-sm-8">
+                <div class="form-group col-md-4 row">
+                    <?php echo $form->labelEx($model, 'customer_id', ['class' => 'col-sm-3 col-form-label']); ?>
+                    <div class="col-sm-9">
                         <div class="input-group" data-target-input="nearest">
                             <input type="text" id="customer_id_text" class="form-control">
                             <?php echo $form->hiddenField($model, 'customer_id', array('maxlength' => 255, 'class' => 'form-control')); ?>
@@ -207,7 +204,7 @@ Yii::app()->clientScript->registerCoreScript("jquery.ui");
                 </div>
                 <div class="card-body">
                     <div class="row">
-                        <div class="form-group col-sm-12 col-md-2">
+                        <div class="form-group col-sm-12 col-md-3">
                             <?php echo $form->labelEx($model2, 'model_id'); ?>
                             <div class="input-group" data-target-input="nearest">
                                 <div class="input-group-prepend">
@@ -231,11 +228,8 @@ Yii::app()->clientScript->registerCoreScript("jquery.ui");
                                             <div class="ajaxLoaderFormLoad" style="display: none;"><img
                                                         src="<?php echo Yii::app()->theme->baseUrl; ?>/images/ajax-loader.gif"/>
                                             </div>
-
                                         </div>
-
                                         <?php $this->endWidget(); ?>
-
                                         <script type="text/javascript">
                                             function addProdModel() {
                                                 <?php
@@ -282,7 +276,7 @@ Yii::app()->clientScript->registerCoreScript("jquery.ui");
                                 </div>
                             </div>
                             <span class="help-block"
-                                  style="color: red; width: 100%"> <?php echo $form->error($model, 'model_id'); ?></span>
+                                style="color: red; width: 100%"> <?php echo $form->error($model, 'model_id'); ?></span>
 
                             <script>
                                 $(document).ready(function () {
@@ -342,11 +336,9 @@ Yii::app()->clientScript->registerCoreScript("jquery.ui");
                                         return listItem.appendTo(ul);
                                     };
                                 });
-
-
                             </script>
                         </div>
-                        <div class="form-group col-sm-12 col-md-2">
+                        <div class="form-group col-sm-12 col-md-3">
                             <?php echo $form->labelEx($model, 'product_sl_no'); ?>
 
                             <div class="input-group" data-target-input="nearest">
@@ -659,6 +651,7 @@ Yii::app()->clientScript->registerCoreScript("jquery.ui");
                                     // $("#information-modal .modal-body").html(data.soReportInfo);  
                                 }else{
                                     //$("#formResultError").html("Data not saved. Please solve the following errors.");
+                                    toastr.error("Data not saved. Please solve the following errors.");
                                     $.each(data, function(key, val) {
                                         $("#bom-form #"+key+"_em_").html(""+val+"");                                                    
                                         $("#bom-form #"+key+"_em_").show();
@@ -750,7 +743,8 @@ Yii::app()->clientScript->registerCoreScript("jquery.ui");
 
     var picker = new Lightpick({
         field: document.getElementById('entry_date'),
-        minDate: moment(),
+        singleDate: true,
+        format: 'YYYY-MM-DD',
         onSelect: function (date) {
             document.getElementById('SellReturn_return_date').value = date.format('YYYY-MM-DD');
         }
@@ -865,7 +859,7 @@ Yii::app()->clientScript->registerCoreScript("jquery.ui");
         let html = `<tr class="item">
                 <td class="serial"></td>
                 <td>
-                     <input type="hidden" name="SellReturnDetails[model_id][]" value="${model_id}">
+                    <input type="hidden" name="SellReturnDetails[model_id][]" value="${model_id}">
                     ${$('#model_id_text').val()}
                     <br>
                 </td>

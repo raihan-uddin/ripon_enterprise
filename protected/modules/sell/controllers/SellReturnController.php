@@ -107,7 +107,8 @@ class SellReturnController extends RController
 					}
 				}catch(Exception $e){
 					$transaction->rollback();
-					echo json_encode(['status' => 'error', 'message' => 'Product return creation failed']);
+					echo json_encode(['status' => 'error', 'message' => 'Product return creation failed' . $e->getMessage()]);
+					Yii::app()->end();
 				}
 			}
 		}
