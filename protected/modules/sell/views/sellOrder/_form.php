@@ -31,15 +31,12 @@ Yii::app()->clientScript->registerCoreScript("jquery.ui");
             <button type="button" class="btn btn-tool" data-card-widget="collapse">
                 <i class="fa fa-minus"></i>
             </button>
-            <!--            <button type="button" class="btn btn-tool" data-card-widget="remove">-->
-            <!--                <i class="fa fa-times"></i>-->
-            <!--            </button>-->
         </div>
     </div>
     <div class="card-body">
         <div class="row">
             <div class="col-xs-12 col-sm-12 col-md-4 col-lg-4">
-                <div class="form-group row" style="">
+                <div class="form-group row" >
                     <?php echo $form->labelEx($model, 'date', ['class' => 'col-sm-4 col-form-label']); ?>
                     <div class="col-sm-8">
                         <div class="input-group" id="entry_date" data-target-input="nearest">
@@ -100,7 +97,7 @@ Yii::app()->clientScript->registerCoreScript("jquery.ui");
             </div>
 
             <div class="col-xs-12 col-sm-12 col-md-4 col-lg-4">
-                <div class="form-group row" style="">
+                <div class="form-group row" >
                     <?php echo $form->labelEx($model, 'customer_id', ['class' => 'col-sm-4 col-form-label']); ?>
                     <div class="col-sm-8">
                         <div class="input-group" data-target-input="nearest">
@@ -222,7 +219,7 @@ Yii::app()->clientScript->registerCoreScript("jquery.ui");
                           style="color: red; width: 100%"> <?php echo $form->error($model, 'qty'); ?></span>
                 </div>
 
-                <div class="form-group row" style="">
+                <div class="form-group row" >
                     <?php echo $form->labelEx($model, 'total_amount', ['class' => 'col-sm-4 col-form-label']); ?>
                     <div class="col-sm-8">
                         <div class="input-group">
@@ -236,7 +233,7 @@ Yii::app()->clientScript->registerCoreScript("jquery.ui");
                           style="color: red; width: 100%"> <?php echo $form->error($model, 'total_amount'); ?></span>
                 </div>
 
-                <div class="form-group row" style="">
+                <div class="form-group row" >
                     <?php echo $form->labelEx($model, 'vat', ['class' => 'col-sm-4 col-form-label']); ?>
                     <div class="col-sm-3">
                         <div class="input-group">
@@ -271,7 +268,7 @@ Yii::app()->clientScript->registerCoreScript("jquery.ui");
                 </div>
 
 
-                <div class="form-group row" style="">
+                <div class="form-group row" >
                     <?php echo $form->labelEx($model, 'delivery_charge', ['class' => 'col-sm-4 col-form-label']); ?>
                     <div class="col-sm-8">
                         <?php echo $form->textField($model, 'delivery_charge', array('maxlength' => 255, 'class' => 'form-control', 'onkeyup' => 'addDeliveryCharge();')); ?>
@@ -280,7 +277,7 @@ Yii::app()->clientScript->registerCoreScript("jquery.ui");
                           style="color: red; width: 100%"> <?php echo $form->error($model, 'delivery_charge'); ?></span>
                 </div>
 
-                <div class="form-group row" style="">
+                <div class="form-group row" >
                     <?php echo $form->labelEx($model, 'discount_amount', ['class' => 'col-sm-4 col-form-label']); ?>
                     <div class="col-sm-8">
                         <?php echo $form->textField($model, 'discount_amount', array('maxlength' => 255, 'class' => 'form-control', 'onkeyup' => 'addDiscount();')); ?>
@@ -289,7 +286,7 @@ Yii::app()->clientScript->registerCoreScript("jquery.ui");
                           style="color: red; width: 100%"> <?php echo $form->error($model, 'discount_amount'); ?></span>
                 </div>
 
-                <div class="form-group row" style="">
+                <div class="form-group row" >
                     <?php echo $form->labelEx($model, 'grand_total', ['class' => 'col-sm-4 col-form-label']); ?>
                     <div class="col-sm-8">
                         <div class="input-group">
