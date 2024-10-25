@@ -114,7 +114,7 @@
                 if ($showProfitLossSummary) {
                     $footerColspan = 6;
                 }
-                if ($data) {
+                if ($item) {
                     $customer = Customers::model()->findByPk($item->customer_id);
                     ?>
                     <div style="width: 100%; min-height: 80px;">
@@ -421,9 +421,13 @@
                             </div>
                         </div>
                         <div style="height: 50px; width: 100%; float: left; clear: right; margin-top: 40px;">
-                            <div style="width: 50%; float: left;clear:right; text-decoration: overline; margin: auto; display: flex;  justify-content: center;  align-items: center;">
-                                <div><?= date('F d, Y') ?></div>
+                            <div style="width: 50%; float: left; clear: right; margin: auto; display: flex; flex-direction: column; justify-content: center; align-items: center;">
+                                <div style="font-weight: bold;">
+                                    <?= User::model()->nameOfThis($item->created_by) ?>
+                                </div>
+                                <div style="text-decoration: overline;"><?= date('F d, Y') ?></div>
                             </div>
+
                             <div style="width: 50%; float: left;clear:right; text-decoration: overline; margin: auto; display: flex;  justify-content: center;  align-items: center;">
                                 <div>(&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;/&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;/&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
                                     )

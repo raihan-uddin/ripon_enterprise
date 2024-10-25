@@ -121,7 +121,7 @@ class User extends CActiveRecord
                 'condition'=>'superuser=1',
             ),
             'notsafe'=>array(
-            	'select' => 'id, username, password, email, activkey, create_at, lastvisit_at, superuser, status',
+				'select' => 'id, username, password, email, activkey, create_at, lastvisit_at, superuser, status',
             ),
         );
     }
@@ -175,7 +175,7 @@ class User extends CActiveRecord
 
         return new CActiveDataProvider(get_class($this), array(
             'criteria'=>$criteria,
-        	'pagination'=>array(
+			'pagination'=>array(
 				'pageSize'=>Yii::app()->getModule('user')->user_page_size,
 			),
         ));
