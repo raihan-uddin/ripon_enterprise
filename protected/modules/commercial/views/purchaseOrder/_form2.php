@@ -879,14 +879,31 @@ Yii::app()->clientScript->registerCoreScript("jquery.ui");
         $(this).closest("tr").find(".row-total").val(row_total.toFixed(2));
         calculateTotal();
     });
+
+
     // on temp_unit_price change/keyup event calculate row total
     $(document).on("change keyup", ".temp_unit_price", function () {
         let unit_price = parseFloat($(this).val());
         let qty = parseFloat($(this).closest("tr").find(".temp_qty").val());
         let row_total = parseFloat(qty * unit_price);
         $(this).closest("tr").find(".row-total").val(row_total.toFixed(2));
+        changeUnitPriceForSameModel($(this).closest("tr").find(".tmep_model_id").val(), unit_price);
         calculateTotal();
     });
+
+    function changeUnitPriceForSameModel(model_id, price){
+        // find all same model id and change the price except the current row
+        $(".tmep_model_id").each(function(){
+            if($(this).val() == model_id){
+                if($(this).closest("tr").find(".temp_unit_price").val() != price){
+                    $(this).closest("tr").find(".temp_unit_price").val(price);
+                    let qty = parseFloat($(this).closest("tr").find(".temp_qty").val());
+                    let row_total = parseFloat(qty * price);
+                    $(this).closest("tr").find(".row-total").val(row_total.toFixed(2));
+                }
+            }
+        });
+    }
 
 
     function clearDynamicItem(product_sl_no) {
