@@ -346,7 +346,7 @@ Yii::app()->clientScript->registerCoreScript("jquery.ui");
                             <div class="input-group" data-target-input="nearest">
                                 <input type="text" id="product_sl_no" class="form-control">
                                 <div class="input-group-append">
-                                    <button class="btn btn-warning btn-sm hidden" type="button" onclick="verifyProductSlNo($('#product_sl_no').text())">
+                                    <button class="btn btn-warning btn-sm" type="button" onclick="verifyProductSlNo($('#product_sl_no').val())">
                                         Verify
                                     </button>
                                     <span class="input-group-text" onclick="resetProductSlNo()">
@@ -372,7 +372,7 @@ Yii::app()->clientScript->registerCoreScript("jquery.ui");
                                                 if (data.length === 1 && data[0].id) {
                                                     $('#model_id_text').val(data[0].label);
                                                     $('#replace_model_id_text').val(data[0].label);
-                                                    $('#product_sl_no').val(data[0].product_sl_no);
+                                                    $('#product_sl_no').val(data[0].product_sl_no).change();
                                                     $('#SellReturnDetails_qty').val(1).change();
 
                                                     $("#replace_model_id_text").val(data[0].label);
@@ -390,9 +390,9 @@ Yii::app()->clientScript->registerCoreScript("jquery.ui");
                                         delay: 700,
                                         select: function (event, ui) {
                                             $('#model_id_text').val(ui.item.label);
-                                            $('#product_sl_no').val(ui.item.product_sl_no);
+                                            $('#product_sl_no').val(ui.item.product_sl_no).change();
                                             $('#SellReturnDetails_model_id').val(ui.item.id);
-                                            $('#SellReturnDetails_qty').val(1);
+                                            $('#SellReturnDetails_qty').val(1).change();
 
                                             $("#replace_model_id_text").val(ui.item.label);
                                             $("#replace_product_sl_no").val(ui.item.replace_product_sl_no);
@@ -479,7 +479,7 @@ Yii::app()->clientScript->registerCoreScript("jquery.ui");
                                                 // Check if there's only one item and trigger select event
                                                 if (data.length === 1 && data[0].id) {
                                                     $('#replace_model_id_text').val(data[0].value);
-                                                    $('#SellReturnDetails_replace_model_id').val(data[0].id);
+                                                    $('#SellReturnDetails_replace_model_id').val(data[0].id).change();
                                                     // Trigger select event
                                                     $('#replace_model_id_text').autocomplete('option', 'select').call($('#replace_model_id_text')[0], null, {
                                                         item: data[0]
@@ -530,9 +530,6 @@ Yii::app()->clientScript->registerCoreScript("jquery.ui");
                             <div class="input-group" data-target-input="nearest">
                                 <input type="text" id="replace_product_sl_no" class="form-control">
                                 <div class="input-group-append">
-                                    <button class="btn btn-warning btn-sm hidden" type="button" onclick="verifyProductSlNo($('#replace_product_sl_no').text())">
-                                        Verify
-                                    </button>
                                     <span class="input-group-text" onclick="resetProductSlNo()">
                                         <i class="fa fa-refresh"></i>
                                     </span>
@@ -555,8 +552,8 @@ Yii::app()->clientScript->registerCoreScript("jquery.ui");
                                                 // Check if there's only one item and trigger select event
                                                 if (data.length === 1 && data[0].id) {
                                                     $('#model_id_text').val(data[0].label);
-                                                    $('#replace_model_id_text').val(data[0].label);
-                                                    $('#replace_product_sl_no').val(data[0].replace_product_sl_no);
+                                                    $('#replace_model_id_text').val(data[0].label).change();
+                                                    $('#replace_product_sl_no').val(data[0].replace_product_sl_no).change();
                                                     $('#SellReturnDetails_qty').val(1).change();
 
                                                     // Trigger select event
@@ -570,7 +567,7 @@ Yii::app()->clientScript->registerCoreScript("jquery.ui");
                                         delay: 700,
                                         select: function (event, ui) {
                                             $('#model_id_text').val(ui.item.label);
-                                            $('#replace_product_sl_no').val(ui.item.replace_product_sl_no);
+                                            $('#replace_product_sl_no').val(ui.item.replace_product_sl_no).change();
                                             $('#SellReturnDetails_model_id').val(ui.item.id);
                                             $('#SellReturnDetails_qty').val(1);
 
@@ -649,8 +646,8 @@ Yii::app()->clientScript->registerCoreScript("jquery.ui");
                                     $("#sell-return-form")[0].reset();
                                     $("#formResult").animate({opacity:1.0},1000).fadeOut("slow");
                                     $("#list tbody").html("");
-                                    // $("#soReportDialogBox").dialog("open");
-                                    //$("#AjFlashReportSo").html(data.soReportInfo).show();
+                                    $("#soReportDialogBox").dialog("open");
+                                    $("#AjFlashReportSo").html(data.voucherPreview).show();
                                     // $("#information-modal").modal("show");
                                     // $("#information-modal .modal-body").html(data.soReportInfo);  
                                 }else{

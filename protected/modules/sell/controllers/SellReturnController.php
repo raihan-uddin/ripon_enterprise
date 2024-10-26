@@ -58,10 +58,10 @@ class SellReturnController extends RController
 		// Uncomment the following line if AJAX validation is needed
 		$this->performAjaxValidation($model);
 		if (Yii::app()->request->isAjaxRequest) {
-			// db transaction
-			$transaction = Yii::app()->db->beginTransaction();
 			if(isset($_POST['SellReturn']))
 			{
+				// db transaction
+				$transaction = Yii::app()->db->beginTransaction();
 				try{
 					$model->attributes=$_POST['SellReturn'];
 					$model->customer_id = $_POST['SellReturn']['customer_id'];
@@ -91,8 +91,6 @@ class SellReturnController extends RController
 							$detailModel->costing = 0;
 							$detailModel->discount_amount = 0;
 							$detailModel->discount_percentage = 0;
-							// $detailModel->replace_model_id = $_POST['SellReturnDetails']['replace_model_id'][$key];
-							// $detailModel->replace_product_sl_no = $_POST['SellReturnDetails']['replace_product_sl_no'][$key];
 							$detailModel->created_by = Yii::app()->user->id;
 							$detailModel->created_at = date('Y-m-d H:i:s');
 							$detailModel->is_deleted = 0;
@@ -121,14 +119,17 @@ class SellReturnController extends RController
 							}
 						}
 						$transaction->commit();
+						
 						echo CJSON::encode(array(
 							'status' => 'success',
-							// 'soReportInfo' => $this->renderPartial('voucherPreview', array('data' => $data, 'new' => true), true, true), //
+							'voucherPreview' => $this->renderPartial('warrantyVoucherPreview', array('data' => $model, 'new' => true), true, true), //
 						));
 						Yii::app()->end();
 					}
 				}catch(Exception $e){
-					$transaction->rollback();
+					if($transaction->active){
+						$transaction->rollback();
+					}
 					echo json_encode(['status' => 'error', 'message' => 'Product return creation failed' . $e->getMessage()]);
 					Yii::app()->end();
 				}
