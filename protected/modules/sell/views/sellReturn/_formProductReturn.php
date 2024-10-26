@@ -285,6 +285,8 @@ Yii::app()->clientScript->registerCoreScript("jquery.ui");
                                             var search = request.term;
                                             $.post('<?php echo Yii::app()->baseUrl ?>/index.php/prodModels/Jquery_showprodSearch', {
                                                 "q": search,
+                                                "item_id_excluded": 1,
+                                                "item_id" : [<?= ProdItems::SERVICES_ITEM ?>]
                                             }, function (data) {
                                                 response(data);
 
@@ -470,6 +472,7 @@ Yii::app()->clientScript->registerCoreScript("jquery.ui");
                                             var search = request.term;
                                             $.post('<?php echo Yii::app()->baseUrl ?>/index.php/prodModels/Jquery_showprodSearch', {
                                                 "q": search,
+                                                "item_id_excluded": <?= ProdItems::SERVICES_ITEM ?>
                                             }, function (data) {
                                                 response(data);
 

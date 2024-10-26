@@ -3,7 +3,7 @@
 class ProdItems extends CActiveRecord
 {
 
-    const FINISHED_GOODS = 3;
+    const SERVICES_ITEM = 1;
 
     /**
      * @return string the associated database table name
