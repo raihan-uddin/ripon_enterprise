@@ -31,6 +31,7 @@ class SellReturnDetails extends CActiveRecord
     public $pp;
     public $warranty;
     public $color;
+	public $model_name;
 	/**
 	 * @return string the associated database table name
 	 */

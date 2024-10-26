@@ -506,6 +506,7 @@ class InventoryController extends RController
             $model->model_id = $model_id;
             $model->date = date('Y-m-d');
             $model->challan_no = Inventory::maxSlNo()+1;
+            $model->sl_no = $model->challan_no;
             $model->product_sl_no = $product_sl_no;
             if($modify_stock_flag > 0){
                 if($data->closing_stock > $physical_stock){

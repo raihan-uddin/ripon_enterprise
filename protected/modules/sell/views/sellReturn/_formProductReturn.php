@@ -640,14 +640,15 @@ Yii::app()->clientScript->registerCoreScript("jquery.ui");
                             'dataType' => 'json',
                             'type' => 'post',
                             'success' => 'function(data) {
+                            console.log(data);
                                 $("#ajaxLoader").hide();  
                                 if(data.status=="success"){
                                     $("#formResult").fadeIn();
                                     $("#formResult").html("Data saved successfully.");
                                     toastr.success("Data saved successfully.");
-                                    $("#bom-form")[0].reset();
+                                    $("#sell-return-form")[0].reset();
                                     $("#formResult").animate({opacity:1.0},1000).fadeOut("slow");
-                                    $("#list").empty();
+                                    $("#list tbody").html("");
                                     // $("#soReportDialogBox").dialog("open");
                                     //$("#AjFlashReportSo").html(data.soReportInfo).show();
                                     // $("#information-modal").modal("show");
@@ -656,8 +657,8 @@ Yii::app()->clientScript->registerCoreScript("jquery.ui");
                                     //$("#formResultError").html("Data not saved. Please solve the following errors.");
                                     toastr.error("Data not saved. Please solve the following errors.");
                                     $.each(data, function(key, val) {
-                                        $("#bom-form #"+key+"_em_").html(""+val+"");                                                    
-                                        $("#bom-form #"+key+"_em_").show();
+                                        $("#sell-return-form #"+key+"_em_").html(""+val+"");                                                    
+                                        $("#sell-return-form #"+key+"_em_").show();
                                     });
                                 }       
                             }',

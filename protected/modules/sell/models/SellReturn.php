@@ -22,6 +22,8 @@
  */
 class SellReturn extends CActiveRecord
 {
+    public $supplier_id;
+    public $grand_total;
     /**
      * @return string the associated database table name
      */
@@ -41,7 +43,7 @@ class SellReturn extends CActiveRecord
 
     const RETURN_TYPE_ARR = [
         self::CASH_RETURN => "CASH RETURN",
-        self::DAMAGE_RETURN => "PRODUCT RETURN",
+        self::DAMAGE_RETURN => "WARRANTY/REPLACEMENT",
     ];
 
     /**
@@ -94,6 +96,7 @@ class SellReturn extends CActiveRecord
             'is_opening' => 'Is Opening',
         );
     }
+    
 
     /**
      * Retrieves a list of models based on the current search/filter conditions.

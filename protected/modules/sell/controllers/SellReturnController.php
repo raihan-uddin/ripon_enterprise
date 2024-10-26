@@ -75,13 +75,14 @@ class SellReturnController extends RController
 					$model->is_deleted = 0;
 					if($model->save()){
 						$detailsData = $_POST['SellReturnDetails']['model_id'];
-						
+						$challan_no = $sl_no = Inventory::maxSlNo() + 1;
 						foreach ($detailsData as $key =>  $detail){
-							// die(var_dump($details));
-							// die(var_dump($_POST['SellReturnDetails']['replace_product_sl_no'][$key]));
+							$model_id = $_POST['SellReturnDetails']['model_id'][$key];
+							$product = ProdModels::model()->findByPk($model_id);
+
 							$detailModel = new SellReturnDetails();
 							$detailModel->return_id = $model->id;
-							$detailModel->model_id = $_POST['SellReturnDetails']['model_id'][$key];
+							$detailModel->model_id = $model_id;
 							$detailModel->return_qty = $_POST['SellReturnDetails']['qty'][$key];
 							$detailModel->sell_price = 0;
 							$detailModel->purchase_price = 0;
@@ -98,12 +99,33 @@ class SellReturnController extends RController
 							if(!$detailModel->save()){
 								throw new Exception('Product return details creation failed');
 							}
+
+							// insert into stock
+							$stock = new Inventory();
+							$stock->date = $model->return_date;
+							$stock->challan_no =  $challan_no;
+							$stock->sl_no = $sl_no;
+							$stock->model_id = $detailModel->model_id;
+							$stock->product_sl_no = $detailModel->product_sl_no;
+							$stock->stock_in = $detailModel->return_qty;
+							$stock->stock_out = 0;
+							$stock->sell_price = $product->sell_price;
+							$stock->purchase_price = $product->purchase_price;
+							$stock->row_total = $product->purchase_price * $detailModel->return_qty;
+							$stock->stock_status = Inventory::WARRANTY_RETURN;
+							$stock->master_id = $model->id;
+							$stock->source_id = $detailModel->id;
+							$stock->remarks = $model->remarks;
+							if(!$stock->save()){
+								throw new Exception('Stock creation failed');
+							}
 						}
 						$transaction->commit();
 						echo CJSON::encode(array(
 							'status' => 'success',
 							// 'soReportInfo' => $this->renderPartial('voucherPreview', array('data' => $data, 'new' => true), true, true), //
 						));
+						Yii::app()->end();
 					}
 				}catch(Exception $e){
 					$transaction->rollback();
@@ -170,9 +192,25 @@ class SellReturnController extends RController
 		if(isset($_GET['SellReturn']))
 			$model->attributes=$_GET['SellReturn'];
 
+		$this->pageTitle = "SALE RETURN LIST";
 		$this->render('admin',array(
 			'model'=>$model,
 		));
+	}
+
+	public function actionVoucherPreview(){
+		if (Yii::app()->request->isAjaxRequest) {
+            Yii::app()->clientScript->scriptMap['jquery.js'] = false;
+        }
+		$id = isset($_POST['id']) ? trim($_POST['id']) : "";
+		if(!($id > 0)){
+			echo json_encode(['status' => 'error', 'message' => 'Invalid request']);
+			Yii::app()->end();
+		}
+
+		$data = $this->loadModel($id);
+		echo $this->renderPartial('warrantyVoucherPreview', array('data' => $data,), true, true);
+		Yii::app()->end();
 	}
 
 	/**

@@ -126,11 +126,8 @@ Yii::app()->clientScript->registerCoreScript("jquery.ui");
                                     <?php
                                     echo CHtml::link(' <i class="fa fa-plus"></i>', "", // the link for open the dialog
                                         array(
-//                                    'class' => '',
                                             'onclick' => "{addSupplier(); $('#addSupplierDialog').dialog('open');}"));
                                     ?>
-
-
                                     <?php
                                     $this->beginWidget('zii.widgets.jui.CJuiDialog', array(// the dialog
                                         'id' => 'addSupplierDialog',
@@ -264,7 +261,6 @@ Yii::app()->clientScript->registerCoreScript("jquery.ui");
                                     <?php
                                     echo CHtml::link(' <i class="fa fa-plus"></i>', "", // the link for open the dialog
                                         array(
-//                                    'class' => '',
                                             'onclick' => "{addShipBy(); $('#addShipByDialog').dialog('open');}"));
                                     ?>
 
@@ -444,6 +440,8 @@ Yii::app()->clientScript->registerCoreScript("jquery.ui");
                                         var search = request.term;
                                         $.post('<?php echo Yii::app()->baseUrl ?>/index.php/prodModels/Jquery_showprodSearch', {
                                                 "q": search,
+                                                "item_id_excluded": 1,
+                                                "item_id" : [<?= ProdItems::SERVICES_ITEM ?>]
                                             },
                                             function (data) {
                                                 response(data);
