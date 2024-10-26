@@ -658,7 +658,7 @@ class ReportController extends RController
                 $criteria->addColumnCondition(['t.supplier_id' => $supplier_id]);
             }
             if ($model_id > 0) {
-                $criteria->addColumnCondition(['t.model_id' => $model_id]);
+                $criteria->addColumnCondition(['pod.model_id' => $model_id]);
             }
             if ($manufacturer_id > 0) {
                 $criteria->addColumnCondition(['pm.manufacturer_id' => $manufacturer_id]);
