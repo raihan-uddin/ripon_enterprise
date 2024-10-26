@@ -118,7 +118,7 @@ echo "</div>";
             </th>
 
             <th style="box-shadow: 0px 0px 0px 1px black inset;  width: 10%; min-width: 60px;">
-                P.P
+                AVG P.P
             </th>
             <th style="box-shadow: 0px 0px 0px 1px black inset;  width: 10%; min-width: 50px;">
                 Stock Value
