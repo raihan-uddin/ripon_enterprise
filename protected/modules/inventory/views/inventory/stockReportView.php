@@ -3,7 +3,7 @@
  * @var string $message
  * @var string $startDate
  * @var string $endDate
- *
+ * @var mixed $data 
  */
 ?>
 
@@ -132,7 +132,6 @@ echo "</div>";
         $rowFound = false;
         $groundTotalSaleValue = 0;
         $groundTotalStockValue = 0;
-        /** @var mixed $data */
         foreach ($data as $dmr) {
             if ($dmr->opening_stock != 0 || $dmr->stock_in != 0 || $dmr->stock_out) {
                 $closing = (($dmr->opening_stock + $dmr->stock_in) - $dmr->stock_out);
@@ -144,7 +143,7 @@ echo "</div>";
                 $opening_stock_value = $dmr->opening_stock_value;
                 $stock_in_value = $dmr->stock_in_value;
                 $stock_out_value = $dmr->stock_out_value;
-                $row_stock_closing_value = (($opening_stock_value + $stock_in_value) - $stock_out_value);
+                $row_stock_closing_value = $closing > 0 ? (($opening_stock_value + $stock_in_value) - $stock_out_value) : 0;
 
                 $groundTotalStockValue += $row_stock_closing_value;
 
