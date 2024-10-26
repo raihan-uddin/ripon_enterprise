@@ -46,9 +46,6 @@ endforeach;
             <button type="button" class="btn btn-tool" data-card-widget="collapse">
                 <i class="fa fa-minus"></i>
             </button>
-            <!--<button type="button" class="btn btn-tool" data-card-widget="remove">
-                <i class="fa fa-times"></i>
-            </button>-->
         </div>
     </div>
     <div class="card-body">
@@ -167,6 +164,12 @@ endforeach;
                 array(
                     'name' => 'created_by',
                     'value' => 'Users::model()->nameOfThis($data->created_by)',
+                    'htmlOptions' => ['class' => 'text-center']
+                ),
+                array(
+                    'name' => 'status',
+                    'filter' => SellReturn::RETURN_STATUS_ARR,
+                    'value' => '$data->status == 1 ? "Pending" : ($data->status == 2 ? "Approved" : "Rejected")',
                     'htmlOptions' => ['class' => 'text-center']
                 ),
                 array(
