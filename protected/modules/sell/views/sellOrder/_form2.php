@@ -582,7 +582,7 @@ Yii::app()->clientScript->registerCoreScript("jquery.ui");
                                     <td class="serial"></td>
                                     <td>
                                         <?= $m3->model_name . " || " . $m3->code ?>
-                                        <input type="hidden" class="form-control" value="<?= $m3->model_id ?>"
+                                        <input type="hidden" class="form-control temp_model_id" value="<?= $m3->model_id ?>"
                                                name="SellOrderDetails[temp_model_id][]">
                                     </td>
                                     <td class="text-center">
@@ -848,7 +848,7 @@ Yii::app()->clientScript->registerCoreScript("jquery.ui");
                     <td class="serial"></td>
                     <td>
                         ${model_id_text}
-                        <input type="hidden" class="form-control" value="${model_id}" name="SellOrderDetails[temp_model_id][]" >
+                        <input type="hidden" class="form-control temp_model_id" value="${model_id}" name="SellOrderDetails[temp_model_id][]" >
                     </td>
                     <td class="text-center">
                         <input type="text" class="form-control text-center" value="${product_sl_no}" name="SellOrderDetails[temp_product_sl_no][]">
@@ -908,14 +908,16 @@ Yii::app()->clientScript->registerCoreScript("jquery.ui");
         qty = qty > 0 ? qty : 0;
         unit_price = unit_price > 0 ? unit_price : 0;
         $(this).closest("tr").find(".row-total").val((qty * unit_price).toFixed(2));
-        changeUnitPriceForSameModel($(this).closest("tr").find(".temp_qty").val(), unit_price);
+        changeUnitPriceForSameModel($(this).closest("tr").find(".temp_model_id").val(), unit_price);
         calculateTotal();
     });
 
     function changeUnitPriceForSameModel(model_id, price){
          // find all same model id and change the price except the current row
         $(".temp_qty").each(function(){
-            if($(this).closest("tr").find(".temp_qty").val() == model_id){
+            console.log($(this).closest("tr").find(".temp_model_id").val());
+            console.log(model_id);
+            if($(this).closest("tr").find(".temp_model_id").val() == model_id){
                 if($(this).closest("tr").find(".temp_unit_price").val() != price){
                     $(this).closest("tr").find(".temp_unit_price").val(price);
                     let qty = parseFloat($(this).val());
