@@ -64,6 +64,7 @@ class Inventory extends CActiveRecord
     public $product_name;
     public $product_code;
     public $manufacturer_id;
+    public $avg_purchase_price;
 
     public static function maxSlNo()
     {

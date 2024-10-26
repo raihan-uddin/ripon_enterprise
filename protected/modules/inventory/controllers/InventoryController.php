@@ -364,8 +364,11 @@ class InventoryController extends RController
             SUM(CASE WHEN (inv.date BETWEEN '$dateFrom' AND '$dateTo') THEN inv.stock_in ELSE 0 END) as stock_in, 
             SUM(CASE WHEN (inv.date BETWEEN '$dateFrom' AND '$dateTo') THEN inv.stock_out ELSE 0 END) as stock_out,
             SUM(CASE WHEN (inv.date BETWEEN '$dateFrom' AND '$dateTo') THEN (inv.stock_in * inv.purchase_price) ELSE 0 END) as stock_in_value, 
-            SUM(CASE WHEN (inv.date BETWEEN '$dateFrom' AND '$dateTo') THEN (inv.stock_out * inv.purchase_price) ELSE 0 END) as stock_out_value
+            SUM(CASE WHEN (inv.date BETWEEN '$dateFrom' AND '$dateTo') THEN (inv.stock_out * inv.purchase_price) ELSE 0 END) as stock_out_value,
+            AVG(CASE WHEN inv.stock_status = 1 THEN inv.purchase_price END) AS avg_purchase_price
             ";
+            // get the purchase avg price if stock_status = 1
+         
             $message .= "Stock Report from  $dateFrom To $dateTo";
 
             $criteria->addColumnCondition(['stockable' => 1]);

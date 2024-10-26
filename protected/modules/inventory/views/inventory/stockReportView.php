@@ -133,6 +133,7 @@ echo "</div>";
         $groundTotalSaleValue = 0;
         $groundTotalStockValue = 0;
         foreach ($data as $dmr) {
+            $avg_purchase_price = $dmr->avg_purchase_price;
             if ($dmr->opening_stock != 0 || $dmr->stock_in != 0 || $dmr->stock_out) {
                 $closing = (($dmr->opening_stock + $dmr->stock_in) - $dmr->stock_out);
                 $stockSaleValue = $closing * $dmr->sell_price;
@@ -143,7 +144,7 @@ echo "</div>";
                 $opening_stock_value = $dmr->opening_stock_value;
                 $stock_in_value = $dmr->stock_in_value;
                 $stock_out_value = $dmr->stock_out_value;
-                $row_stock_closing_value = $closing > 0 ? (($opening_stock_value + $stock_in_value) - $stock_out_value) : 0;
+                $row_stock_closing_value = $closing > 0 ? $closing * $avg_purchase_price : 0;
 
                 $groundTotalStockValue += $row_stock_closing_value;
 

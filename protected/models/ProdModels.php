@@ -47,6 +47,7 @@ class ProdModels extends CActiveRecord
     public $stock_in;
     public $stock_out;
     public $model_id;
+    public $avg_purchase_price;
 
     public static function prodNameOfThis($id)
     {
