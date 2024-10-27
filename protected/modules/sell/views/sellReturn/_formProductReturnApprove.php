@@ -203,7 +203,55 @@ Yii::app()->clientScript->registerCoreScript("jquery.ui");
         <div class="card-footer">
             <div class="form-group
             <?php echo $model->hasErrors() ? 'has-error' : ''; ?>">
-            <?php echo CHtml::submitButton('Approve', array('class' => 'btn btn-primary')); ?>
+            <?php
+                echo CHtml::ajaxSubmitButton('Approve', CHtml::normalizeUrl(array('/sell/sellReturn/approve', 'id' => $model->id, 'render' => true)),  array(
+                    'dataType' => 'json',
+                    'type' => 'post',
+                    'success' => 'function(data) {
+                        $("#ajaxLoader").hide();  
+                        if(data.status=="success"){
+                            $("#formResult").fadeIn();
+                            $("#formResult").html("Data saved successfully.");
+                            toastr.success("Data saved successfully.");
+                            $("#sell-return-form")[0].reset();
+                            $("#formResult").animate({opacity:1.0},1000).fadeOut("slow");
+                            $("#list tbody").html("");
+                            $("#information-modal").modal("show");
+                            $("#information-modal .modal-body").html(data.voucherPreview);  
+                        }else{
+                            //$("#formResultError").html("Data not saved. Please solve the following errors.");
+                            toastr.error("Data not saved. Please solve the following errors.");
+                            $.each(data, function(key, val) {
+                                $("#sell-return-form #"+key+"_em_").html(""+val+"");                                                    
+                                $("#sell-return-form #"+key+"_em_").show();
+                            });
+                        }       
+                    }',
+                    'beforeSend' => 'function(){  
+                        // confirm before submit
+                        if(!confirm("Are you sure you want to approve this return request?")){
+                            return false;
+                        }            
+                        $("#overlay").fadeIn(300);
+                        $("#ajaxLoader").show();
+                    
+                     }',
+                    'error' => 'function(xhr, status, error) { 
+                        // Code to handle errors
+                        toastr.error(xhr.responseText); // Displaying error message using Toastr
+                        // Optionally, you can display additional error details
+                        console.error(xhr.statusText);
+                        console.error(xhr.status);
+                        console.error(xhr.responseText);
+                    
+                        $("#overlay").fadeOut(300);
+                  }',
+                    'complete' => 'function() {
+                        $("#overlay").fadeOut(300);
+                         $("#ajaxLoaderReport").hide(); 
+                      }',
+                ), array('class' => 'btn btn-primary btn-md'));
+                ?>
         </div>
     </div>
 

@@ -11,7 +11,6 @@ $this->widget('application.components.BreadCrumb', array(
         array('name' => 'Inventory', 'url' => array('')),
         array('name' => 'Stock Report',),
     ),
-//    'delimiter' => ' &rarr; ',
 ));
 ?>
 <?php
@@ -26,9 +25,6 @@ $form = $this->beginWidget('CActiveForm', array(
             <button type="button" class="btn btn-tool" data-card-widget="collapse">
                 <i class="fa fa-minus"></i>
             </button>
-            <!--            <button type="button" class="btn btn-tool" data-card-widget="remove">-->
-            <!--                <i class="fa fa-times"></i>-->
-            <!--            </button>-->
         </div>
     </div>
 
@@ -36,7 +32,7 @@ $form = $this->beginWidget('CActiveForm', array(
         <div class="row">
 
             <div class="col-sm-12 col-md-2">
-                <div class="form-group" style="">
+                <div class="form-group" >
                     <?php echo $form->labelEx($model, 'date_from', ['class' => 'col-form-label']); ?>
                     <div class="input-group" id="date_from" data-target-input="nearest">
                         <?php echo $form->textField($model, 'date_from', array('class' => 'form-control datetimepicker-input', 'placeholder' => 'YYYY-MM-DD', 'value' => date('Y-m-d'))); ?>
@@ -50,7 +46,7 @@ $form = $this->beginWidget('CActiveForm', array(
             </div>
 
             <div class="col-sm-12 col-md-2">
-                <div class="form-group" style="">
+                <div class="form-group" >
                     <?php echo $form->labelEx($model, 'date_to', ['class' => 'col-form-label']); ?>
                     <div class="input-group" id="date_to" data-target-input="nearest">
                         <?php echo $form->textField($model, 'date_to', array('class' => 'form-control datetimepicker-input', 'placeholder' => 'YYYY-MM-DD', 'value' => date('Y-m-d'))); ?>
@@ -65,7 +61,7 @@ $form = $this->beginWidget('CActiveForm', array(
 
 
             <div class="col-sm-12 col-md-2">
-                <div class="form-group" style="">
+                <div class="form-group" >
                     <?php echo $form->labelEx($model, 'manufacturer_id', ['class' => 'col-form-label']); ?>
                     <div class="input-group" id="manufacturer_id" data-target-input="nearest">
                         <?php
@@ -75,16 +71,13 @@ $form = $this->beginWidget('CActiveForm', array(
                             'class' => 'form-control',
                         ));
                         ?>
-                        <!--                        <div class="input-group-append">-->
-                        <!--                            <div class="input-group-text"><i class="fa fa-calendar"></i></div>-->
-                        <!--                        </div>-->
                     </div>
                     <span class="help-block"
                           style="color: red; width: 100%"> <?php echo $form->error($model, 'manufacturer_id'); ?></span>
                 </div>
             </div>
 
-            <div class="form-group col-sm-12 col-md-2" style="">
+            <div class="form-group col-sm-12 col-md-2" >
                 <?php echo $form->labelEx($model, 'item_id'); ?>
                 <div class="input-group" data-target-input="nearest"><?php
                     echo $form->dropDownList(
@@ -115,7 +108,6 @@ $form = $this->beginWidget('CActiveForm', array(
                             <?php
                             echo CHtml::link(' <i class="fa fa-plus"></i>', "", // the link for open the dialog
                                 array(
-//                                    'class' => '',
                                     'onclick' => "{addProdItem(); $('#dialogAddProdItem').dialog('open');}"));
                             ?>
 
@@ -180,7 +172,7 @@ $form = $this->beginWidget('CActiveForm', array(
                       style="color: red; width: 100%"> <?php echo $form->error($model, 'item_id'); ?></span>
             </div>
 
-            <div class="form-group col-sm-12 col-md-2" style="">
+            <div class="form-group col-sm-12 col-md-2" >
                 <?php echo $form->labelEx($model, 'brand_id'); ?>
                 <div class="input-group" data-target-input="nearest"><?php
                     echo $form->dropDownList(
@@ -194,7 +186,6 @@ $form = $this->beginWidget('CActiveForm', array(
                             <?php
                             echo CHtml::link(' <i class="fa fa-plus"></i>', "", // the link for open the dialog
                                 array(
-//                                    'class' => '',
                                     'onclick' => "{addProdBrand(); $('#dialogAddProdBrand').dialog('open');}"));
                             ?>
 
@@ -259,58 +250,56 @@ $form = $this->beginWidget('CActiveForm', array(
             </div>
 
 
-            <div class="col-sm-12 col-md-2">
-                <div class="form-group" style="">
-                    <?php echo $form->labelEx($model, 'model_id', ['class' => 'col-form-label']); ?>
-                    <div class="input-group" id="model_id" data-target-input="nearest">
-                        <input type="text" id="model_id_text" class="form-control">
-                        <?php echo $form->hiddenField($model, 'model_id', array('class' => 'form-control',)); ?>
-                        <div class="input-group-append" onclick="clearProduct()">
-                            <div class="input-group-text"><i class="fa fa-refresh"></i></div>
-                        </div>
+            <div class="form-group col-sm-12 col-md-2">
+                <?php echo $form->labelEx($model, 'model_id',); ?>
+                <div class="input-group" id="model_id" data-target-input="nearest">
+                    <input type="text" id="model_id_text" class="form-control">
+                    <?php echo $form->hiddenField($model, 'model_id', array('class' => 'form-control',)); ?>
+                    <div class="input-group-append" onclick="clearProduct()">
+                        <div class="input-group-text"><i class="fa fa-refresh"></i></div>
                     </div>
-                    <span class="help-block"
-                          style="color: red; width: 100%"> <?php echo $form->error($model, 'date_to'); ?></span>
-                    <script>
-                        $(document).ready(function () {
-                            $('#model_id_text').autocomplete({
-                                source: function (request, response) {
-                                    var search = request.term;
-                                    $.post('<?php echo Yii::app()->baseUrl ?>/index.php/prodModels/Jquery_showprodSearch', {
-                                            "q": search,
-                                        },
-                                        function (data) {
-                                            response(data);
-                                        }, "json");
-                                },
-                                minLength: 1,
-                                select: function (event, ui) {
-                                    $('#model_id_text').val(ui.item.value);
-                                    $('#Inventory_model_id').val(ui.item.id);
-                                }
-                            }).data("ui-autocomplete")._renderItem = function (ul, item) {
-                                // Use Bootstrap styling for the autocomplete results
-                                var listItem = $("<li class='list-group-item p-2'></li>")
-                                    .data("item.autocomplete", item)
-                                    .append(`
-                                        <div class="row align-items-center">
-                                            <div class="col-10 0">
-                                                <p class="m-1">${item.name}</p>
-                                                <p class="m-1">
-                                                    <small><strong>Code:</strong> ${item.code}</small>,
-                                                    <small><strong>Purchase Price:</strong> ${item.purchasePrice}</small>,
-                                                    <small><strong>Selling Price:</strong> ${item.sell_price}</small>
-                                                    <small><strong>Stock:</strong> ${item.stock}</small>
-                                                </p>
-                                            </div>
-                                        </div>`);
-
-                                return listItem.appendTo(ul);
-                            };
-
-                        });
-                    </script>
                 </div>
+                <span class="help-block"
+                        style="color: red; width: 100%"> <?php echo $form->error($model, 'date_to'); ?></span>
+                <script>
+                    $(document).ready(function () {
+                        $('#model_id_text').autocomplete({
+                            source: function (request, response) {
+                                var search = request.term;
+                                $.post('<?php echo Yii::app()->baseUrl ?>/index.php/prodModels/Jquery_showprodSearch', {
+                                        "q": search,
+                                    },
+                                    function (data) {
+                                        response(data);
+                                    }, "json");
+                            },
+                            minLength: 1,
+                            select: function (event, ui) {
+                                $('#model_id_text').val(ui.item.value);
+                                $('#Inventory_model_id').val(ui.item.id);
+                            }
+                        }).data("ui-autocomplete")._renderItem = function (ul, item) {
+                            // Use Bootstrap styling for the autocomplete results
+                            var listItem = $("<li class='list-group-item p-2'></li>")
+                                .data("item.autocomplete", item)
+                                .append(`
+                                    <div class="row align-items-center">
+                                        <div class="col-10 0">
+                                            <p class="m-1">${item.name}</p>
+                                            <p class="m-1">
+                                                <small><strong>Code:</strong> ${item.code}</small>,
+                                                <small><strong>Purchase Price:</strong> ${item.purchasePrice}</small>,
+                                                <small><strong>Selling Price:</strong> ${item.sell_price}</small>
+                                                <small><strong>Stock:</strong> ${item.stock}</small>
+                                            </p>
+                                        </div>
+                                    </div>`);
+
+                            return listItem.appendTo(ul);
+                        };
+
+                    });
+                </script>
             </div>
 
 

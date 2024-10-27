@@ -244,8 +244,57 @@ class SellReturnController extends RController
 
 	public function actionApprove($id){
 		$model = $this->loadModel($id);
-		if(isset($_POST['SellReturn'])){
+		if(isset($_POST['SellReturnDetails'])){
+			Yii::app()->clientScript->scriptMap['jquery.js'] = false;
+			Yii::app()->end();
+			// db transaction
+			$transaction = Yii::app()->db->beginTransaction();
+			try {
+				$model->status = SellReturn::RETURN_STATUS_APPROVED;
+				// $model->approved_by = Yii::app()->user->id;
+				// $model->approved_at = date('Y-m-d H:i:s');
+				if(!$model->save()){
+					throw new Exception('Approval failed');
+				}
+				// update inventory
+				if($model->return_type == SellReturn::DAMAGE_RETURN){
+					$details = SellReturnDetails::model()->findAllByAttributes(['return_id' => $model->id]);
+					foreach ($details as $detail){
+						// delete previous inventory replacement model
+						if($detail->replace_model_id > 0){
+							// delete previous inventory replacement model
+							$criteria = new CDbCriteria();
+							$criteria->addColumnCondition(['master_id' => $model->id]);
+							$criteria->addInCondition('stock_status', [Inventory::PRODUCT_REPLACEMENT]);
+							$inventory = Inventory::model()->findAll($criteria);
+							foreach ($inventory as $inv){
+								if(!$inv->delete()){
+									throw new Exception('Previous Approved Inventory delete failed');
+								}
+							}
 
+							// insert new inventory replacement model
+							$stock = new Inventory();
+							$stock->date = $model->return_date;
+							$stock->challan_no = Inventory::maxSlNo() + 1;
+							$stock->sl_no = Inventory::maxSlNo() + 1;
+							
+						}
+						if($detail->replace_model_id > 0){
+							
+						}
+					}
+				}
+				$transaction->commit();
+				echo json_encode(['status' => 'success', 'message' => 'Approved successfully']);
+				Yii::app()->end();
+
+			} catch (Exception $e) {
+				$transaction->rollback();
+				echo json_encode(['status' => 'error', 'message' => 'Approval failed']);
+				Yii::app()->end();
+			}
+			Yii::app()->end();
 		} else {
 			// show approval form
 			$this->render('_formProductReturnApprove', array('model' => $model));
