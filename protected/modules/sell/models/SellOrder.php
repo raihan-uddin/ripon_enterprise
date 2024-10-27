@@ -17,22 +17,11 @@
  * @property double $discount_amount
  * @property double $vat_percentage
  * @property double $grand_total
- * @property integer $is_invoice_done
- * @property integer $is_job_card_done
- * @property integer $is_delivery_done
- * @property integer $is_partial_delivery
- * @property integer $is_partial_invoice
  * @property integer $created_by
  * @property string $created_at
  * @property integer $updated_by
- * @property integer $bom_complete
- * @property integer $job_max_sl_no
  * @property integer $order_type
- * @property integer $is_all_issue_done
- * @property integer $is_all_production_done
  * @property string $updated_at
- * @property string $job_no
- * @property string $job_card_date
  * @property string $order_note
  * @property double $total_paid
  * @property double $total_due
@@ -62,37 +51,11 @@ class SellOrder extends CActiveRecord
     public $amount;
     public $total_sales;
 
-    const INVOICE_DONE = 1;
-    const INVOICE_NOT_DONE = 0;
-
-    const JOB_CARD_ISSUE_DONE = 1;
-    const JOB_CARD_ISSUE_NOT_DONE = 0;
-
-    const PRODUCTION_DONE = 1;
-    const PRODUCTION_NOT_DONE = 0;
-
-    const JOB_CARD_DONE = 1;
-    const JOB_CARD_NOT_DONE = 0;
-
-    const DELIVERY_DONE = 1;
-    const DELIVERY_NOT_DONE = 0;
-
-    const PARTIAL_INVOICE_DONE = 1;
-    const PARTIAL_INVOICE_NOT_DONE = 0;
-
-    const PARTIAL_DELIVERY_DONE = 1;
-    const PARTIAL_DELIVERY_NOT_DONE = 0;
-
-    const BOM_COMPLETE = 1;
-    const BOM_NOT_COMPLETE = 2;
-
     const NEW_ORDER = 1;
     const REPAIR_ORDER = 2;
 
     const NORMAL_ORDER_PRINT = 1;
     const NORMAL_PAD_PRINT = 4;
-    const PRODUCTION_ORDER_PRINT = 2;
-    const ORDER_BOM = 3;
 
     const PAID = 1;
     const DUE = 0;
@@ -114,16 +77,15 @@ class SellOrder extends CActiveRecord
         // will receive user inputs.
         return array(
             array('max_sl_no, cash_due, so_no, date, customer_id, discount_percentage, discount_amount, grand_total, order_type', 'required'),
-            array('grand_total, discount_amount, discount_percentage, vat_percentage, vat_amount, job_max_sl_no, is_opening,
-            total_amount, is_all_issue_done, is_all_production_done, is_paid, total_paid, total_due, delivery_charge, costing', 'numerical'),
-            array('max_sl_no, cash_due, customer_id, is_invoice_done, bom_complete, is_job_card_done, is_delivery_done, 
-            is_partial_delivery, is_partial_invoice, created_by, updated_by', 'numerical', 'integerOnly' => true),
-            array('created_at, updated_at, date, exp_delivery_date, so_no, job_no, job_card_date, order_note', 'safe'),
+            array('grand_total, discount_amount, discount_percentage, vat_percentage, vat_amount, is_opening,
+            total_amount, is_paid, total_paid, total_due, delivery_charge, costing', 'numerical'),
+            array('max_sl_no, cash_due, customer_id, created_by, updated_by', 'numerical', 'integerOnly' => true),
+            array('created_at, updated_at, date, exp_delivery_date, so_no, order_note', 'safe'),
             // The following rule is used by search().
-            array('id, date, cash_due, exp_delivery_date, max_sl_no, vat_percentage, so_no, customer_id, discount_percentage, bom_complete, 
-            discount_amount, grand_total, is_invoice_done, is_job_card_done, is_delivery_done, is_partial_delivery, is_partial_invoice, created_by, 
-            created_at, updated_by, updated_at, job_max_sl_no, job_no, job_card_date, total_amount, order_type, total_paid, total_due, delivery_charge,
-            order_note, is_all_issue_done, is_all_production_done, is_paid, costing, is_opening', 'safe', 'on' => 'search'),
+            array('id, date, cash_due, exp_delivery_date, max_sl_no, vat_percentage, so_no, customer_id, discount_percentage, 
+            discount_amount, grand_total, created_by, 
+            created_at, updated_by, updated_at, total_amount, order_type, total_paid, total_due, delivery_charge,
+            order_note, is_paid, costing, is_opening', 'safe', 'on' => 'search'),
         );
     }
 
@@ -161,21 +123,13 @@ class SellOrder extends CActiveRecord
             'discount_percentage' => 'Discount Percentage',
             'discount_amount' => 'Discount Amount',
             'grand_total' => 'Grand Total',
-            'is_invoice_done' => 'Is Invoice Done',
-            'is_job_card_done' => 'Is Job Card Done',
-            'is_delivery_done' => 'Is Delivery Done',
-            'is_partial_delivery' => 'Is Partial Delivery',
-            'is_partial_invoice' => 'Is Partial Invoice',
-            'bom_complete' => 'BOM Complete?',
             'created_by' => 'Created By',
             'created_at' => 'Created At',
             'updated_by' => 'Updated By',
             'updated_at' => 'Updated At',
             'order_type' => 'Order Type',
             'order_note' => 'Order Note',
-            'is_all_issue_done' => 'Issue Done?',
             'is_paid' => 'Paid?',
-            'is_all_production_done' => 'Production Done?',
             'total_amount' => 'Total Amount',
             'total_paid' => 'Total Paid',
             'total_due' => 'Total Due',
@@ -246,17 +200,10 @@ class SellOrder extends CActiveRecord
         $criteria->compare('job_max_sl_no', $this->job_max_sl_no);
         $criteria->compare('vat_percentage', $this->vat_percentage);
         $criteria->compare('vat_amount', $this->vat_amount);
-        $criteria->compare('bom_complete', $this->bom_complete);
         $criteria->compare('exp_delivery_date', $this->exp_delivery_date);
         $criteria->compare('discount_percentage', $this->discount_percentage);
         $criteria->compare('discount_amount', $this->discount_amount);
         $criteria->compare('grand_total', $this->grand_total);
-        $criteria->compare('is_invoice_done', $this->is_invoice_done);
-        $criteria->compare('is_job_card_done', $this->is_job_card_done);
-        $criteria->compare('is_delivery_done', $this->is_delivery_done);
-        $criteria->compare('is_all_production_done', $this->is_all_production_done);
-        $criteria->compare('is_partial_delivery', $this->is_partial_delivery);
-        $criteria->compare('is_partial_invoice', $this->is_partial_invoice);
         $criteria->compare('created_by', $this->created_by);
         $criteria->compare('created_at', $this->created_at, true);
         $criteria->compare('updated_by', $this->updated_by);

@@ -76,7 +76,10 @@ class SellReturn extends CActiveRecord
     {
         // NOTE: you may need to adjust the relation name and the related
         // class name for the relations automatically generated below.
-        return array();
+        return array(
+            'customer' => array(self::BELONGS_TO, 'Customers', 'customer_id'),
+            'sellReturnDetails' => array(self::HAS_MANY, 'SellReturnDetails', 'return_id'),
+        );
     }
 
     /**

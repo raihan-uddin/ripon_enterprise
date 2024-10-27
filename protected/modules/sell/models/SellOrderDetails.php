@@ -15,7 +15,6 @@
  * @property double $discount_amount
  * @property double $discount_percentage
  * @property integer $is_delivery_done
- * @property integer $is_invoice_done
  * @property integer $created_by
  * @property integer $warranty
  * @property string $created_at
@@ -40,9 +39,6 @@ class SellOrderDetails extends CActiveRecord
     public $sell_price;
     public $actual_sp;
 
-    const DELIVERY_DONE = 1;
-    const DELIVERY_NOT_DONE = 0;
-
     /**
      * @return string the associated database table name
      */
@@ -60,12 +56,12 @@ class SellOrderDetails extends CActiveRecord
 		// will receive user inputs.
 		return array(
             array('sell_order_id, model_id, qty, amount, row_total', 'required'),
-            array('sell_order_id, model_id, is_delivery_done, is_invoice_done, created_by, updated_by, warranty', 'numerical', 'integerOnly' => true),
+            array('sell_order_id, model_id,  created_by, updated_by, warranty', 'numerical', 'integerOnly' => true),
             array('discount_amount, discount_percentage, pp', 'numerical'),
             array('qty, amount, row_total, costing', 'numerical'),
             array('created_at, updated_at, color, note, product_sl_no', 'safe'),
             // The following rule is used by search().
-            array('id, sell_order_id, model_id, qty, note, product_sl_no, pp, amount, discount_amount, discount_percentage, row_total, is_delivery_done, warranty, color, is_invoice_done, created_by, created_at, updated_by, updated_at, costing', 'safe', 'on' => 'search'),
+            array('id, sell_order_id, model_id, qty, note, product_sl_no, pp, amount, discount_amount, discount_percentage, row_total, warranty, color, created_by, created_at, updated_by, updated_at, costing', 'safe', 'on' => 'search'),
         );
 	}
 
@@ -94,8 +90,6 @@ class SellOrderDetails extends CActiveRecord
             'note' => 'Product Note',
             'amount' => 'Unit Price',
             'row_total' => 'Row Total',
-            'is_delivery_done' => 'Is Delivery Done',
-            'is_invoice_done' => 'Is Invoice Done',
             'created_by' => 'Created By',
             'created_at' => 'Created At',
             'updated_by' => 'Updated By',

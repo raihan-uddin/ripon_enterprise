@@ -174,7 +174,50 @@ class SellReturnController extends RController
 	 */
 	public function actionDelete($id)
 	{
-		$this->loadModel($id)->delete();
+		// begin db transaction
+		$transaction = Yii::app()->db->beginTransaction();
+		try{
+			// load model
+			$model = $this->loadModel($id);
+			// hard delete all details
+			$details = SellReturnDetails::model()->findAllByAttributes(['return_id' => $model->id]);
+			foreach ($details as $detail){
+				// delete return inventory
+				$criteraInv = new CDbCriteria();
+				$criteraInv->addColumnCondition(['source_id' => $detail->id, 'master_id' => $model->id]);
+				$criteraInv->addInCondition('stock_status', [Inventory::WARRANTY_RETURN, Inventory::CASH_SALE_RETURN]);
+				$inventory = Inventory::model()->findAll($criteraInv);
+				foreach ($inventory as $inv){
+					if(!$inv->delete()){
+						throw new Exception('Inventory delete failed');
+					}
+				}
+				// delete replacement inventory
+				if($detail->replace_model_id > 0){
+					$criteraInvReplace = new CDbCriteria();
+					$criteraInvReplace->addColumnCondition(['master_id' => $model->id, 'model_id' => $detail->replace_model_id]);
+					$criteraInvReplace->addInCondition('stock_status', [Inventory::WARRANTY_RETURN, Inventory::CASH_SALE_RETURN]);
+					$inventoryReplace = Inventory::model()->findAll($criteraInvReplace);
+					foreach ($inventoryReplace as $invReplace){
+						if(!$invReplace->delete()){
+							throw new Exception('Inventory delete failed');
+						}
+					}
+				}
+
+				if(!$detail->delete()){
+					throw new Exception('Return Detail delete failed');
+				}
+			}
+			// delete return
+			if(!$model->delete()){
+				throw new Exception('Return delete failed');
+			}
+		}
+		catch(Exception $e){
+			$transaction->rollback();
+			throw new CHttpException(400, 'Invalid request. Please do not repeat this request again.');
+		}
 
 		// if AJAX request (triggered by deletion via admin grid view), we should not redirect the browser
 		if(!isset($_GET['ajax']))
@@ -197,6 +240,16 @@ class SellReturnController extends RController
 		$this->render('admin',array(
 			'model'=>$model,
 		));
+	}
+
+	public function actionApprove($id){
+		$model = $this->loadModel($id);
+		if(isset($_POST['SellReturn'])){
+
+		} else {
+			// show approval form
+			$this->render('_formProductReturnApprove', array('model' => $model));
+		}
 	}
 
 	public function actionVoucherPreview(){

@@ -179,7 +179,7 @@ endforeach;
                 array
                 (
                     'header' => 'Options',
-                    'template' => '{update}{delete}', // {delete}
+                    'template' => '{update}{approve}{delete}',
                     'class' => 'CButtonColumn',
                     'htmlOptions' => ['style' => 'width: 120px;', 'class' => 'text-center'],
                     'buttons' => array(
@@ -187,13 +187,18 @@ endforeach;
                             'label' => '<i class="fa fa-pencil-square-o fa-2x" style="color: black;"></i>&nbsp;&nbsp;',
                             'imageUrl' => false,
                             'options' => array('rel' => 'tooltip', 'data-toggle' => 'tooltip', 'title' => Yii::t('app', 'Edit')),
-//                            'visible' => '$data->bom_complete == SellOrder::BOM_NOT_COMPLETE ? TRUE : FALSE',
+                        ),
+                        'approve' => array(
+                            'label' => '<i class="fa fa-check fa-2x" style="color: green;"></i>&nbsp;&nbsp;',
+                            'imageUrl' => false,
+                            'options' => array('rel' => 'tooltip', 'data-toggle' => 'tooltip', 'title' => Yii::t('app', 'Approve')),
+                            'visible' => '($data->status == 1)',
+                            'url' => 'Yii::app()->createUrl("/sell/sellReturn/approve", array("id"=>$data->id))',
                         ),
                         'delete' => array(
                             'label' => '<i class="fa fa-trash fa-2x" style="color: red;"></i>&nbsp;&nbsp;',
                             'imageUrl' => false,
                             'options' => array('rel' => 'tooltip', 'data-toggle' => 'tooltip', 'title' => Yii::t('app', 'Delete')),
-//                            'visible' => '$data->bom_complete == SellOrder::BOM_NOT_COMPLETE ? TRUE : FALSE',
                         ),
                     )
                 ),

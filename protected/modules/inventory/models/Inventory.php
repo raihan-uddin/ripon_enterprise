@@ -36,8 +36,7 @@ class Inventory extends CActiveRecord
     const SALES_DELIVERY = 3;
     const CASH_SALE_RETURN = 4;
     const WARRANTY_RETURN = 5;
-    const JOB_CARD_ISSUE = 10;
-    const PRODUCTION = 20;
+    const PRODUCT_REPLACEMENT = 6;
 
     const SHOW_ALL_PRODUCT_SL_NO = 2;
 
@@ -67,6 +66,7 @@ class Inventory extends CActiveRecord
     public $product_code;
     public $manufacturer_id;
     public $avg_purchase_price;
+    public $order_type;
 
     public static function maxSlNo()
     {

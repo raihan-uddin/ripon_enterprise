@@ -26,9 +26,6 @@ $form = $this->beginWidget('CActiveForm', array(
             <button type="button" class="btn btn-tool" data-card-widget="collapse">
                 <i class="fa fa-minus"></i>
             </button>
-            <!--            <button type="button" class="btn btn-tool" data-card-widget="remove">-->
-            <!--                <i class="fa fa-times"></i>-->
-            <!--            </button>-->
         </div>
     </div>
 
@@ -36,7 +33,7 @@ $form = $this->beginWidget('CActiveForm', array(
         <div class="row">
 
             <div class="col-sm-12 col-md-3">
-                <div class="form-group" style="">
+                <div class="form-group">
                     <?php echo $form->labelEx($model, 'date_from', ['class' => 'col-form-label']); ?>
                     <div class="input-group" id="date_from" data-target-input="nearest">
                         <?php echo $form->textField($model, 'date_from', array('class' => 'form-control datetimepicker-input', 'placeholder' => 'YYYY-MM-DD', 'value' => date('Y-m-d'))); ?>
@@ -47,7 +44,7 @@ $form = $this->beginWidget('CActiveForm', array(
             </div>
 
             <div class="col-sm-12 col-md-3">
-                <div class="form-group" style="">
+                <div class="form-group">
                     <?php echo $form->labelEx($model, 'date_to', ['class' => 'col-form-label']); ?>
                     <div class="input-group" id="date_to" data-target-input="nearest">
                         <?php echo $form->textField($model, 'date_to', array('class' => 'form-control datetimepicker-input', 'placeholder' => 'YYYY-MM-DD', 'value' => date('Y-m-d'))); ?>
@@ -57,8 +54,20 @@ $form = $this->beginWidget('CActiveForm', array(
                 </div>
             </div>
 
-            <div class="col-sm-12 col-md-3">
-                <div class="form-group" style="">
+            <div class="col-sm-12 col-md-2">
+                <div class="form-group row">
+                    <?php echo $form->labelEx($model, 'order_type', ['class' => 'col-form-label']); ?>
+                    <div class="col-sm-12">
+                        <?php echo $form->dropDownList($model, 'order_type',[SellOrder::NEW_ORDER => 'NEW', SellOrder::REPAIR_ORDER => 'QUOTATION'], [
+                                'prompt' => 'All',
+                                'class' => 'form-control'
+                            ]); ?>
+                    </div>
+                </div>
+            </div>
+
+            <div class="col-sm-12 col-md-2">
+                <div class="form-group">
                     <?php echo $form->labelEx($model, 'customer_id', ['class' => 'col-form-label']); ?>
                     <div class="input-group" id="customer_id" data-target-input="nearest">
                         <input type="text" id="customer_id_text" class="form-control">
@@ -91,8 +100,9 @@ $form = $this->beginWidget('CActiveForm', array(
                     </script>
                 </div>
             </div>
-            <div class="col-sm-12 col-md-3">
-                <div class="form-group" style="">
+
+            <div class="col-sm-12 col-md-2">
+                <div class="form-group">
                     <?php echo $form->labelEx($model, 'created_by', ['class' => 'col-form-label']); ?>
                     <div class="input-group" id="created_by" data-target-input="nearest">
                         <input type="text" id="created_by_text" class="form-control">
