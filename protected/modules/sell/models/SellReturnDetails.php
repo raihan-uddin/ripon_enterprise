@@ -32,6 +32,7 @@ class SellReturnDetails extends CActiveRecord
     public $warranty;
     public $color;
 	public $model_name;
+	public $current_stock;
 	/**
 	 * @return string the associated database table name
 	 */
@@ -96,6 +97,7 @@ class SellReturnDetails extends CActiveRecord
 			'updated_by' => 'Updated By',
 			'updated_at' => 'Updated At',
 			'is_deleted' => 'Is Deleted',
+			'qty' => 'Return Qty',
 		);
 	}
 

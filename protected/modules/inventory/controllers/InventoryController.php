@@ -234,14 +234,17 @@ class InventoryController extends RController
         } else {
             echo '<div class="flash-error">Please select sales invoice no!</div>';
         }
+        Yii::app()->end();
     }
 
 
     public function actionJquery_getStockQty()
     {
         $model_id = isset($_POST['model_id']) ? $_POST['model_id'] : 0;
-        $stock = Inventory::model()->closingStock($model_id);
+        $product_sl_no = isset($_POST['product_sl_no']) ? $_POST['product_sl_no'] : "";
+        $stock = Inventory::model()->closingStock($model_id, $product_sl_no);
         echo json_encode($stock);
+        Yii::app()->end();
     }
 
 

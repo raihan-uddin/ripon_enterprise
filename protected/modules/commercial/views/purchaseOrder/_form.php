@@ -949,8 +949,6 @@ Yii::app()->clientScript->registerCoreScript("jquery.ui");
 
 <?php $this->endWidget(); ?>
 
-
-
 <?php
 $this->beginWidget('zii.widgets.jui.CJuiDialog', array(
     'id' => 'soReportDialogBox',
@@ -965,9 +963,6 @@ $this->beginWidget('zii.widgets.jui.CJuiDialog', array(
 ?>
 <div id='AjFlashReportSo' style="display:none;"></div>
 <?php $this->endWidget(); ?>
-
-
-
 
 <!--        modal-->
 <div class="modal fade" id="information-modal" tabindex="-1" data-backdrop="static" role="dialog"

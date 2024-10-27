@@ -294,8 +294,6 @@ Yii::app()->clientScript->registerCoreScript("jquery.ui");
                                                 if (data.length === 1 && data[0].id) {
                                                     $('#model_id_text').val(data[0].value);
                                                     $('#SellReturnDetails_model_id').val(data[0].id);
-                                                    $('#replace_model_id_text').val(data[0].value);
-                                                    $('#SellReturnDetails_replace_model_id').val(data[0].id);
 
                                                     // Trigger select event
                                                     $('#model_id_text').autocomplete('option', 'select').call($('#model_id_text')[0], null, {
@@ -309,14 +307,13 @@ Yii::app()->clientScript->registerCoreScript("jquery.ui");
                                         select: function (event, ui) {
                                             $('#model_id_text').val(ui.item.value);
                                             $('#SellReturnDetails_model_id').val(ui.item.id);
-                                            $('#replace_model_id_text').val(ui.item.value);
-                                            $('#SellReturnDetails_replace_model_id').val(ui.item.id);
 
                                             // Move cursor to the next visible input field
                                             var $form = $('#model_id_text').closest('form');
                                             var $inputs = $form.find(':input:visible:not([disabled])');
                                             var currentIndex = $inputs.index($('#model_id_text'));
                                             $inputs.eq(currentIndex + 1).focus();
+                                            getCurrentStock(ui.item.id);
                                         }
                                     }).data("ui-autocomplete")._renderItem = function (ul, item) {
                                         // Use Bootstrap styling for the autocomplete results
@@ -371,14 +368,8 @@ Yii::app()->clientScript->registerCoreScript("jquery.ui");
                                                 // Check if there's only one item and trigger select event
                                                 if (data.length === 1 && data[0].id) {
                                                     $('#model_id_text').val(data[0].label);
-                                                    $('#replace_model_id_text').val(data[0].label);
                                                     $('#product_sl_no').val(data[0].product_sl_no).change();
                                                     $('#SellReturnDetails_qty').val(1).change();
-
-                                                    $("#replace_model_id_text").val(data[0].label);
-                                                    $("#replace_product_sl_no").val(data[0].replace_product_sl_no);
-                                                    $("#SellReturnDetails_replace_model_id").val(data[0].id);
-
                                                     // Trigger select event
                                                     $('#product_sl_no').autocomplete('option', 'select').call($('#product_sl_no')[0], null, {
                                                         item: data[0]
@@ -393,17 +384,13 @@ Yii::app()->clientScript->registerCoreScript("jquery.ui");
                                             $('#product_sl_no').val(ui.item.product_sl_no).change();
                                             $('#SellReturnDetails_model_id').val(ui.item.id);
                                             $('#SellReturnDetails_qty').val(1).change();
-
-                                            $("#replace_model_id_text").val(ui.item.label);
-                                            $("#replace_product_sl_no").val(ui.item.replace_product_sl_no);
-                                            $("#SellReturnDetails_replace_model_id").val(ui.item.id);
-
-
                                             // Move cursor to the next visible input field
                                             var $form = $('#product_sl_no').closest('form');
                                             var $inputs = $form.find(':input:visible:not([disabled])');
                                             var currentIndex = $inputs.index($('#product_sl_no'));
                                             $inputs.eq(currentIndex + 1).focus();
+
+                                            getCurrentStock(ui.item.id, ui.item.product_sl_no);
                                         }
                                     }).data("ui-autocomplete")._renderItem = function (ul, item) {
                                         var listItem = $("<li class='list-group-item p-2'></li>")
@@ -437,6 +424,14 @@ Yii::app()->clientScript->registerCoreScript("jquery.ui");
                             <span class="help-block"
                                   style="color: red; width: 100%"> <?php echo $form->error($model2, 'qty'); ?></span>
                         </div>
+                        <!-- current stock disable -->
+                        <div class="form-group col-sm-12 col-md-1">
+                            <?php echo $form->labelEx($model2, 'current_stock'); ?>
+                            <?php echo $form->textField($model2, 'current_stock', array('maxlength' => 255, 'class' => 'form-control', 'readonly' => true, 'disabled' => true)); ?>
+                            <span class="help-block current-stock"
+                                  style="color: red; width: 100%"> <?php echo $form->error($model2, 'current_stock'); ?></span>
+                        </div>
+
 
                         <div class="form-group col-sm-12 col-md-1">
                             <button class="btn  btn-success mt-4" onclick="addToList()" type="button"
@@ -449,159 +444,6 @@ Yii::app()->clientScript->registerCoreScript("jquery.ui");
                             </button>
                         </div>
                     </div>
-                    <div class="row hidden">
-                        <!-- Replace Product Name -->
-                        <div class="form-group col-sm-12 col-md-2">
-                            <?php echo $form->labelEx($model2, 'replace_model_id'); ?>
-                            <div class="input-group" data-target-input="nearest">
-                                <input type="text" id="replace_model_id_text" class="form-control">
-                                <?php echo $form->hiddenField($model2, 'replace_model_id', array('maxlength' => 255, 'class' => 'form-control', 'readonly' => true)); ?>
-                                <div class="input-group-append" onclick="resetReplaceProduct()">
-                                <span class="input-group-text">
-                                     <i class="fa fa-refresh"></i>
-                                </span>
-                                </div>
-                            </div>
-                            <span class="help-block"
-                                  style="color: red; width: 100%"> <?php echo $form->error($model, 'replace_model_id'); ?></span>
-
-                            <script>
-                                $(document).ready(function () {
-                                    $('#replace_model_id_text').autocomplete({
-                                        source: function (request, response) {
-                                            var search = request.term;
-                                            $.post('<?php echo Yii::app()->baseUrl ?>/index.php/prodModels/Jquery_showprodSearch', {
-                                                "q": search,
-                                                "item_id_excluded": <?= ProdItems::SERVICES_ITEM ?>
-                                            }, function (data) {
-                                                response(data);
-
-                                                // Check if there's only one item and trigger select event
-                                                if (data.length === 1 && data[0].id) {
-                                                    $('#replace_model_id_text').val(data[0].value);
-                                                    $('#SellReturnDetails_replace_model_id').val(data[0].id).change();
-                                                    // Trigger select event
-                                                    $('#replace_model_id_text').autocomplete('option', 'select').call($('#replace_model_id_text')[0], null, {
-                                                        item: data[0]
-                                                    });
-                                                }
-                                            }, "json");
-                                        },
-                                        minLength: 1,
-                                        delay: 700,
-                                        select: function (event, ui) {
-                                            $('#replace_model_id_text').val(ui.item.value);
-                                            $('#SellReturnDetails_replace_model_id').val(ui.item.id);
-
-                                            // Move cursor to the next visible input field
-                                            var $form = $('#replace_model_id_text').closest('form');
-                                            var $inputs = $form.find(':input:visible:not([disabled])');
-                                            var currentIndex = $inputs.index($('#replace_model_id_text'));
-                                            $inputs.eq(currentIndex + 1).focus();
-                                        }
-                                    }).data("ui-autocomplete")._renderItem = function (ul, item) {
-                                        // Use Bootstrap styling for the autocomplete results
-                                        var listItem = $("<li class='list-group-item p-2'></li>")
-                                            .data("item.autocomplete", item)
-                                            .append(`
-                                        <div class="row align-items-center">
-                                            <div class="col-10 0">
-                                                <p class="m-1">${item.name}</p>
-                                                <p class="m-1">
-                                                    <small><strong>Code:</strong> ${item.code}</small>,
-                                                    <small><strong>Purchase Price:</strong> ${item.purchasePrice}</small>,
-                                                    <small><strong>Selling Price:</strong> ${item.sell_price}</small>
-                                                    <small><strong>Stock:</strong> ${item.stock}</small>
-                                                </p>
-                                            </div>
-                                        </div>`);
-
-                                        return listItem.appendTo(ul);
-                                    };
-                                });
-
-
-                            </script>
-                        </div>
-                        <!-- Replace Product Serial No -->
-                        <div class="form-group col-sm-12 col-md-2">
-                            <?php echo $form->labelEx($model, 'replace_product_sl_no'); ?>
-
-                            <div class="input-group" data-target-input="nearest">
-                                <input type="text" id="replace_product_sl_no" class="form-control">
-                                <div class="input-group-append">
-                                    <span class="input-group-text" onclick="resetProductSlNo()">
-                                        <i class="fa fa-refresh"></i>
-                                    </span>
-                                </div>
-                            </div>
-                            <span class="help-block"
-                                  style="color: red; width: 100%"> <?php echo $form->error($model, 'replace_product_sl_no'); ?></span>
-
-                            <script>
-                                $(document).ready(function () {
-                                    $('#replace_product_sl_no').autocomplete({
-                                        source: function (request, response) {
-                                            var search = request.term;
-                                            $.post('<?php echo Yii::app()->baseUrl ?>/index.php/sell/sellOrder/Jquery_showSoldProdSlNoSearch', {
-                                                "q": search,
-                                                "model_id": $('#SellReturnDetails_replace_model_id').val(),
-                                                'show_all': <?php echo Inventory::SHOW_ALL_PRODUCT_SL_NO; ?>
-                                            }, function (data) {
-                                                response(data);
-                                                // Check if there's only one item and trigger select event
-                                                if (data.length === 1 && data[0].id) {
-                                                    $('#model_id_text').val(data[0].label);
-                                                    $('#replace_model_id_text').val(data[0].label).change();
-                                                    $('#replace_product_sl_no').val(data[0].replace_product_sl_no).change();
-                                                    $('#SellReturnDetails_qty').val(1).change();
-
-                                                    // Trigger select event
-                                                    $('#replace_product_sl_no').autocomplete('option', 'select').call($('#replace_product_sl_no')[0], null, {
-                                                        item: data[0]
-                                                    });
-                                                }
-                                            }, "json");
-                                        },
-                                        minLength: 1,
-                                        delay: 700,
-                                        select: function (event, ui) {
-                                            $('#model_id_text').val(ui.item.label);
-                                            $('#replace_product_sl_no').val(ui.item.replace_product_sl_no).change();
-                                            $('#SellReturnDetails_model_id').val(ui.item.id);
-                                            $('#SellReturnDetails_qty').val(1);
-
-                                            // Move cursor to the next visible input field
-                                            var $form = $('#replace_product_sl_no').closest('form');
-                                            var $inputs = $form.find(':input:visible:not([disabled])');
-                                            var currentIndex = $inputs.index($('#replace_product_sl_no'));
-                                            $inputs.eq(currentIndex + 1).focus();
-
-                                        }
-                                    }).data("ui-autocomplete")._renderItem = function (ul, item) {
-                                        var listItem = $("<li class='list-group-item p-2'></li>")
-                                            .data("item.autocomplete", item)
-                                            .append(`
-                                        <div class="row align-items-center">
-                                            <div class="col-12">
-                                                <p class="m-1">${item.product_sl_no}</p>
-                                                <p class="mb-0" style="font-size: 10px;">
-                                                    <small><strong>Name:</strong> ${item.name}</small>, <br>
-                                                    <small><strong>Code:</strong> ${item.code}</small>,
-                                                    <small><strong>Sell Price:</strong> ${item.sell_price}</small>,
-                                                    <small><strong>Purchase Price:</strong> ${item.purchasePrice}</small>,
-                                                    <small><strong>Stock:</strong> ${item.stock}</small>
-                                                </p>
-                                            </div>
-                                        </div>`);
-
-                                        return listItem.appendTo(ul);
-                                    };
-                                });
-
-                            </script>
-                        </div>
-                    </div>
                     <div class="row">
                         <div class="table table-responsive">
                             <table class="table table-bordered table-striped table-valign-middle table-sm" id="list">
@@ -610,7 +452,7 @@ Yii::app()->clientScript->registerCoreScript("jquery.ui");
                                     <th style="width: 2%;">SL</th>
                                     <th>Product Name</th>
                                     <th style="width: 20%;" class="text-center">Product Sl No</th>
-                                    <th style="width: 10%;" class="text-center">Qty</th>
+                                    <th style="width: 10%;" class="text-center">Return Qty</th>
                                     <th style="width: 4%;" class="text-center">Action</th>
                                 </tr>
                                 </thead>
@@ -646,10 +488,8 @@ Yii::app()->clientScript->registerCoreScript("jquery.ui");
                                     $("#sell-return-form")[0].reset();
                                     $("#formResult").animate({opacity:1.0},1000).fadeOut("slow");
                                     $("#list tbody").html("");
-                                    $("#soReportDialogBox").dialog("open");
-                                    $("#AjFlashReportSo").html(data.voucherPreview).show();
-                                    // $("#information-modal").modal("show");
-                                    // $("#information-modal .modal-body").html(data.soReportInfo);  
+                                    $("#information-modal").modal("show");
+                                    $("#information-modal .modal-body").html(data.voucherPreview);  
                                 }else{
                                     //$("#formResultError").html("Data not saved. Please solve the following errors.");
                                     toastr.error("Data not saved. Please solve the following errors.");
@@ -724,7 +564,7 @@ Yii::app()->clientScript->registerCoreScript("jquery.ui");
                 </button>
             </div>
             <div class="modal-body text-center">
-                <p>Loading...</p> <!-- this will be replaced by the response from the server -->
+                <p>Loading...</p>
             </div>
             <div class="modal-footer">
                 <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
@@ -754,23 +594,14 @@ Yii::app()->clientScript->registerCoreScript("jquery.ui");
     function resetDynamicItem() {
         resetProduct();
         resetProductSlNo();
-        resetReplaceProduct();
     }
 
     function resetProduct() {
         $("#model_id_text").val('');
-        $("#replace_model_id").val('');
         $("#SellReturnDetails_model_id").val('');
         resetProductSlNo();
         showPurchasePrice(0);
         tableSerial();
-        resetReplaceProduct();
-    }
-
-    function resetReplaceProduct() {
-        $("#replace_model_id_text").val('');
-        $("#SellReturnDetails_replace_model_id").val('');
-        $("#replace_product_sl_no").val('');
     }
 
 
@@ -786,13 +617,6 @@ Yii::app()->clientScript->registerCoreScript("jquery.ui");
         else
             $('.costing-amount').html('');
         $("#SellOrderDetails_pp").val(purchasePrice);
-    }
-
-    function showCurrentStock(stock = 0, className = 'current-stock') {
-        if (stock >= 0) {
-            $('.current-stock').html('<span style="color: green;">Stock: <b>' + parseFloat(stock).toFixed(2) + '</b></span>');
-        } else
-            $('.current-stock').html('<span style="color: green;">Stock: <b>' + parseFloat(stock).toFixed(2) + '</b></span>');
     }
 
     $(document).keypress(function (event) {
@@ -883,7 +707,6 @@ Yii::app()->clientScript->registerCoreScript("jquery.ui");
         console.log('resetDataAfterAdd');
         resetProduct();
         resetProductSlNo();
-        resetReplaceProduct();
         $('#SellReturnDetails_qty').val('');
         
     }
@@ -894,6 +717,29 @@ Yii::app()->clientScript->registerCoreScript("jquery.ui");
         $('#list tbody tr').each(function () {
             $(this).find('.serial').text(i);
             i--;
+        });
+    }
+
+    function getCurrentStock(model_id, product_sl_no) {
+        $("#SellReturnDetails_current_stock").val('');
+
+        //  show spinner/loading in the input field
+        $('#SellReturnDetails_current_stock').val('Loading...');
+
+        $.ajax({
+            type: 'POST',
+            url: '<?php echo $this->createUrl('/inventory/inventory/jquery_getStockQty') ?>',
+            data: {
+                model_id: model_id,
+                product_sl_no: product_sl_no
+            },
+            success: function (data) {
+                $('#SellReturnDetails_current_stock').val(data);
+            },
+            error: function (data) {
+                toastr.error(data.responseText);
+                $('#SellReturnDetails_current_stock').val('');
+            }
         });
     }
 

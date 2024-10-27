@@ -23,8 +23,8 @@ $model_id = end($data)->model_id;
     </div>
     <div class="card-body">
         <div class="row">
-            <div class="form-group col-md-12">
-                <table class="table table-striped table-sm table-borderless table-hover" id="table-1">
+            <div class="form-group col-md-12 table-responsive">
+                <table class="table table-striped table-sm table-bordered table-hover" id="table-1" style="font-size: 12px;" >
                     <thead>
                     <tr class="text-uppercase">
                         <th>Date</th>
