@@ -246,10 +246,30 @@ class SellReturnController extends RController
 		$model = $this->loadModel($id);
 		if(isset($_POST['SellReturnDetails'])){
 			Yii::app()->clientScript->scriptMap['jquery.js'] = false;
-			Yii::app()->end();
+			
 			// db transaction
 			$transaction = Yii::app()->db->beginTransaction();
 			try {
+				if (isset($SellReturnDetails['id'], $SellReturnDetails['replace_model_id'])) {
+					foreach ($SellReturnDetails['id'] as $index => $id) {
+						// Retrieve corresponding values with a fallback if values are missing
+						$replaceModelId = $SellReturnDetails['replace_model_id'][$index] ?? 'N/A';
+						$replaceProductSlNo = $SellReturnDetails['replace_product_sl_no'][$index] ?? 'N/A';
+			
+						echo sprintf(
+							"ID: %s, Replace Model ID: %s, Replace Product Serial No: %s\n",
+							$id,
+							$replaceModelId,
+							$replaceProductSlNo
+						);
+			
+						// Here you can handle further processing, like inserting into a database
+					}				
+				} else {
+					echo 'Invalid request';
+				}
+				
+				Yii::app()->end();
 				$model->status = SellReturn::RETURN_STATUS_APPROVED;
 				// $model->approved_by = Yii::app()->user->id;
 				// $model->approved_at = date('Y-m-d H:i:s');
@@ -258,6 +278,9 @@ class SellReturnController extends RController
 				}
 				// update inventory
 				if($model->return_type == SellReturn::DAMAGE_RETURN){
+					foreach($_POST['SellReturnDetails'][''] as $detail){
+
+					}
 					$details = SellReturnDetails::model()->findAllByAttributes(['return_id' => $model->id]);
 					foreach ($details as $detail){
 						// delete previous inventory replacement model
@@ -296,7 +319,7 @@ class SellReturnController extends RController
 			}
 			Yii::app()->end();
 		} else {
-			// show approval form
+			$this->pageTitle = "SALE RETURN APPROVE";
 			$this->render('_formProductReturnApprove', array('model' => $model));
 		}
 	}

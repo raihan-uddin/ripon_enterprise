@@ -109,7 +109,10 @@ Yii::app()->clientScript->registerCoreScript("jquery.ui");
                                 <td class="text-center"><?php echo $detail->return_qty; ?></td>
                                 <td>
                                     <?php 
-                                        echo $form->hiddenField($detail, "[]replace_model_id", array(
+                                        echo $form->hiddenField($detail, "id[]", array(
+                                            'value' => $detail->id
+                                        ));
+                                        echo $form->hiddenField($detail, "replace_model_id[]", array(
                                             'id' => 'SellReturnDetails_' . $detail->id . '_replace_model_id',
                                             'value' => $detail->replace_model_id ? $detail->replace_model_id : $detail->model_id
                                         ));
@@ -137,7 +140,7 @@ Yii::app()->clientScript->registerCoreScript("jquery.ui");
                                 <td>
                                     <?php
                                         $this->widget('zii.widgets.jui.CJuiAutoComplete', array(
-                                            'name' => 'SellReturnDetails[][replace_product_sl_no]',
+                                            'name' => 'SellReturnDetails[replace_product_sl_no][]',
                                             'value' => $detail->replace_product_sl_no,
                                             'source' => 'js:function(request, response) {
                                                 $.ajax({
