@@ -3,7 +3,7 @@
  * @var string $message
  * @var string $startDate
  * @var string $endDate
- *
+ * @var mixed $data 
  */
 ?>
 
@@ -118,7 +118,7 @@ echo "</div>";
             </th>
 
             <th style="box-shadow: 0px 0px 0px 1px black inset;  width: 10%; min-width: 60px;">
-                P.P
+                AVG P.P
             </th>
             <th style="box-shadow: 0px 0px 0px 1px black inset;  width: 10%; min-width: 50px;">
                 Stock Value
@@ -132,8 +132,8 @@ echo "</div>";
         $rowFound = false;
         $groundTotalSaleValue = 0;
         $groundTotalStockValue = 0;
-        /** @var mixed $data */
         foreach ($data as $dmr) {
+            $avg_purchase_price = $dmr->avg_purchase_price;
             if ($dmr->opening_stock != 0 || $dmr->stock_in != 0 || $dmr->stock_out) {
                 $closing = (($dmr->opening_stock + $dmr->stock_in) - $dmr->stock_out);
                 $stockSaleValue = $closing * $dmr->sell_price;
@@ -144,7 +144,7 @@ echo "</div>";
                 $opening_stock_value = $dmr->opening_stock_value;
                 $stock_in_value = $dmr->stock_in_value;
                 $stock_out_value = $dmr->stock_out_value;
-                $row_stock_closing_value = (($opening_stock_value + $stock_in_value) - $stock_out_value);
+                $row_stock_closing_value = $closing > 0 ? $closing * $avg_purchase_price : 0;
 
                 $groundTotalStockValue += $row_stock_closing_value;
 
@@ -182,7 +182,7 @@ echo "</div>";
                     </td>
                     <td style="text-align: center;"><?php echo is_numeric($dmr->sell_price) ? number_format($dmr->sell_price, 2) : ''; ?></td>
                     <td style="text-align: right;"><?php echo is_numeric($stockSaleValue) ? number_format($stockSaleValue, 2) : ''; ?></td>
-                    <td style="text-align: right;"><?php echo is_numeric($cpp) ? number_format($cpp, 2) : ''; ?></td>
+                    <td style="text-align: right;"><?php echo is_numeric($avg_purchase_price) ? number_format($avg_purchase_price, 2) : ''; ?></td>
                     <td style="text-align: right;"><?php echo is_numeric($row_stock_closing_value) ? number_format($row_stock_closing_value, 2) : ''; ?></td>
                 </tr>
                 <?php

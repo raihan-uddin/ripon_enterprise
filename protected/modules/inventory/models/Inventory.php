@@ -34,8 +34,9 @@ class Inventory extends CActiveRecord
     const MANUAL_ENTRY = 0;
     const PURCHASE_RECEIVE = 1;
     const SALES_DELIVERY = 3;
-    const JOB_CARD_ISSUE = 10;
-    const PRODUCTION = 20;
+    const CASH_SALE_RETURN = 4;
+    const WARRANTY_RETURN = 5;
+    const PRODUCT_REPLACEMENT = 6;
 
     const SHOW_ALL_PRODUCT_SL_NO = 2;
 
@@ -64,6 +65,8 @@ class Inventory extends CActiveRecord
     public $product_name;
     public $product_code;
     public $manufacturer_id;
+    public $avg_purchase_price;
+    public $order_type;
 
     public static function maxSlNo()
     {
@@ -257,6 +260,8 @@ class Inventory extends CActiveRecord
             array('id' => self::MANUAL_ENTRY, 'title' => 'MANUAL ENTRY'),
             array('id' => self::PURCHASE_RECEIVE, 'title' => 'PURCHASE'),
             array('id' => self::SALES_DELIVERY, 'title' => 'SALES'),
+            array('id' => self::CASH_SALE_RETURN, 'title' => 'CASH SALE RETURN'),
+            array('id' => self::WARRANTY_RETURN, 'title' => 'WARRANTY RETURN'),
 //            array('id' => self::JOB_CARD_ISSUE, 'title' => 'JC ISSUE'),
 //            array('id' => self::PRODUCTION, 'title' => 'PRODUCTION'),
         );
@@ -271,10 +276,10 @@ class Inventory extends CActiveRecord
             $badge = "<span class='badge badge-info'>PURCHASE</span>";
         else if ($value == self::SALES_DELIVERY)
             $badge = "<span class='badge badge-info'>SALES</span>";
-        else if ($value == self::JOB_CARD_ISSUE)
-            $badge = "<span class='badge badge-info'>JC ISSUE</span>";
-        else if ($value == self::PRODUCTION)
-            $badge = "<span class='badge badge-info'>PRODUCTION</span>";
+        else if ($value == self::CASH_SALE_RETURN)
+            $badge = "<span class='badge badge-info'>CASH SALE RETURN</span>";
+        else if ($value == self::WARRANTY_RETURN)
+            $badge = "<span class='badge badge-info'>WARRANTY RETURN</span>";
         else
             $badge = "";
         return $badge;

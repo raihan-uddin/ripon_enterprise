@@ -22,6 +22,8 @@
  */
 class SellReturn extends CActiveRecord
 {
+    public $supplier_id;
+    public $grand_total;
     /**
      * @return string the associated database table name
      */
@@ -41,7 +43,13 @@ class SellReturn extends CActiveRecord
 
     const RETURN_TYPE_ARR = [
         self::CASH_RETURN => "CASH RETURN",
-        self::DAMAGE_RETURN => "PRODUCT RETURN",
+        self::DAMAGE_RETURN => "WARRANTY/REPLACEMENT",
+    ];
+
+    const RETURN_STATUS_ARR = [
+        self::RETURN_STATUS_PENDING => "PENDING",
+        self::RETURN_STATUS_APPROVED => "APPROVED",
+        self::RETURN_STATUS_REJECTED => "REJECTED",
     ];
 
     /**
@@ -54,10 +62,12 @@ class SellReturn extends CActiveRecord
         return array(
             array('return_date, customer_id, sell_id', 'required'),
             array('customer_id, return_type, is_deleted, business_id, branch_id, created_by, updated_by, is_opening, sell_id', 'numerical', 'integerOnly' => true),
+            array('return_date, customer_id', 'required'),
+            array('customer_id, return_type, is_deleted, business_id, branch_id, created_by, updated_by, is_opening, status', 'numerical', 'integerOnly' => true),
             array('return_amount, costing', 'length', 'max' => 10),
             array('remarks, created_at, updated_at', 'safe'),
             // The following rule is used by search().
-            array('id, return_date, customer_id, return_amount, costing, return_type, remarks, is_deleted, business_id, branch_id, created_by, created_at, updated_by, updated_at, is_opening', 'safe', 'on' => 'search'),
+            array('id, return_date, customer_id, return_amount, costing, status, return_type, remarks, is_deleted, business_id, branch_id, created_by, created_at, updated_by, updated_at, is_opening', 'safe', 'on' => 'search'),
         );
     }
 
@@ -68,7 +78,10 @@ class SellReturn extends CActiveRecord
     {
         // NOTE: you may need to adjust the relation name and the related
         // class name for the relations automatically generated below.
-        return array();
+        return array(
+            'customer' => array(self::BELONGS_TO, 'Customers', 'customer_id'),
+            'sellReturnDetails' => array(self::HAS_MANY, 'SellReturnDetails', 'return_id'),
+        );
     }
 
     /**
@@ -87,6 +100,7 @@ class SellReturn extends CActiveRecord
             'remarks' => 'Remarks',
             'is_deleted' => 'Is Deleted',
             'business_id' => 'Business',
+            'status' => 'Status',
             'branch_id' => 'Branch',
             'created_by' => 'Created By',
             'created_at' => 'Created At',
@@ -95,6 +109,7 @@ class SellReturn extends CActiveRecord
             'is_opening' => 'Is Opening',
         );
     }
+
 
     /**
      * Retrieves a list of models based on the current search/filter conditions.
@@ -129,6 +144,7 @@ class SellReturn extends CActiveRecord
         $criteria->compare('t.updated_by', $this->updated_by);
         $criteria->compare('t.updated_at', $this->updated_at, true);
         $criteria->compare('t.is_opening', $this->is_opening);
+        $criteria->compare('t.status', $this->status);
 
         return new CActiveDataProvider($this, array(
             'criteria' => $criteria,

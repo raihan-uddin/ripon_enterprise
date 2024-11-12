@@ -30,16 +30,23 @@ class ProdModelsController extends RController
 
     public function actionJquery_showprodSearch()
     {
-        $search_prodName = trim($_POST['q']);
+        $search_prodName = isset($_POST['q']) ? trim($_POST['q']) : '';
+        $term = isset($_REQUEST['term']) ? trim($_REQUEST['term']) : '';
         $item_id = isset($_POST['item_id']) ? $_POST['item_id'] : [];
         $item_id_excluded = isset($_POST['item_id_excluded']) ? trim($_POST['item_id_excluded']) : false;
-
-        $criteria2 = new CDbCriteria();
-        $criteria2->compare('t.model_name', $search_prodName, true);
-        $criteria2->compare('t.code', $search_prodName, true, "OR");
-
         $criteria = new CDbCriteria();
-        $criteria->mergeWith($criteria2);
+        if(strlen($search_prodName) > 0){
+            $criteria2 = new CDbCriteria();
+            $criteria2->compare('t.model_name', $search_prodName, true);
+            $criteria2->compare('t.code', $search_prodName, true, "OR");
+            $criteria->mergeWith($criteria2);
+        }
+        if (strlen($term) > 0) {
+            $critera3 = new CDbCriteria();
+            $critera3->compare('t.model_name', $term, true);
+            $critera3->compare('t.code', $term, true, "OR");
+            $criteria->mergeWith($critera3, 'OR');
+        }
         if (count($item_id) > 0) {
             if (!$item_id_excluded)
                 $criteria->addInCondition('t.item_id', $item_id);
@@ -56,7 +63,6 @@ class ProdModelsController extends RController
                 } else {
                     $stock = 0;
                 }
-                $stock = Inventory::model()->closingStock($prodInfo->id);
 
                 $code = $prodInfo->code;
                 $value = "$prodInfo->model_name || $code";

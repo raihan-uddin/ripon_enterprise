@@ -58,10 +58,10 @@ class SellReturnController extends RController
 		// Uncomment the following line if AJAX validation is needed
 		$this->performAjaxValidation($model);
 		if (Yii::app()->request->isAjaxRequest) {
-			// db transaction
-			$transaction = Yii::app()->db->beginTransaction();
 			if(isset($_POST['SellReturn']))
 			{
+				// db transaction
+				$transaction = Yii::app()->db->beginTransaction();
 				try{
 					$model->attributes=$_POST['SellReturn'];
 					$model->customer_id = $_POST['SellReturn']['customer_id'];
@@ -75,11 +75,14 @@ class SellReturnController extends RController
 					$model->is_deleted = 0;
 					if($model->save()){
 						$detailsData = $_POST['SellReturnDetails']['model_id'];
-						
+						$challan_no = $sl_no = Inventory::maxSlNo() + 1;
 						foreach ($detailsData as $key =>  $detail){
+							$model_id = $_POST['SellReturnDetails']['model_id'][$key];
+							$product = ProdModels::model()->findByPk($model_id);
+
 							$detailModel = new SellReturnDetails();
 							$detailModel->return_id = $model->id;
-							$detailModel->model_id = $_POST['SellReturnDetails']['model_id'][$key];
+							$detailModel->model_id = $model_id;
 							$detailModel->return_qty = $_POST['SellReturnDetails']['qty'][$key];
 							$detailModel->sell_price = 0;
 							$detailModel->purchase_price = 0;
@@ -94,15 +97,39 @@ class SellReturnController extends RController
 							if(!$detailModel->save()){
 								throw new Exception('Product return details creation failed');
 							}
+
+							// insert into stock
+							$stock = new Inventory();
+							$stock->date = $model->return_date;
+							$stock->challan_no =  $challan_no;
+							$stock->sl_no = $sl_no;
+							$stock->model_id = $detailModel->model_id;
+							$stock->product_sl_no = $detailModel->product_sl_no;
+							$stock->stock_in = $detailModel->return_qty;
+							$stock->stock_out = 0;
+							$stock->sell_price = $product->sell_price;
+							$stock->purchase_price = $product->purchase_price;
+							$stock->row_total = $product->purchase_price * $detailModel->return_qty;
+							$stock->stock_status = Inventory::WARRANTY_RETURN;
+							$stock->master_id = $model->id;
+							$stock->source_id = $detailModel->id;
+							$stock->remarks = $model->remarks;
+							if(!$stock->save()){
+								throw new Exception('Stock creation failed');
+							}
 						}
 						$transaction->commit();
+
 						echo CJSON::encode(array(
 							'status' => 'success',
-							// 'soReportInfo' => $this->renderPartial('voucherPreview', array('data' => $data, 'new' => true), true, true), //
+							'voucherPreview' => $this->renderPartial('warrantyVoucherPreview', array('data' => $model, 'new' => true), true, true), //
 						));
+						Yii::app()->end();
 					}
 				}catch(Exception $e){
-					$transaction->rollback();
+					if($transaction->active){
+						$transaction->rollback();
+					}
 					echo json_encode(['status' => 'error', 'message' => 'Product return creation failed' . $e->getMessage()]);
 					Yii::app()->end();
 				}
@@ -147,7 +174,50 @@ class SellReturnController extends RController
 	 */
 	public function actionDelete($id)
 	{
-		$this->loadModel($id)->delete();
+		// begin db transaction
+		$transaction = Yii::app()->db->beginTransaction();
+		try{
+			// load model
+			$model = $this->loadModel($id);
+			// hard delete all details
+			$details = SellReturnDetails::model()->findAllByAttributes(['return_id' => $model->id]);
+			foreach ($details as $detail){
+				// delete return inventory
+				$criteraInv = new CDbCriteria();
+				$criteraInv->addColumnCondition(['source_id' => $detail->id, 'master_id' => $model->id]);
+				$criteraInv->addInCondition('stock_status', [Inventory::WARRANTY_RETURN, Inventory::CASH_SALE_RETURN]);
+				$inventory = Inventory::model()->findAll($criteraInv);
+				foreach ($inventory as $inv){
+					if(!$inv->delete()){
+						throw new Exception('Inventory delete failed');
+					}
+				}
+				// delete replacement inventory
+				if($detail->replace_model_id > 0){
+					$criteraInvReplace = new CDbCriteria();
+					$criteraInvReplace->addColumnCondition(['master_id' => $model->id, 'model_id' => $detail->replace_model_id]);
+					$criteraInvReplace->addInCondition('stock_status', [Inventory::WARRANTY_RETURN, Inventory::CASH_SALE_RETURN]);
+					$inventoryReplace = Inventory::model()->findAll($criteraInvReplace);
+					foreach ($inventoryReplace as $invReplace){
+						if(!$invReplace->delete()){
+							throw new Exception('Inventory delete failed');
+						}
+					}
+				}
+
+				if(!$detail->delete()){
+					throw new Exception('Return Detail delete failed');
+				}
+			}
+			// delete return
+			if(!$model->delete()){
+				throw new Exception('Return delete failed');
+			}
+		}
+		catch(Exception $e){
+			$transaction->rollback();
+			throw new CHttpException(400, 'Invalid request. Please do not repeat this request again.');
+		}
 
 		// if AJAX request (triggered by deletion via admin grid view), we should not redirect the browser
 		if(!isset($_GET['ajax']))
@@ -166,9 +236,107 @@ class SellReturnController extends RController
 		if(isset($_GET['SellReturn']))
 			$model->attributes=$_GET['SellReturn'];
 
+		$this->pageTitle = "SALE RETURN LIST";
 		$this->render('admin',array(
 			'model'=>$model,
 		));
+	}
+
+	public function actionApprove($id){
+		$model = $this->loadModel($id);
+		if(isset($_POST['SellReturnDetails'])){
+			Yii::app()->clientScript->scriptMap['jquery.js'] = false;
+
+			// db transaction
+			$transaction = Yii::app()->db->beginTransaction();
+			try {
+				if (isset($SellReturnDetails['id'], $SellReturnDetails['replace_model_id'])) {
+					foreach ($SellReturnDetails['id'] as $index => $id) {
+						// Retrieve corresponding values with a fallback if values are missing
+						$replaceModelId = $SellReturnDetails['replace_model_id'][$index] ?? 'N/A';
+						$replaceProductSlNo = $SellReturnDetails['replace_product_sl_no'][$index] ?? 'N/A';
+
+						echo sprintf(
+							"ID: %s, Replace Model ID: %s, Replace Product Serial No: %s\n",
+							$id,
+							$replaceModelId,
+							$replaceProductSlNo
+						);
+
+						// Here you can handle further processing, like inserting into a database
+					}
+				} else {
+					echo 'Invalid request';
+				}
+
+				Yii::app()->end();
+				$model->status = SellReturn::RETURN_STATUS_APPROVED;
+				// $model->approved_by = Yii::app()->user->id;
+				// $model->approved_at = date('Y-m-d H:i:s');
+				if(!$model->save()){
+					throw new Exception('Approval failed');
+				}
+				// update inventory
+				if($model->return_type == SellReturn::DAMAGE_RETURN){
+					foreach($_POST['SellReturnDetails'][''] as $detail){
+
+					}
+					$details = SellReturnDetails::model()->findAllByAttributes(['return_id' => $model->id]);
+					foreach ($details as $detail){
+						// delete previous inventory replacement model
+						if($detail->replace_model_id > 0){
+							// delete previous inventory replacement model
+							$criteria = new CDbCriteria();
+							$criteria->addColumnCondition(['master_id' => $model->id]);
+							$criteria->addInCondition('stock_status', [Inventory::PRODUCT_REPLACEMENT]);
+							$inventory = Inventory::model()->findAll($criteria);
+							foreach ($inventory as $inv){
+								if(!$inv->delete()){
+									throw new Exception('Previous Approved Inventory delete failed');
+								}
+							}
+
+							// insert new inventory replacement model
+							$stock = new Inventory();
+							$stock->date = $model->return_date;
+							$stock->challan_no = Inventory::maxSlNo() + 1;
+							$stock->sl_no = Inventory::maxSlNo() + 1;
+
+						}
+						if($detail->replace_model_id > 0){
+
+						}
+					}
+				}
+				$transaction->commit();
+				echo json_encode(['status' => 'success', 'message' => 'Approved successfully']);
+				Yii::app()->end();
+
+			} catch (Exception $e) {
+				$transaction->rollback();
+				echo json_encode(['status' => 'error', 'message' => 'Approval failed']);
+				Yii::app()->end();
+			}
+			Yii::app()->end();
+		} else {
+			$this->pageTitle = "SALE RETURN APPROVE";
+			$this->render('_formProductReturnApprove', array('model' => $model));
+		}
+	}
+
+	public function actionVoucherPreview(){
+		if (Yii::app()->request->isAjaxRequest) {
+            Yii::app()->clientScript->scriptMap['jquery.js'] = false;
+        }
+		$id = isset($_POST['id']) ? trim($_POST['id']) : "";
+		if(!($id > 0)){
+			echo json_encode(['status' => 'error', 'message' => 'Invalid request']);
+			Yii::app()->end();
+		}
+
+		$data = $this->loadModel($id);
+		echo $this->renderPartial('warrantyVoucherPreview', array('data' => $data,), true, true);
+		Yii::app()->end();
 	}
 
 	/**

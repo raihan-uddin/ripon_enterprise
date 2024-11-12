@@ -202,13 +202,11 @@ endforeach;
                             'label' => '<i class="fa fa-pencil-square-o fa-2x" style="color: black;"></i>&nbsp;&nbsp;',
                             'imageUrl' => false,
                             'options' => array('rel' => 'tooltip', 'data-toggle' => 'tooltip', 'title' => Yii::t('app', 'Edit')),
-//                            'visible' => '$data->bom_complete == SellOrder::BOM_NOT_COMPLETE ? TRUE : FALSE',
                         ),
                         'delete' => array(
                             'label' => '<i class="fa fa-trash fa-2x" style="color: red;"></i>&nbsp;&nbsp;',
                             'imageUrl' => false,
                             'options' => array('rel' => 'tooltip', 'data-toggle' => 'tooltip', 'title' => Yii::t('app', 'Delete')),
-//                            'visible' => '$data->bom_complete == SellOrder::BOM_NOT_COMPLETE ? TRUE : FALSE',
                         ),
                     )
                 ),

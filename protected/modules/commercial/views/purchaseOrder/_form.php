@@ -126,11 +126,8 @@ Yii::app()->clientScript->registerCoreScript("jquery.ui");
                                     <?php
                                     echo CHtml::link(' <i class="fa fa-plus"></i>', "", // the link for open the dialog
                                         array(
-//                                    'class' => '',
                                             'onclick' => "{addSupplier(); $('#addSupplierDialog').dialog('open');}"));
                                     ?>
-
-
                                     <?php
                                     $this->beginWidget('zii.widgets.jui.CJuiDialog', array(// the dialog
                                         'id' => 'addSupplierDialog',
@@ -264,7 +261,6 @@ Yii::app()->clientScript->registerCoreScript("jquery.ui");
                                     <?php
                                     echo CHtml::link(' <i class="fa fa-plus"></i>', "", // the link for open the dialog
                                         array(
-//                                    'class' => '',
                                             'onclick' => "{addShipBy(); $('#addShipByDialog').dialog('open');}"));
                                     ?>
 
@@ -384,9 +380,6 @@ Yii::app()->clientScript->registerCoreScript("jquery.ui");
                     <button type="button" class="btn btn-tool" data-card-widget="collapse">
                         <i class="fa fa-minus"></i>
                     </button>
-                    <!--            <button type="button" class="btn btn-tool" data-card-widget="remove">-->
-                    <!--                <i class="fa fa-times"></i>-->
-                    <!--            </button>-->
                 </div>
             </div>
             <div class="card-body">
@@ -402,7 +395,6 @@ Yii::app()->clientScript->registerCoreScript("jquery.ui");
                                     <?php
                                     echo CHtml::link(' <i class="fa fa-plus"></i>', "", // the link for open the dialog
                                         array(
-//                                    'class' => '',
                                             'onclick' => "{addProdModel(); $('#dialogAddProdModel').dialog('open');}"));
                                     ?>
 
@@ -448,6 +440,8 @@ Yii::app()->clientScript->registerCoreScript("jquery.ui");
                                         var search = request.term;
                                         $.post('<?php echo Yii::app()->baseUrl ?>/index.php/prodModels/Jquery_showprodSearch', {
                                                 "q": search,
+                                                "item_id_excluded": 1,
+                                                "item_id" : [<?= ProdItems::SERVICES_ITEM ?>]
                                             },
                                             function (data) {
                                                 response(data);
@@ -652,7 +646,7 @@ Yii::app()->clientScript->registerCoreScript("jquery.ui");
                         toastr.error("Grand total amount is 0");
                         return false;
                     }else {                
-                        $("#overlay").fadeIn(300);　   
+                        $("#overlay").fadeIn(300);
                         $("#ajaxLoader").show();
                     }
                  }',
@@ -746,18 +740,8 @@ Yii::app()->clientScript->registerCoreScript("jquery.ui");
         let isproductpresent = false;
         let temp_codearray = document.getElementsByName("PurchaseOrderDetails[temp_model_id][]");
         let temp_sl_array = document.getElementsByName("PurchaseOrderDetails[temp_product_sl_no][]");
-        // console.log(temp_sl_array);
-        /* if (temp_codearray.length > 0) {
-             for (let l = 0; l < temp_codearray.length; l++) {
-                 var code = temp_codearray[l].value;
-                 if (code == model_id) {
-                     isproductpresent = true;
-                     break;
-                 }
-             }
-         }*/
+
         if (product_sl_no.length > 0) {
-            // console.log("length found");
             for (let l = 0; l < temp_sl_array.length; l++) {
                 let code = temp_sl_array[l].value;
                 if (code === product_sl_no) {
@@ -765,7 +749,6 @@ Yii::app()->clientScript->registerCoreScript("jquery.ui");
                     break;
                 }
             }
-            // console.log(isproductpresent);
         }
 
 
@@ -966,8 +949,6 @@ Yii::app()->clientScript->registerCoreScript("jquery.ui");
 
 <?php $this->endWidget(); ?>
 
-
-
 <?php
 $this->beginWidget('zii.widgets.jui.CJuiDialog', array(
     'id' => 'soReportDialogBox',
@@ -982,9 +963,6 @@ $this->beginWidget('zii.widgets.jui.CJuiDialog', array(
 ?>
 <div id='AjFlashReportSo' style="display:none;"></div>
 <?php $this->endWidget(); ?>
-
-
-
 
 <!--        modal-->
 <div class="modal fade" id="information-modal" tabindex="-1" data-backdrop="static" role="dialog"

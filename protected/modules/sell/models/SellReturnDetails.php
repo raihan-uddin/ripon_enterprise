@@ -31,6 +31,8 @@ class SellReturnDetails extends CActiveRecord
     public $pp;
     public $warranty;
     public $color;
+	public $model_name;
+	public $current_stock;
 	/**
 	 * @return string the associated database table name
 	 */
@@ -67,6 +69,11 @@ class SellReturnDetails extends CActiveRecord
 		// NOTE: you may need to adjust the relation name and the related
 		// class name for the relations automatically generated below.
 		return array(
+			'model' => array(self::BELONGS_TO, 'ProdModels', 'model_id'),
+			'replaceModel' => array(self::BELONGS_TO, 'ProdModels', 'replace_model_id'),
+			'return' => array(self::BELONGS_TO, 'SellReturn', 'return_id'),
+			'createdBy' => array(self::BELONGS_TO, 'User', 'created_by'),
+			'updatedBy' => array(self::BELONGS_TO, 'User', 'updated_by'),
 		);
 	}
 
@@ -95,6 +102,7 @@ class SellReturnDetails extends CActiveRecord
 			'updated_by' => 'Updated By',
 			'updated_at' => 'Updated At',
 			'is_deleted' => 'Is Deleted',
+			'qty' => 'Return Qty',
 		);
 	}
 

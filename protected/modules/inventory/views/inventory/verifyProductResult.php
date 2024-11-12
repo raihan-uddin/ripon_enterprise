@@ -23,8 +23,8 @@ $model_id = end($data)->model_id;
     </div>
     <div class="card-body">
         <div class="row">
-            <div class="form-group col-md-12">
-                <table class="table table-striped table-sm table-borderless table-hover" id="table-1">
+            <div class="form-group col-md-12 table-responsive">
+                <table class="table table-striped table-sm table-bordered table-hover" id="table-1" style="font-size: 12px;" >
                     <thead>
                     <tr class="text-uppercase">
                         <th>Date</th>
@@ -77,7 +77,7 @@ $model_id = end($data)->model_id;
                                 } else if ($d->customer_id > 0) {
                                     ?>
                                     <td class="text-center text-uppercase customer_ledger"
-                                        data-id="<?= $d->customer_id ?>">
+                                        data-id="<?= $d->customer_id ?>">fff
                                         <?= sprintf("%s | %s | %s", $d->customer_name, $d->customer_contact_no, $d->customer_id) ?>
                                     </td>
                                     <?php
@@ -86,9 +86,10 @@ $model_id = end($data)->model_id;
                                     <td class="text-center" title="Stock Adjustment">N/A</td>
                                     <?php
                                 }
-
                                 ?>
-                                // todo: show purchase & sales preview
+                                <td class="text-center">
+                                    <?= $d->master_id > 0 ? $d->master_id : '' ?>
+                                </td>
                                 <td class="text-center"><?= $d->stock_in > 0 ? number_format($d->stock_in) : '' ?></td>
                                 <td class="text-center"><?= $d->stock_out > 0 ? number_format($d->stock_out) : '' ?></td>
                                 <td class="text-right"><?= number_format($d->purchase_price, 2) ?></td>

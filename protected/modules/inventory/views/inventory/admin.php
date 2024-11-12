@@ -145,43 +145,13 @@ if (Yii::app()->user->checkAccess('Inventory.Inventory.VoucherPreview')) {
             'mergeColumns' => array('date', 'challan_no', 'store_id', 'location_id',),
             'htmlOptions' => array('class' => 'table-responsive grid-view'),
             'itemsCssClass' => 'table table-sm table-hover table-striped table-condensed table-bordered dataTable dtr-inline',
-//            'loadingCssClass' => 'fa fa-spinner fa-spin fa-2x',
-//            'pager' => array(            //  pager like twitter bootstrap
-//                'htmlOptions' => array('class' => 'pagination  justify-content-end'),
-//                'header' => '',
-//                'cssFile' => false,
-//                'maxButtonCount' => 10,
-//                'selectedPageCssClass' => 'page-item active', //default "selected"
-//                'nextPageCssClass' => 'page-item',//default "next"
-//                'hiddenPageCssClass' => 'page-item disabled',//default "hidden"
-//                'firstPageCssClass' => 'page-item previous', //default "first"\
-//                'lastPageCssClass' => 'page-item last', //default "last"
-//                'internalPageCssClass' => 'page-item',//default "page"
-//                'previousPageCssClass' => 'page-item',//default "previours"\
-//                'firstPageLabel' => '<<',
-//                'lastPageLabel' => '>>',
-//                'prevPageLabel' => '<',
-//                'nextPageLabel' => '>',
-////                'footer'=>'End',//defalut empty
-//            ),
             'template' => "{pager}\n\n{summary}{items}{summary}\n{pager}",
             'summaryText' => "<div class='dataTables_info' role='status' aria-live='polite'><p>Displaying {start}-{end} of {page} result(s)</p></div>",
             'summaryCssClass' => 'col-sm-12 col-md-5',
             'pagerCssClass' => 'col-sm-12 col-md-7 pager',
             'columns' => array(
                 'date',
-//                'sl_no',
                 'challan_no',
-                /* array(
-                     'name' => 'store_id',
-                     'value' => 'Stores::model()->nameOfThis($data->store_id)',
-                     'filter' => CHtml::listData(Stores::model()->findAll(['order' => 'name ASC']), 'id', 'name'),
-                 ),
-                 array(
-                     'name' => 'location_id',
-                     'value' => 'Location::model()->nameOfThis($data->location_id)',
-                     'filter' => CHtml::listData(Location::model()->findAll(['order' => 'name ASC']), 'id', 'name'),
-                 ),*/
                 array(
                     'name' => 'model_id',
                     'value' => 'ProdModels::model()->nameOfThis($data->model_id)',

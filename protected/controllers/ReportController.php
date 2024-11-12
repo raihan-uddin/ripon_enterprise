@@ -488,6 +488,7 @@ class ReportController extends RController
         $dateFrom = $_POST['Inventory']['date_from'];
         $dateTo = $_POST['Inventory']['date_to'];
         $customer_id = $_POST['Inventory']['customer_id'];
+        $order_type = $_POST['Inventory']['order_type'];
         $created_by = isset($_POST['Inventory']['created_by']) ? $_POST['Inventory']['created_by'] : 0;
 
         $message = "";
@@ -498,12 +499,15 @@ class ReportController extends RController
 
             $criteria = new CDbCriteria();
             $criteria->addBetweenCondition('t.date', $dateFrom, $dateTo);
-            $criteria->addColumnCondition(['t.order_type' => SellOrder::NEW_ORDER, 't.is_deleted' => 0]);
+            $criteria->addColumnCondition(['t.is_deleted' => 0]);
             if ($customer_id > 0) {
                 $criteria->addColumnCondition(['t.customer_id' => $customer_id]);
             }
             if ($created_by > 0) {
                 $criteria->addColumnCondition(['t.created_by' => $created_by]);
+            }
+            if($order_type > 0){
+                $criteria->addColumnCondition(['t.order_type' => $order_type]);
             }
             $criteria->join .= " LEFT JOIN customers c on t.customer_id = c.id ";
             $criteria->select = "t.*, c.company_name as customer_name, c.owner_mobile_no as contact_no";
@@ -658,7 +662,7 @@ class ReportController extends RController
                 $criteria->addColumnCondition(['t.supplier_id' => $supplier_id]);
             }
             if ($model_id > 0) {
-                $criteria->addColumnCondition(['t.model_id' => $model_id]);
+                $criteria->addColumnCondition(['pod.model_id' => $model_id]);
             }
             if ($manufacturer_id > 0) {
                 $criteria->addColumnCondition(['pm.manufacturer_id' => $manufacturer_id]);

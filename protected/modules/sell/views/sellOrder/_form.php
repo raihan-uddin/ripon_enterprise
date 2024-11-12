@@ -313,9 +313,6 @@ Yii::app()->clientScript->registerCoreScript("jquery.ui");
                     <button type="button" class="btn btn-tool" data-card-widget="collapse">
                         <i class="fa fa-minus"></i>
                     </button>
-                    <!--            <button type="button" class="btn btn-tool" data-card-widget="remove">-->
-                    <!--                <i class="fa fa-times"></i>-->
-                    <!--            </button>-->
                 </div>
             </div>
             <div class="card-body">
@@ -328,7 +325,6 @@ Yii::app()->clientScript->registerCoreScript("jquery.ui");
                                     <?php
                                     echo CHtml::link(' <i class="fa fa-plus"></i>', "", // the link for open the dialog
                                         array(
-//                                    'class' => '',
                                             'onclick' => "{addProdModel(); $('#dialogAddProdModel').dialog('open');}"));
                                     ?>
 
@@ -382,8 +378,6 @@ Yii::app()->clientScript->registerCoreScript("jquery.ui");
                                                                 setTimeout(\"$('#dialogAddProdModel').dialog('close') \",1000);
                                                                 $('#SellOrderDetails_model_id').val(data.value);
                                                                 $('#model_id_text').val(data.label);
-//                                                                $('#SellOrderDetails_unit_id').val(data.unit_id);
-//                                                                $('#product_unit_text').html($('#SellOrderDetails_unit_id option:selected').text());
                                                             }
                                                         }",
                                             ))
@@ -702,7 +696,7 @@ Yii::app()->clientScript->registerCoreScript("jquery.ui");
                         toastr.error("Grand total amount is 0");
                         return false;
                     }else {                
-                        $("#overlay").fadeIn(300);　   
+                        $("#overlay").fadeIn(300);
                         $("#ajaxLoader").show();
                     }
                  }',
@@ -795,11 +789,7 @@ Yii::app()->clientScript->registerCoreScript("jquery.ui");
         let isproductpresent = false;
         let temp_codearray = document.getElementsByName("SellOrderDetails[temp_model_id][]");
         let temp_sl_array = document.getElementsByName("SellOrderDetails[temp_product_sl_no][]");
-        /*if (unit_price <= pp) {
-            toastr.warning("Selling price must be greater than purchase price!");
-            toastr.error("Please change the selling price or change the purchase price of the product!");
-            return false;
-        }*/
+        
 
         if (product_sl_no.length > 0) {
             for (let l = 0; l < temp_sl_array.length; l++) {
@@ -833,7 +823,7 @@ Yii::app()->clientScript->registerCoreScript("jquery.ui");
                     <td class="serial"></td>
                     <td>
                         ${model_id_text}
-                        <input type="hidden" class="form-control" value="${model_id}" name="SellOrderDetails[temp_model_id][]" >
+                        <input type="hidden" class="form-control temp_model_id" value="${model_id}" name="SellOrderDetails[temp_model_id][]" >
                     </td>
                     <td class="text-center">
                         <input type="text" class="form-control text-center" value="${product_sl_no}" name="SellOrderDetails[temp_product_sl_no][]">
@@ -892,14 +882,14 @@ Yii::app()->clientScript->registerCoreScript("jquery.ui");
         qty = qty > 0 ? qty : 0;
         unit_price = unit_price > 0 ? unit_price : 0;
         $(this).closest("tr").find(".row-total").val((qty * unit_price).toFixed(2));
-        changeUnitPriceForSameModel($(this).closest("tr").find(".temp_qty").val(), unit_price);
+        changeUnitPriceForSameModel($(this).closest("tr").find(".temp_model_id").val(), unit_price);
         calculateTotal();
     });
 
     function changeUnitPriceForSameModel(model_id, price){
          // find all same model id and change the price except the current row
         $(".temp_qty").each(function(){
-            if($(this).closest("tr").find(".temp_qty").val() == model_id){
+            if($(this).closest("tr").find(".temp_model_id").val() == model_id){
                 if($(this).closest("tr").find(".temp_unit_price").val() != price){
                     $(this).closest("tr").find(".temp_unit_price").val(price);
                     let qty = parseFloat($(this).val());

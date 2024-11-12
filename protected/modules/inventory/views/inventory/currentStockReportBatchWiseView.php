@@ -3,11 +3,12 @@
 ?>
 <div class='printAllTableForThisReport table-responsive'>
     <table class="final-result table table-sm table-responsive-sm table-bordered  table-striped table-hover"
-           id="table-1 product_ledger"> <!--summaryTab-->
+           id="table-1 product_ledger"  style="font-size: 12px;">
         <thead>
         <tr>
             <td colspan="9"
-                style="font-size:16px; font-weight:bold; text-align:center; line-height: 24px;"><?php
+                style="font-size:16px; font-weight:bold; text-align:center; line-height: 24px;">
+                <?php
                 if ($model_id > 0) {
                     $product = ProdModels::model()->findByPk($model_id);
                     if ($product)
@@ -17,10 +18,10 @@
             </td>
         </tr>
         <tr class="titlesTr">
-            <th style="width: 5%;">SL NO</th>
-            <th>Product Serial NO</th>
-            <th style="width: 10%;">Stock Qty</th>
-            <th>Action</th>
+            <th style="width: 5%;" scope="col">SL NO</th>
+            <th scope="col">Product Serial NO</th>
+            <th style="width: 10%;" scope="col">Stock Qty</th>
+            <th scope="col">Action</th>
         </tr>
         </thead>
         <tbody>
@@ -40,19 +41,20 @@
                 $total += $d->stock_in;
                 ?>
                 <tr>
-                    <td><?= $sl++ ?></td>
+                    <td scope="row"><?= $sl++ ?></td>
                     <td>
                         <?php echo $d->product_sl_no ?>
                     </td>
                     <td style="text-align: center;"><?php echo $d->stock_in; ?></td>
-                    <td style="text-align: center;">
+                    <td style="text-align: center;" title="Stock Adjustment">
                         <a href="#" 
                             data-model_id="<?= $model_id ?>" 
                             data-product_sl_no="<?= $d->product_sl_no ?>" 
                             data-model_name = "<?= $product->model_name ?>"
                             class="btn btn-danger btn-sm removeProductSlFromCurrentStock" >
-                            <!-- adjustment logo -->
-                            <i class="fa fa-trash"></i>
+                            <svg width="24" height="24" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+                                <path d="M3 7H14M10 5V9M21 7H17M3 12H7M7 10V14M21 12H10M14 19H21M17 17V21M3 19H10" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+                            </svg>
                         </a>
                     </td>
                 </tr>

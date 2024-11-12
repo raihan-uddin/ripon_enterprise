@@ -235,14 +235,17 @@ class InventoryController extends RController
         } else {
             echo '<div class="flash-error">Please select sales invoice no!</div>';
         }
+        Yii::app()->end();
     }
 
 
     public function actionJquery_getStockQty()
     {
         $model_id = isset($_POST['model_id']) ? $_POST['model_id'] : 0;
-        $stock = Inventory::model()->closingStock($model_id);
+        $product_sl_no = isset($_POST['product_sl_no']) ? $_POST['product_sl_no'] : "";
+        $stock = Inventory::model()->closingStock($model_id, $product_sl_no);
         echo json_encode($stock);
+        Yii::app()->end();
     }
 
 
@@ -365,8 +368,11 @@ class InventoryController extends RController
             SUM(CASE WHEN (inv.date BETWEEN '$dateFrom' AND '$dateTo') THEN inv.stock_in ELSE 0 END) as stock_in, 
             SUM(CASE WHEN (inv.date BETWEEN '$dateFrom' AND '$dateTo') THEN inv.stock_out ELSE 0 END) as stock_out,
             SUM(CASE WHEN (inv.date BETWEEN '$dateFrom' AND '$dateTo') THEN (inv.stock_in * inv.purchase_price) ELSE 0 END) as stock_in_value, 
-            SUM(CASE WHEN (inv.date BETWEEN '$dateFrom' AND '$dateTo') THEN (inv.stock_out * inv.purchase_price) ELSE 0 END) as stock_out_value
+            SUM(CASE WHEN (inv.date BETWEEN '$dateFrom' AND '$dateTo') THEN (inv.stock_out * inv.purchase_price) ELSE 0 END) as stock_out_value,
+            AVG(CASE WHEN inv.stock_status = 1 THEN inv.purchase_price END) AS avg_purchase_price
             ";
+            // get the purchase avg price if stock_status = 1
+         
             $message .= "Stock Report from  $dateFrom To $dateTo";
 
             $criteria->addColumnCondition(['stockable' => 1]);
@@ -504,6 +510,7 @@ class InventoryController extends RController
             $model->model_id = $model_id;
             $model->date = date('Y-m-d');
             $model->challan_no = Inventory::maxSlNo()+1;
+            $model->sl_no = $model->challan_no;
             $model->product_sl_no = $product_sl_no;
             if($modify_stock_flag > 0){
                 if($data->closing_stock > $physical_stock){
