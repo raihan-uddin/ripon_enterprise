@@ -52,8 +52,8 @@ class SellReturn extends CActiveRecord
         // NOTE: you should only define rules for those attributes that
         // will receive user inputs.
         return array(
-            array('return_date, customer_id', 'required'),
-            array('customer_id, return_type, is_deleted, business_id, branch_id, created_by, updated_by, is_opening', 'numerical', 'integerOnly' => true),
+            array('return_date, customer_id, sell_id', 'required'),
+            array('customer_id, return_type, is_deleted, business_id, branch_id, created_by, updated_by, is_opening, sell_id', 'numerical', 'integerOnly' => true),
             array('return_amount, costing', 'length', 'max' => 10),
             array('remarks, created_at, updated_at', 'safe'),
             // The following rule is used by search().
@@ -78,6 +78,7 @@ class SellReturn extends CActiveRecord
     {
         return array(
             'id' => 'ID',
+            'sell_id' => 'Invoice No',
             'return_date' => 'Return Date',
             'customer_id' => 'Customer',
             'return_amount' => 'Return Amount',

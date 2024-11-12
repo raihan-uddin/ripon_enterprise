@@ -19,6 +19,8 @@ class SellOrderController extends RController
             -VoucherPreview
             -SinglePreview
             -Jquery_showSoldProdSlNoSearch
+            -fetchProductPrice
+            -Jquery_showSellSearch
             -SoDetails',
         );
     }
@@ -520,7 +522,7 @@ class SellOrderController extends RController
         $criteria = new CDbCriteria();
         $criteria->mergeWith($criteria2);
         $criteria->select = "pm.code, pm.model_name, pm.id, pm.item_id, pm.brand_id, pm.unit_id, pm.warranty, pm.sell_price, t.amount as actual_sp, t.qty,
-                             pm.image, product_sl_no, t.costing as pp, t.amount as pp";
+                            pm.image, product_sl_no, t.costing as pp, t.amount as pp";
         $criteria->order = "product_sl_no asc";
         $criteria->join = "INNER JOIN prod_models pm on t.model_id = pm.id ";
         $criteria->group = 't.model_id, t.product_sl_no';
@@ -585,4 +587,153 @@ class SellOrderController extends RController
     }
 
 
+    public function actionFetchProductPrice()
+    {
+        $model_id = isset($_POST['model_id']) ? $_POST['model_id'] : 0;
+        $product_sl_no = isset($_POST['product_sl_no']) ? $_POST['product_sl_no'] : "";
+        $customer_id = isset($_POST['customer_id']) ? $_POST['customer_id'] : 0;
+        $criteria = new CDbCriteria();
+        $criteria->select = "pp as purchase_price, amount as sell_price";
+        $criteria->addColumnCondition(['model_id' => $model_id]);
+        if($product_sl_no){
+            $criteria->addColumnCondition(['product_sl_no' => $product_sl_no]);
+        }
+        if($customer_id){
+            $criteria->addColumnCondition(['customer_id' => $customer_id]);
+        }
+        $criteria->order = "id DESC";
+        $criteria->limit = 1;
+        $data = SellOrderDetails::model()->findByAttributes([], $criteria);
+        if($data){
+            echo CJSON::encode(array(
+                'status' => 'success',
+                'purchase_price' => $data->purchase_price,
+                'sell_price' => $data->sell_price,
+            ));
+        } else {
+            echo CJSON::encode(array(
+                'status' => 'error',
+                'message' => 'No data found!',
+            ));
+        }
+        Yii::app()->end();
+    }
+
+    public function actionJquery_showSellSearch()
+    {
+        $so_no = trim($_POST['q']);
+        $customer_id = isset($_POST['customer_id']) ? trim($_POST['customer_id']) : 0;
+
+        $criteria2 = new CDbCriteria();
+        $criteria2->compare('t.so_no', $so_no);
+        if ($customer_id > 0) {
+            $criteria2->addColumnCondition(['t.customer_id' => $customer_id]);
+        }
+        
+
+        $criteria = new CDbCriteria();
+        $criteria->select = "t.id, t.so_no, t.customer_id, t.grand_total, c.company_name as customer_name";
+        $criteria->join = " INNER JOIN customers c on t.customer_id = c.id ";
+        $criteria->mergeWith($criteria2);
+        $criteria->order = "t.id DESC";
+        $criteria->limit = 20;
+        $sellOrders = SellOrder::model()->findAll($criteria);
+
+        if ($sellOrders) {
+            foreach ($sellOrders as $sellOrder) {
+                $value = "$sellOrder->so_no";
+                $label = "$sellOrder->so_no || $sellOrder->customer_name";
+                $id = $sellOrder->id;
+                $customer_name = $sellOrder->customer_name;
+                $results[] = array(
+                    'id' => $id,
+                    'customer_id' => $sellOrder->customer_id,
+                    'name' => $customer_name,
+                    'value' => $value,
+                    'label' => $label,
+                );
+            }
+        } else {
+            $results[] = array(
+                'id' => '',
+                'name' => 'No data found!',
+                'value' => 'No data found!',
+                'label' => 'No data found!',
+            );
+        }
+        echo json_encode($results);
+        Yii::app()->end();
+    }
+
+    public function actionJquery_showProductSearch(){
+        $sale_id = isset($_POST['sale_id']) ? $_POST['sale_id'] : 0;
+        $customer_id = isset($_POST['customer_id']) ? $_POST['customer_id'] : 0;
+        $search_prodName = trim($_POST['q']);
+
+        $criteria2 = new CDbCriteria();
+        $criteria2->compare('pm.model_name', $search_prodName);
+        $criteria2->compare('pm.code', $search_prodName);
+
+        $criteria = new CDbCriteria();
+        $criteria->select = " pm.id, pm.model_name, pm.code, t.warranty, t.amount as sell_price,
+                            t.qty, t.pp as purchase_price, c.company_name as customer_name";   
+        $criteria->join = " INNER JOIN prod_models pm on t.model_id = pm.id ";
+        $criteria->join .= " INNER JOIN sell_order so on t.sell_order_id = so.id ";
+        $criteria->join .= " INNER JOIN customers c on so.customer_id = c.id ";
+
+        $criteria->mergeWith($criteria2);
+        if($sale_id > 0){
+            $criteria->addColumnCondition(['t.sell_order_id' => $sale_id]);
+        }
+        if($customer_id > 0){
+            $criteria->addColumnCondition(['so.customer_id' => $customer_id]);
+        }
+        $criteria->order = "pm.model_name ASC";
+        $criteria->limit = 20;
+        $prodInfos = SellOrderDetails::model()->findAll($criteria);
+
+        if ($prodInfos) {
+            foreach ($prodInfos as $prodInfo) {
+                $code = $prodInfo->code;
+                $value = "$prodInfo->model_name || $code";
+                $label = "$prodInfo->model_name || $code";
+                $id = $prodInfo->id;
+                $name = $prodInfo->model_name;
+                $warranty = $prodInfo->warranty;
+                $purchase_price = $prodInfo->purchase_price;
+                $qty = $prodInfo->qty;
+                $sellPrice = $prodInfo->sell_price;
+                $sellDiscount = 0;
+                $results[] = array(
+                    'id' => $id,
+                    'name' => $name,
+                    'value' => $value,
+                    'label' => $label,
+                    'code' => $code,
+                    'qty' => $qty,
+                    'warranty' => $warranty,
+                    'sell_price' => $sellPrice,
+                    'purchasePrice' => $purchase_price,
+                    'sellDiscount' => $sellDiscount,
+                    'customer_name' => $prodInfo->customer_name,
+                );
+            }
+        } else {
+            $results[] = array(
+                'id' => '',
+                'name' => 'No data found!',
+                'value' => 'No data found!',
+                'label' => 'No data found!',
+                'purchasePrice' => '',
+                'qty' => '',
+                'code' => '',
+                'warranty' => '',
+                'sell_price' => '',
+                'sellDiscount' => '',
+                'customer_name' => '',
+            );
+        }
+        echo json_encode($results);
+        Yii::app()->end();
+    }
 }

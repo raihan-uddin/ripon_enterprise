@@ -77,8 +77,6 @@ class SellReturnController extends RController
 						$detailsData = $_POST['SellReturnDetails']['model_id'];
 						
 						foreach ($detailsData as $key =>  $detail){
-							// die(var_dump($details));
-							// die(var_dump($_POST['SellReturnDetails']['replace_product_sl_no'][$key]));
 							$detailModel = new SellReturnDetails();
 							$detailModel->return_id = $model->id;
 							$detailModel->model_id = $_POST['SellReturnDetails']['model_id'][$key];
@@ -90,8 +88,6 @@ class SellReturnController extends RController
 							$detailModel->costing = 0;
 							$detailModel->discount_amount = 0;
 							$detailModel->discount_percentage = 0;
-							// $detailModel->replace_model_id = $_POST['SellReturnDetails']['replace_model_id'][$key];
-							// $detailModel->replace_product_sl_no = $_POST['SellReturnDetails']['replace_product_sl_no'][$key];
 							$detailModel->created_by = Yii::app()->user->id;
 							$detailModel->created_at = date('Y-m-d H:i:s');
 							$detailModel->is_deleted = 0;

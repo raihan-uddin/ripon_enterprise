@@ -19,6 +19,7 @@ class InventoryController extends RController
             -VoucherPreview
             -Jquery_showprodSlNoSearch
             -removeProductSlFromCurrentStock
+            -fetchProductPrice
             -Jquery_getStockQty',
         );
     }
@@ -550,7 +551,7 @@ class InventoryController extends RController
         
         Yii::app()->end();
     }
-
+    
     public function actionFixPurchasePrice()
     {
         $criteria = new CDbCriteria();

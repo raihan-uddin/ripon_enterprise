@@ -38,6 +38,7 @@ class SellOrderDetails extends CActiveRecord
     public $purchase_price;
     public $stock;
     public $sell_price;
+    public $customer_name;
     public $actual_sp;
 
     const DELIVERY_DONE = 1;
