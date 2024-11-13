@@ -97,6 +97,7 @@ echo "</div>";
             <th style="width: 10%; box-shadow: 0px 0px 0px 1px black inset;">Phone</th>
             <th style="width: 10%;box-shadow: 0px 0px 0px 1px black inset;">Sale</th>
             <th style="width: 10%;box-shadow: 0px 0px 0px 1px black inset;">Collection</th>
+            <th style="width: 10%;box-shadow: 0px 0px 0px 1px black inset;">Return</th>
             <th style="width: 10%;box-shadow: 0px 0px 0px 1px black inset;">Due</th>
         </tr>
         </thead>

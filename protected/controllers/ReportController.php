@@ -128,6 +128,7 @@ class ReportController extends RController
                     customer_id, 
                     grand_total as sale_amount,
                     0 as receipt_amount,
+                    0 as return_amount,
                     grand_total as amount 
                 FROM 
                     sell_order
@@ -138,6 +139,7 @@ class ReportController extends RController
                     customer_id, 
                     0 as sale_amount,
                     (amount+discount) as receipt_amount,
+                    0 as return_amount,
                     -(amount+discount) 
                 FROM 
                     money_receipt

@@ -129,24 +129,6 @@ class SellReturnController extends RController
 						$model->costing = $costing;
 						$model->save();
 
-						// create money receipt with the return amount
-						$moneyReceipt = new MoneyReceipt();
-						$moneyReceipt->date = $model->return_date;
-						$moneyReceipt->max_sl_no = MoneyReceipt::maxSlNo() + 1;
-						$moneyReceipt->amount = -1 * $model->return_amount;
-						$moneyReceipt->customer_id = $model->customer_id;
-						$moneyReceipt->invoice_id = $model->sell_id;
-						$moneyReceipt->remarks = $model->remarks;
-						$moneyReceipt->payment_type = MoneyReceipt::CASH;
-						$moneyReceipt->mr_no = "MR-" . date('y') . "-" . date('m') . "-" . str_pad($moneyReceipt->max_sl_no, 5, "0", STR_PAD_LEFT);
-						$moneyReceipt->created_by = Yii::app()->user->id;
-						$moneyReceipt->created_at = date('Y-m-d H:i:s');
-						$moneyReceipt->is_deleted = 0;
-						$moneyReceipt->return_id = $model->id;
-						if(!$moneyReceipt->save()){
-							throw new Exception('Money receipt creation failed');
-						}
-
 						SellOrder::model()->changePaidDue($sell);
 
 						$transaction->commit();
@@ -240,13 +222,7 @@ class SellReturnController extends RController
 					throw new Exception('Return Detail delete failed');
 				}
 			}
-			// delete MoneyReceipt
-			$moneyReceipt = MoneyReceipt::model()->findByAttributes(['return_id' => $model->return_id]);
-			if($moneyReceipt !== null){
-				if(!$moneyReceipt->delete()){
-					throw new Exception('Money receipt delete failed');
-				}
-			}
+			
 			// recalculate amount
 			$sell = SellOrder::model()->findByPk($model->sell_id);
 			if($sell){
