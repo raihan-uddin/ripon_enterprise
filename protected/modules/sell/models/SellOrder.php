@@ -292,4 +292,28 @@ class SellOrder extends CActiveRecord
         return $data ? $data->total_sales : 0;
     }
 
+    public function totalPaidWithReturnOfInvoice($invoice_id){
+        $total_mr = MoneyReceipt::model()->totalPaidAmountOfThisInvoice($invoice_id);
+        $total_return = SellReturn::model()->totalReturnAmountOfThisInvoice($invoice_id);
+    }
+
+    public function changePaidDue($sellObj){
+        $totalMoneyReceipt = MoneyReceipt::model()->totalPaidAmountOfThisInvoice($sellObj->id);
+        if($totalMoneyReceipt <= 0){
+            $totalMoneyReceipt = 0;
+        }
+
+        $totalReturn = SellReturn::model()->totalReturnAmountOfThisInvoice($sellObj->id);
+
+        $rem = $sellObj->grand_total - $totalMoneyReceipt - $totalReturn;
+        $sellObj->total_paid = $totalMoneyReceipt;
+        $sellObj->total_due = $rem;
+        if($rem <= 0){
+            $sellObj->is_paid = self::PAID;
+        }else{ 
+            $sellObj->is_paid = self::DUE;
+        }
+        $sellObj->save();
+    }
+
 }

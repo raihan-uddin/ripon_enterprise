@@ -190,4 +190,14 @@ class SellReturn extends CActiveRecord
         }
         return parent::beforeSave();
     }
+
+    public function totalReturnAmountOfThisInvoice($returnId)
+    {
+        $returnDetails = SellReturnDetails::model()->findAllByAttributes(['return_id' => $returnId]);
+        $totalReturnAmount = 0;
+        foreach ($returnDetails as $returnDetail) {
+            $totalReturnAmount += round($returnDetail->return_amount, 2);
+        }
+        return round($totalReturnAmount, 2);
+    }
 }

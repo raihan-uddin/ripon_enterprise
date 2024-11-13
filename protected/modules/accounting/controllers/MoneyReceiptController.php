@@ -83,18 +83,7 @@ class MoneyReceiptController extends RController
                     $data = SellOrder::model()->findAll($criteria);
                     if ($data) {
                         foreach ($data as $dt) {
-                            $grand_total = $dt->grand_total;
-                            $total_mr = MoneyReceipt::model()->totalPaidAmountOfThisInvoice($dt->id);
-                            $rem = $grand_total - $total_mr;
-                            if ($total_mr >= $grand_total) {
-                                $dt->is_paid = SellOrder::PAID;
-                                $dt->total_paid = $total_mr;
-                                $dt->total_due = $rem;
-                                if (!$dt->save()) {
-                                    $transaction->rollBack();
-                                    throw new CHttpException(500, sprintf('Error in saving order details! %s <br>', json_encode($dt->getErrors())));
-                                }
-                            }
+                            SellOrder::model()->changePaidDue($dt);
                         }
                     }
 
@@ -243,14 +232,7 @@ class MoneyReceiptController extends RController
                 if (!$this->loadModel($id)->delete())
                     throw new CHttpException(404, 'The requested page does not exist.');
 
-                $currentCollection = MoneyReceipt::model()->totalPaidAmountOfThisInvoice($saleId);
-
-                if ($invoice) {
-                    $invoice->is_paid = $currentCollection >= $invoice->grand_total ? SellOrder::PAID : SellOrder::DUE;
-                    $invoice->total_paid = $currentCollection;
-                    $invoice->total_due = round($invoice->grand_total - $currentCollection, 2);
-                    $invoice->save();
-                }
+                SellOrder::model()->changePaidDue($invoice);
             }
             $transaction->commit();
         } catch (PDOException $e) {

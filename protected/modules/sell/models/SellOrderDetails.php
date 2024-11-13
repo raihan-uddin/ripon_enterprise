@@ -39,6 +39,8 @@ class SellOrderDetails extends CActiveRecord
     public $sell_price;
     public $customer_name;
     public $actual_sp;
+    public $so_no;
+    public $customer_id;
 
     /**
      * @return string the associated database table name

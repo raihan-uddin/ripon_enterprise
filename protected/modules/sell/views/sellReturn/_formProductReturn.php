@@ -232,6 +232,11 @@ Yii::app()->clientScript->registerCoreScript("jquery.ui");
                                             $('#SellReturnDetails_model_id').val(ui.item.id).change();
                                             $('#SellReturnDetails_qty').val(1).change();
                                             $('#SellReturnDetails_sell_price').val(ui.item.sell_price).change();
+                                            $('#SellReturn_sell_id').val(ui.item.sell_order_id).change();
+                                            $('#sell_id_text').val(ui.item.so_no);
+                                            $('#SellReturn_customer_id').val(ui.item.customer_id).change();
+                                            $('#customer_id_text').val(ui.item.customer_name);
+                                            $("#SellReturnDetails_purchase_price").val(ui.item.purchasePrice).change();
 
                                             // fetchProductPrice();
                                             // Move cursor to the next visible input field
@@ -283,18 +288,16 @@ Yii::app()->clientScript->registerCoreScript("jquery.ui");
                                     $('#product_sl_no').autocomplete({
                                         source: function (request, response) {
                                             var search = request.term;
-                                            $.post('<?php echo Yii::app()->baseUrl ?>/index.php/sell/sellOrder/Jquery_showSoldProdSlNoSearch', {
+                                            $.post('<?php echo Yii::app()->baseUrl ?>/index.php/sell/sellOrder/Jquery_showProductSlSearchForReturn', {
                                                 "q": search,
                                                 "model_id": $('#SellReturnDetails_model_id').val(),
+                                                "sale_id": $('#SellReturn_sell_id').val(),
+                                                "customer_id": $('#SellReturn_customer_id').val(),
                                                 'show_all': <?php echo Inventory::SHOW_ALL_PRODUCT_SL_NO; ?>
                                             }, function (data) {
                                                 response(data);
                                                 // Check if there's only one item and trigger select event
                                                 if (data.length === 1 && data[0].id) {
-                                                    $('#model_id_text').val(data[0].label);
-                                                    $('#SellReturnDetails_model_id').val(data[0].id);
-                                                    $('#product_sl_no').val(data[0].product_sl_no);
-                                                    $('#SellReturnDetails_qty').val(1).change();
                                                     // Trigger select event
                                                     $('#product_sl_no').autocomplete('option', 'select').call($('#product_sl_no')[0], null, {
                                                         item: data[0]
@@ -305,11 +308,17 @@ Yii::app()->clientScript->registerCoreScript("jquery.ui");
                                         minLength: 1,
                                         delay: 700,
                                         select: function (event, ui) {
+                                            console.log(ui.item);
                                             $('#model_id_text').val(ui.item.label);
-                                            $('#product_sl_no').val(ui.item.product_sl_no);
                                             $('#SellReturnDetails_model_id').val(ui.item.id).change();
                                             $('#SellReturnDetails_qty').val(1);
                                             $('#SellReturnDetails_sell_price').val(ui.item.sell_price).change();
+                                            $('#SellReturn_sell_id').val(ui.item.sell_order_id).change();
+                                            $('#sell_id_text').val(ui.item.so_no);
+                                            $('#SellReturn_customer_id').val(ui.item.customer_id).change();
+                                            $('#customer_id_text').val(ui.item.customer_name);
+                                            $('#product_sl_no').val(ui.item.product_sl_no);
+                                            $("#SellReturnDetails_purchase_price").val(ui.item.purchasePrice).change();
 
                                             // fetchProductPrice();
 
@@ -353,10 +362,10 @@ Yii::app()->clientScript->registerCoreScript("jquery.ui");
                         <div class="form-group col-sm-12 col-md-1">
                             <?php echo $form->labelEx($model2, 'sell_price'); ?>
                             <?php echo $form->textField($model2, 'sell_price', array('maxlength' => 255, 'class' => 'form-control numeric-validation sell-price')); ?>
+                            <?= $form->hiddenField($model2, 'purchase_price', array('class' => 'form-control costing-amount')); ?>
                             <span class="help-block"
                                 style="color: red; width: 100%"> <?php echo $form->error($model2, 'sell_price'); ?></span>
                         </div>
-                        <!-- row_total -->
                         <div class="form-group col-sm-12 col-md-1">
                             <?php echo $form->labelEx($model2, 'row_total'); ?>
                             <?php echo $form->textField($model2, 'row_total', array('maxlength' => 255, 'class' => 'form-control row-total-amount')); ?>
@@ -418,7 +427,7 @@ Yii::app()->clientScript->registerCoreScript("jquery.ui");
                                     $("#formResult").fadeIn();
                                     $("#formResult").html("Data saved successfully.");
                                     toastr.success("Data saved successfully.");
-                                    $("#bom-form")[0].reset();
+                                    $("#sell-return-form")[0].reset();
                                     $("#formResult").animate({opacity:1.0},1000).fadeOut("slow");
                                     $("#list").empty();
                                     // $("#soReportDialogBox").dialog("open");
@@ -429,8 +438,8 @@ Yii::app()->clientScript->registerCoreScript("jquery.ui");
                                     //$("#formResultError").html("Data not saved. Please solve the following errors.");
                                     toastr.error("Data not saved. Please solve the following errors.");
                                     $.each(data, function(key, val) {
-                                        $("#bom-form #"+key+"_em_").html(""+val+"");                                                    
-                                        $("#bom-form #"+key+"_em_").show();
+                                        $("#sell-return-form #"+key+"_em_").html(""+val+"");                                                    
+                                        $("#sell-return-form #"+key+"_em_").show();
                                     });
                                 }       
                             }',
@@ -620,10 +629,12 @@ Yii::app()->clientScript->registerCoreScript("jquery.ui");
 
     function resetProduct() {
         $("#model_id_text").val('');
+        $("#product_sl_no").val('');
         $("#SellReturnDetails_model_id").val('');
         $("#SellReturnDetails_qty").val('');
         $("#SellReturnDetails_sell_price").val('');
         $("#SellReturnDetails_row_total").val('');
+        $("SellReturnDetails_purchase_price").val('');
         resetProductSlNo();
         showPurchasePrice(0);
         tableSerial();
@@ -633,7 +644,6 @@ Yii::app()->clientScript->registerCoreScript("jquery.ui");
 
     function resetProductSlNo() {
         $("#product_sl_no").val('');
-        $("#SellReturnDetails_model_id").val('');
     }
 
 
@@ -699,7 +709,7 @@ Yii::app()->clientScript->registerCoreScript("jquery.ui");
     $("#list").on("click", ".dlt", function () {
         $(this).closest("tr").remove();
         tableSerial();
-        // calculateTotal();
+        changeReturnAmount();
     });
 
     function addToList() {
@@ -708,9 +718,25 @@ Yii::app()->clientScript->registerCoreScript("jquery.ui");
         let qty = $('#SellReturnDetails_qty').val();
         let sell_price = $('#SellReturnDetails_sell_price').val();
         let row_total = $('#SellReturnDetails_row_total').val();
+        let purchase_price = $('#SellReturnDetails_purchase_price').val();
 
         if (model_id === '' || qty === '') {
             toastr.error('Please fill all the fields');
+            return;
+        }
+
+        // check if the product is already in the list
+        let isExist = false;
+        $('#list tbody tr').each(function () {
+            let model_id_temp = $(this).find('input[name="SellReturnDetails[model_id][]"]').val();
+            let product_sl_no_temp = $(this).find('input[name="SellReturnDetails[product_sl_no][]"]').val();
+            if (model_id_temp === model_id && product_sl_no_temp === product_sl_no) {
+                isExist = true;
+            }
+        });
+
+        if (isExist) {
+            toastr.error('Product already in the list');
             return;
         }
 
@@ -730,6 +756,7 @@ Yii::app()->clientScript->registerCoreScript("jquery.ui");
                 </td>
                 <td>
                     <input type="text" name="SellReturnDetails[sell_price][]" class="form-control text-center numeric-validation temp_sell_price" value="${sell_price}">
+                    <input type="hidden" name="SellReturnDetails[purchase_price][]" class="form-control costing-amount" value="${purchase_price}">
                 </td>
                 <td>
                     <input type="text" name="SellReturnDetails[row_total][]" class="form-control text-center numeric-validation temp_row_total" value="${row_total}">

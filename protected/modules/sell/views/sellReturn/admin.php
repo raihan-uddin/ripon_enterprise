@@ -179,7 +179,7 @@ endforeach;
                 array
                 (
                     'header' => 'Options',
-                    'template' => '{update}{approve}{delete}',
+                    'template' => '{delete}', //{update}{approve}
                     'class' => 'CButtonColumn',
                     'htmlOptions' => ['style' => 'width: 120px;', 'class' => 'text-center'],
                     'buttons' => array(
