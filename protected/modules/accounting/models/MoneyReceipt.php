@@ -266,7 +266,7 @@ class MoneyReceipt extends CActiveRecord
             if ($data->amount > 0)
                 $collectionAmt = $data->amount;
 
-        return $collectionAmt;
+        return round($collectionAmt, 2);
     }
 
     public function totalPaidAmountAndDiscountOfThisInvoice($invoice_id)

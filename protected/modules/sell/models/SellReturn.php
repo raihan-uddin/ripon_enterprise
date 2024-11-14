@@ -60,6 +60,8 @@ class SellReturn extends CActiveRecord
         // NOTE: you should only define rules for those attributes that
         // will receive user inputs.
         return array(
+            array('return_date, customer_id, sell_id', 'required'),
+            array('customer_id, return_type, is_deleted, business_id, branch_id, created_by, updated_by, is_opening, sell_id', 'numerical', 'integerOnly' => true),
             array('return_date, customer_id', 'required'),
             array('customer_id, return_type, is_deleted, business_id, branch_id, created_by, updated_by, is_opening, status', 'numerical', 'integerOnly' => true),
             array('return_amount, costing', 'length', 'max' => 10),
@@ -89,6 +91,7 @@ class SellReturn extends CActiveRecord
     {
         return array(
             'id' => 'ID',
+            'sell_id' => 'Invoice No',
             'return_date' => 'Return Date',
             'customer_id' => 'Customer',
             'return_amount' => 'Return Amount',
@@ -106,7 +109,7 @@ class SellReturn extends CActiveRecord
             'is_opening' => 'Is Opening',
         );
     }
-    
+
 
     /**
      * Retrieves a list of models based on the current search/filter conditions.
@@ -186,5 +189,25 @@ class SellReturn extends CActiveRecord
             $this->updated_at = $dateTime;
         }
         return parent::beforeSave();
+    }
+
+    public function totalReturnAmountOfThisInvoice($returnId)
+    {
+        $returnDetails = SellReturnDetails::model()->findAllByAttributes(['return_id' => $returnId]);
+        $totalReturnAmount = 0;
+        foreach ($returnDetails as $returnDetail) {
+            $totalReturnAmount += round($returnDetail->return_amount, 2);
+        }
+        return round($totalReturnAmount, 2);
+    }
+
+    public function totalReturnAmountOfThisInvoiceBySellId($sellId)
+    {
+        $returnData = SellReturn::model()->findAllByAttributes(['sell_id' => $sellId]);
+        $totalReturnAmount = 0;
+        foreach ($returnData as $return) {
+            $totalReturnAmount += round($return->return_amount, 2);
+        }
+        return round($totalReturnAmount, 2);
     }
 }

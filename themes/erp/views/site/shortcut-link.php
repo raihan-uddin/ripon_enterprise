@@ -53,6 +53,26 @@ $endDate = date('Y-m-t');
         <?php
     }
     ?>
+    <?php
+    if (Yii::app()->user->checkAccess('Sell.SellReturn.CreateProductReturn')) {
+        ?>
+        <a class="btn btn-app bg-success" href="<?= Yii::app()->createUrl("sell/SellReturn/CreateProductReturn") ?>">
+        <span class="badge bg-teal"><?=
+            Yii::app()->db->createCommand()
+                ->select('FORMAT(ROUND(SUM(return_amount)), 0) as return_amount')
+                ->from('sell_return')
+                ->where('return_date BETWEEN :start_date AND :end_date',
+                    array(
+                        ':start_date' => $startDate,
+                        ':end_date' => $endDate,
+                    ))
+                ->queryScalar();
+            ?></span>
+            <i class="fa fa-undo"></i> Return
+        </a>
+        <?php
+    }
+    ?>
 
     <?php
     if (Yii::app()->user->checkAccess('Commercial.PurchaseOrder.Create')) {

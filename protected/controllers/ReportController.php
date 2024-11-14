@@ -68,6 +68,13 @@ class ReportController extends RController
             $data_opening_mr = MoneyReceipt::model()->findByAttributes([], $criteriaOpMr);
             $opening = ($data_opening_sell ? $data_opening_sell->grand_total : 0) - ($data_opening_mr ? $data_opening_mr->amount : 0);
 
+            $criteriaOpReturn = new CDbCriteria();
+            $criteriaOpReturn->select = " sum(return_amount) as return_amount";
+            $criteriaOpReturn->addColumnCondition(['customer_id' => $customer_id, 't.is_deleted' => 0]);
+            $criteriaOpReturn->addCondition(" return_date < '$dateFrom'");
+            $data_opening_return = SellReturn::model()->findByAttributes([], $criteriaOpReturn);
+            $opening -= ($data_opening_return ? $data_opening_return->return_amount : 0);
+
             $sql = "SELECT temp.* FROM (
                     SELECT id, date, so_no AS order_no, customer_id, grand_total AS amount, 'sale' as trx_type, created_at
                     FROM sell_order
@@ -77,6 +84,10 @@ class ReportController extends RController
                     FROM money_receipt
                     WHERE date BETWEEN '$dateFrom' AND '$dateTo' " . ($customer_id > 0 ? " AND customer_id = $customer_id AND is_deleted = 0" : "") . "
                     GROUP BY customer_id, date
+                    UNION
+                    SELECT id, return_date, sell_id, customer_id, return_amount, 'return', created_at
+                    FROM sell_return
+                    WHERE return_date BETWEEN '$dateFrom' AND '$dateTo' " . ($customer_id > 0 ? " AND customer_id = $customer_id AND is_deleted = 0" : "") . "
                 ) temp
                 ORDER BY created_at ASC;
                 ";
@@ -117,39 +128,59 @@ class ReportController extends RController
         $message .= "DUE REPORT";
 
         $sql = "SELECT 
+            customer_id, 
+            c.company_name,
+            c.company_contact_no,
+            ROUND(SUM(t.sale_amount), 2) AS total_sale_amount,
+            ROUND(SUM(t.receipt_amount), 2) AS total_receipt_amount,
+            ROUND(SUM(t.return_amount), 2) AS total_return_amount,
+            ROUND(SUM(amount), 2) AS due_amount
+        FROM 
+            (SELECT 
                 customer_id, 
-                c.company_name,
-                c.company_contact_no,
-                ROUND(SUM(t.sale_amount), 2) AS total_sale_amount,
-                ROUND(SUM(t.receipt_amount), 2) AS total_receipt_amount,
-                ROUND(SUM(amount), 2) AS due_amount
+                grand_total AS sale_amount,
+                0 AS receipt_amount,
+                0 AS return_amount,
+                grand_total AS amount 
             FROM 
-                (SELECT 
-                    customer_id, 
-                    grand_total as sale_amount,
-                    0 as receipt_amount,
-                    grand_total as amount 
-                FROM 
-                    sell_order
-                    WHERE is_deleted = 0 
-                    " . ($customer_id > 0 ? " AND customer_id = $customer_id" : "") . "
-                UNION ALL
-                SELECT 
-                    customer_id, 
-                    0 as sale_amount,
-                    (amount+discount) as receipt_amount,
-                    -(amount+discount) 
-                FROM 
-                    money_receipt
-                    WHERE is_deleted = 0
-                    " . ($customer_id > 0 ? " AND customer_id = $customer_id" : "") . "
-                ) AS t
-            LEFT JOIN customers c on t.customer_id = c.id
-            GROUP BY 
-                customer_id
-            HAVING 
-                due_amount <> 0
-            ORDER BY c.company_name;";
+                sell_order
+            WHERE 
+                is_deleted = 0 
+                " . ($customer_id > 0 ? " AND customer_id = $customer_id" : "") . "
+            UNION ALL
+            SELECT 
+                customer_id, 
+                0 AS sale_amount,
+                (amount + discount) AS receipt_amount,
+                0 AS return_amount,
+                -(amount + discount) AS amount
+            FROM 
+                money_receipt
+            WHERE 
+                is_deleted = 0
+                " . ($customer_id > 0 ? " AND customer_id = $customer_id" : "") . "
+            UNION ALL
+            SELECT 
+                customer_id,
+                0 AS sale_amount,
+                0 AS receipt_amount,
+                return_amount AS return_amount,
+                -return_amount AS amount
+            FROM 
+                sell_return
+            WHERE 
+                is_deleted = 0
+                " . ($customer_id > 0 ? " AND customer_id = $customer_id" : "") . "
+            ) AS t
+        LEFT JOIN 
+            customers c ON t.customer_id = c.id
+        GROUP BY 
+            customer_id
+        HAVING 
+            due_amount <> 0
+        ORDER BY 
+            c.company_name;";
+
         $command = Yii::app()->db->createCommand($sql);
         $data = $command->queryAll();
 

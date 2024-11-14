@@ -77,13 +77,13 @@ class SellOrder extends CActiveRecord
         // will receive user inputs.
         return array(
             array('max_sl_no, cash_due, so_no, date, customer_id, discount_percentage, discount_amount, grand_total, order_type', 'required'),
-            array('grand_total, discount_amount, discount_percentage, vat_percentage, vat_amount, is_opening,
+            array('grand_total, discount_amount, discount_percentage, vat_percentage, vat_amount, is_opening, total_return,
             total_amount, is_paid, total_paid, total_due, delivery_charge, costing', 'numerical'),
             array('max_sl_no, cash_due, customer_id, created_by, updated_by', 'numerical', 'integerOnly' => true),
             array('created_at, updated_at, date, exp_delivery_date, so_no, order_note', 'safe'),
             // The following rule is used by search().
             array('id, date, cash_due, exp_delivery_date, max_sl_no, vat_percentage, so_no, customer_id, discount_percentage, 
-            discount_amount, grand_total, created_by, 
+            discount_amount, grand_total, created_by, total_return,
             created_at, updated_by, updated_at, total_amount, order_type, total_paid, total_due, delivery_charge,
             order_note, is_paid, costing, is_opening', 'safe', 'on' => 'search'),
         );
@@ -135,6 +135,8 @@ class SellOrder extends CActiveRecord
             'total_due' => 'Total Due',
             'delivery_charge' => 'Delivery Charge',
             'costing' => 'Costing',
+            'is_opening' => 'Is Opening',
+            'total_return' => 'Total Return',
         );
     }
 
@@ -290,6 +292,37 @@ class SellOrder extends CActiveRecord
         $criteria->addColumnCondition(['customer_id' => $customer_id]);
         $data = self::model()->findByAttributes([], $criteria);
         return $data ? $data->total_sales : 0;
+    }
+
+    public function totalPaidWithReturnOfInvoice($invoice_id){
+        $total_mr = MoneyReceipt::model()->totalPaidAmountOfThisInvoice($invoice_id);
+        $total_return = SellReturn::model()->totalReturnAmountOfThisInvoiceBySellId($invoice_id);
+
+        return [
+            'total_paid' => $total_mr, 
+            'total_return' => $total_return,
+            'total_paid_with_return' => $total_mr + $total_return
+        ];
+    }
+
+    public function changePaidDue($sellObj){
+        $totalMoneyReceipt = MoneyReceipt::model()->totalPaidAmountOfThisInvoice($sellObj->id);
+        if($totalMoneyReceipt <= 0){
+            $totalMoneyReceipt = 0;
+        }
+
+        $totalReturn = SellReturn::model()->totalReturnAmountOfThisInvoiceBySellId($sellObj->id);
+
+        $rem = $sellObj->grand_total - $totalMoneyReceipt - $totalReturn;
+        $sellObj->total_paid = $totalMoneyReceipt;
+        $sellObj->total_return = $totalReturn;
+        $sellObj->total_due = $rem;
+        if($rem <= 0){
+            $sellObj->is_paid = self::PAID;
+        }else{ 
+            $sellObj->is_paid = self::DUE;
+        }
+        $sellObj->save();
     }
 
 }
