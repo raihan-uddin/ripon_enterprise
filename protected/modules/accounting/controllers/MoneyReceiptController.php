@@ -87,7 +87,6 @@ class MoneyReceiptController extends RController
                         }
                     }
 
-
                     $transaction->commit();
 
                     $criteria = new CDbCriteria;

@@ -89,7 +89,7 @@ echo "</div>";
         <?php
         $sl = 1;
         $rowFound = false;
-        $groundTotal = $total_amount = $total_delivery_charge = 0;
+        $groundTotal = $total_amount = $total_delivery_charge = $total_return = 0;
         $row_closing = $row_closing_discount = $net_income_total = $total_due = 0;
         ?>
 
@@ -97,6 +97,7 @@ echo "</div>";
         if ($data) {
             foreach ($data as $dmr) {
                 $total_amount += $dmr->total_amount;
+                $total_return += $dmr->return_amount;
                 $total_delivery_charge += $dmr->delivery_charge;
                 $row_closing_discount += $dmr->discount_amount;
                 $row_closing += $dmr->grand_total;

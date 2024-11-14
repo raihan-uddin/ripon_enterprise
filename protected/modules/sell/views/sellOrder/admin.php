@@ -196,6 +196,12 @@ if (Yii::app()->user->checkAccess('Sell.Order.VoucherPreview')) {
                     'name' => 'total_paid',
                     'htmlOptions' => ['class' => 'text-center']
                 ),
+                
+                array(
+                    'name' => 'total_return',
+                    'htmlOptions' => ['class' => 'text-center']
+                ),
+                
                 array(
                     'name' => 'total_due',
                     'htmlOptions' => ['class' => 'text-center']

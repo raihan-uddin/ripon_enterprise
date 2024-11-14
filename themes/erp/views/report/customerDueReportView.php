@@ -96,8 +96,8 @@ echo "</div>";
             <th style="width: 15%; box-shadow: 0px 0px 0px 1px black inset;">Name</th>
             <th style="width: 10%; box-shadow: 0px 0px 0px 1px black inset;">Phone</th>
             <th style="width: 10%;box-shadow: 0px 0px 0px 1px black inset;">Sale</th>
-            <th style="width: 10%;box-shadow: 0px 0px 0px 1px black inset;">Collection</th>
             <th style="width: 10%;box-shadow: 0px 0px 0px 1px black inset;">Return</th>
+            <th style="width: 10%;box-shadow: 0px 0px 0px 1px black inset;">Collection</th>
             <th style="width: 10%;box-shadow: 0px 0px 0px 1px black inset;">Due</th>
         </tr>
         </thead>
@@ -106,6 +106,7 @@ echo "</div>";
         $sl = 1;
         $rowFound = false;
         $total_sale = 0;
+        $total_return = 0;
         $total_collection = 0;
         $total_due = 0;
         ?>
@@ -114,6 +115,7 @@ echo "</div>";
         if ($data) {
             foreach ($data as $dmr) {
                 $total_sale += $dmr['total_sale_amount'];
+                $total_return += $dmr['total_return_amount'];
                 $total_collection += $dmr['total_receipt_amount'];
                 $total_due += $dmr['due_amount'];
                 $rowFound = true;
@@ -124,6 +126,7 @@ echo "</div>";
                     <td style="text-align: left;"><?php echo $dmr['company_name']; ?></td>
                     <td style="text-align: center;"><?php echo $dmr['company_contact_no']; ?></td>
                     <td style="text-align: right;"><?php echo number_format($dmr['total_sale_amount'], 2); ?></td>
+                    <td style="text-align: right;"><?php echo number_format($dmr['total_return_amount'], 2); ?></td>
                     <td style="text-align: right;"><?php echo number_format($dmr['total_receipt_amount'], 2); ?></td>
                     <td style="text-align: right;"><?php echo number_format($dmr['due_amount'], 2); ?></td>
                 </tr>
@@ -147,6 +150,7 @@ echo "</div>";
             <tr>
                 <th style="text-align: right;" colspan="4">Ground Total</th>
                 <th style="text-align: right;"><?= number_format($total_sale, 2) ?></th>
+                <th style="text-align: right;"><?= number_format($total_return, 2) ?></th>
                 <th style="text-align: right;"><?= number_format($total_collection, 2) ?></th>
                 <th style="text-align: right;"><?= number_format($total_due, 2) ?></th>
             </tr>

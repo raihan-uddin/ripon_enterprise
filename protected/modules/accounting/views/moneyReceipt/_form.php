@@ -269,16 +269,20 @@ $this->widget('application.components.BreadCrumb', array(
                     if ($dataInv) {
                         foreach ($dataInv as $inv) {
                             $invoice_amount = $inv->grand_total;
-                            $paid_amount = MoneyReceipt::model()->totalPaidAmountOfThisInvoice($inv->id);
+                            $paidReturn = SellOrder::model()->totalPaidWithReturnOfInvoice($inv->id);
+                            $paid_amount = $paidReturn['total_paid'];
+                            $return_amount = $paidReturn['total_return'];
 
-                            $due = $invoice_amount - $paid_amount;
+                            $due = $invoice_amount - ($paid_amount + $return_amount);
                             if ($due > 0) {
                                 $invoice_total += $invoice_amount;
                                 $invoice_total_due += $due;
                                 if ($inv->total_due != $due){
                                     $inv->total_paid = $paid_amount;
+                                    $inv->total_return = $return_amount;
                                     $inv->total_due = $due;
                                     $inv->save();
+                                    // echo "changing $inv->total_paid = $paid_amount; $inv->total_return = $return_amount; $inv->total_due = $due; <br>";
                                 }
                                 ?>
                                 <tr class="item">

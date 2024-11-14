@@ -130,7 +130,7 @@ endforeach;
             'cssFile' => Yii::app()->theme->baseUrl . '/css/gridview/styles.css',
             'htmlOptions' => array('class' => 'table-responsive grid-view'),
             'itemsCssClass' => 'table table-sm table-hover table-striped table-condensed table-bordered dataTable dtr-inline',
-            'mergeColumns' => array('return_type', 'return_date', ),
+            'mergeColumns' => array('return_date', 'customer_id' ),
             'mergeType' => 'nested',
             'template' => "{pager}{summary}{items}{summary}{pager}",
             'columns' => array(
@@ -141,13 +141,13 @@ endforeach;
                         'style' => 'width: 80px;'
                     ]
                 ),
-                array(
+                /*array(
                     'name' => 'return_type',
                     'filter' => SellReturn::RETURN_TYPE_ARR,
                     'value' => '$data->return_type == 1 ? "CASH RETURN" : "WARRANTY/REPLACEMENT"',
                     'type' => 'raw',
                     'htmlOptions' => ['class' => 'text-center']
-                ),
+                ),*/
                 array(
                     'name' => 'return_date',
                     'htmlOptions' => ['class' => 'text-center']
@@ -157,21 +157,22 @@ endforeach;
                     'value' => 'Customers::model()->nameOfThis($data->customer_id)',
                     'htmlOptions' => ['class' => 'text-center']
                 ),
-                array(
-                    'name' => 'return_amount',
-                    'htmlOptions' => ['class' => 'text-center']
-                ),
+                
                 array(
                     'name' => 'created_by',
                     'value' => 'Users::model()->nameOfThis($data->created_by)',
                     'htmlOptions' => ['class' => 'text-center']
                 ),
                 array(
+                    'name' => 'return_amount',
+                    'htmlOptions' => ['class' => 'text-center']
+                ),
+                /**array(
                     'name' => 'status',
                     'filter' => SellReturn::RETURN_STATUS_ARR,
                     'value' => '$data->status == 1 ? "Pending" : ($data->status == 2 ? "Approved" : "Rejected")',
                     'htmlOptions' => ['class' => 'text-center']
-                ),
+                ),*/
                 array(
                     'name' => 'created_at',
                     'htmlOptions' => ['class' => 'text-center']

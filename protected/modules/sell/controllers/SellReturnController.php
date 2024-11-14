@@ -118,7 +118,7 @@ class SellReturnController extends RController
 							$stock->sell_price = $product->sell_price;
 							$stock->purchase_price = $product->purchase_price;
 							$stock->row_total = $product->purchase_price * $detailModel->return_qty;
-							$stock->stock_status = Inventory::WARRANTY_RETURN;
+							$stock->stock_status = Inventory::CASH_SALE_RETURN;
 							$stock->master_id = $model->id;
 							$stock->source_id = $detailModel->id;
 							$stock->remarks = $model->remarks;
