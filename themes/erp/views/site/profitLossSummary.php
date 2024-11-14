@@ -16,7 +16,7 @@
             <div class="card-body">
                 <h4 class="text-center">
                     <?php
-                    $profit = $totalSalesValue - $totalCogsValue - $totalSaleDiscountValue - $totalExpenseValue;
+                    $profit = $totalSalesValue - ($totalCogsValue + $totalReturnCosting) - $totalSaleDiscountValue - $totalExpenseValue;
                     echo number_format((float)$profit, 2);
                     ?>
                 </h4>
@@ -36,6 +36,21 @@
                 <h4 class="text-center">
                     <?php
                     echo number_format((float)$totalSalesValue, 2);
+                    ?>
+                </h4>
+            </div>
+        </div>
+    </div>
+    <!-- Total Return -->
+    <div class="col-md-3">
+        <div class="card card-primary">
+            <div class="card-header">
+                <h3 class="card-title">Total Return</h3>
+            </div>
+            <div class="card-body">
+                <h4 class="text-center">
+                    <?php
+                    echo number_format((float)$totalReturnValue, 2);
                     ?>
                 </h4>
             </div>

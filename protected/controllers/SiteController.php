@@ -131,6 +131,19 @@ class SiteController extends Controller
         $totalSaleDiscountValue = $totalSalesSummary['discount_amount'];
         $totalSalesValue = $totalSalesSummary['total_amount'];
 
+        //calculate return
+        $totalReturnSummary = Yii::app()->db->createCommand()
+            ->select('ROUND(SUM(return_amount)) as return_amount, ROUND(SUM(costing)) as costing')
+            ->from('sell_return')
+            ->where('return_date BETWEEN :start_date AND :end_date',
+                array(
+                    ':start_date' => $startDate,
+                    ':end_date' => $endDate,
+                ))
+            ->queryRow();
+        $totalReturnAmount = $totalReturnSummary['return_amount'];
+        $totalReturnCosting = $totalReturnSummary['costing'];
+
         // calculate total purchase amount
         $totalPurchaseSummary = Yii::app()->db->createCommand()
             ->select('ROUND(SUM(grand_total)) as grand_total')
@@ -183,6 +196,8 @@ class SiteController extends Controller
             'totalExpenseValue' => $totalExpenseSummary,
             'totalMoneyReceiptValue' => $totalMoneyReceiptSummary,
             'totalPaymentValue' => $totalPaymentSummary,
+            'totalReturnValue' => $totalReturnAmount,
+            'totalReturnCosting' => $totalReturnCosting,
             'startDate' => $startDate,
             'endDate' => $endDate,
         ));
