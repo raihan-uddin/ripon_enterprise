@@ -141,13 +141,6 @@ endforeach;
                         'style' => 'width: 80px;'
                     ]
                 ),
-                /*array(
-                    'name' => 'return_type',
-                    'filter' => SellReturn::RETURN_TYPE_ARR,
-                    'value' => '$data->return_type == 1 ? "CASH RETURN" : "WARRANTY/REPLACEMENT"',
-                    'type' => 'raw',
-                    'htmlOptions' => ['class' => 'text-center']
-                ),*/
                 array(
                     'name' => 'return_date',
                     'htmlOptions' => ['class' => 'text-center']
@@ -157,14 +150,18 @@ endforeach;
                     'value' => 'Customers::model()->nameOfThis($data->customer_id)',
                     'htmlOptions' => ['class' => 'text-center']
                 ),
-                
                 array(
-                    'name' => 'created_by',
-                    'value' => 'Users::model()->nameOfThis($data->created_by)',
+                    'name'=>'sell_id',
                     'htmlOptions' => ['class' => 'text-center']
                 ),
                 array(
                     'name' => 'return_amount',
+                    'htmlOptions' => ['class' => 'text-center']
+                ),
+                
+                array(
+                    'name' => 'created_by',
+                    'value' => 'Users::model()->nameOfThis($data->created_by)',
                     'htmlOptions' => ['class' => 'text-center']
                 ),
                 /**array(

@@ -316,7 +316,7 @@ class SellOrder extends CActiveRecord
         $rem = $sellObj->grand_total - $totalMoneyReceipt - $totalReturn;
         $sellObj->total_paid = $totalMoneyReceipt;
         $sellObj->total_return = $totalReturn;
-        $sellObj->total_due = $rem;
+        $sellObj->total_due = $rem > 0 ? $rem : 0;
         if($rem <= 0){
             $sellObj->is_paid = self::PAID;
         }else{ 

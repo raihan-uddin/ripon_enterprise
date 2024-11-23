@@ -67,7 +67,7 @@ class SellReturn extends CActiveRecord
             array('return_amount, costing', 'length', 'max' => 10),
             array('remarks, created_at, updated_at', 'safe'),
             // The following rule is used by search().
-            array('id, return_date, customer_id, return_amount, costing, status, return_type, remarks, is_deleted, business_id, branch_id, created_by, created_at, updated_by, updated_at, is_opening', 'safe', 'on' => 'search'),
+            array('id, return_date, customer_id, sell_id, return_amount, costing, status, return_type, remarks, is_deleted, business_id, branch_id, created_by, created_at, updated_by, updated_at, is_opening', 'safe', 'on' => 'search'),
         );
     }
 
@@ -145,6 +145,7 @@ class SellReturn extends CActiveRecord
         $criteria->compare('t.updated_at', $this->updated_at, true);
         $criteria->compare('t.is_opening', $this->is_opening);
         $criteria->compare('t.status', $this->status);
+        $criteria->compare('t.sell_id', $this->sell_id, true);
 
         return new CActiveDataProvider($this, array(
             'criteria' => $criteria,
