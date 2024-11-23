@@ -349,6 +349,13 @@
                                     $moneyReceipt = MoneyReceipt::model()->findByAttributes([], $criteriaMr);
                                     $prev_collection = $moneyReceipt ? $moneyReceipt->amount : 0;
 
+                                    $criteriaReturn = new CDbCriteria();
+                                    $criteriaReturn->select = "SUM(return_amount) as return_amount";
+                                    $criteriaReturn->addColumnCondition(['t.customer_id' => $item->customer_id]);
+                                    $criteriaReturn->addCondition("sell_id != '$item->id'");
+                                    $sellReturn = SellReturn::model()->findByAttributes([], $criteriaReturn);
+                                    $prev_return = $sellReturn ? $sellReturn->return_amount : 0;
+
                                     $criteriaMr1 = new CDbCriteria();
                                     $criteriaMr1->select = "SUM(amount) as amount, SUM(discount) as discount";
                                     $criteriaMr1->addColumnCondition(['t.customer_id' => $item->customer_id, 'invoice_id' => $item->id]);
@@ -357,17 +364,17 @@
                                     $current_collection = $current_collection > 0 ? $current_collection : 0;
                                     $current_collection_discount = $moneyReceipt1 ? $moneyReceipt1->discount : 0;
 
-                                    $previous_due_amount = $prev_sell_value - $prev_collection;
+                                    $criteriaReturn1 = new CDbCriteria();
+                                    $criteriaReturn1->select = "SUM(return_amount) as return_amount";
+                                    $criteriaReturn1->addColumnCondition(['t.customer_id' => $item->customer_id, 'sell_id' => $item->id]);
+                                    $sellReturn1 = SellReturn::model()->findByAttributes([], $criteriaReturn1);
+                                    $current_return = $sellReturn1 ? $sellReturn1->return_amount : 0;
 
-                                    $current_due_amount = $previous_due_amount + $item->grand_total - $current_collection - $current_collection_discount;
+                                    $previous_due_amount = $prev_sell_value - $prev_collection - $prev_return;
+
+                                    $current_due_amount = $previous_due_amount + $item->grand_total - $current_collection - $current_collection_discount - $current_return;
                                     ?>
                                     TK <?= number_format($previous_due_amount, 2) ?>
-                                    <!--                                    <br>-->
-                                    <!--                                    <div style="width: 100%; border: 1px solid black;">-->
-                                    <!--                                        --><?php
-                                    //                                        echo sprintf('%.2f', $prev_sell_value) . ' - ' . sprintf('%.2f', $prev_collection) . ' = ' . sprintf('%.2f', $previous_due_amount);
-                                    //                                        ?>
-                                    <!--                                    </div>-->
                                 </td>
                             </tr>
                             <tr style="font-weight: bold;">
@@ -378,6 +385,20 @@
                                 <td style="text-align: right; border: none;">
                                     TK <?= number_format($current_collection, 2) ?></td>
                             </tr>
+                            <?php
+                            if($current_return > 0){
+                            ?>
+                            <tr style="">
+                                <td colspan="2" style="border: none; background: white;"></td>
+                                <td colspan="2" style="border: none;">
+                                    Current Return Amount
+                                </td>
+                                <td style="text-align: right; border: none;">
+                                    TK <?= number_format($current_return, 2) ?></td>
+                            </tr>
+                            <?php
+                            }
+                            ?>
                             <tr>
                                 <td colspan="2" style="border: none; background: white;"></td>
                                 <td colspan="2" style="border: none;">
