@@ -150,7 +150,7 @@ class PurchaseOrderController extends RController
 
         }
         $this->pageTitle = 'CREATE PO';
-        $this->render('create', array(
+        $this->render('_form', array(
             'model' => $model,
             'model2' => $model2,
         ));
@@ -313,7 +313,7 @@ class PurchaseOrderController extends RController
         $data = PurchaseOrderDetails::model()->findAll($criteria);
 
         $this->pageTitle = 'UPDATE ORDER';
-        $this->render('update', array(
+        $this->render('_from2', array(
             'model' => $model,
             'model2' => $model2,
             'model3' => $data,
