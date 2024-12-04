@@ -123,7 +123,7 @@ class PaymentReceiptController extends RController
 
 
         $this->pageTitle = "PR CREATE";
-        $this->render('create', array(
+        $this->render('_form', array(
             'model' => $model,
             'model2' => $model2,
             'id' => $id,
