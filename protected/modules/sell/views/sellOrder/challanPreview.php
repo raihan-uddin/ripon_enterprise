@@ -99,27 +99,19 @@
             <button type="button" class="btn btn-tool" data-card-widget="collapse">
                 <i class="fa fa-minus"></i>
             </button>
-            <!--            <button type="button" class="btn btn-tool" data-card-widget="remove">-->
-            <!--                <i class="fa fa-times"></i>-->
-            <!--            </button>-->
         </div>
     </div>
     <div class="card-body">
         <div class="printAllTableForThisReport">
             <?php
             foreach ($data as $item) {
-                $showProfitLossSummary = isset($show_profit) ? $show_profit : false;
-                $footerRowSpan = 6;
-                $footerColspan = 5;
-                if ($showProfitLossSummary) {
-                    $footerColspan = 6;
-                }
                 if ($item) {
                     $customer = Customers::model()->findByPk($item->customer_id);
                     ?>
                     <div style="width: 100%; min-height: 80px;">
+                    <h5>DELIVERY CHALLAN</h5>    
                         <?php
-                            $this->renderPartial('application.modules.sell.views.sellOrder.pad_header');
+                            $this->renderPartial('application.modules.sell.views.sellOrder.without_pad_header');
                         ?>
                         <div style="width: 100%; float: left; clear: right; margin-bottom: 10px;">
                             <div style="width: 50%; float: left; clear: right;">
@@ -142,23 +134,12 @@
                                 ?>
                             </div>
                             <div style="width: 50%; float: left; text-align: right; vertical-align: bottom;">
-                            <h5>DELIVERY CHALLAN</h5>    
                             <b>Date:</b>
                                 <?= date('d.m.Y', strtotime($item->date)) ?>
                                 <br>
 
                                 <b>Invoice No:</b>
                                 <?= "$item->so_no" ?>
-                                <br>
-                                <?php
-                                if ($showProfitLossSummary) {
-                                    ?>
-                                    <span style="border: 1px solid black; padding: 8px;">
-                                    <b style="font-size: 20px;">P/L: <span id="profitLossText_<?= $item->id ?>"></span></b>
-                                            </span>
-                                    <?php
-                                }
-                                ?>
                             </div>
                         </div>
                     </div>
@@ -278,30 +259,6 @@
                     </div>
 
                     <div class="page-break-div"></div>
-
-                    <script>
-                        <?php
-                        if ($showProfitLossSummary){
-                        ?>
-                        var profitLoss = <?= $row_total - $totalCosting - $discount_amount ?>;
-                        // if profit then show green color else show red color
-                        if (profitLoss > 0) {
-                            // use pure javascript instead of jquery
-                            //$('#profitLossText_<?php //= $item->id ?>//').css('color', 'green');
-                            document.getElementById('profitLossText_<?= $item->id ?>').style.color = 'green';
-
-                        } else {
-                            //$('#profitLossText_<?php //= $item->id ?>//').css('color', 'red');
-                            document.getElementById('profitLossText_<?= $item->id ?>').style.color = 'red';
-                        }
-                        //$('#profitLossText_<?php //= $item->id ?>//').text(profitLoss.toFixed(2));
-
-                        document.getElementById('profitLossText_<?= $item->id ?>').innerHTML = profitLoss.toFixed(2);
-
-                        <?php
-                        }
-                        ?>
-                    </script>
                 <?php
                 } else {
                 ?>
