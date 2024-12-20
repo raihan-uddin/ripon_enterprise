@@ -313,7 +313,7 @@ class PurchaseOrderController extends RController
         $data = PurchaseOrderDetails::model()->findAll($criteria);
 
         $this->pageTitle = 'UPDATE ORDER';
-        $this->render('_from2', array(
+        $this->render('update', array(
             'model' => $model,
             'model2' => $model2,
             'model3' => $data,
