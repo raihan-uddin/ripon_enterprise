@@ -22,9 +22,6 @@ $form = $this->beginWidget('CActiveForm', array(
             <button type="button" class="btn btn-tool" data-card-widget="collapse">
                 <i class="fa fa-minus"></i>
             </button>
-<!--            <button type="button" class="btn btn-tool" data-card-widget="remove">-->
-<!--                <i class="fa fa-times"></i>-->
-<!--            </button>-->
         </div>
     </div>
     <div class="card-body">
@@ -52,11 +49,11 @@ $form = $this->beginWidget('CActiveForm', array(
                       style="color: red; width: 100%"> <?php echo $form->error($model, 'owner_mobile_no'); ?></span>
             </div>
 
-            <div class="form-group  col-sm-6 col-md-3"  title="ID example: 1, 2, 3">
-                <?php echo $form->labelEx($model, 'supplier_id'); ?>
-                <?php echo $form->textField($model, 'supplier_id', array('maxlength' => 255, 'class' => 'form-control', 'placeholder' => '1,2,3')); ?>
+            <div class="form-group  col-sm-6 col-md-3">
+                <?php echo $form->labelEx($model, 'company_address'); ?>
+                <?php echo $form->textField($model, 'company_address', array('maxlength' => 255, 'class' => 'form-control', 'placeholder' => '')); ?>
                 <span class="help-block"
-                      style="color: red; width: 100%"> <?php echo $form->error($model, 'supplier_id'); ?></span>
+                      style="color: red; width: 100%"> <?php echo $form->error($model, 'company_address'); ?></span>
             </div>
 
             <div class="form-group  col-sm-6 col-md-3">
