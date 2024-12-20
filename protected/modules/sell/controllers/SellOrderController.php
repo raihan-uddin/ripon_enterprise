@@ -477,7 +477,7 @@ class SellOrderController extends RController
             // Stop jQuery from re-initialization
             Yii::app()->clientScript->scriptMap['jquery.js'] = false;
             Yii::app()->clientScript->scriptMap['jquery.min.js'] = false;
-//            Yii::app()->clientScript->scriptMap['jquery.yiiactiveform.js'] = false;
+
             Yii::app()->clientScript->scriptMap['jquery-ui-i18n.min.js'] = false;
             Yii::app()->clientScript->scriptMap['jquery-ui-timepicker-addon.js'] = false;
             Yii::app()->clientScript->scriptMap['jquery-ui.min.js'] = false;
@@ -497,7 +497,12 @@ class SellOrderController extends RController
             $data = SellOrder::model()->findAllByAttributes([], $criteria);
 
             if ($data) {
-                echo $this->renderPartial("voucherPreview", array('data' => $data, 'preview_type' => $preview_type, 'show_profit' => $show_profit), true, true);
+                if($preview_type == SellOrder::DELIVERY_CHALLAN_PRINT){
+                    $view = "challanPreview";
+                } else {
+                    $view = "voucherPreview";
+                }
+                echo $this->renderPartial("$view", array('data' => $data, 'preview_type' => $preview_type, 'show_profit' => $show_profit), true, true);
             } else {
                 header('Content-type: application/json');
                 echo CJSON::encode(array(

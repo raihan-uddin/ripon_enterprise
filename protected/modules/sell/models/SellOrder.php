@@ -56,6 +56,7 @@ class SellOrder extends CActiveRecord
 
     const NORMAL_ORDER_PRINT = 1;
     const NORMAL_PAD_PRINT = 4;
+    const DELIVERY_CHALLAN_PRINT = 5;
 
     const PAID = 1;
     const DUE = 0;

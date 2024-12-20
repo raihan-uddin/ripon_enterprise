@@ -84,6 +84,7 @@ if (Yii::app()->user->checkAccess('Sell.Order.VoucherPreview')) {
                             $model, 'print_type', [
                             SellOrder::NORMAL_ORDER_PRINT => 'NORMAL PRINT',
                             SellOrder::NORMAL_PAD_PRINT => 'PAD PRINT',
+                            SellOrder::DELIVERY_CHALLAN_PRINT => 'CHALLAN PRINT',
                         ], array('class' => 'form-control',));
                         ?>
                     </div>
