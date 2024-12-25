@@ -45,12 +45,13 @@ class MoneyReceiptController extends RController
 
         $transaction = Yii::app()->db->beginTransaction();
         try {
+            $createTime = date('Y-m-d H:i:s');
             if (isset($_POST['MoneyReceipt'])) {
                 $model->attributes = $_POST['MoneyReceipt'];
                 $model->max_sl_no = MoneyReceipt::maxSlNo();
                 $model->invoice_id = 0;
                 $model->amount = 0;
-                $model->mr_no = "MR-" . date('y') . "-" . date('m') . "-" . str_pad($model->max_sl_no, 5, "0", STR_PAD_LEFT);
+                $model->mr_no =  "MR" . date('y') . date('m') . str_pad($model->max_sl_no, 5, "0", STR_PAD_LEFT);
                 if ($model->validate()) {
                     $invoice_id_arr = [];
                     foreach ($_POST['MoneyReceipt']['tmp_amount'] as $key => $amount) {
@@ -71,6 +72,7 @@ class MoneyReceiptController extends RController
                             $model2->discount = $discount > 0 ? $discount : 0;
                             $model2->remarks = $model->remarks;
                             $model2->cheque_date = $model->cheque_date;
+                            $model2->created_at = $createTime;
                             if (!$model2->save()) {
                                 $transaction->rollBack();
                                 throw new CHttpException(500, sprintf('Error in saving order details! %s <br>', json_encode($model2->getErrors())));
@@ -150,7 +152,7 @@ class MoneyReceiptController extends RController
                     
                     $model->attributes = $_POST['MoneyReceipt'];
                     $model->max_sl_no = MoneyReceipt::maxSlNo();
-                    $model->mr_no = "MR-" . date('y') . "-" . date('m') . "-" . str_pad($model->max_sl_no, 5, "0", STR_PAD_LEFT);
+                    $model->mr_no = "MR" . date('y') . date('m') . str_pad($model->max_sl_no, 5, "0", STR_PAD_LEFT);
                     $model->amount = $_POST['MoneyReceipt']['amount'];
                     $model->discount = $_POST['MoneyReceipt']['discount'];
                     $model->date = $_POST['MoneyReceipt']['date'];

@@ -194,7 +194,7 @@ class MoneyReceipt extends CActiveRecord
         $criteria = new CDbCriteria;
         $criteria->select = "t.*";
         $criteria->join = " ";
-        $criteria->addColumnCondition(['t.is_deleted' => 0]);
+        // $criteria->addColumnCondition(['t.is_deleted' => 0]);
 
 
         if (($this->customer_id) != "") {
