@@ -194,7 +194,7 @@ class MoneyReceipt extends CActiveRecord
         $criteria = new CDbCriteria;
         $criteria->select = "t.*";
         $criteria->join = " ";
-        $criteria->addColumnCondition(['t.is_deleted' => 0, 't.business_id' => Yii::app()->user->getState('business_id')]);
+        $criteria->addColumnCondition(['t.is_deleted' => 0]);
 
 
         if (($this->customer_id) != "") {
