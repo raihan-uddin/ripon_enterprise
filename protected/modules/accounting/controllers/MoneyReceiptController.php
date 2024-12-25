@@ -55,9 +55,10 @@ class MoneyReceiptController extends RController
                 if ($model->validate()) {
                     $invoice_id_arr = [];
                     foreach ($_POST['MoneyReceipt']['tmp_amount'] as $key => $amount) {
+                        $amount = round($amount, 2);
                         $rem_amount = $_POST['MoneyReceipt']['rem_amount'][$key];
                         $invoice_id = $_POST['MoneyReceipt']['tmp_invoice_id'][$key];
-                        $discount = $_POST['MoneyReceipt']['tmp_discount'][$key];
+                        $discount =round( $_POST['MoneyReceipt']['tmp_discount'][$key], 2);
                         if ($amount > 0) {
                             $model2 = new MoneyReceipt();
                             $model2->max_sl_no = MoneyReceipt::maxSlNo();
