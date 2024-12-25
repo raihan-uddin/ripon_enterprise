@@ -124,27 +124,14 @@ if (Yii::app()->user->checkAccess('Accounting.MoneyReceipt.VoucherPreview')) {
             'htmlOptions' => array('class' => 'table-responsive grid-view'),
             'itemsCssClass' => 'table table-sm table-hover table-striped table-condensed table-bordered dataTable dtr-inline',
             'mergeColumns' => array('date', 'mr_no', 'payment_type', 'invoice_id', 'customer_id'),
-//            'loadingCssClass' => 'fa fa-spinner fa-spin fa-2x',
-//            'pager' => array(            //  pager like twitter bootstrap
-//                'htmlOptions' => array('class' => 'pagination  justify-content-end'),
-////                'header'=>'',
-////                'cssFile'=>false,
-////                'maxButtonCount'=>24,
-////                'selectedPageCssClass'=>'active',
-////                'hiddenPageCssClass'=>'disabled',
-////                'firstPageCssClass'=>'previous',
-////                'lastPageCssClass'=>'next',
-////                'firstPageLabel'=>'<<',
-////                'lastPageLabel'=>'>>',
-////                'prevPageLabel'=>'<',
-////                'nextPageLabel'=>'>',
-//            ),
+            'mergeType' => 'nested',
+            'summaryText' => '',
             'template' => "{pager}{summary}{items}{summary}{pager}",
             'columns' => array(
-//                'id',
+            //    'id',
                 array(
                     'name' => 'date',
-                    'htmlOptions' => ['class' => 'text-center']
+                    'htmlOptions' => ['class' => 'text-center', 'style' => 'width: 100px;']
                 ),
                 array(
                     'name' => 'mr_no',
@@ -152,44 +139,37 @@ if (Yii::app()->user->checkAccess('Accounting.MoneyReceipt.VoucherPreview')) {
                 ),
                 array(
                     'name' => 'payment_type',
+                    'header' => 'Col. Type',
                     'value' => 'MoneyReceipt::model()->paymentTypeString($data->payment_type)',
                     'type' => 'raw',
                     'filter' => CHtml::listData(MoneyReceipt::model()->paymentTypeFilter(), 'id', 'title'),
-                    'htmlOptions' => ['class' => 'text-center']
+                    'htmlOptions' => ['class' => 'text-center', 'style' => 'width: 70px;']
                 ),
                 array(
                     'name' => 'customer_id',
                     'value' => 'Customers::model()->nameOfThis($data->customer_id)',
+                    'htmlOptions' => ['class' => '', 'style' => 'width: 250px; text-align: left;']
                 ),
                 array(
                     'name' => 'invoice_id',
-//                    'value' => 'SellOrder::model()->nameOfThis($data->invoice_id)',
+                    'header' => 'Invoice',
+                    'htmlOptions' => ['class' => 'text-center', 'style' => 'width: 80px;']
                 ),
                 array(
-                    'name' => 'bank_id',
-                    'value' => 'CrmBank::model()->nameOfThis($data->bank_id)',
-                ),
-
-                array(
-                    'name' => 'cheque_no',
-                    'htmlOptions' => ['class' => 'text-center']
-                ),
-
-                array(
-                    'name' => 'cheque_date',
-                    'htmlOptions' => ['class' => 'text-center']
+                    'name' => 'amount',
+                    'value' => 'number_format($data->amount, 2)',
+                    'htmlOptions' => ['class' => 'text-center', 'style' => 'width: 80px;']
                 ),
 
                 array(
                     'name' => 'discount',
-                    'htmlOptions' => ['class' => 'text-center']
+                    'value' => 'number_format($data->discount, 2)',
+                    'htmlOptions' => ['class' => 'text-center', 'style' => 'width: 80px;']
                 ),
-
                 array(
-                    'name' => 'amount',
+                    'name' => 'remarks',
                     'htmlOptions' => ['class' => 'text-center']
                 ),
-                'remarks',
                 array(
                     'name' => 'created_by',
                     'value' => 'Users::model()->nameOfThis($data->created_by)',
@@ -204,7 +184,7 @@ if (Yii::app()->user->checkAccess('Accounting.MoneyReceipt.VoucherPreview')) {
                     'header' => 'Options',
                     'template' => '{delete}',
                     'class' => 'CButtonColumn',
-                    'htmlOptions' => ['style' => 'width: 200px', 'class' => 'text-center'],
+                    'htmlOptions' => [ 'class' => 'text-center'],
                     'buttons' => array(
                         'delete' => array(
                             'label' => '<i class="fa fa-trash fa-2x" style="color: red;"></i>&nbsp;&nbsp;',
