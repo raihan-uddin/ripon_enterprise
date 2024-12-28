@@ -120,6 +120,12 @@ $this->widget('application.extensions.mbmenu.MbMenu', array(
                 array('label' => 'INVENTORY',
                     'items' => array(
                         ['label' => Yii::t('app', 'STOCK REPORT'), 'url' => ['/inventory/inventory/stockReport'], 'visible' => Yii::app()->user->checkAccess('Inventory.Inventory.StockReport')],
+                        // price-list
+                        ['label' => Yii::t('app', 'PRICE LIST'), 'url' => ['/Report/priceListView'], 'visible' => Yii::app()->user->checkAccess('Report.PriceListView')],
+                        // ['label' => Yii::t('app', 'STOCK ALERT'), 'url' => ['/inventory/inventory/stockAlert'], 'visible' => Yii::app()->user->checkAccess('Inventory.Inventory.StockAlert')],
+                        // ['label' => Yii::t('app', 'STOCK MOVEMENT'), 'url' => ['/inventory/inventory/stockMovement'], 'visible' => Yii::app()->user->checkAccess('Inventory.Inventory.StockMovement')],
+                        // ['label' => Yii::t('app', 'STOCK LEDGER'), 'url' => ['/inventory/inventory/stockLedger'], 'visible' => Yii::app()->user->checkAccess('Inventory.Inventory.StockLedger')],
+                        // ['label' => Yii::t('app', 'STOCK SUMMARY'), 'url' => ['/inventory/inventory/stockSummary'], 'visible' => Yii::app()->user->checkAccess('Inventory.Inventory.StockSummary')],
                     ),
                 ),
                 array('label' => 'SALES',
