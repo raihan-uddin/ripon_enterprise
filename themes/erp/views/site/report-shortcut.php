@@ -23,6 +23,8 @@
                         <?php
                     }
                     ?>
+                    <a class="dropdown-item"
+                       href="<?= Yii::app()->createUrl("report/PriceListView") ?>">Price List</a>
                     <a class="dropdown-item disabled"
                        href="<?= Yii::app()->createUrl("inventory/inventory/stockReport") ?>">Slow
                         Moving Report</a>

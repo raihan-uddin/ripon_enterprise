@@ -688,6 +688,19 @@ class ReportController extends RController
         $this->render('purchaseDetailsReport', array('model' => $model));
     }
 
+    public function actionPriceListView(){
+        $criteria = new CDbCriteria();
+        $criteria->addNotInCondition('t.item_id', [1, 3, 4]); // service/multimedia/sound
+        $criteria->join = " LEFT join companies c on t.manufacturer_id = c.id ";
+        $criteria->join .= " LEFT join prod_brands b on t.brand_id = b.id ";
+        $criteria->order = 'b.brand_name asc, c.name asc';
+        $criteria->select = "t.*, c.name as company_name, b.brand_name";
+        $products = ProdModels::model()->findAll($criteria);
+        $this->pageTitle = 'PRICE LIST';
+        $this->render('priceListView', array('products' => $products));
+
+    }
+
 
     public function actionPurchaseDetailsReportView()
     {
