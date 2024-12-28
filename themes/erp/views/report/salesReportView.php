@@ -117,7 +117,7 @@ echo "</div>";
                     <td style="text-align: center; text-decoration: underline; cursor: zoom-in;" class="invoiceDetails"
                         title="click here to get the preview">
                         <?php 
-                        if($group_by === 't.id')
+                        if($group_by === 't.id'){
                             echo $dmr->id;
                         }
                         ?>
