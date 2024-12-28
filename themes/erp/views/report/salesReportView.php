@@ -110,12 +110,18 @@ echo "</div>";
                 <tr>
                     <td style="text-align: center;"><?php echo $sl++; ?></td>
                     <td style="text-align: center;"><?php 
-                        if($group_by === 't.id'){
+                        if($group_by === 't.id' || $group_by === 't.date'){
                             echo $dmr->date; 
                         }
                     ?></td>
                     <td style="text-align: center; text-decoration: underline; cursor: zoom-in;" class="invoiceDetails"
-                        title="click here to get the preview"><?php echo $dmr->id; ?></td>
+                        title="click here to get the preview">
+                        <?php 
+                        if($group_by === 't.id')
+                            echo $dmr->id;
+                        }
+                        ?>
+                    </td>
                     <td style="text-align: left;"><?php
                     if($group_by === 't.id' || $group_by === 't.customer_id'){ 
                         echo sprintf("%s | %s", $dmr->customer_name, $dmr->contact_no);
