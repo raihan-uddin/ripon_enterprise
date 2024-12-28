@@ -110,7 +110,7 @@ echo "</div>";
                 <tr>
                     <td style="text-align: center;"><?php echo $sl++; ?></td>
                     <td style="text-align: center;"><?php 
-                        if($group_by === 't.id' || $group_by === 't.date'){
+                        if($group_by === 't.id' || $group_by === 't.date' || $group_by === 'YEAR(t.date), MONTH(t.date)' || $group_by === 'YEAR(t.date)'){
                             echo $dmr->date; 
                         }
                     ?></td>
