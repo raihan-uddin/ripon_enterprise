@@ -520,6 +520,9 @@ class ReportController extends RController
         $dateTo = $_POST['Inventory']['date_to'];
         $customer_id = $_POST['Inventory']['customer_id'];
         $order_type = $_POST['Inventory']['order_type'];
+        $group_by = $_POST['Inventory']['group_by'];
+        $sort_by = $_POST['Inventory']['sort_by'];
+        $sort_order = $_POST['Inventory']['sort_order'];
         $created_by = isset($_POST['Inventory']['created_by']) ? $_POST['Inventory']['created_by'] : 0;
 
         $message = "";
@@ -541,13 +544,35 @@ class ReportController extends RController
                 $criteria->addColumnCondition(['t.order_type' => $order_type]);
             }
             $criteria->join .= " LEFT JOIN customers c on t.customer_id = c.id ";
-            $criteria->select = "t.*, c.company_name as customer_name, c.owner_mobile_no as contact_no";
-            $criteria->order = 't.date asc';
+            $criteria->select = "SUM(t.total_amount) as total_amount, 
+                                SUM(t.total_return) as return_amount, 
+                                SUM(t.delivery_charge) as delivery_charge, 
+                                SUM(t.discount_amount) as discount_amount, 
+                                SUM(t.grand_total) as grand_total, 
+                                SUM(t.costing) as costing, 
+                                SUM(t.total_amount) as total_amount, 
+                                SUM(t.total_due) as total_due,
+                                t.date,
+                                t.customer_id,
+                                t.id,
+                                c.company_name as customer_name, 
+                                c.owner_mobile_no as contact_no";
+            if($group_by){
+                $criteria->group = $group_by;
+            } else {
+                $criteria->group = 't.id';
+            }
+            if($sort_by && $sort_order){
+                $criteria->order = "$sort_by $sort_order";
+            } else {
+                $criteria->order = 't.date asc';
+            }
             $data = SellOrder::model()->findAll($criteria);
         }
         echo $this->renderPartial('salesReportView', array(
             'data' => $data,
             'message' => $message,
+            'group_by' => $group_by,
         ), true, true);
         Yii::app()->end();
     }

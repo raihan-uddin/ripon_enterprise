@@ -50,6 +50,8 @@ class SellOrder extends CActiveRecord
     public $qty;
     public $amount;
     public $total_sales;
+    public $return_amount;
+    public $group_by;
 
     const NEW_ORDER = 1;
     const REPAIR_ORDER = 2;

@@ -32,7 +32,7 @@ $form = $this->beginWidget('CActiveForm', array(
     <div class="card-body">
         <div class="row">
 
-            <div class="col-sm-12 col-md-3">
+            <div class="col-sm-12 col-md-2">
                 <div class="form-group">
                     <?php echo $form->labelEx($model, 'date_from', ['class' => 'col-form-label']); ?>
                     <div class="input-group" id="date_from" data-target-input="nearest">
@@ -43,7 +43,7 @@ $form = $this->beginWidget('CActiveForm', array(
                 </div>
             </div>
 
-            <div class="col-sm-12 col-md-3">
+            <div class="col-sm-12 col-md-2">
                 <div class="form-group">
                     <?php echo $form->labelEx($model, 'date_to', ['class' => 'col-form-label']); ?>
                     <div class="input-group" id="date_to" data-target-input="nearest">
@@ -54,7 +54,7 @@ $form = $this->beginWidget('CActiveForm', array(
                 </div>
             </div>
 
-            <div class="col-sm-12 col-md-2">
+            <div class="col-sm-12 col-md-1">
                 <div class="form-group row">
                     <?php echo $form->labelEx($model, 'order_type', ['class' => 'col-form-label']); ?>
                     <div class="col-sm-12">
@@ -135,6 +135,52 @@ $form = $this->beginWidget('CActiveForm', array(
                     </script>
                 </div>
             </div>
+
+            <div class="col-sm-12 col-md-1">
+                <div class="form-group row">
+                    <?php echo $form->labelEx($model, 'group_by', ['class' => 'col-form-label']); ?>
+                    <div class="col-sm-12">
+                        <?php echo $form->dropDownList($model, 'group_by',[
+                                    't.id' => 'ID', 
+                                    't.date' => 'Date',
+                                    'YEAR(t.date), MONTH(t.date)' => 'Month',
+                                    'YEAR(t.date)' => 'Year',
+                                    't.customer_id' => 'Customer',
+                                ], [
+                                'class' => 'form-control'
+                            ]); ?>
+                    </div>
+                </div>
+            </div>
+
+    <div class="col-sm-12 col-md-2">
+        <div class="form-group row">
+            <?php echo $form->labelEx($model, 'sort_by', ['class' => 'col-form-label']); ?>
+            <div class="col-sm-12">
+                <div class="input-group">
+                    <!-- Column Selection -->
+                    <?php echo $form->dropDownList($model, 'sort_by', [
+                            't.id' => 'ID', 
+                            't.date' => 'Date',
+                            't.customer_id' => 'Customer',
+                        ], [
+                        'class' => 'form-control'
+                    ]); ?>
+
+                    <!-- Order Selection (ASC/DESC) -->
+                    <div class="input-group-append">
+                        <?php echo $form->dropDownList($model, 'sort_order', [
+                            'ASC' => 'ASC', 
+                            'DESC' => 'DESC',
+                        ], [
+                            'class' => 'form-control',
+                        ]); ?>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
         </div>
     </div>
     <div class="card-footer">

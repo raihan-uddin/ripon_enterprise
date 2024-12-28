@@ -67,6 +67,10 @@ class Inventory extends CActiveRecord
     public $manufacturer_id;
     public $avg_purchase_price;
     public $order_type;
+    public $group_by;
+    public $sort_by_column;
+    public $sort_by;
+    public $sort_order;
 
     public static function maxSlNo()
     {

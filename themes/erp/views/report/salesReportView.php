@@ -97,7 +97,7 @@ echo "</div>";
         if ($data) {
             foreach ($data as $dmr) {
                 $total_amount += $dmr->total_amount;
-                $total_return += $dmr->return_amount;
+                $total_return += $dmr->total_return;
                 $total_delivery_charge += $dmr->delivery_charge;
                 $row_closing_discount += $dmr->discount_amount;
                 $row_closing += $dmr->grand_total;
@@ -109,10 +109,18 @@ echo "</div>";
                 ?>
                 <tr>
                     <td style="text-align: center;"><?php echo $sl++; ?></td>
-                    <td style="text-align: center;"><?php echo $dmr->date; ?></td>
+                    <td style="text-align: center;"><?php 
+                        if($group_by === 't.id'){
+                            echo $dmr->date; 
+                        }
+                    ?></td>
                     <td style="text-align: center; text-decoration: underline; cursor: zoom-in;" class="invoiceDetails"
                         title="click here to get the preview"><?php echo $dmr->id; ?></td>
-                    <td style="text-align: left;"><?php echo sprintf("%s | %s", $dmr->customer_name, $dmr->contact_no); ?></td>
+                    <td style="text-align: left;"><?php
+                    if($group_by === 't.id' || $group_by === 't.customer_id'){ 
+                        echo sprintf("%s | %s", $dmr->customer_name, $dmr->contact_no);
+                    } 
+                    ?></td>
                     <td style="text-align: right;"><?php echo number_format($dmr->total_amount, 2); ?></td>
                     <td style="text-align: right;"><?php echo number_format($dmr->delivery_charge, 2); ?></td>
                     <td style="text-align: right;"><?php echo number_format($dmr->discount_amount, 2); ?></td>
