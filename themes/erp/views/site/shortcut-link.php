@@ -49,6 +49,7 @@ $endDate = date('Y-m-t');
 
             ?></span>
             <i class="fa fa-inbox"></i> Orders
+            <small>(Ctrl+S)</small>
         </a>
         <?php
     }
@@ -89,6 +90,7 @@ $endDate = date('Y-m-t');
                 ->queryScalar();
             ?></span>
             <i class="fa fa-inbox"></i> Purchase Order
+            <small>(Ctrl+P)</small>
         </a>
         <?php
     }

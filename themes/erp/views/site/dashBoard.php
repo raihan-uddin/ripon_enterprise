@@ -5,9 +5,9 @@ $this->widget('application.components.BreadCrumb', array(
     ),
 //    'delimiter' => ' &rarr; ',
 ));
-echo Yii::getVersion();
+// echo Yii::getVersion();
 
-echo "-" . Yii::app()->user->getState('user_id');
+// echo "-" . Yii::app()->user->getState('user_id');
 
 
 $this->renderPartial('shortcut-link');
