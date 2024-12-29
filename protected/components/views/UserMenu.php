@@ -80,6 +80,13 @@ $this->widget('application.extensions.mbmenu.MbMenu', array(
 
                     ),
                 ),
+                array('label' => 'QUOTATION',
+                    'items' => array(
+                        ['label' => Yii::t('app', 'CREATE'), 'url' => ['/sell/sellOrderQuotation/create'], 'visible' => Yii::app()->user->checkAccess('Sell.SellOrderQuotation.Create')],
+                        ['label' => Yii::t('app', 'MANAGE'), 'url' => ['/sell/sellOrderQuotation/admin'], 'visible' => Yii::app()->user->checkAccess('Sell.SellOrderQuotation.Admin')],
+
+                    ),
+                ),
                 array('label' => 'COLLECTION',
                     'items' => array(
                         ['label' => Yii::t('app', 'MR CREATE'), 'url' => ['/accounting/moneyReceipt/adminMoneyReceipt'], 'visible' => Yii::app()->user->checkAccess('Accounting.MoneyReceipt.AdminMoneyReceipt')],
