@@ -494,16 +494,10 @@ Yii::app()->clientScript->registerCoreScript("jquery.ui");
                     }',
                     'beforeSend' => 'function(){  
                         let count_item =  $(".item").length; 
-                        let cash_due = $("#SellOrderQuotation_cash_due").val();  
                         let date = $("#SellOrderQuotation_date").val();  
                         let customer_id = $("#SellOrderQuotation_customer_id").val();  
                         let grand_total = $("#SellOrderQuotation_grand_total").val();  
-                        let collectedAmount = parseFloat($("#collectedAmount").val()); 
-                        collectedAmount = !isNaN(collectedAmount) ? collectedAmount : 0; 
-                        if(cash_due == ""){
-                            toastr.error("Please select Cash/Due.");
-                            return false;
-                        }else if(date == ""){
+                        if(date == ""){
                             toastr.error("Please insert date.");
                             return false;
                         }else if(customer_id == ""){
@@ -519,7 +513,7 @@ Yii::app()->clientScript->registerCoreScript("jquery.ui");
                             $("#overlay").fadeIn(300);
                             $("#ajaxLoader").show();
                         }
-                     }',
+                    }',
                     'error' => 'function(xhr, status, error) { 
                         // Code to handle errors
                         toastr.error(xhr.responseText); // Displaying error message using Toastr
@@ -530,8 +524,8 @@ Yii::app()->clientScript->registerCoreScript("jquery.ui");
                         $("#overlay").fadeOut(300);
                     }',
                     'complete' => 'function() {
-                         $("#overlay").fadeOut(300);
-                         $("#ajaxLoaderReport").hide(); 
+                        $("#overlay").fadeOut(300);
+                        $("#ajaxLoaderReport").hide(); 
                     }',
                 ), array('class' => 'btn btn-primary btn-md'));
                 ?>
@@ -562,13 +556,6 @@ Yii::app()->clientScript->registerCoreScript("jquery.ui");
             document.getElementById('SellOrderQuotation_date').value = date.format('YYYY-MM-DD');
         }
     });
-    var picker2 = new Lightpick({
-        field: document.getElementById('exp_delivery_date'),
-        // minDate: moment(),
-        onSelect: function (date) {
-            document.getElementById('SellOrderQuotation_exp_delivery_date').value = date.format('YYYY-MM-DD');
-        }
-    });
 
     $(document).ready(function () {
         $(".qty-amount").keyup(function () {
@@ -595,25 +582,12 @@ Yii::app()->clientScript->registerCoreScript("jquery.ui");
         let unit_price = $("#SellOrderDetails_amount").val();
         unit_price = unit_price > 0 ? unit_price : 0;
         let note = $("#SellOrderDetails_note").val();
-        let product_sl_no = $("#product_sl_no").val();
         let qty = $("#SellOrderDetails_qty").val();
         let row_total = $("#SellOrderDetails_row_total").val();
         let pp = parseFloat($("#SellOrderDetails_pp").val());
         pp = pp > 0 ? pp : 0;
         let isproductpresent = false;
         let temp_codearray = document.getElementsByName("SellOrderDetails[temp_model_id][]");
-        let temp_sl_array = document.getElementsByName("SellOrderDetails[temp_product_sl_no][]");
-
-
-        if (product_sl_no.length > 0) {
-            for (let l = 0; l < temp_sl_array.length; l++) {
-                let code = temp_sl_array[l].value;
-                if (code === product_sl_no) {
-                    isproductpresent = true;
-                    break;
-                }
-            }
-        }
 
 
         if (model_id == "" || model_id_text == "") {
@@ -640,9 +614,6 @@ Yii::app()->clientScript->registerCoreScript("jquery.ui");
                         <input type="hidden" class="form-control temp_model_id" value="${model_id}" name="SellOrderDetails[temp_model_id][]" >
                     </td>
                     <td class="text-center">
-                        <input type="text" class="form-control text-center" value="${product_sl_no}" name="SellOrderDetails[temp_product_sl_no][]">
-                    </td>
-                    <td class="text-center">
                         <input type="text" class="form-control text-center temp_qty" value="${qty}" name="SellOrderDetails[temp_qty][]">
                     </td>
                     <td class="text-center">
@@ -650,7 +621,7 @@ Yii::app()->clientScript->registerCoreScript("jquery.ui");
                         <input type="hidden" class="form-control text-center temp-costing" value="${pp}" name="SellOrderDetails[temp_pp][]">
                     </td>
                     <td class="text-center">
-                       <input type="text" readonly class="form-control row-total  text-right" value="${row_total}" name="SellOrderDetails[temp_row_total][]" >
+                        <input type="text" readonly class="form-control row-total  text-right" value="${row_total}" name="SellOrderDetails[temp_row_total][]" >
                     </td>
                     <td>
                         <button type="button" class="btn btn-danger dlt"><i class="fa fa-trash-o"></i> </button>
@@ -658,7 +629,7 @@ Yii::app()->clientScript->registerCoreScript("jquery.ui");
                 </tr>
                 `);
             calculateTotal();
-            clearDynamicItem(product_sl_no);
+            clearDynamicItem();
 
             prev_sell_price = unit_price;
             prev_product_id = model_id;
@@ -724,18 +695,13 @@ Yii::app()->clientScript->registerCoreScript("jquery.ui");
     function resetProduct() {
         $("#model_id_text").val('');
         $("#SellOrderDetails_model_id").val('');
-        $("#SellOrderDetails_warranty").val('');
         resetProductSlNo();
     }
 
-    function resetProductSlNo() {
-        $("#product_sl_no").val('');
-    }
 
     function clearDynamicItem() {
         $("#SellOrderDetails_model_id").val('');
         $("#model_id_text").val('');
-        $("#product_sl_no").val('');
         $("#SellOrderDetails_amount").val('');
         $("#SellOrderDetails_row_total").val('');
         $("#SellOrderDetails_qty").val('');
