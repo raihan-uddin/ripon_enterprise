@@ -46,6 +46,7 @@ Yii::app()->clientScript->registerCoreScript("jquery.ui");
                 <span class="help-block"
                         style="color: red; width: 100%"> <?php echo $form->error($model, 'entry_date'); ?></span>
             </div>
+
             <div class="form-group col-sm-12 col-md-2">
                 <?php echo $form->labelEx($model, 'customer_id'); ?>
                 <div class="input-group" id="customer_id" data-target-input="nearest">
@@ -157,6 +158,7 @@ Yii::app()->clientScript->registerCoreScript("jquery.ui");
                 <span class="help-block"
                         style="color: red; width: 100%"> <?php echo $form->error($model, 'total_amount'); ?></span>
             </div>
+
             <div class="form-group col-sm-12 col-md-2">
                 <?php echo $form->labelEx($model2, 'delivery_charge'); ?>
                 <div class="input-group" id="delivery_charge" data-target-input="nearest">
@@ -180,7 +182,6 @@ Yii::app()->clientScript->registerCoreScript("jquery.ui");
                 <span class="help-block"
                         style="color: red; width: 100%"> <?php echo $form->error($model, 'discount_amount'); ?></span>
             </div>
-
             
             <div class="form-group col-sm-12 col-md-2">
                 <?php echo $form->labelEx($model2, 'grand_total'); ?>
@@ -199,7 +200,6 @@ Yii::app()->clientScript->registerCoreScript("jquery.ui");
                 <span class="help-block"
                         style="color: red; width: 100%"> <?php echo $form->error($model, 'grand_total'); ?></span>
             </div>
-
         </div>
 
         <div class="card card-info">

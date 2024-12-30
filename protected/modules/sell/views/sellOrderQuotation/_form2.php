@@ -34,76 +34,90 @@ Yii::app()->clientScript->registerCoreScript("jquery.ui");
         </div>
     </div>
     <div class="card-body">
-        <div class="row">
-            <div class="col-xs-12 col-sm-12 col-md-4 col-lg-4">
-                <div class="form-group row" >
-                    <?php echo $form->labelEx($model, 'date', ['class' => 'col-sm-4 col-form-label']); ?>
-                    <div class="col-sm-8">
-                        <div class="input-group" id="entry_date" data-target-input="nearest">
-                            <?php echo $form->textField($model, 'date', array('class' => 'form-control datetimepicker-input', 'placeholder' => 'YYYY-MM-DD', 'value' => $model->date)); ?>
-                        </div>
+        <?php
+            $customer = Customers::model()->findByPk($model->customer_id);
+        ?>
+         <div class="row">
+            <div class="form-group col-sm-12 col-md-2">
+                <?php echo $form->labelEx($model, 'entry_date'); ?>
+                <div class="input-group" id="entry_date" data-target-input="nearest">
+                    <?php echo $form->textField($model, 'date', array('class' => 'form-control datetimepicker-input', 'placeholder' => 'YYYY-MM-DD', 'value' => date('Y-m-d'))); ?>
+                    <div class="input-group-append">
+                        <div class="input-group-text"><i class="fa fa-calendar"></i></div>
                     </div>
-                    <span class="help-block"
-                          style="color: red; width: 100%"> <?php echo $form->error($model, 'date'); ?></span>
                 </div>
-                <div class="form-group row">
-                    <?php echo $form->labelEx($model, 'order_type', ['class' => 'col-sm-4 col-form-label']); ?>
-                    <div class="col-sm-8">
-                        <?php
-                        echo $form->dropDownList(
-                            $model, 'order_type', [SellOrder::NEW_ORDER => 'NEW', SellOrder::REPAIR_ORDER => 'QUOTATION'], array(
-                            'prompt' => 'Select',
-                            'class' => 'form-control',
-                        ));
-                        ?>
-                    </div>
-                    <span class="help-block"
-                          style="color: red; width: 100%"> <?php echo $form->error($model, 'order_type'); ?></span>
-                </div>
-                <div class="form-group row">
-                    <?php echo $form->labelEx($model, 'cash_due', ['class' => 'col-sm-4 col-form-label']); ?>
-                    <div class="col-sm-8">
-                        <?php
-                        echo $form->dropDownList(
-                            $model, 'cash_due', Lookup::items('cash_due'), array(
-                            'prompt' => 'Select',
-                            'class' => 'form-control',
-                        ));
-                        ?>
-                    </div>
-                    <span class="help-block"
-                        style="color: red; width: 100%"> <?php echo $form->error($model, 'cash_due'); ?></span>
-                </div>
-                <div class="form-group row" style="display: none;">
-                    <?php echo $form->labelEx($model, 'exp_delivery_date', ['class' => 'col-sm-4 col-form-label']); ?>
-                    <div class="col-sm-8">
-                        <div class="input-group" id="exp_delivery_date" data-target-input="nearest">
-                            <?php echo $form->textField($model, 'exp_delivery_date', array('class' => 'form-control datetimepicker-input', 'placeholder' => 'YYYY-MM-DD', 'value' => $model->exp_delivery_date)); ?>
-                            <div class="input-group-append">
-                                <div class="input-group-text"><i class="fa fa-calendar"></i></div>
-                            </div>
-                        </div>
-                    </div>
-                    <span class="help-block"
-                        style="color: red; width: 100%"> <?php echo $form->error($model, 'exp_delivery_date'); ?></span>
-                </div>
+                <span class="help-block"
+                        style="color: red; width: 100%"> <?php echo $form->error($model, 'entry_date'); ?></span>
             </div>
 
-            <?php
-            $customer = Customers::model()->findByPk($model->customer_id);
+            <div class="form-group col-sm-12 col-md-2">
+                <?php echo $form->labelEx($model, 'customer_id'); ?>
+                <div class="input-group" id="customer_id" data-target-input="nearest">
+                    <input type="text" id="customer_id_text" class="form-control" value="<?= $customer ? $customer->company_name : '' ?>">
+                    <?php echo $form->hiddenField($model, 'customer_id', array('maxlength' => 255, 'class' => 'form-control')); ?>
+                    <div class="input-group-append">
+                        <div class="input-group-text">
+                            <?php
+                            echo CHtml::link(' <i class="fa fa-plus"></i>', "", // the link for open the dialog
+                                array(
+                                    'onclick' => "{addDistributor(); $('#dialogAddDistributor').dialog('open');}"));
+                            ?>
+                            <?php
+                            $this->beginWidget('zii.widgets.jui.CJuiDialog', array(// the dialog
+                                'id' => 'dialogAddDistributor',
+                                'options' => array(
+                                    'title' => 'Add Customer',
+                                    'autoOpen' => false,
+                                    'modal' => true,
+                                    'width' => '1288px',
+                                    'left' => '30px',
+                                    'resizable' => false,
+                                ),
+                            ));
+                            ?>
+                            <div class="divForForm">
+                                <div class="ajaxLoaderFormLoad" style="display: none;"><img
+                                            src="<?php echo Yii::app()->theme->baseUrl; ?>/images/ajax-loader.gif"/>
+                                </div>
+                            </div>
+                            <?php $this->endWidget(); ?>
 
-            ?>
-            <div class="col-xs-12 col-sm-12 col-md-4 col-lg-4">
-                <div class="form-group row" >
-                    <?php echo $form->labelEx($model, 'customer_id', ['class' => 'col-sm-4 col-form-label']); ?>
-                    <div class="col-sm-8">
-                        <input type="text" id="customer_id_text" class="form-control" readonly
-                            value="<?= $customer->company_name ?>">
-                        <?php echo $form->hiddenField($model, 'customer_id', array('maxlength' => 255, 'class' => 'form-control')); ?>
+                            <script type="text/javascript">
+                                function addDistributor() {
+                                    <?php
+                                    echo CHtml::ajax(array(
+                                        'url' => array('/sell/customers/createCustomerFromOutSide'),
+                                        'data' => "js:$(this).serialize()",
+                                        'type' => 'post',
+                                        'dataType' => 'json',
+                                        'beforeSend' => "function(){
+                                    $('.ajaxLoaderFormLoad').show();
+                                }",
+                                        'complete' => "function(){
+                                    $('.ajaxLoaderFormLoad').hide();
+                                }",
+                                        'success' => "function(data){
+                                    if (data.status == 'failure')
+                                    {
+                                        $('#dialogAddDistributor div.divForForm').html(data.div);
+                                                // Here is the trick: on submit-> once again this function!
+                                        $('#dialogAddDistributor div.divForForm form').submit(addDistributor);
+                                    }
+                                    else
+                                    {
+                                        $('#dialogAddDistributor div.divForForm').html(data.div);
+                                        setTimeout(\"$('#dialogAddDistributor').dialog('close') \",1000);
+                                        $('#customer_id_text').val(data.label);
+                                        $('#SellOrderQuotation_customer_id').val(data.id).change();
+                                    }
+                                }",
+                                    ))
+                                    ?>
+                                    return false;
+                                }
+                            </script>
+                        </div>
                     </div>
-                    <span class="help-block"
-                            style="color: red; width: 100%"> <?php echo $form->error($model, 'customer_id'); ?></span>
-
                     <script>
                         $(document).ready(function () {
                             $('#customer_id_text').autocomplete({
@@ -117,128 +131,77 @@ Yii::app()->clientScript->registerCoreScript("jquery.ui");
                                         }, "json");
                                 },
                                 minLength: 1,
-                                delay: 700,
                                 autoFocus: true,
                                 select: function (event, ui) {
                                     $('#customer_id_text').val(ui.item.value);
                                     $('#SellOrderQuotation_customer_id').val(ui.item.id);
-                                    $('#SellOrderQuotation_city').val(ui.item.city);
-                                    $('#SellOrderQuotation_state').val(ui.item.state);
                                 }
                             }).data("ui-autocomplete")._renderItem = function (ul, item) {
                                 return $("<li></li>")
                                     .data("item.autocomplete", item)
-                                    .append(`<a> ${item.name} <small><br>ID: ${item.id} <br> Contact:  ${item.contact_no}</small></a>`)
+                                    .append(`<a> ${item.name} <small><br>ID: ${item.id}, <br> Contact:  ${item.contact_no}</small></a>`)
                                     .appendTo(ul);
                             };
 
                         });
                     </script>
                 </div>
-
-
-                <div class="form-group row" style="display: none;">
-                    <?php echo $form->labelEx($model, 'city', ['class' => 'col-sm-4 col-form-label']); ?>
-                    <div class="col-sm-8">
-                        <?php echo $form->textField($model, 'city', array('maxlength' => 255, 'class' => 'form-control', 'readonly' => true, 'disabled' => true, 'value' => $customer->city)); ?>
-                    </div>
-                    <span class="help-block"
-                        style="color: red; width: 100%"> <?php echo $form->error($model, 'qty'); ?></span>
-                </div>
-
-                <div class="form-group row" style="display: none;">
-                    <?php echo $form->labelEx($model, 'state', ['class' => 'col-sm-4 col-form-label']); ?>
-                    <div class="col-sm-8">
-                        <?php echo $form->textField($model, 'state', array('maxlength' => 255, 'class' => 'form-control', 'readonly' => true, 'disabled' => true, 'value' => $customer->state)); ?>
-                    </div>
-                    <span class="help-block"
-                        style="color: red; width: 100%"> <?php echo $form->error($model, 'state'); ?></span>
-                </div>
-
-                <div class="form-group row" >
-                    <?php echo $form->labelEx($model, 'total_amount', ['class' => 'col-sm-4 col-form-label']); ?>
-                    <div class="col-sm-8">
-                        <div class="input-group">
-                            <div class="input-group-prepend">
-                                <span class="input-group-text" id="basic-addon3"><i class="fa fa-money"></i> </span>
-                            </div>
-                            <?php echo $form->textField($model, 'total_amount', array('maxlength' => 255, 'class' => 'form-control', 'placeholder' => '0', "aria-label" => "0", "aria-describedby" => "basic-addon3", 'readonly' => true)); ?>
-                        </div>
-                    </div>
-                    <span class="help-block"
-                        style="color: red; width: 100%"> <?php echo $form->error($model, 'total_amount'); ?></span>
-                </div>
-
-                <div class="form-group row" >
-                    <?php echo $form->labelEx($model, 'vat', ['class' => 'col-sm-4 col-form-label']); ?>
-                    <div class="col-sm-3">
-                        <div class="input-group">
-                            <div class="input-group-prepend">
-                                <span class="input-group-text" id="basic-addon1">%</span>
-                            </div>
-                            <?php echo $form->textField($model, 'vat_percentage', array('maxlength' => 255, 'class' => 'form-control', 'placeholder' => '%', "aria-label" => "%", "aria-describedby" => "basic-addon1")); ?>
-                        </div>
-                    </div>
-                    <div class="col-sm-5">
-                        <div class="input-group">
-                            <div class="input-group-prepend">
-                                <span class="input-group-text" id="basic-addon2"><i class="fa fa-money"></i> </span>
-                            </div>
-                            <?php echo $form->textField($model, 'vat_amount', array('maxlength' => 255, 'class' => 'form-control', 'placeholder' => '%', "aria-label" => "%", "aria-describedby" => "basic-addon2", 'readonly' => true)); ?>
-                        </div>
-                    </div>
-                    <span class="help-block"
-                          style="color: red; width: 100%"> <?php echo $form->error($model, 'vat_percentage'); ?></span>
-                </div>
+                <span class="help-block"
+                        style="color: red; width: 100%"> <?php echo $form->error($model, 'customer_id'); ?></span>
             </div>
 
-
-            <div class="col-xs-12 col-sm-12 col-md-4 col-lg-4">
-                <div class="form-group row" >
-                    <?php echo $form->labelEx($model, 'delivery_charge', ['class' => 'col-sm-4 col-form-label']); ?>
-                    <div class="col-sm-8">
-                        <?php echo $form->textField($model, 'delivery_charge', array('maxlength' => 255, 'class' => 'form-control', 'onkeyup' => 'addDeliveryCharge();')); ?>
+            <div class="form-group col-sm-12 col-md-2">
+                <?php echo $form->labelEx($model2, 'total_amount'); ?>
+                <div class="input-group" id="total_amount" data-target-input="nearest">
+                    <div class="input-group-prepend">
+                            <span class="input-group-text" id="basic-addon3"><i class="fa fa-money"></i> </span>
                     </div>
-                    <span class="help-block"
-                          style="color: red; width: 100%"> <?php echo $form->error($model, 'delivery_charge'); ?></span>
+                    <?php echo $form->textField($model, 'total_amount', array('maxlength' => 255, 'class' => 'form-control', 'placeholder' => '0', "aria-label" => "0", "aria-describedby" => "basic-addon3", 'readonly' => true)); ?>
                 </div>
+                <span class="help-block"
+                        style="color: red; width: 100%"> <?php echo $form->error($model, 'total_amount'); ?></span>
+            </div>
 
-                <div class="form-group row" >
-                    <?php echo $form->labelEx($model, 'discount_amount', ['class' => 'col-sm-4 col-form-label']); ?>
-                    <div class="col-sm-8">
-                        <?php echo $form->textField($model, 'discount_amount', array('maxlength' => 255, 'class' => 'form-control', 'onkeyup' => 'addDiscount();')); ?>
+            <div class="form-group col-sm-12 col-md-2">
+                <?php echo $form->labelEx($model2, 'delivery_charge'); ?>
+                <div class="input-group" id="delivery_charge" data-target-input="nearest">
+                    <div class="input-group-prepend">
+                            <span class="input-group-text" id="basic-addon3"><i class="fa fa-money"></i> </span>
                     </div>
-                    <span class="help-block"
-                          style="color: red; width: 100%"> <?php echo $form->error($model, 'discount_amount'); ?></span>
+                    <?php echo $form->textField($model, 'delivery_charge', array('maxlength' => 255, 'class' => 'form-control', 'onkeyup' => 'addDeliveryCharge();')); ?>
                 </div>
+                <span class="help-block"
+                        style="color: red; width: 100%"> <?php echo $form->error($model, 'delivery_charge'); ?></span>
+            </div>
 
-                <div class="form-group row" style="display: none">
-                    <?php echo $form->labelEx($model, 'item_count', ['class' => 'col-sm-4 col-form-label']); ?>
-                    <div class="col-sm-8">
-                        <?php echo $form->textField($model, 'item_count', array('maxlength' => 255, 'class' => 'form-control', 'readonly' => true, 'disabled' => true, 'value' => count($model3))); ?>
+            <div class="form-group col-sm-12 col-md-2">
+                <?php echo $form->labelEx($model2, 'discount_amount'); ?>
+                <div class="input-group" id="discount_amount" data-target-input="nearest">
+                    <div class="input-group-prepend">
+                            <span class="input-group-text" id="basic-addon3"><i class="fa fa-money"></i> </span>
                     </div>
-                    <span class="help-block"
-                          style="color: red; width: 100%"> <?php echo $form->error($model, 'item_count'); ?></span>
+                    <?php echo $form->textField($model, 'discount_amount', array('maxlength' => 255, 'class' => 'form-control', 'onkeyup' => 'addDiscount();')); ?>
                 </div>
-
-
-                <div class="form-group row" >
-                    <?php echo $form->labelEx($model, 'grand_total', ['class' => 'col-sm-4 col-form-label']); ?>
-                    <div class="col-sm-8">
-                        <div class="input-group">
-                            <div class="input-group-prepend">
-                                <span class="input-group-text" id="basic-addon4"><i class="fa fa-money"></i> </span>
-                            </div>
-                            <?php echo $form->textField($model, 'grand_total', array('maxlength' => 255, 'class' => 'form-control', 'placeholder' => '0', "aria-label" => "0", "aria-describedby" => "basic-addon4", 'readonly' => true)); ?>
-                        </div>
-                        <span class="help-block current-costing-amount"
-                              style="font-size: 12px; color: #333; margin: 0; padding: 0; width: 100%"></span>
-                        <i class="fa fa-eye eye-icon" style="cursor: pointer;"></i>
+                <span class="help-block"
+                        style="color: red; width: 100%"> <?php echo $form->error($model, 'discount_amount'); ?></span>
+            </div>
+            
+            <div class="form-group col-sm-12 col-md-2">
+                <?php echo $form->labelEx($model2, 'grand_total'); ?>
+                <div class="input-group" id="grand_total" data-target-input="nearest">
+                    <div class="input-group-prepend">
+                            <span class="input-group-text" id="basic-addon3"><i class="fa fa-money"></i> </span>
                     </div>
-
-                    <span class="help-block"
-                          style="color: red; width: 100%"> <?php echo $form->error($model, 'grand_total'); ?></span>
+                    <?php echo $form->textField($model, 'grand_total', array('maxlength' => 255, 'class' => 'form-control', 'placeholder' => '0', "aria-label" => "0", "aria-describedby" => "basic-addon4", 'readonly' => true)); ?>
+                    <div class="input-group-append">
+                        <span class="input-group-text">
+                            <i class="fa fa-eye eye-icon" style="cursor: pointer;"></i>
+                        </span>
+                    </div>
                 </div>
+                <span class="current-costing-amount" style="display: none;"></span>
+                <span class="help-block"
+                        style="color: red; width: 100%"> <?php echo $form->error($model, 'grand_total'); ?></span>
             </div>
         </div>
 
@@ -288,7 +251,6 @@ Yii::app()->clientScript->registerCoreScript("jquery.ui");
                                     <?php $this->endWidget(); ?>
 
                                     <script type="text/javascript">
-                                        // here is the magic
                                         function addProdModel() {
                                             <?php
                                             echo CHtml::ajax(array(
@@ -303,20 +265,20 @@ Yii::app()->clientScript->registerCoreScript("jquery.ui");
                                                         $('.ajaxLoaderFormLoad').hide();
                                                     }",
                                                 'success' => "function(data){
-                                                            if (data.status == 'failure')
-                                                            {
-                                                                $('#dialogAddProdModel div.divForForm').html(data.div);
-                                                                      // Here is the trick: on submit-> once again this function!
-                                                                $('#dialogAddProdModel div.divForForm form').submit(addProdModel);
-                                                            }
-                                                            else
-                                                            {
-                                                                $('#dialogAddProdModel div.divForForm').html(data.div);
-                                                                setTimeout(\"$('#dialogAddProdModel').dialog('close') \",1000);
-                                                                $('#SellOrderDetails_model_id').val(data.value);
-                                                                $('#model_id_text').val(data.label);
-                                                            }
-                                                        }",
+                                                    if (data.status == 'failure')
+                                                    {
+                                                        $('#dialogAddProdModel div.divForForm').html(data.div);
+                                                                // Here is the trick: on submit-> once again this function!
+                                                        $('#dialogAddProdModel div.divForForm form').submit(addProdModel);
+                                                    }
+                                                    else
+                                                    {
+                                                        $('#dialogAddProdModel div.divForForm').html(data.div);
+                                                        setTimeout(\"$('#dialogAddProdModel').dialog('close') \",1000);
+                                                        $('#SellOrderQuotationDetails_model_id').val(data.value);
+                                                        $('#model_id_text').val(data.label);
+                                                    }
+                                                }",
                                             ))
                                             ?>
                                             return false;
@@ -328,12 +290,12 @@ Yii::app()->clientScript->registerCoreScript("jquery.ui");
                             <?php echo $form->hiddenField($model2, 'model_id', array('maxlength' => 255, 'class' => 'form-control', 'readonly' => true)); ?>
                             <div class="input-group-append" onclick="resetProduct()">
                                 <span class="input-group-text">
-                                 <i class="fa fa-refresh"></i>
+                                    <i class="fa fa-refresh"></i>
                                 </span>
                             </div>
                         </div>
                         <span class="help-block"
-                              style="color: red; width: 100%"> <?php echo $form->error($model, 'model_id'); ?></span>
+                                style="color: red; width: 100%"> <?php echo $form->error($model, 'model_id'); ?></span>
 
                         <script>
                             $(document).ready(function () {
@@ -348,8 +310,8 @@ Yii::app()->clientScript->registerCoreScript("jquery.ui");
                                             // Check if there's only one item and trigger select event
                                             if (data.length === 1 && data[0].id) {
                                                 $('#model_id_text').val(data[0].value);
-                                                $('#SellOrderDetails_model_id').val(data[0].id);
-                                                $('#SellOrderDetails_amount').val(data[0].sell_price);
+                                                $('#SellOrderQuotationDetails_model_id').val(data[0].id);
+                                                $('#SellOrderQuotationDetails_amount').val(data[0].sell_price);
                                                 // Trigger select event
                                                 $('#model_id_text').autocomplete('option', 'select').call($('#model_id_text')[0], null, {
                                                     item: data[0]
@@ -363,9 +325,8 @@ Yii::app()->clientScript->registerCoreScript("jquery.ui");
                                     delay: 700,
                                     select: function (event, ui) {
                                         $('#model_id_text').val(ui.item.value);
-                                        $('#SellOrderDetails_model_id').val(ui.item.id);
-                                        $('#SellOrderDetails_amount').val(ui.item.sell_price);
-                                        $('#SellOrderDetails_warranty').val(ui.item.warranty);
+                                        $('#SellOrderQuotationDetails_model_id').val(ui.item.id);
+                                        $('#SellOrderQuotationDetails_amount').val(ui.item.sell_price);
                                         showPurchasePrice(ui.item.purchasePrice);
                                         showCurrentStock(ui.item.stock);
 
@@ -399,110 +360,14 @@ Yii::app()->clientScript->registerCoreScript("jquery.ui");
 
                         </script>
                     </div>
-                    <div class="form-group col-sm-12 col-md-3">
-                        <?php echo $form->labelEx($model, 'product_sl_no'); ?>
-
-                        <div class="input-group" data-target-input="nearest">
-                            <input type="text" id="product_sl_no" class="form-control">
-                            <div class="input-group-append" onclick="resetProductSlNo()">
-                                <span class="input-group-text">
-                                 <i class="fa fa-refresh"></i>
-                                </span>
-                            </div>
-                        </div>
-                        <span class="help-block"
-                              style="color: red; width: 100%"> <?php echo $form->error($model, 'product_sl_no'); ?></span>
-
-                        <script>
-                            $(document).ready(function () {
-                                $('#product_sl_no').autocomplete({
-                                    source: function (request, response) {
-                                        var search = request.term;
-                                        $.post('<?php echo Yii::app()->baseUrl ?>/index.php/inventory/inventory/Jquery_showprodSlNoSearch', {
-                                            "q": search,
-                                            "model_id": $('#SellOrderDetails_model_id').val(),
-                                        }, function (data) {
-                                            response(data);
-                                            // console.log(`length: ${data.length}, data: ${JSON.stringify(data)}`);
-
-                                            // Check if there's only one item and trigger select event
-                                            if (data.length === 1 && data[0].id) {
-                                                $('#model_id_text').val(data[0].label);
-                                                $('#product_sl_no').val(data[0].product_sl_no);
-                                                if (data[0].id == prev_product_id)
-                                                    sp = prev_sell_price
-                                                else
-                                                    sp = data[0].sell_price
-                                                $('#SellOrderDetails_model_id').val(sp);
-                                                $('#SellOrderDetails_amount').val(data[0].sell_price);
-                                                $('#SellOrderDetails_qty').val(1);
-                                                $('#SellOrderDetails_row_total').val(sp);
-                                                showPurchasePrice(data[0].purchasePrice);
-                                                showCurrentStock(data[0].stock);
-                                                // trigger select event
-                                                $('#product_sl_no').autocomplete('option', 'select').call($('#product_sl_no')[0], null, {
-                                                    item: data[0]
-                                                });
-                                            }
-                                        }, "json");
-                                    },
-                                    minLength: 1,
-                                    delay: 700,
-                                    select: function (event, ui) {
-                                        $('#model_id_text').val(ui.item.label);
-                                        $('#product_sl_no').val(ui.item.product_sl_no);
-                                        $('#SellOrderDetails_model_id').val(ui.item.id);
-                                        if (ui.item.id == prev_product_id)
-                                            sp = prev_sell_price
-                                        else
-                                            sp = ui.item.sell_price
-                                        $('#SellOrderDetails_amount').val(sp);
-                                        $('#SellOrderDetails_qty').val(1);
-                                        $('#SellOrderDetails_row_total').val(sp);
-                                        $('#SellOrderDetails_warranty').val(ui.item.warranty);
-                                        // $('.product_unit_text').html($('#Inventory_unit_id option:selected').text());
-                                        showPurchasePrice(ui.item.purchasePrice);
-                                        showCurrentStock(ui.item.stock);
-
-                                        // Move cursor to the next visible input field
-                                        var $form = $('#product_sl_no').closest('form');
-                                        var $inputs = $form.find(':input:visible:not([disabled])');
-                                        var currentIndex = $inputs.index($('#product_sl_no'));
-                                        $inputs.eq(currentIndex + 1).focus();
-
-                                        // addToList();
-                                    }
-                                }).data("ui-autocomplete")._renderItem = function (ul, item) {
-                                    var listItem = $("<li class='list-group-item p-2'></li>")
-                                        .data("item.autocomplete", item)
-                                        .append(`
-                                        <div class="row align-items-center">
-                                            <div class="col-12">
-                                                <p class="m-1">${item.product_sl_no}</p>
-                                                <p class="mb-0" style="font-size: 10px;">
-                                                    <small><strong>Name:</strong> ${item.name}</small>, <br>
-                                                    <small><strong>Code:</strong> ${item.code}</small>,
-                                                    <small><strong>Sell Price:</strong> ${item.sell_price}</small>,
-                                                    <small><strong>Purchase Price:</strong> ${item.purchasePrice}</small>,
-                                                    <small><strong>Stock:</strong> ${item.stock}</small>
-                                                </p>
-                                            </div>
-                                        </div>`);
-
-                                    return listItem.appendTo(ul);
-                                };
-                            });
-
-                        </script>
-                    </div>
                     <div class="form-group col-xs-12 col-md-2">
                         <?php echo $form->labelEx($model2, 'qty'); ?>
                         <?php echo $form->textField($model2, 'qty', array('maxlength' => 255, 'class' => 'form-control qty-amount')); ?>
                         <!-- Display Stock without margin and padding -->
                         <span class="help-block current-stock"
-                              style="font-size: 12px; color: #333; margin: 0; padding: 0; width: 100%"></span>
+                                style="font-size: 12px; color: #333; margin: 0; padding: 0; width: 100%"></span>
                         <span class="help-block"
-                              style="color: red; width: 100%"> <?php echo $form->error($model2, 'qty'); ?></span>
+                                style="color: red; width: 100%"> <?php echo $form->error($model2, 'qty'); ?></span>
                     </div>
                     <div class="form-group col-xs-12 col-md-2">
                         <?php echo $form->labelEx($model2, 'amount'); ?>
@@ -510,33 +375,17 @@ Yii::app()->clientScript->registerCoreScript("jquery.ui");
                         <!-- Display Costing Amount without margin and padding -->
                         <?php echo $form->hiddenField($model2, 'pp', array('maxlength' => 255, 'class' => 'form-control pp')); ?>
                         <span class="help-block costing-amount"
-                              style="font-size: 12px; color: #333; margin: 0; padding: 0; width: 100%"></span>
+                                style="font-size: 12px; color: #333; margin: 0; padding: 0; width: 100%"></span>
                         <span class="help-block"
-                              style="color: red; width: 100%"> <?php echo $form->error($model2, 'amount'); ?></span>
+                                style="color: red; width: 100%"> <?php echo $form->error($model2, 'amount'); ?></span>
                     </div>
+
+
                     <div class="form-group col-xs-12 col-md-2">
                         <?php echo $form->labelEx($model2, 'row_total'); ?>
                         <?php echo $form->textField($model2, 'row_total', array('maxlength' => 255, 'class' => 'form-control', 'readonly' => true)); ?>
                         <span class="help-block"
-                              style="color: red; width: 100%"> <?php echo $form->error($model2, 'row_total'); ?></span>
-                    </div>
-                    <div class="form-group col-xs-12 col-md-2">
-                        <?php echo $form->labelEx($model2, 'warranty'); ?>
-                        <?php echo $form->textField($model2, 'warranty', array('maxlength' => 255, 'class' => 'form-control warranty')); ?>
-                        <span class="help-block"
-                              style="color: red; width: 100%"> <?php echo $form->error($model2, 'warranty'); ?></span>
-                    </div>
-                    <div class="form-group col-xs-12 col-md-2" style="display: none;">
-                        <?php echo $form->labelEx($model2, 'color'); ?>
-                        <?php echo $form->textField($model2, 'color', array('maxlength' => 255, 'class' => 'form-control')); ?>
-                        <span class="help-block"
-                              style="color: red; width: 100%"> <?php echo $form->error($model2, 'color'); ?></span>
-                    </div>
-                    <div class="form-group col-xs-12 col-md-2">
-                        <?php echo $form->labelEx($model2, 'note'); ?>
-                        <?php echo $form->textArea($model2, 'note', array('maxlength' => 255, 'class' => 'form-control', 'style' => 'height: 36px;')); ?>
-                        <span class="help-block"
-                              style="color: red; width: 100%"> <?php echo $form->error($model2, 'note'); ?></span>
+                                style="color: red; width: 100%"> <?php echo $form->error($model2, 'row_total'); ?></span>
                     </div>
                     <div class="form-group col-xs-12 col-md-1">
                         <button class="btn  btn-success mt-4" onclick="addToList()" type="button" title="ADD TO LIST"><i
@@ -554,10 +403,6 @@ Yii::app()->clientScript->registerCoreScript("jquery.ui");
                             <tr>
                                 <th>SL</th>
                                 <th>Product Name</th>
-                                <th style="width: 20%;" class="text-center">Product Sl No</th>
-                                <th style="width: 10%;" class="text-center">Warranty(Mon.)</th>
-                                <th style="width: 10%;" class="text-center">Product Note</th>
-                                <th style="width: 10%; display: none;" class="text-center">Color</th>
                                 <th style="width: 10%;" class="text-center">Qty</th>
                                 <th style="width: 10%;" class="text-center">Unit Price</th>
                                 <th style="width: 10%;" class="text-center">Row Total</th>
@@ -575,48 +420,27 @@ Yii::app()->clientScript->registerCoreScript("jquery.ui");
                                     <td>
                                         <?= $m3->model_name . " || " . $m3->code ?>
                                         <input type="hidden" class="form-control temp_model_id" value="<?= $m3->model_id ?>"
-                                               name="SellOrderDetails[temp_model_id][]">
+                                            name="SellOrderDetails[temp_model_id][]">
                                     </td>
-                                    <td class="text-center">
-                                        <input type="text" class="form-control text-center"
-                                               value="<?= $m3->product_sl_no ?>"
-                                               name=SellOrderDetails[temp_product_sl_no][]">
-
-                                    </td>
-                                    <td class="text-center">
-                                        <input type="text" class="form-control" value="<?= $m3->warranty ?>"
-                                               name="SellOrderDetails[temp_warranty][]">
-
-                                    </td>
-                                    <td class="text-center">
-                                        <input type="text" class="form-control" value="<?= $m3->note ?>"
-                                               name="SellOrderDetails[temp_note][]">
-
-                                    </td>
-                                    <td class="text-center" style="display: none;"><?= $m3->color ?></td>
                                     <td class="text-center">
                                         <input type="text" class="form-control text-center temp_qty"
-                                               value="<?= $m3->qty ?>"
-                                               name=SellOrderDetails[temp_qty][]">
+                                            value="<?= $m3->qty ?>"
+                                            name=SellOrderDetails[temp_qty][]">
 
                                     </td>
                                     <td class="text-center">
                                         <input type="text" class="form-control temp_unit_price text-right"
-                                               value="<?= $m3->amount ?>"
-                                               name="SellOrderDetails[temp_unit_price][]">
+                                            value="<?= $m3->amount ?>"
+                                            name="SellOrderDetails[temp_unit_price][]">
 
                                         <input type="hidden" class="form-control text-center temp-costing"
-                                               value="<?= round(($m3->costing / $m3->qty), 2) ?>"
-                                               name=SellOrderDetails[temp_pp][]">
+                                            value="<?= round(($m3->costing / $m3->qty), 2) ?>"
+                                            name=SellOrderDetails[temp_pp][]">
                                     </td>
                                     <td class="text-center">
                                         <input type="text" class="form-control row-total text-right" readonly
-                                               value="<?= $m3->row_total ?>"
-                                               name="SellOrderDetails[temp_row_total][]">
-
-
-                                        <input type="hidden" class="form-control" value="<?= $m3->color ?>"
-                                               name="SellOrderDetails[temp_color][]">
+                                            value="<?= $m3->row_total ?>"
+                                            name="SellOrderDetails[temp_row_total][]">
                                     </td>
                                     <td>
                                         <button type="button" class="btn btn-danger dlt"><i class="fa fa-trash-o"></i>
@@ -774,8 +598,6 @@ Yii::app()->clientScript->registerCoreScript("jquery.ui");
         let product_sl_no = $("#product_sl_no").val();
         let qty = $("#SellOrderDetails_qty").val();
         let row_total = $("#SellOrderDetails_row_total").val();
-        let color = $("#SellOrderDetails_color").val();
-        let warranty = $("#SellOrderDetails_warranty").val();
         let pp = parseFloat($("#SellOrderDetails_pp").val());
         pp = pp > 0 ? pp : 0;
         let isproductpresent = false;
@@ -819,15 +641,6 @@ Yii::app()->clientScript->registerCoreScript("jquery.ui");
                     </td>
                     <td class="text-center">
                         <input type="text" class="form-control text-center" value="${product_sl_no}" name="SellOrderDetails[temp_product_sl_no][]">
-                    </td>
-                    <td class="text-center">
-                        <input type="text" class="form-control text-center" value="${warranty}" name="SellOrderDetails[temp_warranty][]">
-                    </td>
-                    <td class="text-center">
-                        <input type="text" class="form-control text-center" value="${note}" name="SellOrderDetails[temp_note][]">
-                    </td>
-                    <td class="text-center" style="display: none;">
-                        <input type="text" class="form-control" value="${color}" name="SellOrderDetails[temp_color][]" >
                     </td>
                     <td class="text-center">
                         <input type="text" class="form-control text-center temp_qty" value="${qty}" name="SellOrderDetails[temp_qty][]">
@@ -919,33 +732,21 @@ Yii::app()->clientScript->registerCoreScript("jquery.ui");
         $("#product_sl_no").val('');
     }
 
-    function clearDynamicItem(product_sl_no) {
-        if (product_sl_no.length > 0) {
-            $("#product_sl_no").val('');
-            $("#product_sl_no").focus();
-        } else {
-            $("#SellOrderDetails_model_id").val('');
-            $("#product_sl_no").val('');
-            $("#model_id_text").val('');
-            $("#product_sl_no").val('');
-            $("#SellOrderDetails_amount").val('');
-            $("#SellOrderDetails_row_total").val('');
-            $("#SellOrderDetails_qty").val('');
-            $("#SellOrderDetails_color").val('');
-            $("#SellOrderDetails_note").val('');
-        }
-    }
-
-    function resetDynamicItem() {
+    function clearDynamicItem() {
         $("#SellOrderDetails_model_id").val('');
         $("#model_id_text").val('');
         $("#product_sl_no").val('');
         $("#SellOrderDetails_amount").val('');
         $("#SellOrderDetails_row_total").val('');
         $("#SellOrderDetails_qty").val('');
-        $("#SellOrderDetails_color").val('');
-        $("#SellOrderDetails_note").val('');
-        $("#SellOrderDetails_warranty").val('');
+    }
+
+    function resetDynamicItem() {
+        $("#SellOrderDetails_model_id").val('');
+        $("#model_id_text").val('');
+        $("#SellOrderDetails_amount").val('');
+        $("#SellOrderDetails_row_total").val('');
+        $("#SellOrderDetails_qty").val('');
     }
 
     function calculateTotal() {
