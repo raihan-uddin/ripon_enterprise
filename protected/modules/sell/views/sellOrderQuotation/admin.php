@@ -154,7 +154,7 @@ if (Yii::app()->user->checkAccess('Sell.SellOrderQuotation.VoucherPreview')) {
             'cssFile' => Yii::app()->theme->baseUrl . '/css/gridview/styles.css',
             'htmlOptions' => array('class' => 'table-responsive grid-view'),
             'itemsCssClass' => 'table table-sm table-hover table-striped table-condensed table-bordered dataTable dtr-inline',
-            'mergeColumns' => array('order_type', 'date'),
+            'mergeColumns' => array( 'date'),
             'template' => "{pager}\n\n{summary}{items}{summary}\n{pager}",
             'summaryText' => "<div class='dataTables_info' role='status' aria-live='polite'><p>Displaying {start}-{end} of {page} result(s)</p></div>",
             'emptyText' => "<div class='alert alert-warning text-center' role='alert'><i class='icon fa fa-exclamation-triangle'></i>No results found.</div>",
@@ -181,21 +181,6 @@ if (Yii::app()->user->checkAccess('Sell.SellOrderQuotation.VoucherPreview')) {
                 ),
                 array(
                     'name' => 'grand_total',
-                    'htmlOptions' => ['class' => 'text-center']
-                ),
-
-                array(
-                    'name' => 'total_paid',
-                    'htmlOptions' => ['class' => 'text-center']
-                ),
-                
-                array(
-                    'name' => 'total_return',
-                    'htmlOptions' => ['class' => 'text-center']
-                ),
-                
-                array(
-                    'name' => 'total_due',
                     'htmlOptions' => ['class' => 'text-center']
                 ),
                 'created_at',

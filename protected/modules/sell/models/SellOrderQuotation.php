@@ -50,6 +50,9 @@ class SellOrderQuotation extends CActiveRecord
     public $total_sales;
     public $return_amount;
     public $group_by;
+    public $total_paid;
+    public $total_return;
+    public $total_due;
 
 	const NEW_ORDER = 1;
     const REPAIR_ORDER = 2;
