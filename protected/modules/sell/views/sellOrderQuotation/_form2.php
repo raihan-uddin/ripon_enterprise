@@ -551,11 +551,11 @@ Yii::app()->clientScript->registerCoreScript("jquery.ui");
     let prev_sell_price = 0;
     var picker = new Lightpick({
         field: document.getElementById('entry_date'),
-        // minDate: moment(),
         onSelect: function (date) {
             document.getElementById('SellOrderQuotation_date').value = date.format('YYYY-MM-DD');
         }
     });
+
 
     $(document).ready(function () {
         $(".qty-amount").keyup(function () {
@@ -564,12 +564,12 @@ Yii::app()->clientScript->registerCoreScript("jquery.ui");
         });
 
         $(".qty-amount").on("keydown keyup", function () {
-            let amount = parseFloat($("#SellOrderDetails_amount").val());
-            let qty = parseFloat($("#SellOrderDetails_qty").val());
+            let amount = parseFloat($("#SellOrderQuotationDetails_amount").val());
+            let qty = parseFloat($("#SellOrderQuotationDetails_qty").val());
             amount = amount > 0 ? amount : 0;
             qty = qty > 0 ? qty : 0;
 
-            $("#SellOrderDetails_row_total").val((amount * qty).toFixed(2));
+            $("#SellOrderQuotationDetails_row_total").val((amount * qty).toFixed(2));
         });
         $("#SellOrderQuotation_vat_percentage").on("keydown keyup", function () {
             calculateVat();
@@ -577,17 +577,26 @@ Yii::app()->clientScript->registerCoreScript("jquery.ui");
     });
 
     function addToList() {
-        let model_id = $("#SellOrderDetails_model_id").val();
+        let model_id = $("#SellOrderQuotationDetails_model_id").val();
         let model_id_text = $("#model_id_text").val();
-        let unit_price = $("#SellOrderDetails_amount").val();
+        let unit_price = $("#SellOrderQuotationDetails_amount").val();
         unit_price = unit_price > 0 ? unit_price : 0;
-        let note = $("#SellOrderDetails_note").val();
-        let qty = $("#SellOrderDetails_qty").val();
-        let row_total = $("#SellOrderDetails_row_total").val();
-        let pp = parseFloat($("#SellOrderDetails_pp").val());
+        let note = $("#SellOrderQuotationDetails_note").val();
+        let qty = $("#SellOrderQuotationDetails_qty").val();
+        let row_total = $("#SellOrderQuotationDetails_row_total").val();
+        let pp = parseFloat($("#SellOrderQuotationDetails_pp").val());
         pp = pp > 0 ? pp : 0;
         let isproductpresent = false;
-        let temp_codearray = document.getElementsByName("SellOrderDetails[temp_model_id][]");
+        let temp_codearray = document.getElementsByName("SellOrderQuotationDetails[temp_model_id][]");
+
+        if (temp_codearray.length > 0) {
+            for (let i = 0; i < temp_codearray.length; i++) {
+                if (temp_codearray[i].value == model_id) {
+                    isproductpresent = true;
+                    break;
+                }
+            }
+        }
 
 
         if (model_id == "" || model_id_text == "") {
@@ -694,25 +703,25 @@ Yii::app()->clientScript->registerCoreScript("jquery.ui");
 
     function resetProduct() {
         $("#model_id_text").val('');
-        $("#SellOrderDetails_model_id").val('');
+        $("#SellOrderQuotationDetails_model_id").val('');
         resetProductSlNo();
     }
 
 
     function clearDynamicItem() {
-        $("#SellOrderDetails_model_id").val('');
+        $("#SellOrderQuotationDetails_model_id").val('');
         $("#model_id_text").val('');
-        $("#SellOrderDetails_amount").val('');
-        $("#SellOrderDetails_row_total").val('');
-        $("#SellOrderDetails_qty").val('');
+        $("#SellOrderQuotationDetails_amount").val('');
+        $("#SellOrderQuotationDetails_row_total").val('');
+        $("#SellOrderQuotationDetails_qty").val('');
     }
 
     function resetDynamicItem() {
-        $("#SellOrderDetails_model_id").val('');
+        $("#SellOrderQuotationDetails_model_id").val('');
         $("#model_id_text").val('');
-        $("#SellOrderDetails_amount").val('');
-        $("#SellOrderDetails_row_total").val('');
-        $("#SellOrderDetails_qty").val('');
+        $("#SellOrderQuotationDetails_amount").val('');
+        $("#SellOrderQuotationDetails_row_total").val('');
+        $("#SellOrderQuotationDetails_qty").val('');
     }
 
     function calculateTotal() {
@@ -773,7 +782,6 @@ Yii::app()->clientScript->registerCoreScript("jquery.ui");
 
         $("#SellOrderQuotation_grand_total").val((grand_total).toFixed(2));
 
-        lossAlert();
     }
 
     $(document).keypress(function (event) {
@@ -791,7 +799,7 @@ Yii::app()->clientScript->registerCoreScript("jquery.ui");
             $('.costing-amount').html('<span style="color: green;">P.P: <b>' + parseFloat(purchasePrice).toFixed(2) + '</b></span>');
         else
             $('.costing-amount').html('');
-        $("#SellOrderDetails_pp").val(purchasePrice);
+        $("#SellOrderQuotationDetails_pp").val(purchasePrice);
     }
 
     function showCurrentStock(stock = 0) {
@@ -810,22 +818,6 @@ Yii::app()->clientScript->registerCoreScript("jquery.ui");
         }
         $(".current-costing-amount").html('<span style="color: green;">Costing: <b>' + parseFloat(total_costing).toFixed(2) + '</b></span>');
         return total_costing;
-    }
-
-
-    function lossAlert() {
-        calculateTotalCosting();
-        let total_costing = calculateTotalCosting();
-        let grand_total = parseFloat($("#SellOrderQuotation_grand_total").val());
-        grand_total = grand_total > 0 ? grand_total : 0;
-
-        let loss = parseFloat(grand_total - total_costing);
-        if (loss < 0) {
-            toastr.clear(); // Clear existing toasts to prevent duplicates
-            toastr.error("You are going to loss " + parseFloat(loss).toFixed(2) + " BDT from this invoice!");
-        } else {
-            toastr.clear(); // Clear existing toasts to prevent duplicates
-        }
     }
 
     document.addEventListener('DOMContentLoaded', function () {
@@ -854,7 +846,7 @@ Yii::app()->clientScript->registerCoreScript("jquery.ui");
 $this->beginWidget('zii.widgets.jui.CJuiDialog', array(
     'id' => 'soReportDialogBox',
     'options' => array(
-        'title' => 'ORDER VOUCHER PREVIEW',
+        'title' => 'ORDER QUOTATION PREVIEW',
         'autoOpen' => false,
         'modal' => true,
         'width' => 1030,
@@ -872,7 +864,7 @@ $this->beginWidget('zii.widgets.jui.CJuiDialog', array(
     <div class="modal-dialog modal-dialog-centered modal-xl" role="document">
         <div class="modal-content">
             <div class="modal-header">
-                <h5 class="modal-title" id="exampleModalLabel">Invoice</h5>
+                <h5 class="modal-title" id="exampleModalLabel">Quotation</h5>
                 <button type="button" class="close" data-dismiss="modal" aria-label="Close">
                     <span aria-hidden="true">&times;</span>
                 </button>

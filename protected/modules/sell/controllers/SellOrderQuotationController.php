@@ -115,8 +115,6 @@ class SellOrderQuotationController extends RController
 
                     $data = SellOrderQuotation::model()->findAllByAttributes(['id' => $model->id]);
 
-
-                    // if cash order then create money receipt
                     echo CJSON::encode(array(
                         'status' => 'success',
                         'soReportInfo' => $this->renderPartial('voucherPreview', array('data' => $data, 'new' => true), true, true), //
@@ -195,9 +193,6 @@ class SellOrderQuotationController extends RController
                         $model2->qty = $_POST['SellOrderQuotationDetails']['temp_qty'][$key];
                         $model2->amount = $_POST['SellOrderQuotationDetails']['temp_unit_price'][$key];
                         $model2->row_total = $_POST['SellOrderQuotationDetails']['temp_row_total'][$key];
-                        $model2->color = $_POST['SellOrderQuotationDetails']['temp_color'][$key];
-                        $model2->note = $_POST['SellOrderQuotationDetails']['temp_note'][$key];
-                        $model2->warranty = $_POST['SellOrderQuotationDetails']['temp_warranty'][$key];
                         $model2->discount_amount = $per_item_discount;
                         $model2->discount_percentage = $percentage_discount;
                         $model2->pp = $purchasePrice;
@@ -217,8 +212,6 @@ class SellOrderQuotationController extends RController
 
                     $data = SellOrderQuotation::model()->findAllByAttributes(['id' => $model->id]);
 
-                    SellOrderQuotation::model()->changePaidDue($data[0]);
-
                     echo CJSON::encode(array(
                         'status' => 'success',
                         'soReportInfo' => $this->renderPartial('voucherPreview', array('data' => $data, 'new' => true), true, true), //
@@ -237,7 +230,7 @@ class SellOrderQuotationController extends RController
             $criteria->addColumnCondition(['sell_order_id' => $id]);
             $criteria->join = " INNER JOIN prod_models pm on t.model_id = pm.id ";
             $criteria->order = "pm.model_name ASC";
-            $this->pageTitle = 'UPDATE ORDER';
+            $this->pageTitle = 'UPDATE QUOTATION';
             $this->render('update', array(
                 'model' => $model,
                 'model2' => $model2,
@@ -299,7 +292,7 @@ class SellOrderQuotationController extends RController
         if (isset($_GET['SellOrderQuotation']))
             $model->attributes = $_GET['SellOrderQuotation'];
 
-        $this->pageTitle = 'SELL ORDER MANAGE';
+        $this->pageTitle = 'QUOTATION MANAGE';
         $this->render('admin', array(
             'model' => $model,
         ));

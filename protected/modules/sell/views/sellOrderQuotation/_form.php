@@ -470,7 +470,7 @@ Yii::app()->clientScript->registerCoreScript("jquery.ui");
                         $("#overlay").fadeIn(300);
                         $("#ajaxLoader").show();
                     }
-                 }',
+                }',
                 'error' => 'function(xhr, status, error) { 
                     // Code to handle errors
                     toastr.error(xhr.responseText); // Displaying error message using Toastr
@@ -480,11 +480,11 @@ Yii::app()->clientScript->registerCoreScript("jquery.ui");
                     console.error(xhr.responseText);
                 
                     $("#overlay").fadeOut(300);
-              }',
+                }',
                 'complete' => 'function() {
                     $("#overlay").fadeOut(300);
-                 $("#ajaxLoaderReport").hide(); 
-              }',
+                    $("#ajaxLoaderReport").hide(); 
+                }',
             ), array('class' => 'btn btn-primary btn-md'));
             ?>
         </div>
@@ -552,7 +552,6 @@ Yii::app()->clientScript->registerCoreScript("jquery.ui");
                 }
             }
         }
-
 
         if (model_id == "" || model_id_text == "") {
             toastr.error("Please select materials");
@@ -761,7 +760,7 @@ Yii::app()->clientScript->registerCoreScript("jquery.ui");
 $this->beginWidget('zii.widgets.jui.CJuiDialog', array(
     'id' => 'soReportDialogBox',
     'options' => array(
-        'title' => 'ORDER VOUCHER PREVIEW',
+        'title' => 'ORDER QUOTATION PREVIEW',
         'autoOpen' => false,
         'modal' => true,
         'width' => 1030,
@@ -779,7 +778,7 @@ $this->beginWidget('zii.widgets.jui.CJuiDialog', array(
     <div class="modal-dialog modal-dialog-centered modal-xl" role="document">
         <div class="modal-content">
             <div class="modal-header">
-                <h5 class="modal-title" id="exampleModalLabel">Invoice</h5>
+                <h5 class="modal-title" id="exampleModalLabel">Quotation</h5>
                 <button type="button" class="close" data-dismiss="modal" aria-label="Close">
                     <span aria-hidden="true">&times;</span>
                 </button>
