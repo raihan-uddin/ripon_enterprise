@@ -138,7 +138,7 @@
                                 <?= date('d.m.Y', strtotime($item->date)) ?>
                                 <br>
 
-                                <b>Invoice No:</b>
+                                <b>Quotation No:</b>
                                 <?= "$item->so_no" ?>
                             </div>
                         </div>
