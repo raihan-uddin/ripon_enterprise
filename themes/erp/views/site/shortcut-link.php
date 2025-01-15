@@ -158,5 +158,16 @@ $endDate = date('Y-m-t');
         <?php
     }
     ?>
+    <!-- Quotation -->
+    <?php
+    if (Yii::app()->user->checkAccess('Sell.SellOrderQuotation.Create')) {
+        ?>
+        <a class="btn btn-app bg-primary"
+           href="<?= Yii::app()->createUrl("/sell/sellOrderQuotation/create") ?>">
+            <i class="fa fa-file"></i> Quotation
+        </a>
+        <?php
+    }
+    ?>
 </div>
 
