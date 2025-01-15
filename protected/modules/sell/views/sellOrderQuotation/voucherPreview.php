@@ -112,12 +112,12 @@
                         <?php
                         if (isset($preview_type)) {
                             if ($preview_type == SellOrder::NORMAL_PAD_PRINT) {
-                                $this->renderPartial('application.modules.sell.views.sellOrder.pad_header');
+                                $this->renderPartial('application.modules.sell.views.sellOrderQuotation.pad_header');
                             } else {
-                                $this->renderPartial('application.modules.sell.views.sellOrder.without_pad_header');
+                                $this->renderPartial('application.modules.sell.views.sellOrderQuotation.without_pad_header');
                             }
                         } else {
-                            $this->renderPartial('application.modules.sell.views.sellOrder.without_pad_header');
+                            $this->renderPartial('application.modules.sell.views.sellOrderQuotation.without_pad_header');
                         }
                         ?>
                         <div style="width: 100%; float: left; clear: right; margin-bottom: 10px;">
