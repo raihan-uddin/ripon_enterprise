@@ -401,7 +401,7 @@ Yii::app()->clientScript->registerCoreScript("jquery.ui");
                         <table class="table table-bordered table-striped table-valign-middle" id="list">
                             <thead class="table-info">
                             <tr>
-                                <th>SL</th>
+                                <th style="width: 2%">SL</th>
                                 <th>Product Name</th>
                                 <th style="width: 10%;" class="text-center">Qty</th>
                                 <th style="width: 10%;" class="text-center">Unit Price</th>
@@ -420,27 +420,27 @@ Yii::app()->clientScript->registerCoreScript("jquery.ui");
                                     <td>
                                         <?= $m3->model_name . " || " . $m3->code ?>
                                         <input type="hidden" class="form-control temp_model_id" value="<?= $m3->model_id ?>"
-                                            name="SellOrderDetails[temp_model_id][]">
+                                            name="SellOrderQuotationDetails[temp_model_id][]">
                                     </td>
                                     <td class="text-center">
                                         <input type="text" class="form-control text-center temp_qty"
                                             value="<?= $m3->qty ?>"
-                                            name=SellOrderDetails[temp_qty][]">
+                                            name=SellOrderQuotationDetails[temp_qty][]">
 
                                     </td>
                                     <td class="text-center">
                                         <input type="text" class="form-control temp_unit_price text-right"
                                             value="<?= $m3->amount ?>"
-                                            name="SellOrderDetails[temp_unit_price][]">
+                                            name="SellOrderQuotationDetails[temp_unit_price][]">
 
                                         <input type="hidden" class="form-control text-center temp-costing"
                                             value="<?= round(($m3->costing / $m3->qty), 2) ?>"
-                                            name=SellOrderDetails[temp_pp][]">
+                                            name=SellOrderQuotationDetails[temp_pp][]">
                                     </td>
                                     <td class="text-center">
                                         <input type="text" class="form-control row-total text-right" readonly
                                             value="<?= $m3->row_total ?>"
-                                            name="SellOrderDetails[temp_row_total][]">
+                                            name="SellOrderQuotationDetails[temp_row_total][]">
                                     </td>
                                     <td>
                                         <button type="button" class="btn btn-danger dlt"><i class="fa fa-trash-o"></i>
@@ -620,17 +620,17 @@ Yii::app()->clientScript->registerCoreScript("jquery.ui");
                     <td class="serial"></td>
                     <td>
                         ${model_id_text}
-                        <input type="hidden" class="form-control temp_model_id" value="${model_id}" name="SellOrderDetails[temp_model_id][]" >
+                        <input type="hidden" class="form-control temp_model_id" value="${model_id}" name="SellOrderQuotationDetails[temp_model_id][]" >
                     </td>
                     <td class="text-center">
-                        <input type="text" class="form-control text-center temp_qty" value="${qty}" name="SellOrderDetails[temp_qty][]">
+                        <input type="text" class="form-control text-center temp_qty" value="${qty}" name="SellOrderQuotationDetails[temp_qty][]">
                     </td>
                     <td class="text-center">
-                        <input type="text" class="form-control temp_unit_price text-right" value="${unit_price}" name="SellOrderDetails[temp_unit_price][]" >
-                        <input type="hidden" class="form-control text-center temp-costing" value="${pp}" name="SellOrderDetails[temp_pp][]">
+                        <input type="text" class="form-control temp_unit_price text-right" value="${unit_price}" name="SellOrderQuotationDetails[temp_unit_price][]" >
+                        <input type="hidden" class="form-control text-center temp-costing" value="${pp}" name="SellOrderQuotationDetails[temp_pp][]">
                     </td>
                     <td class="text-center">
-                        <input type="text" readonly class="form-control row-total  text-right" value="${row_total}" name="SellOrderDetails[temp_row_total][]" >
+                        <input type="text" readonly class="form-control row-total  text-right" value="${row_total}" name="SellOrderQuotationDetails[temp_row_total][]" >
                     </td>
                     <td>
                         <button type="button" class="btn btn-danger dlt"><i class="fa fa-trash-o"></i> </button>
