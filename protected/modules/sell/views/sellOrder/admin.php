@@ -1,4 +1,5 @@
 <?php
+ /** @var mixed $model */
 $this->widget('application.components.BreadCrumb', array(
     'crumbs' => array(
         array('name' => 'Sales', 'url' => array('admin')),
@@ -7,6 +8,7 @@ $this->widget('application.components.BreadCrumb', array(
     ),
 //    'delimiter' => ' &rarr; ',
 ));
+
 ?>
 <?php
 Yii::app()->clientScript->registerScript('search', "
@@ -60,39 +62,31 @@ if (Yii::app()->user->checkAccess('Sell.Order.VoucherPreview')) {
                 'method' => 'get',
             )); ?>
             <div class="row">
-                <div class="col-md-2 col-sm-12">
+                <div class="col-md-4 col-sm-12">
                     <div class="input-group">
                         <div class="input-group-prepend">
-                            <span class="input-group-text"
+                            <span class="input-group-text" style="height: 38px;"
                                 id="basic-addon1">SO No</span>
                         </div>
-                        <?php /** @var mixed $model */
+                        <?php
                         echo $form->textField($model, 'so_no', array('maxlength' => 255, 'class' => 'form-control', "aria-describedby" => "basic-addon1")); ?>
+                        <div class="input-group-append">
+                            <span class="input-group-text" id="basic-addon2" style="height: 38px;">
+                            <?php
+                                echo $form->dropDownList(
+                                    $model, 'print_type', [
+                                    SellOrder::NORMAL_ORDER_PRINT => 'NORMAL PRINT',
+                                    SellOrder::NORMAL_PAD_PRINT => 'PAD PRINT',
+                                    SellOrder::DELIVERY_CHALLAN_PRINT => 'CHALLAN PRINT',
+                                ], array('class' => 'form-control',));
+                                ?>
+                            </span>
+                        </div>
                     </div>
                     <span class="help-block"
                           style="color: red; width: 100%"> <?php echo $form->error($model, 'so_no'); ?></span>
 
                 </div>
-                <div class="col-md-2 col-sm-12">
-                    <div class="input-group">
-                        <div class="input-group-prepend">
-                            <span class="input-group-text"
-                                  id="basic-addon1">PRINT</span>
-                        </div>
-                        <?php
-                        echo $form->dropDownList(
-                            $model, 'print_type', [
-                            SellOrder::NORMAL_ORDER_PRINT => 'NORMAL PRINT',
-                            SellOrder::NORMAL_PAD_PRINT => 'PAD PRINT',
-                            SellOrder::DELIVERY_CHALLAN_PRINT => 'CHALLAN PRINT',
-                        ], array('class' => 'form-control',));
-                        ?>
-                    </div>
-                    <span class="help-block"
-                          style="color: red; width: 100%"> <?php echo $form->error($model, 'print_type'); ?></span>
-
-                </div>
-
 
                 <div class="col-md-3 col-sm-12">
                     <?php
@@ -106,7 +100,7 @@ if (Yii::app()->user->checkAccess('Sell.Order.VoucherPreview')) {
                                 toastr.error('Please insert so no or select date range!');
                                 return false;
                             }
-                            $('#overlay').fadeIn(300);　 
+                            $('#overlay').fadeIn(300);
                         }",
                         'success' => "function( data ){
                             if(data.status=='error'){
@@ -115,10 +109,10 @@ if (Yii::app()->user->checkAccess('Sell.Order.VoucherPreview')) {
                                 $('#information-modal').modal('show');
                                 $('#information-modal .modal-body').html(data);    
                             }      
-                            $('#overlay').fadeOut(300);　                                                         
+                            $('#overlay').fadeOut(300);                                                 
                         }",
                         'complete' => "function(){
-                            $('#overlay').fadeOut(300);　      
+                            $('#overlay').fadeOut(300);
                         }",
                         'data' => array(
                             'so_no' => 'js:jQuery("#SellOrder_so_no").val()',
@@ -165,12 +159,6 @@ if (Yii::app()->user->checkAccess('Sell.Order.VoucherPreview')) {
             'pagerCssClass' => 'col-sm-12 col-md-7 pager',
             'columns' => array(
                 'id',
-                array(
-                    'name' => 'order_type',
-                    'value' => 'SellOrder::model()->orderType($data->order_type)',
-                    'type' => 'raw',
-                    'filter' => [SellOrder::NEW_ORDER => 'NEW ORDER', SellOrder::REPAIR_ORDER => 'QUOTATION']
-                ),
                 array(
                     'name' => 'date',
                     'htmlOptions' => ['class' => 'text-center']

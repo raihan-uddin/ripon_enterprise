@@ -275,11 +275,15 @@ class MoneyReceipt extends CActiveRecord
         $criteria->select = " SUM(COALESCE(amount, 0)) AS amount, SUM(COALESCE(discount, 0)) AS discount, GROUP_CONCAT(id) as ids";
         $criteria->addColumnCondition(['t.invoice_id' => $invoice_id, 't.is_deleted' => 0]);
         $data = self::model()->findByAttributes([], $criteria);
+        $mrCount = 0;
+        if ($data)
+            if ($data->amount > 0)
+                $mrCount = count(explode(',', $data->ids));
         return [
             'collection_amt' => $data ? $data->amount : 0,
             'collection_disc' => $data ? $data->discount : 0,
             'ids' => $data ? $data->ids : 0,
-            'mr_count' => $data ? count(explode(',', $data->ids)) : 0,
+            'mr_count' => $mrCount,
         ];
     }
 

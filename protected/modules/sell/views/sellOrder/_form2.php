@@ -59,7 +59,7 @@ Yii::app()->clientScript->registerCoreScript("jquery.ui");
                     <div class="col-sm-8">
                         <?php
                         echo $form->dropDownList(
-                            $model, 'order_type', [SellOrder::NEW_ORDER => 'NEW', SellOrder::REPAIR_ORDER => 'QUOTATION'], array(
+                            $model, 'order_type', [SellOrder::NEW_ORDER => 'NEW',], array(
                             'prompt' => 'Select',
                             'class' => 'form-control',
                         ));
