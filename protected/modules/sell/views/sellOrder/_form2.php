@@ -7,8 +7,7 @@ $this->widget('application.components.BreadCrumb', array(
     ),
 //    'delimiter' => ' &rarr; ',
 ));
-?>
-<?php
+
 $form = $this->beginWidget('CActiveForm', array(
     'id' => 'bom-form',
     'enableAjaxValidation' => false,
@@ -23,11 +22,6 @@ Yii::app()->clientScript->registerCoreScript("jquery.ui");
     $(".alert").animate({opacity: 1.0}, 3000).fadeOut("slow");
 </script>
 
-<!--<div style="width: 100%;">
-    <a class="btn btn-danger text-right mb-2" type="button"
-       href="<?php /*= Yii::app()->baseUrl . '/index.php/sell/sellOrder/admin' */ ?>"><i class="fa fa-arrow-left"></i> Back
-    </a>
-</div>-->
 <div class="card card-primary">
     <div class="card-header">
         <h3 class="card-title"><?php echo($model->isNewRecord ? 'Create Order' : 'Update Order:' . $model->so_no); ?></h3>
@@ -36,9 +30,6 @@ Yii::app()->clientScript->registerCoreScript("jquery.ui");
             <button type="button" class="btn btn-tool" data-card-widget="collapse">
                 <i class="fa fa-minus"></i>
             </button>
-            <!--            <button type="button" class="btn btn-tool" data-card-widget="remove">-->
-            <!--                <i class="fa fa-times"></i>-->
-            <!--            </button>-->
         </div>
     </div>
     <div class="card-body">
