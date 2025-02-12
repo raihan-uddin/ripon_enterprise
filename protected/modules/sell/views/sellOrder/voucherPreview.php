@@ -133,18 +133,17 @@
                             <div style="width: 50%; float: left; clear: right;">
                                 <h5>Customer Details</h5>
                                 <?php
-                                $customer_name = $customer_zip = $customer_city = $customer_state = $customer_phone = $customer_trn_no = "N/A";
+                                $customer_name = $customer_company_address = $customer_zip = $customer_city = $customer_state = $customer_phone = $customer_trn_no = "N/A";
                                 if ($customer) {
                                     $customer_name = $customer->company_name;
-                                    $customer_zip = $customer->zip;
+                                    $customer_company_address = $customer->company_address;
                                     $customer_city = $customer->city;
                                     $customer_state = $customer->state;
                                     $customer_phone = $customer->owner_mobile_no;
                                     $customer_trn_no = $customer->trn_no;
                                 }
                                 echo "$customer_name<br>";
-                                echo ($customer_zip || $customer_state) ? "$customer_zip, $customer_state<br>" : "";
-                                echo ($customer_city) ? "$customer_city<br>" : "";
+                                echo  $customer_company_address."<br>";
                                 echo ($customer_phone) ? "$customer_phone<br>" : "";
                                 echo ($customer_trn_no) ? "$customer_trn_no<br>" : "";
                                 ?>
