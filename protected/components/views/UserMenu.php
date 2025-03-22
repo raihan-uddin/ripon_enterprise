@@ -159,6 +159,11 @@ $this->widget('application.extensions.mbmenu.MbMenu', array(
                         ['label' => Yii::t('app', 'EXPENSE DETAILS (DAY WISE)'), 'url' => ['/report/expenseDetailsReport'], 'visible' => Yii::app()->user->checkAccess('Report.ExpenseDetailsReport')],
                     ),
                 ),
+                array('label' => 'ACCOUNTS',
+                    'items' => array(
+                        ['label' => Yii::t('app', 'Day In/Out Report'), 'url' => ['/report/dayInOutReport'], 'visible' => Yii::app()->user->checkAccess('Report.DayInOutReport')],
+                    ),
+                ),
             ),
         ),
 
