@@ -129,9 +129,13 @@ class SellReturn extends CActiveRecord
 
         $criteria = new CDbCriteria;
 
+        if (($this->customer_id) != "") {
+            $criteria->join .= " INNER JOIN customers c on t.customer_id = c.id ";
+            $criteria->compare('c.company_name', ($this->customer_id), true);
+        }
+
         $criteria->compare('t.id', $this->id);
         $criteria->compare('t.return_date', $this->return_date, true);
-        $criteria->compare('t.customer_id', $this->customer_id);
         $criteria->compare('t.return_amount', $this->return_amount, true);
         $criteria->compare('t.costing', $this->costing, true);
         $criteria->compare('t.return_type', $this->return_type);
