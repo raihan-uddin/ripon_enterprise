@@ -57,7 +57,7 @@ class ReportController extends RController
 
             $criteriaOpSell = new CDbCriteria();
             $criteriaOpSell->select = " sum(grand_total) as grand_total";
-            $criteriaOpSell->addColumnCondition(['customer_id' => $customer_id, 't.is_deleted' => 0, 't.order_type' => SellOrder::NEW_ORDER]);
+            $criteriaOpSell->addColumnCondition(['customer_id' => $customer_id, 't.is_deleted' => 0,]);
             $criteriaOpSell->addCondition(" date < '$dateFrom'");
             $data_opening_sell = SellOrder::model()->findByAttributes([], $criteriaOpSell);
 

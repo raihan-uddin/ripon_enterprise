@@ -3,6 +3,54 @@
     .reportHeader {
         text-align: center !important;
     }
+    .ui-autocomplete {
+        max-height: 250px;
+        overflow-y: auto;
+        background: #fff;
+        border: 1px solid #ccc;
+        border-radius: 6px;
+        font-size: 13px;
+        box-shadow: 0 4px 12px rgba(0, 0, 0, 0.12);
+        z-index: 99999 !important;
+        padding: 4px 0;
+    }
+
+    .autocomplete-item {
+        padding: 10px 14px;
+        cursor: pointer;
+        transition: background-color 0.2s ease-in-out;
+        border-bottom: 1px solid #f0f0f0;
+    }
+
+    .autocomplete-item:last-child {
+        border-bottom: none;
+    }
+
+    .autocomplete-item:hover {
+        background-color: #f9f9f9;
+    }
+
+    .autocomplete-box .name {
+        font-weight: 600;
+        font-size: 14px;
+        color: #212529;
+    }
+
+    .autocomplete-box .meta {
+        font-size: 12px;
+        color: #666;
+        margin-top: 4px;
+        display: flex;
+        gap: 10px;
+        align-items: center;
+    }
+
+    .autocomplete-box .meta i {
+        color: #007bff;
+        font-size: 11px;
+    }
+
+
 </style>
 <?php
 $this->widget('application.components.BreadCrumb', array(
@@ -26,9 +74,6 @@ $form = $this->beginWidget('CActiveForm', array(
             <button type="button" class="btn btn-tool" data-card-widget="collapse">
                 <i class="fa fa-minus"></i>
             </button>
-            <!--            <button type="button" class="btn btn-tool" data-card-widget="remove">-->
-            <!--                <i class="fa fa-times"></i>-->
-            <!--            </button>-->
         </div>
     </div>
 
@@ -73,28 +118,34 @@ $form = $this->beginWidget('CActiveForm', array(
                         $(document).ready(function () {
                             $('#customer_id_text').autocomplete({
                                 source: function (request, response) {
-                                    var search = request.term;
                                     $.post('<?php echo Yii::app()->baseUrl ?>/index.php/sell/customers/Jquery_customerSearch', {
-                                            "q": search,
-                                        },
-                                        function (data) {
-                                            response(data);
-                                        }, "json");
+                                        q: request.term
+                                    }, function (data) {
+                                        response(data);
+                                    }, "json");
                                 },
                                 minLength: 1,
                                 select: function (event, ui) {
                                     $('#customer_id_text').val(ui.item.value);
                                     $('#Inventory_customer_id').val(ui.item.id);
+                                    return false; // prevent default selection
                                 }
                             }).data("ui-autocomplete")._renderItem = function (ul, item) {
-                                return $("<li></li>")
-                                    .data("item.autocomplete", item)
-                                    .append(`<a> ${item.name} <small><br>ID: ${item.id} <br> Contact:  ${item.contact_no}</small></a>`)
+                                return $("<li class='autocomplete-item'></li>")
+                                    .append(
+                                        `<div class="autocomplete-box">
+        <div class="name">${item.name}</div>
+        <div class="meta">
+            <span>ID: ${item.id}</span>
+            <span><i class="fa fa-phone"></i> ${item.contact_no}</span>
+        </div>
+    </div>`
+                                    )
                                     .appendTo(ul);
                             };
-
                         });
                     </script>
+
                 </div>
             </div>
         </div>
