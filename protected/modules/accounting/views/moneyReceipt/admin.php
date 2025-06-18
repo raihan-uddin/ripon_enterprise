@@ -110,9 +110,6 @@ if (Yii::app()->user->checkAccess('Accounting.MoneyReceipt.VoucherPreview')) {
             <button type="button" class="btn btn-tool" data-card-widget="collapse">
                 <i class="fa fa-minus"></i>
             </button>
-            <!--<button type="button" class="btn btn-tool" data-card-widget="remove">
-                <i class="fa fa-times"></i>
-            </button>-->
         </div>
     </div>
     <div class="card-body">
@@ -128,7 +125,6 @@ if (Yii::app()->user->checkAccess('Accounting.MoneyReceipt.VoucherPreview')) {
             'summaryText' => '',
             'template' => "{pager}{summary}{items}{summary}{pager}",
             'columns' => array(
-            //    'id',
                 array(
                     'name' => 'date',
                     'htmlOptions' => ['class' => 'text-center', 'style' => 'width: 100px;']
