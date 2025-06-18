@@ -130,24 +130,36 @@
                         }
                         ?>
                         <div style="width: 100%; float: left; clear: right; margin-bottom: 10px;">
-                            <div style="width: 50%; float: left; clear: right;">
-                                <h5>Customer Details</h5>
+                            <div style="width: 50%; float: left; clear: right; font-size: 13px;">
+                                <h5 style="margin-bottom: 5px; font-size: 14px; font-weight: bold;">Customer Details</h5>
                                 <?php
-                                $customer_name = $customer_company_address = $customer_zip = $customer_city = $customer_state = $customer_phone = $customer_trn_no = "N/A";
+                                $customer_name = $customer ? $customer->company_name : 'N/A';
                                 if ($customer) {
-                                    $customer_name = $customer->company_name;
-                                    $customer_company_address = $customer->company_address;
-                                    $customer_city = $customer->city;
-                                    $customer_state = $customer->state;
-                                    $customer_phone = $customer->owner_mobile_no;
-                                    $customer_trn_no = $customer->trn_no;
+                                    $details = [];
+
+                                    if (!empty($customer->company_name)) {
+                                        $details[] = $customer->company_name;
+                                    }
+
+                                    if (!empty($customer->company_address)) {
+                                        $details[] = $customer->company_address;
+                                    }
+
+                                    if (!empty($customer->owner_mobile_no)) {
+                                        $details[] = 'Phone: ' . $customer->owner_mobile_no;
+                                    }
+
+                                    if (!empty($customer->trn_no)) {
+                                        $details[] = 'TRN: ' . $customer->trn_no;
+                                    }
+
+                                    echo implode('<br>', $details);
+                                } else {
+                                    echo 'N/A';
                                 }
-                                echo "$customer_name<br>";
-                                echo  $customer_company_address."<br>";
-                                echo ($customer_phone) ? "$customer_phone<br>" : "";
-                                echo ($customer_trn_no) ? "$customer_trn_no<br>" : "";
                                 ?>
                             </div>
+
                             <div style="width: 50%; float: left; text-align: right; vertical-align: bottom; margin-top: 20px;">
                                 <b>Date:</b>
                                 <?= date('d.m.Y', strtotime($item->date)) ?>
@@ -325,7 +337,10 @@
                                 TK <?= number_format($item->grand_total, 2) ?></td>
                         </tr>
                         <?php
-                        if ($item->customer_id != 39) {
+                        $specialCustomeIdArr = [39];
+                        // if customer is not special then show previous due amount
+                        if (!in_array($item->customer_id, $specialCustomeIdArr))
+                        {
                             ?>
 
                             <tr>
@@ -337,27 +352,27 @@
                                     $criteria = new CDbCriteria();
                                     $criteria->select = "SUM(grand_total) as grand_total";
                                     $criteria->addColumnCondition(['t.customer_id' => $item->customer_id]);
-                                    $criteria->addCondition("id != '$item->id'");
+                                    $criteria->addCondition("id != '$item->id' AND date <= '$item->date'");
                                     $sellOrder = SellOrder::model()->findByAttributes([], $criteria);
                                     $prev_sell_value = $sellOrder ? $sellOrder->grand_total : 0;
 
                                     $criteriaMr = new CDbCriteria();
                                     $criteriaMr->select = "SUM(amount) + SUM(discount) as amount";
                                     $criteriaMr->addColumnCondition(['t.customer_id' => $item->customer_id]);
-                                    $criteriaMr->addCondition("invoice_id != '$item->id' ");
+                                    $criteriaMr->addCondition("invoice_id != '$item->id' AND date <= '$item->date'");
                                     $moneyReceipt = MoneyReceipt::model()->findByAttributes([], $criteriaMr);
                                     $prev_collection = $moneyReceipt ? $moneyReceipt->amount : 0;
 
                                     $criteriaReturn = new CDbCriteria();
                                     $criteriaReturn->select = "SUM(return_amount) as return_amount";
                                     $criteriaReturn->addColumnCondition(['t.customer_id' => $item->customer_id]);
-                                    $criteriaReturn->addCondition("sell_id != '$item->id'");
+                                    $criteriaReturn->addCondition("sell_id != '$item->id' AND return_date <= '$item->date'");
                                     $sellReturn = SellReturn::model()->findByAttributes([], $criteriaReturn);
                                     $prev_return = $sellReturn ? $sellReturn->return_amount : 0;
 
                                     $criteriaMr1 = new CDbCriteria();
                                     $criteriaMr1->select = "SUM(amount) as amount, SUM(discount) as discount";
-                                    $criteriaMr1->addColumnCondition(['t.customer_id' => $item->customer_id, 'invoice_id' => $item->id]);
+                                    $criteriaMr1->addColumnCondition(['t.customer_id' => $item->customer_id, 'date' => $item->date]);
                                     $moneyReceipt1 = MoneyReceipt::model()->findByAttributes([], $criteriaMr1);
                                     $current_collection = $moneyReceipt1 ? $moneyReceipt1->amount : 0;
                                     $current_collection = $current_collection > 0 ? $current_collection : 0;

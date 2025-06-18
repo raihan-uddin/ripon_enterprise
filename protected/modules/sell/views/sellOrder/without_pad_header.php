@@ -15,7 +15,7 @@ $company_web = $yourCompany->web ?? '';
         align-items: center;
         border-bottom: 3px solid #0077d9;
         font-family: 'Segoe UI', sans-serif;
-        margin-bottom: 25px;
+        margin-bottom: 8px;
     }
 
     .header-left {
