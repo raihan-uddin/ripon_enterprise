@@ -75,22 +75,74 @@ class ReportController extends RController
             $data_opening_return = SellReturn::model()->findByAttributes([], $criteriaOpReturn);
             $opening -= ($data_opening_return ? $data_opening_return->return_amount : 0);
 
-            $sql = "SELECT temp.* FROM (
-                    SELECT id, date, so_no AS order_no, customer_id, grand_total AS amount, 'sale' as trx_type, created_at
+            $sql = "
+                SELECT temp.*
+                FROM (
+                    -- Sales
+                    SELECT 
+                        id, 
+                        date, 
+                        so_no AS order_no, 
+                        customer_id, 
+                        grand_total AS amount, 
+                        'sale' AS trx_type, 
+                        created_at, 
+                        '' AS payment_type, 
+                        '' AS bank_id, 
+                        '' AS cheque_no, 
+                        '' AS cheque_date
                     FROM sell_order
-                    WHERE date BETWEEN '$dateFrom' AND '$dateTo' " . ($customer_id > 0 ? " AND customer_id = $customer_id AND is_deleted = 0" : "") . "
-                    UNION
-                    SELECT GROUP_CONCAT(DISTINCT id SEPARATOR ',') as id, date, GROUP_CONCAT(DISTINCT invoice_id SEPARATOR ',') AS order_no, customer_id, SUM(COALESCE(amount, 0)) + SUM(COALESCE(discount, 0)) AS amount, 'collection', created_at
+                    WHERE 
+                        date BETWEEN '$dateFrom' AND '$dateTo'
+                        " . ($customer_id > 0 ? " AND customer_id = $customer_id" : "") . "
+                        AND is_deleted = 0
+            
+                    UNION ALL
+            
+                    -- Collections (Money Receipts)
+                    SELECT 
+                        GROUP_CONCAT(DISTINCT id SEPARATOR ',') AS id, 
+                        date, 
+                        GROUP_CONCAT(DISTINCT invoice_id SEPARATOR ',') AS order_no, 
+                        customer_id, 
+                        SUM(COALESCE(amount, 0)) + SUM(COALESCE(discount, 0)) AS amount, 
+                        'collection' AS trx_type, 
+                        MAX(created_at) AS created_at, 
+                        payment_type, 
+                        bank_id, 
+                        cheque_no, 
+                        cheque_date
                     FROM money_receipt
-                    WHERE date BETWEEN '$dateFrom' AND '$dateTo' " . ($customer_id > 0 ? " AND customer_id = $customer_id AND is_deleted = 0" : "") . "
-                    GROUP BY customer_id, date
-                    UNION
-                    SELECT id, return_date, sell_id, customer_id, return_amount, 'return', created_at
+                    WHERE 
+                        date BETWEEN '$dateFrom' AND '$dateTo'
+                        " . ($customer_id > 0 ? " AND customer_id = $customer_id" : "") . "
+                        AND is_deleted = 0
+                    GROUP BY customer_id, date, payment_type, bank_id, cheque_no, cheque_date
+            
+                    UNION ALL
+            
+                    -- Returns
+                    SELECT 
+                        id, 
+                        return_date AS date, 
+                        sell_id AS order_no, 
+                        customer_id, 
+                        return_amount AS amount, 
+                        'return' AS trx_type, 
+                        created_at, 
+                        '' AS payment_type, 
+                        '' AS bank_id, 
+                        '' AS cheque_no, 
+                        '' AS cheque_date
                     FROM sell_return
-                    WHERE return_date BETWEEN '$dateFrom' AND '$dateTo' " . ($customer_id > 0 ? " AND customer_id = $customer_id AND is_deleted = 0" : "") . "
-                ) temp
+                    WHERE 
+                        return_date BETWEEN '$dateFrom' AND '$dateTo'
+                        " . ($customer_id > 0 ? " AND customer_id = $customer_id" : "") . "
+                        AND is_deleted = 0
+                ) AS temp
                 ORDER BY created_at ASC;
-                ";
+            ";
+
             $command = Yii::app()->db->createCommand($sql);
             $data = $command->queryAll();
         }
@@ -540,7 +592,7 @@ class ReportController extends RController
             if ($created_by > 0) {
                 $criteria->addColumnCondition(['t.created_by' => $created_by]);
             }
-            if($order_type > 0){
+            if ($order_type > 0) {
                 $criteria->addColumnCondition(['t.order_type' => $order_type]);
             }
             $criteria->join .= " LEFT JOIN customers c on t.customer_id = c.id ";
@@ -557,12 +609,12 @@ class ReportController extends RController
                                 t.id,
                                 c.company_name as customer_name, 
                                 c.owner_mobile_no as contact_no";
-            if($group_by){
+            if ($group_by) {
                 $criteria->group = $group_by;
             } else {
                 $criteria->group = 't.id';
             }
-            if($sort_by && $sort_order){
+            if ($sort_by && $sort_order) {
                 $criteria->order = "$sort_by $sort_order";
             } else {
                 $criteria->order = 't.date asc';
@@ -688,7 +740,8 @@ class ReportController extends RController
         $this->render('purchaseDetailsReport', array('model' => $model));
     }
 
-    public function actionPriceListView(){
+    public function actionPriceListView()
+    {
         $criteria = new CDbCriteria();
         $criteria->addNotInCondition('t.item_id', [1, 3, 4]); // service/multimedia/sound
         $criteria->join = " LEFT join companies c on t.manufacturer_id = c.id ";

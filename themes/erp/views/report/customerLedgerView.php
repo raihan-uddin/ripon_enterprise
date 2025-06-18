@@ -91,10 +91,11 @@ echo "</div>";
         </tr>
         <tr class="titlesTr sticky">
             <th style="width: 2%; box-shadow: 0px 0px 0px 1px black inset;">SL</th>
-            <th style="width: 10%; box-shadow: 0px 0px 0px 1px black inset;">Trx Type</th>
+            <th style="width: 8%; box-shadow: 0px 0px 0px 1px black inset;">Trx Type</th>
             <th style="width: 10%; box-shadow: 0px 0px 0px 1px black inset;">Date</th>
             <th style="width: 5%; box-shadow: 0px 0px 0px 1px black inset;">ID</th>
             <th style="width: 10%; box-shadow: 0px 0px 0px 1px black inset;">Invoice No</th>
+            <th style="width: 10%; box-shadow: 0px 0px 0px 1px black inset;">Remarks</th>
             <th style="width: 10%; box-shadow: 0px 0px 0px 1px black inset;">Debit</th>
             <th style="width: 10%; box-shadow: 0px 0px 0px 1px black inset;">Credit</th>
             <th style="width: 10%; box-shadow: 0px 0px 0px 1px black inset;">Closing</th>
@@ -104,9 +105,7 @@ echo "</div>";
         <?php
         $sl = 1;
         $rowFound = false;
-        $row_closing = 0;
-        $total_debit = 0;
-        $total_credit = 0;
+        $row_closing = $total_debit = $total_credit = 0;
 
         $debit_opening = $credit_opening = 0;
         if ($opening) {
@@ -121,21 +120,11 @@ echo "</div>";
             <tr>
                 <td></td>
                 <td style="text-align: center;">
-                    <span style="
-                        display: inline-block;
-                        width: 100px;
-                        text-align: center;
-                        padding: 2px 6px;
-                        border-radius: 12px;
-                        font-size: 12px;
-                        font-weight: 600;
-                        color: #fff;
-                        background-color: #6c757d; /* Gray for neutral */
-                    ">
+                    <span>
                         Opening
                     </span>
                 </td>
-                <td colspan="3"></td>
+                <td colspan="4"></td>
                 <td style="text-align: right;"><?= $debit_opening ? number_format($debit_opening, 2) : '' ?></td>
                 <td style="text-align: right;"><?= $credit_opening ? number_format($credit_opening, 2) : '' ?></td>
                 <td style="text-align: right;"><?= number_format($opening, 2) ?></td>
@@ -150,7 +139,7 @@ echo "</div>";
                 $trx_type = $dmr['trx_type'];
                 $amount = $dmr['amount'];
                 $debit = $credit = 0;
-
+                $remarks = "";
                 if ($trx_type == 'sale') {
                     $credit = $amount;
                     $row_closing += $credit;
@@ -162,16 +151,28 @@ echo "</div>";
                     $total_debit += $debit;
                     $class = "return";
                 } else {
+                    $payment = $dmr['payment_type'];
+                    $paymentType = MoneyReceipt::model()->paymentTypeString($payment);
+                    $bankName = CrmBank::model()->nameOfThis($dmr['bank_id']);
+                    $cheque = $dmr['cheque_no'];
+                    $cheque_date = $dmr['cheque_date'];
+                    if ($bankName){
+                        $remarks .= strtoupper($bankName);
+                    }
+                    if ($cheque) {
+                        $remarks .= " | " . strtoupper($cheque);
+                    }
+                    if ($cheque_date) {
+                        $cheque_date = date('d-m-Y', strtotime($cheque_date));
+                        $remarks .= " | " . $cheque_date;
+                    }
                     $debit = $amount;
                     $row_closing -= $debit;
                     $total_debit += $debit;
                     $class = "mr";
+                    $trx_type = $paymentType;
                 }
 
-                $badgeColor = $trx_type === 'sale' ? '#28a745' : '#007bff'; // green or blue
-                if ($trx_type === 'return') {
-                    $badgeColor = '#dc3545'; // red for return
-                }
                 $trx_label = ucfirst($trx_type);
 
                 $rowFound = true;
@@ -179,17 +180,7 @@ echo "</div>";
                 <tr>
                     <td style="text-align: center;"><?php echo $sl++; ?></td>
                     <td style="text-align: center;">
-                    <span style="
-                            display: inline-block;
-                            width: 100px;             /* Fixed width for consistency */
-                            text-align: center;
-                            padding: 2px 6px;
-                            border-radius: 12px;
-                            font-size: 12px;
-                            font-weight: 600;
-                            color: #fff;
-                            background-color: <?= $badgeColor ?>;
-                            ">
+                    <span class="trx-badge-screen">
                         <?= $trx_label ?>
                     </span>
                     </td>
@@ -215,6 +206,7 @@ echo "</div>";
                         }
                         ?>
                     </td>
+                    <td style="text-align: left;"><?= $remarks ?></td>
                     <td style="text-align: right;"><?= $debit ? number_format($debit, 2) : '' ?></td>
                     <td style="text-align: right;"><?= $credit ? number_format($credit, 2) : '' ?></td>
                     <td style="text-align: right;"><?= number_format($row_closing, 2) ?></td>
@@ -234,7 +226,7 @@ echo "</div>";
 
         <!-- Footer Total Row -->
         <tr style="font-weight: bold; background: #eef;">
-            <td colspan="5" style="text-align: right;">Total</td>
+            <td colspan="6" style="text-align: right;">Total</td>
             <td style="text-align: right;"><?= number_format($total_debit, 2) ?></td>
             <td style="text-align: right;"><?= number_format($total_credit, 2) ?></td>
             <td style="text-align: right;"><?= number_format($row_closing, 2) ?></td>
