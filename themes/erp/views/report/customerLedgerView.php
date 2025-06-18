@@ -83,84 +83,128 @@ echo "</div>";
 ?>
 <script src="<?= Yii::app()->theme->baseUrl ?>/js/jquery.table2excel.js"></script>
 <div class='printAllTableForThisReport table-responsive p-0"'>
-    <table class="summaryTab final-result table2excel table2excel_with_colors table table-bordered table-sm"
-           id="table-1">
+    <table class="summaryTab final-result table2excel table2excel_with_colors table table-bordered table-sm" id="table-1">
         <thead>
         <tr>
-            <td colspan="10" style="font-size:16px; font-weight:bold; text-align:center"><?php echo $message; ?>
-            </td>
+            <td colspan="10" style="font-size:16px; font-weight:bold; text-align:center"><?php echo $message; ?></td>
         </tr>
         <tr class="titlesTr sticky">
             <th style="width: 2%; box-shadow: 0px 0px 0px 1px black inset;">SL</th>
             <th style="width: 10%; box-shadow: 0px 0px 0px 1px black inset;">Trx Type</th>
             <th style="width: 10%; box-shadow: 0px 0px 0px 1px black inset;">Date</th>
-            <th style="width: 5%;box-shadow: 0px 0px 0px 1px black inset;">ID</th>
-            <th style="width: 10%;box-shadow: 0px 0px 0px 1px black inset;">Invoice No</th>
-            <th style="width: 10%;box-shadow: 0px 0px 0px 1px black inset;">Amount</th>
-            <th style="width: 10%;box-shadow: 0px 0px 0px 1px black inset; width: 10%; min-width: 60px;">Closing</th>
+            <th style="width: 5%; box-shadow: 0px 0px 0px 1px black inset;">ID</th>
+            <th style="width: 10%; box-shadow: 0px 0px 0px 1px black inset;">Invoice No</th>
+            <th style="width: 10%; box-shadow: 0px 0px 0px 1px black inset;">Debit</th>
+            <th style="width: 10%; box-shadow: 0px 0px 0px 1px black inset;">Credit</th>
+            <th style="width: 10%; box-shadow: 0px 0px 0px 1px black inset;">Closing</th>
         </tr>
         </thead>
         <tbody>
         <?php
         $sl = 1;
         $rowFound = false;
-        $groundTotal = 0;
         $row_closing = 0;
+        $total_debit = 0;
+        $total_credit = 0;
+
+        $debit_opening = $credit_opening = 0;
         if ($opening) {
+            if ($opening >= 0) {
+                $credit_opening = $opening;
+                $total_credit += $credit_opening;
+            } else {
+                $debit_opening = abs($opening);
+                $total_debit += $debit_opening;
+            }
             ?>
             <tr>
                 <td></td>
                 <td style="text-align: center;">Opening</td>
                 <td colspan="3"></td>
-                <td style="text-align: right;"><?= number_format($opening) ?></td>
-                <td></td>
+                <td style="text-align: right;"><?= $debit_opening ? number_format($debit_opening, 2) : '' ?></td>
+                <td style="text-align: right;"><?= $credit_opening ? number_format($credit_opening, 2) : '' ?></td>
+                <td style="text-align: right;"><?= number_format($opening, 2) ?></td>
             </tr>
-
             <?php
         }
+
         $row_closing += $opening;
+
         if ($data) {
             foreach ($data as $dmr) {
                 $trx_type = $dmr['trx_type'];
+                $amount = $dmr['amount'];
+                $debit = $credit = 0;
+
                 if ($trx_type == 'sale') {
-                    $row_closing += $dmr['amount'];
+                    $credit = $amount;
+                    $row_closing += $credit;
+                    $total_credit += $credit;
                     $class = "sell";
                 } else {
-                    $row_closing -= $dmr['amount'];
+                    $debit = $amount;
+                    $row_closing -= $debit;
+                    $total_debit += $debit;
                     $class = "mr";
                 }
+
                 $rowFound = true;
                 ?>
                 <tr>
                     <td style="text-align: center;"><?php echo $sl++; ?></td>
-                    <td style="text-align: center; text-transform: capitalize;"><?php echo $dmr['trx_type']; ?></td>
+                    <td style="text-align: center; text-transform: capitalize;"><?php echo $trx_type; ?></td>
                     <td style="text-align: center;"><?php echo $dmr['date']; ?></td>
-                    <td style="text-align: center; cursor: zoom-in;"
-                        class="<?= $class ?>"><?php echo $dmr['id']; ?></td>
-                    <td style="text-align: left;"><?php echo $dmr['order_no']; ?></td>
-                    <td style="text-align: right;"><?php echo number_format($dmr['amount'], 2); ?></td>
-                    <td style="text-align: right;"><?php echo number_format($row_closing, 2); ?></td>
+                    <td style="text-align: left;">
+                        <?php
+                            $idParts = explode(',', $dmr['id']);
+                            if (count($idParts) > 1) {
+                                $id = $idParts[1]; // Safe to access second element
+                            } else {
+                                $id = $dmr['id']; // Fallback: use original
+                            }
+                            echo $id;
+                        ?>
+                    </td>
+                    <td style="text-align: left;">
+                        <?php
+                            $idParts = explode(',', $dmr['order_no']);
+                            if (count($idParts) > 1) {
+                                $id = $idParts[1]; // Safe to access second element
+                            } else {
+                                $id = $dmr['order_no']; // Fallback: use original
+                            }
+                            echo $id;
+                        ?>
+                    </td>
+                    <td style="text-align: right;"><?= $debit ? number_format($debit, 2) : '' ?></td>
+                    <td style="text-align: right;"><?= $credit ? number_format($credit, 2) : '' ?></td>
+                    <td style="text-align: right;"><?= number_format($row_closing, 2) ?></td>
                 </tr>
                 <?php
             }
         }
+
         if (!$rowFound) {
             echo "<tr>
-                    <td colspan='7' style='text-align: center; font-size: 18px; text-transform: uppercase; font-weight: bold;'>
-                        <div class='alert alert-warning'><i class='fa fa-exclamation-triangle'></i> No result found !</div>
+                    <td colspan='8' style='text-align: center; font-size: 18px; text-transform: uppercase; font-weight: bold;'>
+                        <div class='alert alert-warning'><i class='fa fa-exclamation-triangle'></i> No result found!</div>
                     </td>
                 </tr>";
         }
         ?>
 
-        <tr>
-            <th style="text-align: right;" colspan="6">Ground Total</th>
-            <th style="text-align: right;"><?= number_format($row_closing, 2) ?></th>
+        <!-- Footer Total Row -->
+        <tr style="font-weight: bold; background: #eef;">
+            <td colspan="5" style="text-align: right;">Total</td>
+            <td style="text-align: right;"><?= number_format($total_debit, 2) ?></td>
+            <td style="text-align: right;"><?= number_format($total_credit, 2) ?></td>
+            <td style="text-align: right;"><?= number_format($row_closing, 2) ?></td>
         </tr>
 
         </tbody>
     </table>
 </div>
+
 
 <style>
     .summaryTab tr td, .summaryTab tr {

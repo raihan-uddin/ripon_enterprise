@@ -211,7 +211,7 @@
                                 ?>
                                 <tr>
                                     <td style="text-align: center;"><?= $i++ ?></td>
-                                    <td>
+                                    <td style="text-align: left; border: 1px solid black;">
                                         <?= $dt->model_name ?>
                                         <?php
                                         if ($dt->note) {

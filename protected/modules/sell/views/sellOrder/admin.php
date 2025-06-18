@@ -181,17 +181,17 @@ if (Yii::app()->user->checkAccess('Sell.Order.VoucherPreview')) {
                     'htmlOptions' => ['class' => 'text-center']
                 ),
 
-                array(
+                /*array(
                     'name' => 'total_paid',
                     'htmlOptions' => ['class' => 'text-center']
-                ),
+                ),*/
                 
                 array(
                     'name' => 'total_return',
                     'htmlOptions' => ['class' => 'text-center']
                 ),
                 
-                array(
+                /*array(
                     'name' => 'total_due',
                     'htmlOptions' => ['class' => 'text-center']
                 ),
@@ -201,7 +201,7 @@ if (Yii::app()->user->checkAccess('Sell.Order.VoucherPreview')) {
                     'value' => 'SellOrder::model()->isPaid($data->is_paid)',
                     'type' => 'raw',
                     'htmlOptions' => ['class' => 'text-center']
-                ),
+                ),*/
                 'created_at',
                 'updated_at',
                 array

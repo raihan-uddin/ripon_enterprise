@@ -40,6 +40,7 @@ class Customers extends CActiveRecord
     public $company_name_address;
     public $date;
     public $customer_id;
+    public $total_due;
     public $model_id;
     public $code;
     public $unit_id;
