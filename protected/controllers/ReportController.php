@@ -287,9 +287,9 @@ class ReportController extends RController
                     FROM purchase_order
                     WHERE date BETWEEN '$dateFrom' AND '$dateTo' " . ($customer_id > 0 ? " AND supplier_id = $customer_id AND is_deleted = 0" : "") . "
                     UNION
-                    SELECT id, date, pr_no AS order_no, supplier_id, amount, 'payment', created_at
+                    SELECT id, date, pr_no AS order_no, supplier_id, SUM(amount) as amount, 'payment', created_at
                     FROM payment_receipt
-                    WHERE date BETWEEN '$dateFrom' AND '$dateTo' " . ($customer_id > 0 ? " AND supplier_id = $customer_id AND is_deleted = 0" : "") . "
+                    WHERE date BETWEEN '$dateFrom' AND '$dateTo' " . ($customer_id > 0 ? " AND supplier_id = $customer_id AND is_deleted = 0" : "") . " GROUP BY pr_no
                 ) temp
                 
                 ORDER BY created_at ASC;";
