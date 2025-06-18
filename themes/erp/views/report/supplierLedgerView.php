@@ -131,8 +131,8 @@ echo "</div>";
                     $row_closing -= $dmr['amount'];
                     $total_payment += $dmr['amount'];
                     $payment = $dmr['payment_type'];
-                    $paymentType = MoneyReceipt::model()->paymentTypeStringWithoutBedge($payment);
-                    $bankName = CrmBank::model()->nameOfThis($dmr['bank_id']);
+                    $paymentType = PaymentReceipt::model()->paymentTypeStringWithoutBedge($payment);
+                    $bankName = ComBank::model()->nameOfThis($dmr['bank_id']);
                     $cheque = $dmr['cheque_no'];
                     $cheque_date = $dmr['cheque_date'];
                     if ($bankName) {
