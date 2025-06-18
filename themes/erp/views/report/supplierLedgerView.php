@@ -164,7 +164,7 @@ echo "</div>";
             <th>Closing</th>
         </tr>
         <tr>
-            <td colspan="2"></td>
+            <td colspan="3"></td>
             <td style="text-align: center; font-weight: bold;"><?= $opening_purchase_amount ? number_format($opening_purchase_amount, 2) : 0 ?></td>
             <td style="text-align: center; font-weight: bold;"><?= $opening_payment_amount ? number_format($opening_payment_amount, 2) : 0 ?></td>
             <td style="text-align: center; font-weight: bold;"><?= $total_purchase ? number_format($total_purchase, 2) : 0 ?></td>
