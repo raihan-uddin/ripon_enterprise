@@ -83,7 +83,8 @@ echo "</div>";
 ?>
 <script src="<?= Yii::app()->theme->baseUrl ?>/js/jquery.table2excel.js"></script>
 <div class='printAllTableForThisReport table-responsive p-0"'>
-    <table class="summaryTab final-result table2excel table2excel_with_colors table table-bordered table-sm" id="table-1">
+    <table class="summaryTab final-result table2excel table2excel_with_colors table table-bordered table-sm"
+           id="table-1">
         <thead>
         <tr>
             <td colspan="10" style="font-size:16px; font-weight:bold; text-align:center"><?php echo $message; ?></td>
@@ -119,7 +120,21 @@ echo "</div>";
             ?>
             <tr>
                 <td></td>
-                <td style="text-align: center;">Opening</td>
+                <td style="text-align: center;">
+                    <span style="
+                        display: inline-block;
+                        width: 100px;
+                        text-align: center;
+                        padding: 2px 6px;
+                        border-radius: 12px;
+                        font-size: 12px;
+                        font-weight: 600;
+                        color: #fff;
+                        background-color: #6c757d; /* Gray for neutral */
+                    ">
+                        Opening
+                    </span>
+                </td>
                 <td colspan="3"></td>
                 <td style="text-align: right;"><?= $debit_opening ? number_format($debit_opening, 2) : '' ?></td>
                 <td style="text-align: right;"><?= $credit_opening ? number_format($credit_opening, 2) : '' ?></td>
@@ -141,6 +156,11 @@ echo "</div>";
                     $row_closing += $credit;
                     $total_credit += $credit;
                     $class = "sell";
+                } else if ($trx_type == 'return') {
+                    $debit = $amount;
+                    $row_closing -= $debit;
+                    $total_debit += $debit;
+                    $class = "return";
                 } else {
                     $debit = $amount;
                     $row_closing -= $debit;
@@ -148,32 +168,51 @@ echo "</div>";
                     $class = "mr";
                 }
 
+                $badgeColor = $trx_type === 'sale' ? '#28a745' : '#007bff'; // green or blue
+                if ($trx_type === 'return') {
+                    $badgeColor = '#dc3545'; // red for return
+                }
+                $trx_label = ucfirst($trx_type);
+
                 $rowFound = true;
                 ?>
                 <tr>
                     <td style="text-align: center;"><?php echo $sl++; ?></td>
-                    <td style="text-align: center; text-transform: capitalize;"><?php echo $trx_type; ?></td>
+                    <td style="text-align: center;">
+                    <span style="
+                            display: inline-block;
+                            width: 100px;             /* Fixed width for consistency */
+                            text-align: center;
+                            padding: 2px 6px;
+                            border-radius: 12px;
+                            font-size: 12px;
+                            font-weight: 600;
+                            color: #fff;
+                            background-color: <?= $badgeColor ?>;
+                            ">
+                        <?= $trx_label ?>
+                    </span>
+                    </td>
+
                     <td style="text-align: center;"><?php echo $dmr['date']; ?></td>
                     <td style="text-align: left;">
                         <?php
-                            $idParts = explode(',', $dmr['id']);
-                            if (count($idParts) > 1) {
-                                $id = $idParts[1]; // Safe to access second element
-                            } else {
-                                $id = $dmr['id']; // Fallback: use original
-                            }
-                            echo $id;
+                        $idParts = explode(',', $dmr['id']);
+                        if (count($idParts) > 1) {
+                            echo $idParts[1] . '...';
+                        } else {
+                            echo $dmr['id']; // Fallback: use original
+                        }
                         ?>
                     </td>
                     <td style="text-align: left;">
                         <?php
-                            $idParts = explode(',', $dmr['order_no']);
-                            if (count($idParts) > 1) {
-                                $id = $idParts[1]; // Safe to access second element
-                            } else {
-                                $id = $dmr['order_no']; // Fallback: use original
-                            }
-                            echo $id;
+                        $idParts = explode(',', $dmr['order_no']);
+                        if (count($idParts) > 1) {
+                            echo $idParts[1] . '...';
+                        } else {
+                            echo $dmr['order_no']; // Fallback: use original
+                        }
                         ?>
                     </td>
                     <td style="text-align: right;"><?= $debit ? number_format($debit, 2) : '' ?></td>
