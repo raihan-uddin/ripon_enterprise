@@ -86,8 +86,9 @@ echo "</div>";
             <th style="width: 10%; box-shadow: 0px 0px 0px 1px black inset;">Date</th>
             <th style="width: 5%;box-shadow: 0px 0px 0px 1px black inset;">ID</th>
             <th style="width: 10%;box-shadow: 0px 0px 0px 1px black inset;">Invoice No</th>
-            <th style="width: 10%;box-shadow: 0px 0px 0px 1px black inset;">Amount</th>
-            <th style="width: 10%;box-shadow: 0px 0px 0px 1px black inset; width: 10%; min-width: 60px;">Closing</th>
+            <th style="width: 10%;box-shadow: 0px 0px 0px 1px black inset;">Debit</th>
+            <th style="width: 10%;box-shadow: 0px 0px 0px 1px black inset;">Credit</th>
+            <th style="width: 10%;box-shadow: 0px 0px 0px 1px black inset; min-width: 60px;">Closing</th>
         </tr>
         </thead>
         <tbody>
@@ -97,26 +98,34 @@ echo "</div>";
         $groundTotal = 0;
         $row_closing = 0;
         if ($opening) {
+            $opening_debit = $opening < 0 ? number_format(abs($opening), 2) : '-';
+            $opening_credit = $opening > 0 ? number_format($opening, 2) : '-';
             ?>
             <tr>
                 <td></td>
                 <td style="text-align: center;">Opening</td>
                 <td colspan="3"></td>
-                <td style="text-align: right;"><?= number_format($opening) ?></td>
-                <td></td>
+                <td style="text-align: right;"><?= $opening_debit ?></td> <!-- Payment (advance) -->
+                <td style="text-align: right;"><?= $opening_credit ?></td> <!-- Payable -->
+                <td style="text-align: right;"><?= number_format($opening, 2) ?></td> <!-- Closing -->
             </tr>
-
             <?php
         }
-        $total_purchase = $total_payment = 0;
+        $total_purchase = $total_payment = $drTotal = $crTotal = 0;
         $row_closing += $opening;
         if ($data) {
             foreach ($data as $dmr) {
                 $trx_type = $dmr['trx_type'];
+                $amount = $dmr['amount'];
+                $debit = $credit = 0;
                 if ($trx_type == 'purchase') {
+                    $debit = $amount;
+                    $drTotal += $amount;
                     $row_closing += $dmr['amount'];
                     $total_purchase += $dmr['amount'];
                 } else {
+                    $credit = $amount;
+                    $crTotal += $amount;
                     $row_closing -= $dmr['amount'];
                     $total_payment += $dmr['amount'];
                 }
@@ -128,7 +137,8 @@ echo "</div>";
                     <td style="text-align: center;"><?php echo $dmr['date']; ?></td>
                     <td style="text-align: center;"><?php echo $dmr['id']; ?></td>
                     <td style="text-align: left;"><?php echo $dmr['order_no']; ?></td>
-                    <td style="text-align: right;"><?php echo number_format($dmr['amount'], 2); ?></td>
+                    <td style="text-align: right;"><?php echo $debit ? number_format($debit, 2) : ''; ?></td>
+                    <td style="text-align: right;"><?php echo $credit ? number_format($credit, 2) : ''; ?></td>
                     <td style="text-align: right;"><?php echo number_format($row_closing, 2); ?></td>
                 </tr>
                 <?php
@@ -164,7 +174,6 @@ echo "</div>";
 
         </tbody>
     </table>
-
 </div>
 
 <style>
