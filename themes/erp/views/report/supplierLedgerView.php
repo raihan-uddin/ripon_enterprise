@@ -86,6 +86,7 @@ echo "</div>";
             <th style="width: 10%; box-shadow: 0px 0px 0px 1px black inset;">Date</th>
             <th style="width: 5%;box-shadow: 0px 0px 0px 1px black inset;">ID</th>
             <th style="width: 10%;box-shadow: 0px 0px 0px 1px black inset;">Invoice No</th>
+            <th style="width: 10%;box-shadow: 0px 0px 0px 1px black inset;">Remarks</th>
             <th style="width: 10%;box-shadow: 0px 0px 0px 1px black inset;">Debit</th>
             <th style="width: 10%;box-shadow: 0px 0px 0px 1px black inset;">Credit</th>
             <th style="width: 10%;box-shadow: 0px 0px 0px 1px black inset; min-width: 60px;">Closing</th>
@@ -104,7 +105,7 @@ echo "</div>";
             <tr>
                 <td></td>
                 <td style="text-align: center;">Opening</td>
-                <td colspan="3"></td>
+                <td colspan="4"></td>
                 <td style="text-align: right;"><?= $opening_debit ?></td> <!-- Payment (advance) -->
                 <td style="text-align: right;"><?= $opening_credit ?></td> <!-- Payable -->
                 <td style="text-align: right;"><?= number_format($opening, 2) ?></td> <!-- Closing -->
@@ -117,6 +118,7 @@ echo "</div>";
             foreach ($data as $dmr) {
                 $trx_type = $dmr['trx_type'];
                 $amount = $dmr['amount'];
+                $paymentType = $remarks = '';
                 $debit = $credit = 0;
                 if ($trx_type == 'purchase') {
                     $debit = $amount;
@@ -128,6 +130,22 @@ echo "</div>";
                     $crTotal += $amount;
                     $row_closing -= $dmr['amount'];
                     $total_payment += $dmr['amount'];
+                    $payment = $dmr['payment_type'];
+                    $paymentType = PaymentReceipt::model()->paymentTypeStringWithoutBedge($payment);
+                    $bankName = ComBank::model()->nameOfThis($dmr['bank_id']);
+                    $cheque = $dmr['cheque_no'];
+                    $cheque_date = $dmr['cheque_date'];
+                    if ($bankName) {
+                        $remarks .= strtoupper($bankName);
+                    }
+                    if ($cheque) {
+                        $remarks .= " | " . strtoupper($cheque);
+                    }
+                    if ($cheque_date) {
+                        $cheque_date = date('d-m-Y', strtotime($cheque_date));
+                        $remarks .= " | " . $cheque_date;
+                    }
+                    $dmr['trx_type'] = ucfirst($paymentType . " " . $dmr['trx_type']);
                 }
                 $rowFound = true;
                 ?>
@@ -137,6 +155,7 @@ echo "</div>";
                     <td style="text-align: center;"><?php echo $dmr['date']; ?></td>
                     <td style="text-align: center;"><?php echo $dmr['id']; ?></td>
                     <td style="text-align: left;"><?php echo $dmr['order_no']; ?></td>
+                    <td style="text-align: left;"><?php echo $remarks; ?></td>
                     <td style="text-align: right;"><?php echo $debit ? number_format($debit, 2) : ''; ?></td>
                     <td style="text-align: right;"><?php echo $credit ? number_format($credit, 2) : ''; ?></td>
                     <td style="text-align: right;"><?php echo number_format($row_closing, 2); ?></td>
@@ -156,7 +175,7 @@ echo "</div>";
         }
         ?>
         <tr>
-            <th colspan="3"></th>
+            <th colspan="4"></th>
             <th>Opening Purchase</th>
             <th>Opening Payment</th>
             <th>Date Range Purchase</th>
@@ -164,7 +183,7 @@ echo "</div>";
             <th>Closing</th>
         </tr>
         <tr>
-            <td colspan="3"></td>
+            <td colspan="4"></td>
             <td style="text-align: center; font-weight: bold;"><?= $opening_purchase_amount ? number_format($opening_purchase_amount, 2) : 0 ?></td>
             <td style="text-align: center; font-weight: bold;"><?= $opening_payment_amount ? number_format($opening_payment_amount, 2) : 0 ?></td>
             <td style="text-align: center; font-weight: bold;"><?= $total_purchase ? number_format($total_purchase, 2) : 0 ?></td>

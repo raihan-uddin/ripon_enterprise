@@ -222,6 +222,19 @@ class PaymentReceipt extends CActiveRecord
         return $badge;
 
     }
+    public function paymentTypeStringWithoutBedge($value)
+    {
+        if ($value == self::CASH)
+            $badge = "CASH";
+        else if ($value == self::CHECK)
+            $badge = "CHECK";
+        else if ($value == self::ONLINE)
+            $badge = "ONLINE";
+        else
+            $badge = "";
+        return $badge;
+
+    }
 
     public function beforeSave()
     {

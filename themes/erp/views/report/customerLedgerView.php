@@ -152,7 +152,7 @@ echo "</div>";
                     $class = "return";
                 } else {
                     $payment = $dmr['payment_type'];
-                    $paymentType = MoneyReceipt::model()->paymentTypeString($payment);
+                    $paymentType = MoneyReceipt::model()->paymentTypeStringWithoutBedge($payment);
                     $bankName = CrmBank::model()->nameOfThis($dmr['bank_id']);
                     $cheque = $dmr['cheque_no'];
                     $cheque_date = $dmr['cheque_date'];
