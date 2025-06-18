@@ -82,7 +82,6 @@ echo "</div>";
             <th style="width: 10%;box-shadow: 0px 0px 0px 1px black inset;">Discount</th>
             <th style="width: 10%;box-shadow: 0px 0px 0px 1px black inset;">Amount</th>
             <th style="width: 10%;box-shadow: 0px 0px 0px 1px black inset;">N.I</th>
-            <th style="width: 10%;box-shadow: 0px 0px 0px 1px black inset;">Due</th>
         </tr>
         </thead>
         <tbody>
@@ -132,7 +131,6 @@ echo "</div>";
                     <td style="text-align: right;"><?php echo number_format($dmr->discount_amount, 2); ?></td>
                     <td style="text-align: right;"><?php echo number_format($dmr->grand_total, 2); ?></td>
                     <td style="text-align: right;"><?php echo number_format($netIncome, 2); ?></td>
-                    <td style="text-align: right;"><?php echo number_format($dmr->total_due, 2); ?></td>
                 </tr>
                 <?php
 
@@ -156,7 +154,6 @@ echo "</div>";
             <th style="text-align: right;"><?= number_format($row_closing_discount, 2) ?></th>
             <th style="text-align: right;"><?= number_format($row_closing, 2) ?></th>
             <th style="text-align: right;"><?= number_format($net_income_total, 2) ?></th>
-            <th style="text-align: right;"><?= number_format($total_due, 2) ?></th>
         </tr>
 
         </tbody>

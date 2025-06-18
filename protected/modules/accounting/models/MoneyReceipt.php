@@ -41,6 +41,7 @@ class MoneyReceipt extends CActiveRecord
     public $model_id;
     public $row_total;
     public $order_note;
+    public $total_due;
     public $username;
     public $due_amount;
     public $rem_amount;

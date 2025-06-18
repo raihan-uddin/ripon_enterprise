@@ -1,1 +1,1 @@
-<?php $this->renderPartial('_form', array('model' => $model, 'model2' => $model2, 'id' => $id, 'sell_id' => $sell_id)); ?>
+<?php $this->renderPartial('_form', array('model' => $model, 'model2' => $model2, 'id' => $id,)); ?>

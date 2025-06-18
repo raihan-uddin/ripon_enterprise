@@ -34,7 +34,110 @@ class MoneyReceiptController extends RController
      * Creates a new model.
      * If creation is successful, the browser will be redirected to the 'view' page.
      */
-    public function actionCreate($id, $sell_id = 0)
+    // public function actionCreate($id, $sell_id = 0)
+    // {
+    //     $model = new MoneyReceipt;
+    //     $model->scenario = 'custom_form_save';
+    //     $model2 = Customers::model()->findByPk($id);
+
+    //     // Uncomment the following line if AJAX validation is needed
+    //     // $this->performAjaxValidation($model);
+
+    //     $transaction = Yii::app()->db->beginTransaction();
+    //     try {
+    //         $createTime = date('Y-m-d H:i:s');
+    //         if (isset($_POST['MoneyReceipt'])) {
+    //             $model->attributes = $_POST['MoneyReceipt'];
+    //             $model->max_sl_no = MoneyReceipt::maxSlNo();
+    //             $model->invoice_id = 0;
+    //             $model->amount = 0;
+    //             $model->mr_no =  "MR" . date('y') . date('m') . str_pad($model->max_sl_no, 5, "0", STR_PAD_LEFT);
+    //             if ($model->validate()) {
+    //                 $invoice_id_arr = [];
+    //                 foreach ($_POST['MoneyReceipt']['tmp_amount'] as $key => $amount) {
+    //                     $amount = round($amount, 2);
+    //                     $rem_amount = $_POST['MoneyReceipt']['rem_amount'][$key];
+    //                     $invoice_id = $_POST['MoneyReceipt']['tmp_invoice_id'][$key];
+    //                     $discount =round( $_POST['MoneyReceipt']['tmp_discount'][$key], 2);
+    //                     if ($amount > 0) {
+    //                         $model2 = new MoneyReceipt();
+    //                         $model2->max_sl_no = MoneyReceipt::maxSlNo();
+    //                         $model2->amount = $amount;
+    //                         $model2->invoice_id = $invoice_id;
+    //                         $model2->mr_no = $model->mr_no;
+    //                         $model2->date = $model->date;
+    //                         $model2->customer_id = $model->customer_id;
+    //                         $model2->payment_type = $model->payment_type;
+    //                         $model2->bank_id = $model->bank_id;
+    //                         $model2->cheque_no = $model->cheque_no;
+    //                         $model2->discount = $discount > 0 ? $discount : 0;
+    //                         $model2->remarks = $model->remarks;
+    //                         $model2->cheque_date = $model->cheque_date;
+    //                         $model2->created_at = $createTime;
+    //                         if (!$model2->save()) {
+    //                             $transaction->rollBack();
+    //                             throw new CHttpException(500, sprintf('Error in saving order details! %s <br>', json_encode($model2->getErrors())));
+    //                         }
+    //                         $invoice_id_arr[] = $invoice_id;
+    //                     }
+    //                 }
+    //                 $criteria = new CDbCriteria();
+    //                 $criteria->addInCondition('id', $invoice_id_arr);
+    //                 $data = SellOrder::model()->findAll($criteria);
+    //                 if ($data) {
+    //                     foreach ($data as $dt) {
+    //                         SellOrder::model()->changePaidDue($dt);
+    //                     }
+    //                 }
+
+    //                 $transaction->commit();
+
+    //                 $criteria = new CDbCriteria;
+    //                 $criteria->select = "SUM(amount) as amount, sum(discount) as discount, customer_id, date, mr_no, bank_id, cheque_no, cheque_date, remarks, created_by";
+    //                 $criteria->addColumnCondition(['customer_id' => $model->customer_id, 'mr_no' => $model->mr_no]);
+    //                 $criteria->group = 'customer_id, mr_no';
+    //                 $dataMr = MoneyReceipt::model()->findAll($criteria);
+    //                 echo CJSON::encode(array(
+    //                     'status' => 'success',
+    //                     'soReportInfo' => $this->renderPartial('voucherPreview', array('data' => $dataMr, 'new' => true), true, true), //
+    //                 ));
+    //                 Yii::app()->end();
+    //             } else {
+    //                 $error = CActiveForm::validate($model);
+    //                 $error2 = CActiveForm::validate($model2);
+    //                 if ($error != '[]')
+    //                     echo $error;
+    //                 if ($error2 != '[]')
+    //                     echo $error2;
+    //                 Yii::app()->end();
+    //             }
+    //         }
+    //     } catch (PDOException $e) {
+    //         if($transaction->active)
+    //             $transaction->rollBack();
+    //         throw new CHttpException(500, $e->getMessage());
+    //     } catch (Exception $e) {
+    //         if($transaction->active)
+    //             $transaction->rollBack();
+    //         throw new CHttpException(500, $e->getMessage());
+    //     }
+
+
+    //     $this->pageTitle = "MR CREATE";
+    //     $this->render('create', array(
+    //         'model' => $model,
+    //         'model2' => $model2,
+    //         'sell_id' => $sell_id,
+    //         'id' => $id,
+    //     ));
+    // }
+
+    
+    /**
+     * Creates a new model.
+     * If creation is successful, the browser will be redirected to the 'view' page.
+     */
+    public function actionCreate($id)
     {
         $model = new MoneyReceipt;
         $model->scenario = 'custom_form_save';
@@ -53,41 +156,24 @@ class MoneyReceiptController extends RController
                 $model->amount = 0;
                 $model->mr_no =  "MR" . date('y') . date('m') . str_pad($model->max_sl_no, 5, "0", STR_PAD_LEFT);
                 if ($model->validate()) {
-                    $invoice_id_arr = [];
-                    foreach ($_POST['MoneyReceipt']['tmp_amount'] as $key => $amount) {
-                        $amount = round($amount, 2);
-                        $rem_amount = $_POST['MoneyReceipt']['rem_amount'][$key];
-                        $invoice_id = $_POST['MoneyReceipt']['tmp_invoice_id'][$key];
-                        $discount =round( $_POST['MoneyReceipt']['tmp_discount'][$key], 2);
-                        if ($amount > 0) {
-                            $model2 = new MoneyReceipt();
-                            $model2->max_sl_no = MoneyReceipt::maxSlNo();
-                            $model2->amount = $amount;
-                            $model2->invoice_id = $invoice_id;
-                            $model2->mr_no = $model->mr_no;
-                            $model2->date = $model->date;
-                            $model2->customer_id = $model->customer_id;
-                            $model2->payment_type = $model->payment_type;
-                            $model2->bank_id = $model->bank_id;
-                            $model2->cheque_no = $model->cheque_no;
-                            $model2->discount = $discount > 0 ? $discount : 0;
-                            $model2->remarks = $model->remarks;
-                            $model2->cheque_date = $model->cheque_date;
-                            $model2->created_at = $createTime;
-                            if (!$model2->save()) {
-                                $transaction->rollBack();
-                                throw new CHttpException(500, sprintf('Error in saving order details! %s <br>', json_encode($model2->getErrors())));
-                            }
-                            $invoice_id_arr[] = $invoice_id;
-                        }
-                    }
-                    $criteria = new CDbCriteria();
-                    $criteria->addInCondition('id', $invoice_id_arr);
-                    $data = SellOrder::model()->findAll($criteria);
-                    if ($data) {
-                        foreach ($data as $dt) {
-                            SellOrder::model()->changePaidDue($dt);
-                        }
+                    $model2 = new MoneyReceipt();
+                    $model2->max_sl_no = MoneyReceipt::maxSlNo();
+                    $model2->amount = $_POST['MoneyReceipt']['amount'];
+                    $model2->invoice_id = NULL;
+                    $model2->mr_no = $model->mr_no;
+                    $model2->date = $model->date;
+                    $model2->customer_id = $model->customer_id;
+                    $model2->payment_type = $model->payment_type;
+                    $model2->bank_id = $model->bank_id;
+                    $model2->cheque_no = $model->cheque_no;
+                    $model2->discount = $_POST['MoneyReceipt']['discount'] > 0 ? $_POST['MoneyReceipt']['discount'] : 0;
+                    $model2->created_by = Yii::app()->user->getState('user_id');
+                    $model2->remarks = $model->remarks;
+                    $model2->cheque_date = $model->cheque_date;
+                    $model2->created_at = $createTime;
+                    if (!$model2->save()) {
+                        $transaction->rollBack();
+                        throw new CHttpException(500, sprintf('Error in saving order details! %s <br>', json_encode($model2->getErrors())));
                     }
 
                     $transaction->commit();
@@ -127,7 +213,6 @@ class MoneyReceiptController extends RController
         $this->render('create', array(
             'model' => $model,
             'model2' => $model2,
-            'sell_id' => $sell_id,
             'id' => $id,
         ));
     }
