@@ -62,7 +62,7 @@ class ReportController extends RController
             $data_opening_sell = SellOrder::model()->findByAttributes([], $criteriaOpSell);
 
             $criteriaOpMr = new CDbCriteria();
-            $criteriaOpMr->select = " sum(amount) as amount";
+            $criteriaOpMr->select = " sum(amount+discount) as amount";
             $criteriaOpMr->addColumnCondition(['customer_id' => $customer_id, 't.is_deleted' => 0]);
             $criteriaOpMr->addCondition(" date < '$dateFrom'");
             $data_opening_mr = MoneyReceipt::model()->findByAttributes([], $criteriaOpMr);
