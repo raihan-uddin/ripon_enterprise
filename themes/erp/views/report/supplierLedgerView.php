@@ -133,7 +133,7 @@ echo "</div>";
                 ?>
                 <tr>
                     <td style="text-align: center;"><?php echo $sl++; ?></td>
-                    <td style="text-align: center;"><?php echo $dmr['trx_type']; ?></td>
+                    <td style="text-align: center; text-transform: capitalize;"><?php echo $dmr['trx_type']; ?></td>
                     <td style="text-align: center;"><?php echo $dmr['date']; ?></td>
                     <td style="text-align: center;"><?php echo $dmr['id']; ?></td>
                     <td style="text-align: left;"><?php echo $dmr['order_no']; ?></td>
@@ -156,7 +156,7 @@ echo "</div>";
         }
         ?>
         <tr>
-            <th colspan="2"></th>
+            <th colspan="3"></th>
             <th>Opening Purchase</th>
             <th>Opening Payment</th>
             <th>Date Range Purchase</th>
