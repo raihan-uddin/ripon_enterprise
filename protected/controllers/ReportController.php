@@ -283,11 +283,11 @@ class ReportController extends RController
             $opening = ($data_opening_purchase ? $data_opening_purchase->total_amount : 0) - ($data_opening_pr ? $data_opening_pr->amount : 0);
 
             $sql = "SELECT temp.* FROM (
-                    SELECT id, date, po_no AS order_no, supplier_id, grand_total AS amount, 'purchase' as trx_type, created_at
+                    SELECT id, date, po_no AS order_no, supplier_id, grand_total AS amount, 'purchase' as trx_type, created_at, '' AS payment_type, '' AS bank_id, '' AS cheque_no, '' AS cheque_date
                     FROM purchase_order
                     WHERE date BETWEEN '$dateFrom' AND '$dateTo' " . ($customer_id > 0 ? " AND supplier_id = $customer_id AND is_deleted = 0" : "") . "
                     UNION
-                    SELECT id, date, pr_no AS order_no, supplier_id, SUM(amount) as amount, 'payment', created_at
+                    SELECT id, date, pr_no AS order_no, supplier_id, SUM(amount) as amount, 'payment', created_at, payment_type, bank_id, cheque_no, cheque_date
                     FROM payment_receipt
                     WHERE date BETWEEN '$dateFrom' AND '$dateTo' " . ($customer_id > 0 ? " AND supplier_id = $customer_id AND is_deleted = 0" : "") . " GROUP BY pr_no
                 ) temp
