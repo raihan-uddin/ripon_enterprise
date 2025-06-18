@@ -129,7 +129,7 @@
                             $this->renderPartial('application.modules.sell.views.sellOrder.without_pad_header');
                         }
                         ?>
-                        <div style="width: 100%; float: left; clear: right; margin-bottom: 10px;">
+                        <div style="width: 100%; float: left; clear: right; margin-bottom: 10px; text-align: left">
                             <div style="width: 50%; float: left; clear: right; font-size: 13px;">
                                 <h5 style="margin-bottom: 5px; font-size: 14px; font-weight: bold;">Customer Details</h5>
                                 <?php
@@ -164,9 +164,11 @@
                                 <b>Date:</b>
                                 <?= date('d.m.Y', strtotime($item->date)) ?>
                                 <br>
-
+                                <b>Invoice ID:</b>
+                                #<?= "$item->id" ?>
+                                <br>
                                 <b>Invoice No:</b>
-                                <?= "$item->so_no" ?>
+                                #<?= "$item->so_no" ?>
                                 <br>
                                 <?php
                                 if ($showProfitLossSummary) {
