@@ -310,16 +310,8 @@ class MoneyReceiptController extends RController
         try {
             $data = $this->loadModel($id);
             if ($data) {
-                $saleId = $data->invoice_id;
-                $collectionAmount = $data->amount + $data->discount;
-                $invoice = SellOrder::model()->findByPk($saleId);
-                if (!$invoice)
-                    throw new CHttpException(404, 'The requested page does not exist.');
-
                 if (!$this->loadModel($id)->delete())
                     throw new CHttpException(404, 'The requested page does not exist.');
-
-                SellOrder::model()->changePaidDue($invoice);
             }
             $transaction->commit();
         } catch (PDOException $e) {
