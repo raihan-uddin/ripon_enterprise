@@ -188,7 +188,7 @@ echo "</div>";
                     <td style="text-align: center;"><?php echo $dmr['date']; ?></td>
                     <td style="text-align: left;">
                         <?php
-                        $idParts = explode(',', $dmr['id']);
+                        $idParts = explode(',', (string) ($dmr['id'] ?? ''));
                         if (count($idParts) > 1) {
                             echo $idParts[1] . '...';
                         } else {
@@ -198,7 +198,7 @@ echo "</div>";
                     </td>
                     <td style="text-align: left;">
                         <?php
-                        $idParts = explode(',', $dmr['order_no']);
+                        $idParts = explode(',', (string) ($dmr['order_no'] ?? ''));
                         if (count($idParts) > 1) {
                             echo $idParts[1] . '...';
                         } else {
@@ -217,7 +217,7 @@ echo "</div>";
 
         if (!$rowFound) {
             echo "<tr>
-                    <td colspan='8' style='text-align: center; font-size: 18px; text-transform: uppercase; font-weight: bold;'>
+                    <td colspan='9 ' style='text-align: center; font-size: 18px; text-transform: uppercase; font-weight: bold;'>
                         <div class='alert alert-warning'><i class='fa fa-exclamation-triangle'></i> No result found!</div>
                     </td>
                 </tr>";

@@ -358,19 +358,23 @@
                                     $sellOrder = SellOrder::model()->findByAttributes([], $criteria);
                                     $prev_sell_value = $sellOrder ? $sellOrder->grand_total : 0;
 
+//                                    echo "<span style='color: red;'>S: TK" . number_format($prev_sell_value, 2) . "... </span><br>";
+
                                     $criteriaMr = new CDbCriteria();
-                                    $criteriaMr->select = "SUM(amount) + SUM(discount) as amount";
+                                    $criteriaMr->select = "SUM(amount+discount) as amount";
                                     $criteriaMr->addColumnCondition(['t.customer_id' => $item->customer_id]);
-                                    $criteriaMr->addCondition("invoice_id != '$item->id' AND date <= '$item->date'");
+                                    $criteriaMr->addCondition("date < '$item->date'");
                                     $moneyReceipt = MoneyReceipt::model()->findByAttributes([], $criteriaMr);
                                     $prev_collection = $moneyReceipt ? $moneyReceipt->amount : 0;
+//                                    echo "<span style='color: green;'>C: TK" . number_format($prev_collection, 2) . "... </span><br>";
 
                                     $criteriaReturn = new CDbCriteria();
                                     $criteriaReturn->select = "SUM(return_amount) as return_amount";
                                     $criteriaReturn->addColumnCondition(['t.customer_id' => $item->customer_id]);
-                                    $criteriaReturn->addCondition("sell_id != '$item->id' AND return_date <= '$item->date'");
+                                    $criteriaReturn->addCondition("return_date <= '$item->date'");
                                     $sellReturn = SellReturn::model()->findByAttributes([], $criteriaReturn);
                                     $prev_return = $sellReturn ? $sellReturn->return_amount : 0;
+//                                    echo "<span style='color: violet;'>R: TK" . number_format($prev_return, 2) . "... </span><br>";
 
                                     $criteriaMr1 = new CDbCriteria();
                                     $criteriaMr1->select = "SUM(amount) as amount, SUM(discount) as discount";
@@ -382,7 +386,7 @@
 
                                     $criteriaReturn1 = new CDbCriteria();
                                     $criteriaReturn1->select = "SUM(return_amount) as return_amount";
-                                    $criteriaReturn1->addColumnCondition(['t.customer_id' => $item->customer_id, 'sell_id' => $item->id]);
+                                    $criteriaReturn1->addColumnCondition(['t.customer_id' => $item->customer_id, 'return_date' => $item->date]);
                                     $sellReturn1 = SellReturn::model()->findByAttributes([], $criteriaReturn1);
                                     $current_return = $sellReturn1 ? $sellReturn1->return_amount : 0;
 
