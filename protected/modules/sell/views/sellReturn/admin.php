@@ -117,9 +117,6 @@ endforeach;
             <button type="button" class="btn btn-tool" data-card-widget="collapse">
                 <i class="fa fa-minus"></i>
             </button>
-            <!--<button type="button" class="btn btn-tool" data-card-widget="remove">
-                <i class="fa fa-times"></i>
-            </button>-->
         </div>
     </div>
     <div class="card-body">
@@ -138,17 +135,17 @@ endforeach;
                     'name' => 'id',
                     'htmlOptions' => [
                         'class' => 'text-center',
-                        'style' => 'width: 80px;'
+                        'style' => 'width: 50px;'
                     ]
                 ),
                 array(
                     'name' => 'return_date',
-                    'htmlOptions' => ['class' => 'text-center']
+                    'htmlOptions' => ['class' => 'text-center', 'style' => 'width: 100px;'],
                 ),
                 array(
                     'name' => 'customer_id',
                     'value' => 'Customers::model()->nameOfThis($data->customer_id)',
-                    'htmlOptions' => ['class' => 'text-center']
+                    'htmlOptions' => ['class' => 'text-left']
                 ),
                 array(
                     'name'=>'sell_id',

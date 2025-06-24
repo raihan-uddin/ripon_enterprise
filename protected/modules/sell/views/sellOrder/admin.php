@@ -158,52 +158,66 @@ if (Yii::app()->user->checkAccess('Sell.Order.VoucherPreview')) {
             'summaryCssClass' => 'col-sm-12 col-md-5',
             'pagerCssClass' => 'col-sm-12 col-md-7 pager',
             'columns' => array(
-                'id',
+                array(
+                    'name' => 'id',
+                    'htmlOptions' => ['class' => 'text-center', 'style' => 'width: 50px;'],
+                ),
                 array(
                     'name' => 'date',
-                    'htmlOptions' => ['class' => 'text-center']
+                    'htmlOptions' => ['class' => 'text-center', 'style' => 'width: 100px;'],
                 ),
                 array(
                     'name' => 'so_no',
-                    'htmlOptions' => ['class' => 'text-center']
+                    'htmlOptions' => ['class' => 'text-center', 'style' => 'width: 100px;'],
                 ),
                 array(
                     'name' => 'customer_id',
                     'value' => 'Customers::model()->nameOfThis($data->customer_id)',
-                    'htmlOptions' => ['class' => 'text-center']
+                    'htmlOptions' => ['class' => 'text-left']
                 ),
                 array(
                     'name' => 'discount_amount',
-                    'htmlOptions' => ['class' => 'text-center']
+                    'htmlOptions' => ['class' => 'text-center', 'style' => 'width: 100px;'],
                 ),
                 array(
                     'name' => 'grand_total',
-                    'htmlOptions' => ['class' => 'text-center']
+                    'htmlOptions' => ['class' => 'text-center', 'style' => 'width: 100px;'],
                 ),
 
                 /*array(
                     'name' => 'total_paid',
                     'htmlOptions' => ['class' => 'text-center']
                 ),*/
-                
                 array(
                     'name' => 'total_return',
-                    'htmlOptions' => ['class' => 'text-center']
-                ),
-                
-                /*array(
-                    'name' => 'total_due',
-                    'htmlOptions' => ['class' => 'text-center']
+                    'htmlOptions' => ['class' => 'text-center', 'style' => 'width: 100px;'],
                 ),
                 array(
-                    'name' => 'is_paid',
-                    'filter' => [SellOrder::PAID => 'PAID', SellOrder::DUE => 'DUE'],
-                    'value' => 'SellOrder::model()->isPaid($data->is_paid)',
+                    'name' => 'created_by',
+                    'filter' => false,
                     'type' => 'raw',
-                    'htmlOptions' => ['class' => 'text-center']
+                    'value' => 'CHtml::tag("span", array(
+                        "class" => "badge badge-info text-capitalize"),
+                        Users::model()->nameOfThis($data->created_by)
+                    )',
+                    'htmlOptions' => array(
+                        'class' => 'text-center',
+                        'style' => 'width: 150px;',
+                    ),
+                ),
+                array(
+                    'name' => 'created_at',
+                    'htmlOptions' => ['class' => 'text-center', 'style' => 'width: 150px; text-transform: capitalize;'],
+                ),
+                /*array(
+                    'name' => 'updated_by',
+                    'value' => 'Users::model()->nameOfThis($data->updated_by)',
+                    'htmlOptions' => ['class' => 'text-center', 'style' => 'width: 150px;'],
                 ),*/
-                'created_at',
-                'updated_at',
+                array(
+                    'name' => 'updated_at',
+                    'htmlOptions' => ['class' => 'text-center', 'style' => 'width: 150px;'],
+                ),
                 array
                 (
                     'header' => '',
