@@ -75,6 +75,10 @@ class ReportController extends RController
             $data_opening_return = SellReturn::model()->findByAttributes([], $criteriaOpReturn);
             $opening -= ($data_opening_return ? $data_opening_return->return_amount : 0);
 
+            echo "S: " . $data_opening_sell->grand_total . "<br>";
+            echo "MR: " . $data_opening_mr->amount . "<br>";
+            echo "R: " . $data_opening_return->return_amount . "<br>";
+
             $sql = "
                 SELECT temp.*
                 FROM (
