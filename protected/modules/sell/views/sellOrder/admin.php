@@ -276,7 +276,7 @@ if (Yii::app()->user->checkAccess('Sell.Order.VoucherPreview')) {
                             'label' => '<i class="fa fa-trash fa-2x" style="color: red;"></i>&nbsp;&nbsp;',
                             'imageUrl' => false,
                             'options' => array('rel' => 'tooltip', 'data-toggle' => 'tooltip', 'title' => Yii::t('app', 'Delete')),
-                            'visible' => '($data->total_paid == 0) ? TRUE : FALSE',
+//                            'visible' => '($data->total_paid == 0) ? TRUE : FALSE',
                         ),
                     )
                 ),
