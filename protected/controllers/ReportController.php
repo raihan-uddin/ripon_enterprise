@@ -75,10 +75,6 @@ class ReportController extends RController
             $data_opening_return = SellReturn::model()->findByAttributes([], $criteriaOpReturn);
             $opening -= ($data_opening_return ? $data_opening_return->return_amount : 0);
 
-            echo "S: " . $data_opening_sell->grand_total . "<br>";
-            echo "MR: " . $data_opening_mr->amount . "<br>";
-            echo "R: " . $data_opening_return->return_amount . "<br>";
-
             $sql = "
                 SELECT temp.*
                 FROM (
@@ -121,7 +117,7 @@ class ReportController extends RController
                         date BETWEEN '$dateFrom' AND '$dateTo'
                         " . ($customer_id > 0 ? " AND customer_id = $customer_id" : "") . "
                         AND is_deleted = 0
-                    GROUP BY customer_id, date, payment_type, bank_id, cheque_no, cheque_date
+                    GROUP BY customer_id, date, payment_type, bank_id, cheque_no, cheque_date, max_sl_no, created_by
             
                     UNION ALL
             
@@ -293,7 +289,7 @@ class ReportController extends RController
                     UNION
                     SELECT id, date, pr_no AS order_no, supplier_id, SUM(amount) as amount, 'payment', created_at, payment_type, bank_id, cheque_no, cheque_date
                     FROM payment_receipt
-                    WHERE date BETWEEN '$dateFrom' AND '$dateTo' " . ($customer_id > 0 ? " AND supplier_id = $customer_id AND is_deleted = 0" : "") . " GROUP BY pr_no
+                    WHERE date BETWEEN '$dateFrom' AND '$dateTo' " . ($customer_id > 0 ? " AND supplier_id = $customer_id AND is_deleted = 0" : "") . " GROUP BY date, pr_no, created_by
                 ) temp
                 
                 ORDER BY created_at ASC;";
