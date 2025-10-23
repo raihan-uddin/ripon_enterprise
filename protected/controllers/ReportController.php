@@ -476,6 +476,8 @@ class ReportController extends RController
         $message = "";
         $data = NULL;
 
+        $companyName = Yii::app()->params['company']['name'];
+        $message = $companyName;
         if ($dateFrom != "" && $dateTo != '') {
             $message .= "<br>  Date: " . date('d/m/Y', strtotime($dateFrom)) . "-" . date('d/m/Y', strtotime($dateTo));
 
@@ -580,6 +582,8 @@ class ReportController extends RController
         $message = "";
         $data = NULL;
 
+        $companyName = Yii::app()->params['company']['name'];
+        $message = $companyName;
         if ($dateFrom != "" && $dateTo != '') {
             $message .= "<br>  Date: " . date('d/m/Y', strtotime($dateFrom)) . "-" . date('d/m/Y', strtotime($dateTo));
 
@@ -653,6 +657,10 @@ class ReportController extends RController
         $message = "";
         $data = NULL;
 
+
+        $companyName = Yii::app()->params['company']['name'];
+        $message = $companyName;
+
         if ($dateFrom != "" && $dateTo != '') {
             $message .= "<br>  Date: " . date('d/m/Y', strtotime($dateFrom)) . "-" . date('d/m/Y', strtotime($dateTo));
 
@@ -708,6 +716,9 @@ class ReportController extends RController
 
         $message = "";
         $data = NULL;
+
+        $companyName = Yii::app()->params['company']['name'];
+        $message = $companyName;
 
         if ($dateFrom != "" && $dateTo != '') {
             $message .= "<br>  Date: " . date('d/m/Y', strtotime($dateFrom)) . "-" . date('d/m/Y', strtotime($dateTo));
@@ -774,6 +785,10 @@ class ReportController extends RController
         $message = "";
         $data = NULL;
 
+
+        $companyName = Yii::app()->params['company']['name'];
+        $message = $companyName;
+
         if ($dateFrom != "" && $dateTo != '') {
             $message .= "<br>  Date: " . date('d/m/Y', strtotime($dateFrom)) . "-" . date('d/m/Y', strtotime($dateTo));
 
@@ -837,6 +852,10 @@ class ReportController extends RController
         $message = "";
         $data = NULL;
 
+
+        $companyName = Yii::app()->params['company']['name'];
+        $message = $companyName;
+
         if ($dateFrom != "" && $dateTo != '') {
             $message .= "<br>  Date: " . date('d/m/Y', strtotime($dateFrom)) . "-" . date('d/m/Y', strtotime($dateTo));
 
@@ -874,6 +893,10 @@ class ReportController extends RController
 
         $message = "";
         $data = NULL;
+
+
+        $companyName = Yii::app()->params['company']['name'];
+        $message = $companyName;
 
         if ($dateFrom != "" && $dateTo != '') {
             $message .= "<br>  Date: " . date('d/m/Y', strtotime($dateFrom)) . "-" . date('d/m/Y', strtotime($dateTo));
@@ -917,6 +940,10 @@ class ReportController extends RController
 
         $message = "";
         $data = NULL;
+
+
+        $companyName = Yii::app()->params['company']['name'];
+        $message = $companyName;
 
         if ($dateFrom != "" && $dateTo != '') {
             $message .= "<br>  Date: " . date('d/m/Y', strtotime($dateFrom)) . "-" . date('d/m/Y', strtotime($dateTo));
