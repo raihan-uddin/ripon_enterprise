@@ -21,21 +21,23 @@ if ($yourCompany) {
         }
     }
 </style>
-<div style="width: 100%; float: left; clear: right;">
-    <div style="width: 30%; float: left; clear: right;">
-        <img src="<?= Yii::app()->theme->baseUrl . "/images/voucher-logo.png" ?>"
-             style="width: 160px; height: 120px;" alt="">
+<div class="invoice-header-wrapper">
+    <div class="header-left">
+        <img
+                style="width: 250px;"
+                src="<?= Yii::app()->theme->baseUrl ?>/images/voucher-logo.png" alt="Logo">
     </div>
-    <div style="width: 70%; float: left; clear: right; text-align: right; font-size: 12px;">
-        <span>QUOTATION</span> <br>
-        <span><b>The Mihan Engineers (TMEBD)</b></span><br>
-        <?php
-        echo "$company_road<br>";
-        echo "$company_house<br>";
-        echo "$company_location<br>";
-        echo "Phone : $company_contact<br>";
-        echo "Email: $company_email<br>";
-        echo "Website: $company_web<br>";
-        ?>
+
+    <div class="header-center">
+        <h1>QUOTATION</h1>
+    </div>
+
+    <div class="header-right">
+        <b style="font-size: 25px;"><?= strtoupper(Yii::app()->params['company']['name']) ?></b>
+        <?php echo Yii::app()->params['company']['address_line_1']; ?><br>
+        <?php echo Yii::app()->params['company']['address_line_2']; ?><br>
+        Phone: <?php echo Yii::app()->params['company']['phone_1']; ?><br>
+        Email: <?php echo Yii::app()->params['company']['email_1']; ?><br>
+        Website: <?php echo Yii::app()->params['company']['web']; ?>
     </div>
 </div>
