@@ -63,7 +63,7 @@
 <div class="invoice-header-wrapper">
     <div class="header-left">
         <img
-                style="width: 250px;"
+                style="width: 170px;"
                 src="<?= Yii::app()->theme->baseUrl ?>/images/voucher-logo.png" alt="Logo">
     </div>
 
