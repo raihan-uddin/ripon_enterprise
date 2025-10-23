@@ -359,6 +359,9 @@ class InventoryController extends RController
         $message = "";
         $data = "";
 
+        $companyName = Yii::app()->params['company']['name'];
+        $message = $companyName;
+
         if ($dateFrom != "" && $dateTo != '') {
             $criteria = new CDbCriteria;
             $criteria->select = "
@@ -373,7 +376,7 @@ class InventoryController extends RController
             ";
             // get the purchase avg price if stock_status = 1
          
-            $message .= "Stock Report from  $dateFrom To $dateTo";
+            $message .= "<br>Stock Report from  $dateFrom To $dateTo";
 
             $criteria->addColumnCondition(['stockable' => 1]);
 
