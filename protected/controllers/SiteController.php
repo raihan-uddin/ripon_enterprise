@@ -105,7 +105,7 @@ class SiteController extends Controller
         }
     }
 
-    public function actionProfitLossSummary ()
+    public function actionProfitLossSummary()
     {
         $this->layout = 'column1';
         $this->pageTitle = 'Profit & Loss Summary';
@@ -115,6 +115,48 @@ class SiteController extends Controller
         if (!$endDate) {
             $endDate = $startDate;
         }
+
+        // Determine previous period range
+        $periodDays = (strtotime($endDate) - strtotime($startDate)) / 86400 + 1; // +1 to include both ends
+        $prevEndDate = date('Y-m-d', strtotime($startDate . ' -1 day'));
+        $prevStartDate = date('Y-m-d', strtotime($prevEndDate . " -{$periodDays} days"));
+
+        // calculate previous sales
+        $prevSalesSummary = Yii::app()->db->createCommand()
+            ->select('ROUND(SUM(total_amount)) as total_amount, ROUND(SUM(costing)) as cogs, ROUND(SUM(discount_amount)) as discount_amount')
+            ->from('sell_order')
+            ->where('order_type = :type AND date BETWEEN :start_date AND :end_date', [
+                ':type' => SellOrder::NEW_ORDER,
+                ':start_date' => $prevStartDate,
+                ':end_date' => $prevEndDate,
+            ])
+            ->queryRow();
+
+        $prevReturnSummary = Yii::app()->db->createCommand()
+            ->select('ROUND(SUM(return_amount)) as return_amount, ROUND(SUM(costing)) as costing')
+            ->from('sell_return')
+            ->where('return_date BETWEEN :start_date AND :end_date', [
+                ':start_date' => $prevStartDate,
+                ':end_date' => $prevEndDate,
+            ])
+            ->queryRow();
+
+        $prevExpense = Yii::app()->db->createCommand()
+            ->select('ROUND(SUM(amount)) as total_amount')
+            ->from('expense')
+            ->where('date BETWEEN :start_date AND :end_date', [
+                ':start_date' => $prevStartDate,
+                ':end_date' => $prevEndDate,
+            ])
+            ->queryScalar();
+
+        // === Calculate Previous Profit ===
+        $prevProfit = (
+            $prevSalesSummary['total_amount']
+            - ($prevSalesSummary['cogs'] + $prevReturnSummary['costing'])
+            - $prevSalesSummary['discount_amount']
+            - $prevExpense
+        );
 
         // calculate total sales amount with the profit
         $totalSalesSummary = Yii::app()->db->createCommand()
@@ -198,8 +240,14 @@ class SiteController extends Controller
             'totalPaymentValue' => $totalPaymentSummary,
             'totalReturnValue' => $totalReturnAmount,
             'totalReturnCosting' => $totalReturnCosting,
+            'prevMonthProfit' => $prevProfit,
+            'prevSalesSummary' => $prevSalesSummary,
+            'prevReturnSummary' => $prevReturnSummary,
+            'prevExpense' => $prevExpense,
             'startDate' => $startDate,
             'endDate' => $endDate,
+            'prevStartDate' => $prevStartDate,
+            'prevEndDate' => $prevEndDate,
         ));
     }
 
