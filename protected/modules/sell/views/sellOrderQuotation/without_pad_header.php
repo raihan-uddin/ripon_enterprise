@@ -1,17 +1,3 @@
-<?php
-$yourCompany = YourCompany::model()->findByAttributes(['is_active' => YourCompany::ACTIVE]);
-$company_name = $company_location = $company_road = $company_house = $company_contact = $company_email = $company_web = $company_trn_no = "N/A";
-if ($yourCompany) {
-    $company_name = $yourCompany->company_name;
-    $company_location = $yourCompany->location;
-    $company_road = $yourCompany->road;
-    $company_house = $yourCompany->house;
-    $company_contact = $yourCompany->contact;
-    $company_email = $yourCompany->email;
-    $company_web = $yourCompany->web;
-    $company_trn_no = $yourCompany->trn_no;
-}
-?>
 <style>
     @media print {
         @page {
