@@ -1,14 +1,3 @@
-<?php
-$yourCompany = YourCompany::model()->findByAttributes(['is_active' => YourCompany::ACTIVE]);
-$company_name = $yourCompany->company_name ?? 'Company Name';
-$company_road = $yourCompany->road ?? '';
-$company_house = $yourCompany->house ?? '';
-$company_location = $yourCompany->location ?? '';
-$company_contact = $yourCompany->contact ?? '';
-$company_email = $yourCompany->email ?? '';
-$company_web = $yourCompany->web ?? '';
-?>
-
 <style>
     .invoice-header-wrapper {
         display: flex;
@@ -79,12 +68,11 @@ $company_web = $yourCompany->web ?? '';
     </div>
 
     <div class="header-right">
-        <b><?= strtoupper($company_name) ?></b>
-        <?= $company_road ?><br>
-        <?= $company_house ?>, 
-        <?= $company_location ?><br>
-        Phone: <?= $company_contact ?><br>
-        Email: <?= $company_email ?><br>
-        Website: <?= $company_web ?>
+        <b style="font-size: 25px;"><?= strtoupper(Yii::app()->params['company']['name']) ?></b>
+        <?php echo Yii::app()->params['company']['address_line_1']; ?><br>
+        <?php echo Yii::app()->params['company']['address_line_2']; ?><br>
+        Phone: <?php echo Yii::app()->params['company']['phone_1']; ?><br>
+        Email: <?php echo Yii::app()->params['company']['email_1']; ?><br>
+        Website: <?php echo Yii::app()->params['company']['web']; ?>
     </div>
 </div>
