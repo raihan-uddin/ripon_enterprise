@@ -10,7 +10,7 @@
 /** @var float $totalReturnCosting */
 /** @var float $prevMonthProfit */
 $returnProfit = $totalReturnValue - $totalReturnCosting;
-echo "$returnProfit = $totalReturnValue - $totalReturnCosting;";
+// echo "$returnProfit = $totalReturnValue - $totalReturnCosting;";
 $profit = $totalSalesValue - ($totalCogsValue + $returnProfit) - $totalSaleDiscountValue - $totalExpenseValue;
 $grossProfit = $totalSalesValue - ($totalCogsValue + $returnProfit);
 $profitMargin = $totalSalesValue > 0 ? ($profit / $totalSalesValue) * 100 : 0;
@@ -47,7 +47,7 @@ $netCashFlow = $totalMoneyReceiptValue - $totalPaymentValue - $totalExpenseValue
                 <div class="small text-muted mb-1">
                     <span>Sales: <strong><?= number_format((float)$totalSalesValue, 2); ?></strong></span> |
                     <span>COGS: <strong><?= number_format((float)$totalCogsValue, 2); ?></strong></span> |
-                    <span>Return: <strong><?= number_format((float)$returnProfit, 2); ?></strong></span> |
+                    <span>Return Profit: <strong><?= number_format((float)$returnProfit, 2); ?></strong></span> |
                     <span>Discount: <strong><?= number_format((float)$totalSaleDiscountValue, 2); ?></strong></span> |
                     <span>Expense: <strong><?= number_format((float)$totalExpenseValue, 2); ?></strong></span>
                 </div>
