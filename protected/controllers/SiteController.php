@@ -153,7 +153,7 @@ class SiteController extends Controller
         // === Calculate Previous Profit ===
         $prevProfit = (
             $prevSalesSummary['total_amount']
-            - ($prevSalesSummary['cogs'] + $prevReturnSummary['costing'])
+            - ($prevSalesSummary['cogs'] + ($prevReturnSummary['return_amount'] - $prevReturnSummary['costing']))
             - $prevSalesSummary['discount_amount']
             - $prevExpense
         );

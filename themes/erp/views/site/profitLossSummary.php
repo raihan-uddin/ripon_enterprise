@@ -9,9 +9,9 @@
 /** @var float $totalReturnValue */
 /** @var float $totalReturnCosting */
 /** @var float $prevMonthProfit */
-
-$profit = $totalSalesValue - ($totalCogsValue + $totalReturnCosting) - $totalSaleDiscountValue - $totalExpenseValue;
-$grossProfit = $totalSalesValue - ($totalCogsValue + $totalReturnCosting);
+$returnProfit = $totalReturnValue - $totalReturnCosting;
+$profit = $totalSalesValue - ($totalCogsValue + $returnProfit) - $totalSaleDiscountValue - $totalExpenseValue;
+$grossProfit = $totalSalesValue - ($totalCogsValue + $returnProfit);
 $profitMargin = $totalSalesValue > 0 ? ($profit / $totalSalesValue) * 100 : 0;
 $netCashFlow = $totalMoneyReceiptValue - $totalPaymentValue - $totalExpenseValue;
 
@@ -46,7 +46,7 @@ $netCashFlow = $totalMoneyReceiptValue - $totalPaymentValue - $totalExpenseValue
                 <div class="small text-muted mb-1">
                     <span>Sales: <strong><?= number_format((float)$totalSalesValue, 2); ?></strong></span> |
                     <span>COGS: <strong><?= number_format((float)$totalCogsValue, 2); ?></strong></span> |
-                    <span>Return: <strong><?= number_format((float)$totalReturnCosting, 2); ?></strong></span> |
+                    <span>Return: <strong><?= number_format((float)$returnProfit, 2); ?></strong></span> |
                     <span>Discount: <strong><?= number_format((float)$totalSaleDiscountValue, 2); ?></strong></span> |
                     <span>Expense: <strong><?= number_format((float)$totalExpenseValue, 2); ?></strong></span>
                 </div>
@@ -58,7 +58,7 @@ $netCashFlow = $totalMoneyReceiptValue - $totalPaymentValue - $totalExpenseValue
                     − (
                     <span title="Total Cost of Goods Sold (COGS)"><?= number_format((float)$totalCogsValue, 2); ?></span>
                     +
-                    <span title="Total Return Costing"><?= number_format((float)$totalReturnCosting, 2); ?></span>
+                    <span title="Total Return Profit"><?= number_format((float)$returnProfit, 2); ?></span>
                     )
                     − <span title="Total Sales Discount"><?= number_format((float)$totalSaleDiscountValue, 2); ?></span>
                     − <span title="Total Expense"><?= number_format((float)$totalExpenseValue, 2); ?></span>
@@ -74,7 +74,7 @@ $netCashFlow = $totalMoneyReceiptValue - $totalPaymentValue - $totalExpenseValue
                     </small>
                     |
                     <small>
-                        <span class="hover-info" title="Gross Profit = Total Sales − (COGS + Return Costing)">
+                        <span class="hover-info" title="Gross Profit = Total Sales − (COGS + Return Profit)">
                             Gross Profit:
                         </span>
                         <strong><?= number_format($grossProfit, 2); ?></strong>
