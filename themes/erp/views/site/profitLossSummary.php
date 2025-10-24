@@ -10,6 +10,7 @@
 /** @var float $totalReturnCosting */
 /** @var float $prevMonthProfit */
 $returnProfit = $totalReturnValue - $totalReturnCosting;
+echo $returnProfit;
 $profit = $totalSalesValue - ($totalCogsValue + $returnProfit) - $totalSaleDiscountValue - $totalExpenseValue;
 $grossProfit = $totalSalesValue - ($totalCogsValue + $returnProfit);
 $profitMargin = $totalSalesValue > 0 ? ($profit / $totalSalesValue) * 100 : 0;
