@@ -3,13 +3,7 @@ $this->widget('application.components.BreadCrumb', array(
     'crumbs' => array(
         array('name' => 'Dashboard'),
     ),
-//    'delimiter' => ' &rarr; ',
 ));
-// echo Yii::getVersion();
-
-// echo "-" . Yii::app()->user->getState('user_id');
-
-
 $this->renderPartial('shortcut-link');
 
 $this->renderPartial('report-shortcut');
@@ -17,7 +11,10 @@ $this->renderPartial('report-shortcut');
 // only show this widget if the user is admin
 if (Yii::app()->user->checkAccess('admin')) {
     $this->renderPartial('summary-widget');
+    $this->renderPartial('_graph');
+//    $this->renderPartial('_graphInventory');
 }
+
 ?>
 
 <script>
