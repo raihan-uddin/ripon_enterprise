@@ -36,7 +36,7 @@ $netCashFlow = $totalMoneyReceiptValue - $totalPaymentValue - $totalExpenseValue
     <div class="col-md-12">
         <div class="card card-success mb-3" title="Sales - (COGS + Return + Discount + Expense)">
             <div class="card-header">
-                <h3 class="card-title">Net Profit</h3>
+                <h3 class="card-title">Net Profit hello</h3>
             </div>
 
             <div class="card-body text-center">
