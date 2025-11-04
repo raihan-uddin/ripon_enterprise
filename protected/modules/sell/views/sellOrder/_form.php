@@ -563,16 +563,68 @@ Yii::app()->clientScript->registerCoreScript("jquery.ui");
                         <span class="help-block"
                               style="color: red; width: 100%"> <?php echo $form->error($model2, 'qty'); ?></span>
                     </div>
-                    <div class="form-group col-xs-12 col-md-2">
+
+                    <div class="form-group col-xs-12 col-md-2" style="position: relative;">
                         <?php echo $form->labelEx($model2, 'amount'); ?>
-                        <?php echo $form->textField($model2, 'amount', array('maxlength' => 255, 'class' => 'form-control qty-amount')); ?>
-                        <!-- Display Costing Amount without margin and padding -->
-                        <?php echo $form->hiddenField($model2, 'pp', array('maxlength' => 255, 'class' => 'form-control pp')); ?>
+                        <?php echo $form->textField($model2, 'amount', array(
+                                'maxlength' => 255,
+                                'class' => 'form-control qty-amount'
+                        )); ?>
+
+                        <!-- Hidden Costing Amount -->
+                        <?php echo $form->hiddenField($model2, 'pp', array(
+                                'maxlength' => 255,
+                                'class' => 'form-control pp'
+                        )); ?>
+
+                        <!-- Eye icon (hidden by default) -->
+                        <i class="fa fa-eye toggle-costing"
+                           style="position: absolute; right: 10px; top: 35px; cursor: pointer; color: #888; display: none;"></i>
+
+                        <!-- Display Costing Amount (initially hidden) -->
                         <span class="help-block costing-amount"
-                              style="font-size: 12px; color: #333; margin: 0; padding: 0; width: 100%"></span>
-                        <span class="help-block"
-                              style="color: red; width: 100%"> <?php echo $form->error($model2, 'amount'); ?></span>
+                              style="
+                                  font-size: 13px;
+                                  font-weight: 600;
+                                  color: #1e88e5;
+                                  background: #e3f2fd;
+                                  border-radius: 4px;
+                                  padding: 3px 6px;
+                                  margin-top: 4px;
+                                  display: none;
+                                  width: fit-content;
+                              ">
+                        </span>
+
+                        <span class="help-block" style="color: red; width: 100%;">
+                            <?php echo $form->error($model2, 'amount'); ?>
+                        </span>
                     </div>
+
+                    <script>
+                        $(document).ready(function () {
+                            var $eye = $('.toggle-costing');
+                            var $pp = $('.pp');
+                            var $costing = $('.costing-amount');
+
+                            // Show the eye icon if costing value exists
+                            if ($pp.val() && $pp.val().length > 0) {
+                                $eye.show();
+                            }
+
+                            // Toggle costing show/hide
+                            $eye.on('click', function () {
+                                if ($costing.is(':visible')) {
+                                    $costing.hide();
+                                    $(this).removeClass('fa-eye-slash').addClass('fa-eye');
+                                } else {
+                                    $costing.text('Costing: ' + $pp.val()).show();
+                                    $(this).removeClass('fa-eye').addClass('fa-eye-slash');
+                                }
+                            });
+                        });
+                    </script>
+
 
 
                     <div class="form-group col-xs-12 col-md-2">
