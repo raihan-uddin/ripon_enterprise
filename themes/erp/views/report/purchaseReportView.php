@@ -51,17 +51,17 @@ date_default_timezone_set("Asia/Dhaka");
 echo "<div class='printBtn' style='width: unset;'>";
 echo "  <img class='exportToExcel' id='exportToExcel'  src='" . Yii::app()->theme->baseUrl . "/images/excel.png' title='EXPORT TO EXCEL'>";
 $this->widget('ext.mPrint.mPrint', array(
-    'title' => ' ', //the title of the document. Defaults to the HTML title
-    'tooltip' => 'Print', //tooltip message of the print icon. Defaults to 'print'
-    'text' => '', //text which will appear beside the print icon. Defaults to NULL
-    'element' => '.printAllTableForThisReport', //the element to be printed.
-    'exceptions' => array(//the element/s which will be ignored
-    ),
-    'publishCss' => TRUE, //publish the CSS for the whole page?
-    'visible' => !Yii::app()->user->isGuest, //should this be visible to the current user?
-    'alt' => 'print', //text which will appear if image can't be loaded
-    'debug' => FALSE, //enable the debugger to see what you will get
-    'id' => 'print-div2'         //id of the print link
+        'title' => ' ', //the title of the document. Defaults to the HTML title
+        'tooltip' => 'Print', //tooltip message of the print icon. Defaults to 'print'
+        'text' => '', //text which will appear beside the print icon. Defaults to NULL
+        'element' => '.printAllTableForThisReport', //the element to be printed.
+        'exceptions' => array(//the element/s which will be ignored
+        ),
+        'publishCss' => TRUE, //publish the CSS for the whole page?
+        'visible' => !Yii::app()->user->isGuest, //should this be visible to the current user?
+        'alt' => 'print', //text which will appear if image can't be loaded
+        'debug' => FALSE, //enable the debugger to see what you will get
+        'id' => 'print-div2'         //id of the print link
 ));
 echo "</div>";
 
@@ -82,8 +82,6 @@ echo "</div>";
             <th style="box-shadow: 0px 0px 0px 1px black inset;">Supplier</th>
             <th style="width: 10%;box-shadow: 0px 0px 0px 1px black inset;">Discount</th>
             <th style="width: 10%;box-shadow: 0px 0px 0px 1px black inset;">Amount</th>
-            <th style="width: 10%;box-shadow: 0px 0px 0px 1px black inset;">Paid</th>
-            <th style="width: 10%;box-shadow: 0px 0px 0px 1px black inset;">Due</th>
         </tr>
         </thead>
         <tbody>
@@ -100,12 +98,6 @@ echo "</div>";
                 $row_closing_discount += $dmr->discount;
                 $row_closing += $dmr->grand_total;
                 $rowFound = true;
-
-                $totalPaid = PaymentReceipt::model()->totalPaidAmountOfThisOrder($dmr->id);
-                $invoiceDue = $dmr->grand_total - $totalPaid;
-
-                $groundTotalPayment += $totalPaid;
-                $groundTotalDue += $invoiceDue;
                 ?>
                 <tr>
                     <td style="text-align: center;"><?php echo $sl++; ?></td>
@@ -115,8 +107,6 @@ echo "</div>";
                     <td style="text-align: left;"><?php echo sprintf("%s | %s", $dmr->company_name, $dmr->contact_no); ?></td>
                     <td style="text-align: right;"><?php echo number_format($dmr->discount, 2); ?></td>
                     <td style="text-align: right;"><?php echo number_format($dmr->grand_total, 2); ?></td>
-                    <td style="text-align: right;"><?php echo number_format($totalPaid, 2); ?></td>
-                    <td style="text-align: right;"><?php echo number_format($invoiceDue, 2); ?></td>
                 </tr>
                 <?php
 
@@ -137,8 +127,6 @@ echo "</div>";
             <th style="text-align: right;" colspan="4">Ground Total</th>
             <th style="text-align: right;"><?= number_format($row_closing_discount, 2) ?></th>
             <th style="text-align: right;"><?= number_format($row_closing, 2) ?></th>
-            <th style="text-align: right;"><?= number_format($groundTotalPayment, 2) ?></th>
-            <th style="text-align: right;"><?= number_format($groundTotalDue, 2) ?></th>
         </tr>
 
         </tbody>

@@ -103,7 +103,7 @@ endforeach;
                         'header' => 'Options',
                         'htmlOptions' => array('style' => 'width:120px'),
                         //'template' => '{view}{update}{addContactPerson}{contactPersons}{delete}',
-                        'template' => '{update}{customDelete}',
+                        'template' => '{createPr}{update}{customDelete}',
                         'class' => 'CButtonColumn',
                         'buttons' => array(
                             'customDelete' => array(
@@ -143,6 +143,12 @@ endforeach;
                               .dialog( { title: 'Update Customer Info' } )
                               .dialog( 'open' ); }",
                             ),
+                                'createPr' => array(
+                                        'label' => '<i class="fa fa-money fa-2x" style="color: green;"></i>&nbsp;&nbsp;',
+                                        'imageUrl' => false,
+                                        'options' => array('rel' => 'tooltip', 'data-toggle' => 'tooltip', 'title' => Yii::t('app', 'Create PR')),
+                                        'url' => 'Yii::app()->controller->createUrl("/accounting/paymentReceipt/create",array("id"=>$data->id,))',
+                                ),
                         )
                     ),
                 )

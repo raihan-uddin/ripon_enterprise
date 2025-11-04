@@ -62,10 +62,16 @@ class PaymentReceipt extends CActiveRecord
     public static function maxSlNo()
     {
         $criteria = new CDbCriteria();
-        $criteria->select = "MAX(max_sl_no) as max_sl_no";
-        $criteria->addColumnCondition(['year(date)' => date('Y'), 'month(date)' => date('m')]);
-        $data = self::model()->findByAttributes([], $criteria);
-        return $data ? $data->max_sl_no + 1 : 1;
+        $criteria->select = 'MAX(max_sl_no) AS max_sl_no';
+        $criteria->addCondition('YEAR(date) = :year');
+        $criteria->addCondition('MONTH(date) = :month');
+        $criteria->params = [
+            ':year'  => date('Y'),
+            ':month' => date('m'),
+        ];
+
+        $data = self::model()->find($criteria);
+        return $data && $data->max_sl_no ? $data->max_sl_no + 1 : 1;
     }
 
     /**

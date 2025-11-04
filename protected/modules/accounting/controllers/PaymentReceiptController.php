@@ -36,7 +36,7 @@ class PaymentReceiptController extends RController
      * If creation is successful, the browser will be redirected to the 'view' page.
      */
 
-    public function actionCreate($id, $order_id = 0)
+    /*public function actionCreate($id, $order_id = 0)
     {
         $model = new PaymentReceipt();
         $model2 = Suppliers::model()->findByPk($id);
@@ -128,6 +128,88 @@ class PaymentReceiptController extends RController
             'model2' => $model2,
             'id' => $id,
             'order_id' => $order_id,
+        ));
+    }*/
+
+    public function actionCreate($id)
+    {
+        $model = new PaymentReceipt;
+        $model->scenario = 'custom_form_save';
+        $model2 = Suppliers::model()->findByPk($id);
+
+        // Uncomment the following line if AJAX validation is needed
+        // $this->performAjaxValidation($model);
+
+        $transaction = Yii::app()->db->beginTransaction();
+        try {
+
+            $createTime = date('Y-m-d H:i:s');
+            if (isset($_POST['PaymentReceipt'])) {
+                $model->attributes = $_POST['PaymentReceipt'];
+                $sl_no = PaymentReceipt::maxSlNo();
+                $model->max_sl_no = $sl_no;
+                $model->order_id = 0;
+                $model->amount = 0;
+                $model->pr_no =  "PR" . date('y') . date('m') . str_pad($model->max_sl_no, 5, "0", STR_PAD_LEFT);
+                if ($model->validate()) {
+                    $model2 = new PaymentReceipt();
+                    $model2->max_sl_no = $sl_no;
+                    $model2->amount = $_POST['PaymentReceipt']['amount'];
+                    $model2->order_id = 0;
+                    $model2->pr_no = $model->pr_no;
+                    $model2->date = $model->date;
+                    $model2->supplier_id = $model->supplier_id;
+                    $model2->payment_type = $model->payment_type;
+                    $model2->bank_id = $model->bank_id;
+                    $model2->cheque_no = $model->cheque_no;
+                    $model2->discount = $_POST['PaymentReceipt']['discount'] > 0 ? $_POST['PaymentReceipt']['discount'] : 0;
+                    $model2->created_by = Yii::app()->user->getState('user_id');
+                    $model2->remarks = $model->remarks;
+                    $model2->cheque_date = $model->cheque_date;
+                    $model2->created_at = $createTime;
+                    if (!$model2->save()) {
+                        $transaction->rollBack();
+                        throw new CHttpException(500, sprintf('Error in saving order details! %s <br>', json_encode($model2->getErrors())));
+                    }
+
+                    $transaction->commit();
+
+                    $criteria = new CDbCriteria;
+                    $criteria->select = "SUM(amount) as amount, sum(discount) as discount, supplier_id, date, pr_no, bank_id, cheque_no, cheque_date, remarks, created_by";
+                    $criteria->addColumnCondition(['supplier_id' => $model->supplier_id, 'pr_no' => $model->pr_no]);
+                    $criteria->group = 'supplier_id, pr_no';
+                    $dataMr = PaymentReceipt::model()->findAll($criteria);
+                    echo CJSON::encode(array(
+                        'status' => 'success',
+                        'soReportInfo' => $this->renderPartial('voucherPreview', array('data' => $dataMr, 'new' => true), true, true), //
+                    ));
+                    Yii::app()->end();
+                } else {
+                    $error = CActiveForm::validate($model);
+                    $error2 = CActiveForm::validate($model2);
+                    if ($error != '[]')
+                        echo $error;
+                    if ($error2 != '[]')
+                        echo $error2;
+                    Yii::app()->end();
+                }
+            }
+        } catch (PDOException $e) {
+            if($transaction->active)
+                $transaction->rollBack();
+            throw new CHttpException(500, $e->getMessage());
+        } catch (Exception $e) {
+            if($transaction->active)
+                $transaction->rollBack();
+            throw new CHttpException(500, $e->getMessage());
+        }
+
+
+        $this->pageTitle = "PR CREATE";
+        $this->render('create', array(
+            'model' => $model,
+            'model2' => $model2,
+            'id' => $id,
         ));
     }
 

@@ -1,441 +1,339 @@
 <?php
-$this->widget('application.components.BreadCrumb', array(
-    'crumbs' => array(
-        array('name' => 'Purchase', 'url' => array('admin')),
-        array('name' => 'Payment', 'url' => array('admin')),
-        array('name' => 'Create'),
-    ),
-//    'delimiter' => ' &rarr; ',
-));
+$this->widget('application.components.BreadCrumb', [
+        'crumbs' => [
+                ['name' => 'Purchase', 'url' => ['admin']],
+                ['name' => 'Payment', 'url' => ['admin']],
+                ['name' => 'Create'],
+        ],
+]);
+
+$form = $this->beginWidget('CActiveForm', [
+        'id' => 'payment-receipt-form',
+        'enableAjaxValidation' => false,
+        'enableClientValidation' => true,
+        'clientOptions' => ['validateOnSubmit' => true],
+]);
 ?>
-<?php $form = $this->beginWidget('CActiveForm', array(
-    'id' => 'payment-receipt-form',
-    'enableAjaxValidation' => false,
-    'enableClientValidation' => true,
-    'clientOptions' => array('validateOnSubmit' => true),
-)); ?>
 
-<script>
-    $(".alert").animate({opacity: 1.0}, 3000).fadeOut("slow");
-</script>
-<div class="row">
-    <div class="form-group col-xs-11 col-md-3 col-lg-3">
-        <a class="btn  btn-warning" type="button" id="btnReload"
-           href="<?= Yii::app()->request->requestUri ?>"><i class="fa fa-refresh"></i> Reload
-        </a>
-<!--        <button class="btn  btn-danger" type="button" id="btnReset"><i class="fa fa-remove"></i> Reset-->
-<!--        </button>-->
+<div class="container-fluid">
 
-        <a class="btn btn-success text-right" type="button"
-           href="<?= Yii::app()->baseUrl . '/index.php/accounting/paymentReceipt/admin' ?>"><i class="fa fa-home"></i>
-            PR Manage
-        </a>
-    </div>
-</div>
-<div class="card card-primary">
-    <div class="card-header">
-        <h3 class="card-title"><?php echo($model->isNewRecord ? 'Create Payment Receipt' : 'Update Payment Receipt'); ?></h3>
-
-        <div class="card-tools">
-            <button type="button" class="btn btn-tool" data-card-widget="collapse">
-                <i class="fa fa-minus"></i>
-            </button>
-            <!--            <button type="button" class="btn btn-tool" data-card-widget="remove">-->
-            <!--                <i class="fa fa-times"></i>-->
-            <!--            </button>-->
+    <div class="mb-3 d-flex justify-content-between align-items-center">
+        <div>
+            <a class="btn btn-warning mr-2" href="<?= Yii::app()->request->requestUri ?>">
+                <i class="fa fa-refresh"></i> Reload
+            </a>
+            <a class="btn btn-success" href="<?= Yii::app()->baseUrl ?>/index.php/accounting/paymentReceipt/admin">
+                <i class="fa fa-home"></i> PR Manage
+            </a>
         </div>
     </div>
-    <div class="card-body">
-        <div class="row">
-            <div class=" col-sm-12 col-md-3">
-                <div class="form-group row" style="">
-                    <?php echo $form->labelEx($model, 'date', ['class' => 'col-sm-12 col-md-4 col-form-label']); ?>
-                    <div class="col-sm-12 col-md-8">
-                        <div class="input-group" id="entry_date" data-target-input="nearest">
-                            <?php echo $form->textField($model, 'date', array('class' => 'form-control datetimepicker-input', 'placeholder' => 'YYYY-MM-DD', 'value' => date('Y-m-d'))); ?>
-                            <!--<div class="input-group-append">
-                                <div class="input-group-text"><i class="fa fa-calendar"></i></div>
-                            </div>-->
-                        </div>
-                    </div>
-                    <span class="help-block"
-                          style="color: red; width: 100%"> <?php echo $form->error($model, 'date'); ?></span>
-                </div>
-            </div>
 
-            <div class=" col-sm-12 col-md-3">
-                <div class="form-group row" style="">
-                    <?php echo $form->labelEx($model, 'payment_type', ['class' => 'col-sm-12 col-md-6 col-form-label']); ?>
-                    <div class="col-sm-12 col-md-6">
-                        <div class="input-group" id="customer_id" data-target-input="nearest">
-                            <?php
-                            echo $form->dropDownList($model, 'payment_type', CHtml::listData(PaymentReceipt::model()->paymentTypeFilter(), 'id', 'title'), array(
-                                'prompt' => 'Select',
-                                'class' => 'form-control',
-                            ));
-                            ?>
-                            <!-- <div class="input-group-append">
-                                 <div class="input-group-text"><i class="fa fa fa-credit-card"></i></div>
-                             </div>-->
-                        </div>
-                    </div>
-                    <span class="help-block"
-                          style="color: red; width: 100%"> <?php echo $form->error($model, 'payment_type'); ?></span>
-                </div>
-            </div>
-
-            <div class=" col-sm-12 col-md-3">
-                <div class="form-group row" style="">
-                    <?php echo $form->labelEx($model, 'supplier_id', ['class' => 'col-sm-12 col-md-3 col-form-label']); ?>
-                    <div class="col-sm-12 col-md-9">
-                        <div class="input-group" id="supplier_id" data-target-input="nearest">
-                            <?php echo $form->textField($model, 'customer_name', array('class' => 'form-control', 'readonly' => true, 'value' => $model2->company_name)); ?>
-                            <?php echo $form->hiddenField($model, 'supplier_id', array('class' => 'form-control', 'readonly' => true, 'value' => $model2->id)); ?>
-                            <div class="input-group-append">
-                                <div class="input-group-text"><i class="fa fa-user"></i></div>
-                            </div>
-                        </div>
-                    </div>
-                    <span class="help-block"
-                          style="color: red; width: 100%"> <?php echo $form->error($model, 'supplier_id'); ?></span>
-                </div>
-            </div>
-
-            <div class=" col-sm-12 col-md-3">
-                <div class="form-group row" style="">
-                    <?php echo $form->labelEx($model, 'received_by', ['class' => 'col-sm-12 col-md-3 col-form-label']); ?>
-                    <div class="col-sm-12 col-md-9">
-                        <div class="input-group" id="customer_id" data-target-input="nearest">
-                            <?php echo $form->textField($model, 'received_by', array('class' => 'form-control', 'readonly' => true, 'value' => Users::model()->nameOfThis(Yii::app()->user->getState('user_id')))); ?>
-                            <div class="input-group-append">
-                                <div class="input-group-text"><i class="fa fa-user"></i></div>
-                            </div>
-                        </div>
-                    </div>
-                    <span class="help-block"
-                          style="color: red; width: 100%"> <?php echo $form->error($model, 'customer_id'); ?></span>
-                </div>
-            </div>
-
-            <div class="form-group col-sm-12 col-md-3" style="">
-                <?php echo $form->labelEx($model, 'remarks'); ?>
-                <div class="input-group" data-target-input="nearest">
-                    <?php echo $form->textField($model, 'remarks', array('class' => 'form-control',)); ?>
-                    <div class="input-group-append ">
-                        <div class="input-group-text">
-                            <i class="fa fa-file-text"></i>
-                        </div>
-                    </div>
-                </div>
-                <span class="help-block"
-                      style="color: red; width: 100%"> <?php echo $form->error($model, 'remarks'); ?></span>
-            </div>
-
-            <div class="form-group col-sm-12 col-md-2 bank online" style="display: none;">
-                <?php echo $form->labelEx($model, 'bank_id'); ?>
-                <div class="input-group" data-target-input="nearest">
-                    <?php
-                    echo $form->dropDownList(
-                        $model, 'bank_id', CHtml::listData(ComBank::model()->findAll(array('order' => 'name ASC')), 'id', 'name'), array(
-                        'prompt' => 'Select',
-                        'class' => 'form-control',
-                    ));
-                    ?>
-                    <div class="input-group-append ">
-                        <div class="input-group-text">
-                            <?php
-                            echo CHtml::link(' <i class="fa fa-plus"></i>', "", // the link for open the dialog
-                                array(
-//                                    'class' => '',
-                                    'onclick' => "{
-                                            addProdItem(); 
-                                            $('#dialogAddProdItem').dialog('open');
-                                        }
-                                    "));
-                            ?>
-
-                            <script type="text/javascript">
-                                // here is the magic
-                                function addProdItem() {
-                                    <?php
-                                    echo CHtml::ajax(array(
-                                        'url' => array('/commercial/comBank/CreateBankFromOutSide'),
-                                        'data' => "js:$(this).serialize()",
-                                        'type' => 'post',
-                                        'dataType' => 'json',
-                                        'beforeSend' => "function(){
-                                            $('.ajaxLoaderFormLoad').show();
-                                        }",
-                                        'complete' => "function(){
-                                            $('.ajaxLoaderFormLoad').hide();
-                                        }",
-                                        'success' => "function(data){
-                                            if (data.status == 'failure')
-                                            {
-                                                $('#dialogAddProdItem div.divForForm').html(data.div);
-                                                      // Here is the trick: on submit-> once again this function!
-                                                $('#dialogAddProdItem div.divForForm form').submit(addProdItem);
-                                            }
-                                            else
-                                            {
-                                                $('#dialogAddProdItem div.divForForm').html(data.div);
-                                                setTimeout(\"$('#dialogAddProdItem').dialog('close') \",1000);
-                                                 $('#PaymentReceipt_bank_id').append('<option selected value='+data.value+'>'+data.label+'</option>');
-                                            }
-                                    }",
-                                    ))
-                                    ?>
-                                    return false;
-                                }
-                            </script>
-                        </div>
-                    </div>
-                </div>
-                <span class="help-block"
-                      style="color: red; width: 100%"> <?php echo $form->error($model, 'bank_id'); ?></span>
-            </div>
-
-            <div class="form-group col-sm-12 col-md-2  bank " style="display: none;">
-                <?php echo $form->labelEx($model, 'cheque_no'); ?>
-                <div class="input-group" data-target-input="nearest">
-                    <?php echo $form->textField($model, 'cheque_no', array('class' => 'form-control',)); ?>
-                    <div class="input-group-append ">
-                        <div class="input-group-text">
-                            <i class="fa fa-credit-card"></i>
-                        </div>
-                    </div>
-                </div>
-                <span class="help-block"
-                      style="color: red; width: 100%"> <?php echo $form->error($model, 'cheque_no'); ?></span>
-            </div>
-
-            <div class="form-group col-sm-12 col-md-2  bank " style="display: none;">
-                <?php echo $form->labelEx($model, 'cheque_date'); ?>
-                <div class="input-group" id="cheque_date" data-target-input="nearest">
-                    <?php echo $form->textField($model, 'cheque_date', array('class' => 'form-control datetimepicker-input', 'placeholder' => 'YYYY-MM-DD',)); ?>
-                    <div class="input-group-append">
-                        <div class="input-group-text"><i class="fa fa-calendar"></i></div>
-                    </div>
-                </div>
-                <span class="help-block"
-                      style="color: red; width: 100%"> <?php echo $form->error($model, 'cheque_date'); ?></span>
-            </div>
-
-            <div class="form-group col-sm-12 col-md-3" style="">
-                <?php echo $form->labelEx($model, 'paid_amt'); ?>
-                <div class="input-group" data-target-input="nearest">
-                    <?php echo $form->textField($model, 'paid_amt', array('class' => 'form-control', 'oninput' => 'validatePositiveNumber(this)')); ?>
-                    <div class="input-group-append ">
-                        <div class="input-group-text">
-                            <i class="fa fa-money"></i>
-                        </div>
-                    </div>
-                </div>
-                <span class="help-block"
-                      style="color: red; width: 100%"> <?php echo $form->error($model, 'paid_amt'); ?></span>
-            </div>
-
-            <div class="table table-responsive">
-                <table class="table table-sm  table-hover table-bordered table-striped" id="list">
-                    <thead>
-                    <tr class="table-info">
-                        <th class="text-center" style="width: 3%;">#</th>
-                        <th class="text-center" style="width: 5%;">ID</th>
-                        <th class="text-center" style="width: 10%;">PO No</th>
-                        <th class="text-center" style="width: 10%;">PO Date</th>
-                        <th class="text-center" style="width: 10%;">PO Amount</th>
-                        <th class="text-center" style="width: 10%;">Due Amount</th>
-                        <th class="text-center" style="width: 10%;">Payment</th>
-                        <th class="text-center" style="width: 10%;">Rem. Amount</th>
-                        <th class="text-center" style="width: 3%;">Action</th>
-                    </tr>
-                    </thead>
-                    <tbody>
-                    </tbody>
-                    <?php
-                    $i = 1;
-                    $invoice_total = $invoice_total_due = 0;
-                    $criteriaInv = new CDbCriteria();
-                    $criteriaInv->addColumnCondition(['supplier_id' => $model2->id]);
-                    if ($order_id > 0) {
-                        $criteriaInv->addColumnCondition(['id' => $order_id]);
-                    }
-                    $dataInv = PurchaseOrder::model()->findAll($criteriaInv);
-                    if ($dataInv) {
-                        foreach ($dataInv as $inv) {
-                            $invoice_amount = $inv->grand_total;
-                            $paid_amount = PaymentReceipt::model()->totalPaidAmountOfThisOrder($inv->id);
-                            $due = $invoice_amount - $paid_amount;
-                            if ($due > 0) {
-                                $invoice_total += $invoice_amount;
-                                $invoice_total_due += $due;
-                                ?>
-                                <tr class="item">
-                                    <td class="text-center sl-no" style="vertical-align: middle;"><?= $i++ ?></td>
-                                    <td class="text-center invoiceDetails" style="vertical-align: middle; cursor: zoom-in;"><?= $inv->id ?></td>
-                                    <td class="text-center" style="vertical-align: middle;">
-                                        <?= $inv->po_no ?>
-                                        <?php echo $form->hiddenField($model, 'order_id[]', array('class' => 'form-control', 'readonly' => true, 'value' => $inv->id)); ?>
-                                    </td>
-                                    <td class="text-center"
-                                        style="vertical-align: middle;"><?= date('d.M.y', strtotime($inv->date)) ?></td>
-                                    <td class="text-center" style="vertical-align: middle;">
-                                        <?= number_format($invoice_amount, 2); ?>
-                                    </td>
-                                    <td class="text-center" style="vertical-align: middle;">
-                                        <?= number_format($due, 2); ?>
-                                        <?php echo $form->hiddenField($model, 'due_amount[]', array('class' => 'form-control due-amount', 'readonly' => true, 'value' => $due)); ?>
-                                    </td>
-                                    <td class="text-center" style="vertical-align: middle;">
-                                        <?php echo $form->textField($model, 'amount[]', array('class' => 'form-control  text-right amount',)); ?>
-                                    </td>
-                                    <td class="text-center" style="vertical-align: middle;">
-                                        <span class="rem-span"></span>
-                                        <?php echo $form->textField($model, 'rem_amount[]', array('class' => 'form-control text-right rem-amount', 'readonly' => true)); ?>
-                                    </td>
-                                    <td class="text-center">
-                                        <button type="button" class="btn btn-danger dlt"><i
-                                                    class="fa fa-trash-o"></i>
-                                        </button>
-                                    </td>
-                                </tr>
-                                <?php
-                            }
-                        }
-                    } else {
-                        ?>
-                        <tr>
-                            <td colspan="9" class="text-center">No data found!</td>
-                        </tr>
-                        <?php
-                    }
-                    ?>
-                    <tfoot>
-                    <tr>
-                        <th colspan="4" class="text-right" style="vertical-align: middle">Calculation</th>
-                        <th style="vertical-align: middle;">
-                            <?php echo $form->textField($model, 'invoice_total[]', array('class' => 'form-control text-center', 'value' => $invoice_total, 'readonly' => true)); ?>
-                        </th>
-                        <th style="vertical-align: middle;">
-                            <?php echo $form->textField($model, 'invoice_total_due[]', array('class' => 'form-control  text-center', 'value' => $invoice_total_due, 'readonly' => true)); ?>
-                        </th>
-                        <th style="vertical-align: middle;">
-                            <?php echo $form->textField($model, 'total_paid_amount[]', array('class' => 'form-control  text-right', 'readonly' => true)); ?>
-                        </th>
-                        <th style="vertical-align: middle;">
-                            <?php echo $form->textField($model, 'rem_total_amount[]', array('class' => 'form-control  text-right', 'readonly' => true)); ?>
-                        </th>
-                        <th style="vertical-align: middle;"></th>
-                    </tr>
-                    </tfoot>
-                </table>
+    <div class="card shadow-sm mb-4">
+        <div class="card-header bg-primary text-white">
+            <h5 class="card-title"><?= $model->isNewRecord ? 'Create Payment Receipt' : 'Update Payment Receipt' ?></h5>
+            <div class="card-tools">
+                <button type="button" class="btn btn-tool text-white" data-card-widget="collapse"><i
+                            class="fa fa-minus"></i></button>
             </div>
         </div>
 
-    </div>
+        <div class="card-body">
+            <div class="row">
 
-    <div class="card-footer">
-        <?php
-        echo CHtml::ajaxSubmitButton('Create', CHtml::normalizeUrl(array('/accounting/paymentReceipt/create', 'id' => $id, 'render' => true)), array(
-            'dataType' => 'json',
-            'type' => 'post',
-            'success' => 'function(data) {
-                $("#ajaxLoader").hide();  
-                    if(data.status=="success"){
-                        $("#formResult").fadeIn();
-                        $("#formResult").html("Data saved successfully.");
-                        toastr.success("Data saved successfully.");
-                        $("#payment-receipt-form")[0].reset();
-                        $("#formResult").animate({opacity:1.0},1000).fadeOut("slow");
-                        $("#list tbody").empty();
-                        //$("#soReportDialogBox").dialog("open");
-                        //$("#AjFlashReportSo").html(data.soReportInfo).show();
-                        $("#information-modal-payment-receipt").modal("show");
-                        $("#information-modal-payment-receipt .modal-body").html(data.soReportInfo);  
-                    }else{
-                        $("#formResultError").html("Data not saved. Please solve the following errors.");
-                        $.each(data, function(key, val) {
-                            $("#payment-receipt-form #"+key+"_em_").html(""+val+"");                                                    
-                            $("#payment-receipt-form #"+key+"_em_").show();
-                        });
-                    }       
-                }',
-            'beforeSend' => 'function(){  
-                    let count_item =  $(".item").length; 
-                    let date = $("#PaymentReceipt_date").val();  
-                    let customer_id = $("#PaymentReceipt_customer_id").val();  
-                    let grand_total = $("#PaymentReceipt_total_paid_amount").val();  
-                    let payment_type = $("#PaymentReceipt_payment_type").val();  
-                    let bank_id = $("#PaymentReceipt_bank_id").val();  
-                    let cheque_no = $("#PaymentReceipt_cheque_no").val();  
-                    let cheque_date = $("#PaymentReceipt_cheque_date").val();  
-                    let row_amounts = 0;
-                    $(".amount").each(function () {
-                        var bill_qty_total = parseFloat($(this).val());
-                        bill_qty_total = isNaN(bill_qty_total) ? 0 : bill_qty_total;
-                        if(bill_qty_total <= 0){
-                            $(this).addClass("is-invalid");
+                <!-- Column 1 -->
+                <div class="col-md-4 mb-3">
+                    <div class="form-group">
+                        <?= $form->labelEx($model, 'date') ?>
+                        <div class="input-group">
+                            <?= $form->textField($model, 'date', [
+                                    'class' => 'form-control datetimepicker-input',
+                                    'placeholder' => 'YYYY-MM-DD',
+                                    'value' => date('Y-m-d')
+                            ]) ?>
+                            <div class="input-group-append">
+                                <span class="input-group-text"><i class="fa fa-calendar"></i></span>
+                            </div>
+                        </div>
+                        <?= $form->error($model, 'date', ['class' => 'text-danger']) ?>
+                    </div>
+
+                    <div class="form-group">
+                        <?= $form->labelEx($model, 'supplier_id') ?>
+                        <div class="input-group">
+                            <?= $form->textField($model, 'supplier_name', [
+                                    'class' => 'form-control',
+                                    'readonly' => true,
+                                    'value' => $model2->company_name
+                            ]) ?>
+                            <?= $form->hiddenField($model, 'supplier_id', [
+                                    'class' => 'form-control',
+                                    'readonly' => true,
+                                    'value' => $model2->id
+                            ]) ?>
+                            <div class="input-group-append">
+                                <span class="input-group-text"><i class="fa fa-user"></i></span>
+                            </div>
+                        </div>
+                        <?= $form->error($model, 'supplier_id', ['class' => 'text-danger']) ?>
+                    </div>
+
+                    <div class="form-group">
+                        <?= $form->labelEx($model, 'remarks') ?>
+                        <?= $form->textField($model, 'remarks', ['class' => 'form-control']) ?>
+                        <?= $form->error($model, 'remarks', ['class' => 'text-danger']) ?>
+                    </div>
+
+                </div>
+
+                <!-- Column 2 -->
+                <div class="col-md-4 mb-3">
+                    <div class="form-group">
+                        <label>Current Due Amount</label>
+                        <div class="input-group">
+                            <?php
+                            // get all sell order amount
+                            $criteria = new CDbCriteria();
+                            $criteria->select = 'SUM(total_amount) AS total_amount';
+                            $criteria->addColumnCondition(['supplier_id' => $model2->id]);
+                            $purchaseOrder = PurchaseOrder::model()->findByAttributes([], $criteria);
+                            $totalPurchaseAmount = $purchaseOrder ? $purchaseOrder->total_amount : 0;
+
+                            $totalReturnAmount = 0;
+                            //                            // get all return amount
+                            //                            $criteria = new CDbCriteria();
+                            //                            $criteria->select = 'SUM(return_amount) AS return_amount';
+                            //                            $criteria->addColumnCondition(['supplier_id' => $model2->id]);
+                            //                            $returnOrder = SellReturn::model()->findByAttributes([], $criteria);
+                            //                            $totalReturnAmount = $returnOrder ? $returnOrder->return_amount : 0;
+
+                            // get all money receipt amount
+                            $criteria = new CDbCriteria();
+                            $criteria->select = 'SUM(amount) + sum(discount) AS amount';
+                            $criteria->addColumnCondition(['supplier_id' => $model2->id]);
+                            $moneyReceipt = PaymentReceipt::model()->findByAttributes([], $criteria);
+                            $totalMoneyReceipt = $moneyReceipt ? $moneyReceipt->amount : 0;
+
+
+                            $currentDueAmount = $totalPurchaseAmount - $totalReturnAmount - $totalMoneyReceipt;
+                            ?>
+                            <input type="text" class="form-control" id="current_due_amt" name="current_due_amt"
+                                   value="<?= number_format((float)$currentDueAmount, 2) ?>" readonly>
+                            <div class="input-group-append">
+                                <span class="input-group-text"><i class="fa fa-balance-scale"></i></span>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="form-group">
+                        <?= $form->labelEx($model, 'amount') ?>
+                        <div class="input-group">
+                            <?= $form->textField($model, 'amount', [
+                                    'class' => 'form-control',
+                            ]) ?>
+                            <div class="input-group-append">
+                                <span class="input-group-text"><i class="fa fa-money"></i></span>
+                            </div>
+                        </div>
+                        <?= $form->error($model, 'amount', ['class' => 'text-danger']) ?>
+                    </div>
+
+                    <div class="form-group">
+                        <?= $form->labelEx($model, 'discount') ?>
+                        <div class="input-group">
+                            <?= $form->textField($model, 'discount', [
+                                    'class' => 'form-control',
+                            ]) ?>
+                            <div class="input-group-append">
+                                <span class="input-group-text"><i class="fa fa-money"></i></span>
+                            </div>
+                        </div>
+                        <?= $form->error($model, 'discount', ['class' => 'text-danger']) ?>
+                    </div>
+
+                    <div class="form-group">
+                        <label>Remaining Due Amount</label>
+                        <div class="input-group">
+                            <input type="text" class="form-control" id="remaining_due_amt" name="remaining_due_amt"
+                                   disabled>
+                            <div class="input-group-append">
+                                <span class="input-group-text"><i class="fa fa-balance-scale"></i></span>
+                            </div>
+                        </div>
+                    </div>
+
+                </div>
+
+                <!-- Column 3 -->
+                <div class="col-md-4 mb-3">
+                    <div class="form-group">
+                        <?= $form->labelEx($model, 'payment_type') ?>
+                        <div class="input-group">
+                            <?= $form->dropDownList($model, 'payment_type', CHtml::listData(MoneyReceipt::model()->paymentTypeFilter(), 'id', 'title'), [
+                                    'prompt' => 'Select',
+                                    'class' => 'form-control',
+                                    'id' => 'payment_type_dropdown'
+                            ]) ?>
+                            <div class="input-group-append">
+                                <span class="input-group-text"><i class="fa fa-credit-card"></i></span>
+                            </div>
+                        </div>
+                        <?= $form->error($model, 'payment_type', ['class' => 'text-danger']) ?>
+                    </div>
+
+                    <div class="form-group bank-group d-none" id="bank_section">
+                        <?= $form->labelEx($model, 'bank_id') ?>
+                        <div class="input-group">
+                            <?= $form->dropDownList($model, 'bank_id',
+                                    CHtml::listData(ComBank::model()->findAll(array('order' => 'name ASC')), 'id', 'name'),
+                                    ['prompt' => 'Select', 'class' => 'form-control']) ?>
+                            <div class="input-group-append">
+                                <button type="button" class="btn btn-outline-secondary" onclick="addProdItem()">
+                                    <i class="fa fa-plus"></i>
+                                </button>
+                            </div>
+                        </div>
+                        <?= $form->error($model, 'bank_id', ['class' => 'text-danger']) ?>
+                    </div>
+
+                    <div class="form-group cheque-group d-none" id="cheque_no_section">
+                        <?= $form->labelEx($model, 'cheque_no') ?>
+                        <div class="input-group">
+                            <?= $form->textField($model, 'cheque_no', ['class' => 'form-control']) ?>
+                            <div class="input-group-append">
+                                <span class="input-group-text"><i class="fa fa-credit-card"></i></span>
+                            </div>
+                        </div>
+                        <?= $form->error($model, 'cheque_no', ['class' => 'text-danger']) ?>
+                    </div>
+
+                    <div class="form-group cheque-group d-none" id="cheque_date_section">
+                        <?= $form->labelEx($model, 'cheque_date') ?>
+                        <div class="input-group">
+                            <?= $form->textField($model, 'cheque_date', [
+                                    'class' => 'form-control datetimepicker-input',
+                                    'placeholder' => 'YYYY-MM-DD'
+                            ]) ?>
+                            <div class="input-group-append">
+                                <span class="input-group-text"><i class="fa fa-calendar"></i></span>
+                            </div>
+                        </div>
+                        <?= $form->error($model, 'cheque_date', ['class' => 'text-danger']) ?>
+                    </div>
+
+                </div>
+
+            </div>
+        </div>
+
+        <div class="card-footer text-right">
+            <?php
+            echo CHtml::ajaxSubmitButton('Create', CHtml::normalizeUrl(array('/accounting/paymentReceipt/create', 'id' => $id, 'render' => true)), array(
+                    'dataType' => 'json',
+                    'type' => 'post',
+                    'success' => 'function(data) {
+                    $("#ajaxLoader").hide();  
+                        if(data.status=="success"){
+                            $("#formResult").fadeIn();
+                            $("#formResult").html("Data saved successfully.");
+                            toastr.success("Data saved successfully.");
+                            $("#payment-receipt-form")[0].reset();
+                            $("#formResult").animate({opacity:1.0},1000).fadeOut("slow");
+                            $("#list tbody").empty();
+                            $("#soReportDialogBox").dialog("open");
+                            $("#AjFlashReportSo").html(data.soReportInfo).show();
+                            $("#information-modal-money-receipt").modal("show");
+                            $("#information-modal-money-receipt .modal-body").html(data.soReportInfo); 
                         }else{
-                            row_amounts++;
-                            $(this).removeClass("is-invalid");
+                            $("#formResultError").html("Data not saved. Please solve the following errors.");
+                            $.each(data, function(key, val) {
+                                $("#payment-receipt-form #"+key+"_em_").html(""+val+"");                                                    
+                                $("#payment-receipt-form #"+key+"_em_").show();
+                            });
+                        }       
+                    }',
+                    'beforeSend' => 'function(){  
+                        let count_item =  $(".item").length; 
+                        let date = $("#PaymentReceipt_date").val();  
+                        let supplier_id = $("#PaymentReceipt_supplier_id").val();  
+                        let grand_total = $("#PaymentReceipt_total_paid_amount").val();  
+                        let payment_type = $("#PaymentReceipt_payment_type").val();  
+                        let bank_id = $("#PaymentReceipt_bank_id").val();  
+                        let cheque_no = $("#PaymentReceipt_cheque_no").val();  
+                        let cheque_date = $("#PaymentReceipt_cheque_date").val();  
+                        let row_amounts = parseFloat($("#PaymentReceipt_amount").val());
+                        let row_discount = parseFloat($("#PaymentReceipt_discount").val());
+                        if(isNaN(row_amounts)){
+                            row_amounts = 0;
                         }
-                    });
-                  
-                    if(date == ""){
-                        toastr.error("Please insert date.");
-                        return false;
-                    }else if(payment_type == ""){
-                        toastr.error("Please select payment type!");
-                        return false;
-                    }else if(payment_type == 2){
-                        if(bank_id == ""){
-                            toastr.error("Please select a bank!");
-                            return false;
-                        }else if(cheque_no == ""){
-                            toastr.error("Please insert cheque no!");
-                            return false;
-                        }else if(cheque_date == ""){
-                            toastr.error("Please insert cheque date!");
-                            return false;
+                        if(isNaN(row_discount)){
+                            row_discount = 0;
                         }
-                    }else if(payment_type == 3){
-                        if(bank_id == ""){
-                            toastr.error("Please select a bank!");
-                            return false;
+                        let total_mr = row_amounts + row_discount;
+                        if (total_mr == 0){
+                            $("#PaymentReceipt_amount").addClass("is-invalid");
+                            $("#PaymentReceipt_discount").addClass("is-invalid");
                         }
-                    }else if(customer_id == ""){
-                        toastr.error("Customer not found! Please insert valid SO!");
-                        return false;
-                    }else if(count_item <= 0){
-                        toastr.error("Due invoice not found!");
-                        return false;
-                    }else if(row_amounts == 0){
-                        toastr.error("Please insert MR Amount.");
-                        return false;
-                    }else if(grand_total == "" || grand_total <= 0){
-                        toastr.error("Total paid amount is 0");
-                        return false;
-                    }else {                
-                        $("#overlay").fadeIn(300);　   
-                        $("#ajaxLoader").show();
-                    }
-                 }',
-            'error' => 'function(xhr) { 
-                    $("#overlay").fadeOut(300);
-              }',
-            'complete' => 'function() {
-                    $("#overlay").fadeOut(300);
-                 $("#ajaxLoaderReport").hide(); 
-              }',
-        ), array('class' => 'btn btn-primary btn-md'));
-        ?>
+                        else {
+                            $("#PaymentReceipt_amount").removeClass("is-invalid");
+                            $("#PaymentReceipt_discount").removeClass("is-invalid");
+                        }
+                        if(date == ""){
+                            toastr.error("Please insert date.");
+                            return false;
+                        }else if(payment_type == ""){
+                            toastr.error("Please select payment type!");
+                            return false;
+                        }else if(payment_type == 2){
+                            if(bank_id == ""){
+                                toastr.error("Please select a bank!");
+                                return false;
+                            }else if(cheque_no == ""){
+                                toastr.error("Please insert cheque no!");
+                                return false;
+                            }else if(cheque_date == ""){
+                                toastr.error("Please insert cheque date!");
+                                return false;
+                            }
+                        }else if(payment_type == 3){
+                            if(bank_id == ""){
+                                toastr.error("Please select a bank!");
+                                return false;
+                            }
+                        }else if(supplier_id == ""){
+                            toastr.error("Customer not found! Please insert valid SO!");
+                            return false;
+                        }else if(total_mr == 0){
+                            toastr.error("Please insert MR Amount.");
+                            return false;
+                        }else {                
+                            $("#overlay").fadeIn(300);
+                            $("#ajaxLoader").show();
+                        }
+                    }',
+                    'error' => 'function(xhr, status, error) { 
+                        // Code to handle errors
+                        toastr.error(xhr.responseText); // Displaying error message using Toastr
+                        // Optionally, you can display additional error details
+                        console.error(xhr.statusText);
+                        console.error(xhr.status);
+                        console.error(xhr.responseText);
+                    
+                        $("#overlay").fadeOut(300);
+                }',
+                    'complete' => 'function() {
+                        $("#overlay").fadeOut(300);
+                    $("#ajaxLoaderReport").hide(); 
+                }',
+            ), array('class' => 'btn btn-primary btn-md'));
+            ?>
 
-        <span id="ajaxLoaderMR" class="ajaxLoaderMR" style="display: none;">
-            <i class="fa fa-spinner fa-spin fa-2x"></i>
-        </span>
+            <span id="ajaxLoaderMR" class="ajaxLoaderMR" style="display: none;">
+                <i class="fa fa-spinner fa-spin fa-2x"></i>
+            </span>
 
-        <div id="formResult" class="ajaxTargetDiv"></div>
-        <div id="formResultError" class="ajaxTargetDivErr"></div>
+            <div id="formResult" class="ajaxTargetDiv"></div>
+            <div id="formResultError" class="ajaxTargetDivErr"></div>
+        </div>
     </div>
 </div>
 <div id="overlay">
@@ -446,264 +344,73 @@ $this->widget('application.components.BreadCrumb', array(
 
 <?php $this->endWidget(); ?>
 
-
-<script>
-    var picker = new Lightpick({
-        field: document.getElementById('entry_date'),
-        minDate: moment(),
-        onSelect: function (date) {
-            document.getElementById('PaymentReceipt_date').value = date.format('YYYY-MM-DD');
-        }
-    });
-    var picker = new Lightpick({
-        field: document.getElementById('cheque_date'),
-        minDate: moment(),
-        onSelect: function (date) {
-            document.getElementById('PaymentReceipt_cheque_date').value = date.format('YYYY-MM-DD');
-        }
-    });
-
-    $("#PaymentReceipt_payment_type").change(function () {
-        let type = this.value;
-        if (type == <?= PaymentReceipt::CASH?>) {
-            $(".bank").hide();
-        } else if (type == <?= PaymentReceipt::CHECK ?>) {
-            $(".bank").show();
-        } else if (type == <?= PaymentReceipt::ONLINE ?>) {
-            $(".bank").hide();
-            $(".online").show();
-        } else {
-            $(".bank").hide();
-        }
-        clearBankInfo();
-    });
-
-    $(document).keypress(function (event) {
-        let keycode = (event.keyCode ? event.keyCode : event.which);
-        if (keycode == '13') {
-            console.log('You pressed a "enter" key in somewhere');
-            // addToList();
-            return false;
-        }
-    });
-
-
-    $(document).on('keyup', ".amount", function () {
-        this.value = this.value.replace(/[^0-9\.]/g, '');
-        let due_amount = parseFloat($(this).closest('tr').find('.due-amount').val());
-        let amount = parseFloat($(this).closest('tr').find('.amount').val());
-        let _row_remaining = $(this).closest('tr').find('.rem-amount');
-        due_amount = isNaN(due_amount) ? 0 : due_amount;
-        amount = isNaN(amount) ? 0 : amount;
-        let rem = due_amount - amount;
-        if (rem >= 0) {
-            _row_remaining.val(rem);
-            $(this).removeClass("is-invalid");
-        } else {
-            this.value = '';
-            _row_remaining.val('');
-            $(this).addClass("is-invalid");
-        }
-        calculateTotal();
-    });
-
-    function calculateTotal() {
-        let amount_total = 0;
-        $(".amount").each(function () {
-            var amount = parseFloat($(this).val());
-            amount = isNaN(amount) ? 0 : amount;
-            amount_total += amount;
-        });
-        $('#PaymentReceipt_total_paid_amount').val(amount_total);
-
-        let rem_amount = 0;
-        $(".rem-amount").each(function () {
-            var rem_qty_total = parseFloat($(this).val());
-            rem_qty_total = isNaN(rem_qty_total) ? 0 : rem_qty_total;
-            rem_amount += rem_qty_total;
-        });
-        $('#PaymentReceipt_rem_total_amount').val(rem_amount);
-    }
-
-    $("#list").on("click", ".dlt", function () {
-        $(this).closest("tr").remove();
-        $("#list td.sl-no").each(function (index, element) {
-            $(element).text(index + 1);
-        });
-        calculateTotal();
-    });
-
-    function clearBankInfo() {
-        $("#PaymentReceipt_bank_id").val("");
-        $("#PaymentReceipt_cheque_no").val("");
-        $("#PaymentReceipt_cheque_date").val("");
-    }
-
-    function validatePositiveNumber(input) {
-        // Get the input value
-        var value = input.value;
-
-        // Remove leading zeros
-        value = value.replace(/^0+/, '');
-
-        // Remove non-digit characters except dot
-        value = value.replace(/[^\d.]/g, '');
-
-        // Remove extra dots
-        value = value.replace(/(\..*)\./g, '$1');
-
-        // Update the input value
-        input.value = value;
-
-        // Check if the value is a positive number
-        if (parseFloat(value) < 0 || isNaN(parseFloat(value))) {
-            // You can also clear the input field or take any other action as needed
-            input.value = '';
-        }
-        distributeValuesIntoAmounts(value);
-    }
-
-    function distributeValuesIntoAmounts(paidAmounts) {
-        let amt = parseFloat(paidAmounts);
-        let supplierCurrentDueAmounts = 0;
-        $(".due-amount").each(function () {
-            let due = parseFloat($(this).val());
-            let discount = parseFloat($(this).closest('tr').find('.discount').val());
-            due = isNaN(due) ? 0 : due;
-            discount = isNaN(discount) ? 0 : discount;
-            let rem = due - (discount);
-            if (paidAmounts >= rem) {
-                $(this).closest('tr').find('.amount').val(rem).change();
-                paidAmounts = paidAmounts - rem;
-            } else {
-                $(this).closest('tr').find('.amount').val(paidAmounts).change();
-                paidAmounts = 0;
-            }
-            $(this).closest('tr').find('.amount').trigger('keyup');
-            supplierCurrentDueAmounts += due;
-        });
-        if (amt > supplierCurrentDueAmounts) {
-            toastr.error("Collected amount is greater than customer due amount.");
-            $("#MoneyReceipt_collected_amt").val("");
-        }
-        calculateTotal();
-        calculateRemainingAMount();
-    }
-
-    function calculateRemainingAMount(){
-        let currentDue = parseFloat($("#PaymentReceipt_invoice_total_due").val());
-        let currentPayment = parseFloat($("#PaymentReceipt_total_paid_amount").val());
-
-        currentDue = isNaN(currentDue) ? 0 : currentDue;
-        currentPayment = isNaN(currentPayment) ? 0 : currentPayment;
-        let rem_amount = currentDue - (currentPayment);
-        $('#PaymentReceipt_rem_total_amount').val(rem_amount);
-    }
-</script>
-
-
-<?php
-$this->beginWidget('zii.widgets.jui.CJuiDialog', array(// the dialog
-    'id' => 'dialogAddProdItem',
-    'options' => array(
-        'title' => 'Add Bank',
-        'autoOpen' => false,
-        'modal' => true,
-        'width' => 550,
-        'resizable' => false,
-    ),
-));
-?>
-
-<div class="divForForm">
-    <div class="ajaxLoaderFormLoad" style="display: none;"><img
-                src="<?php echo Yii::app()->theme->baseUrl; ?>/images/ajax-loader.gif"/></div>
-</div>
-<?php $this->endWidget(); ?>
-
-
-
 <?php
 $this->beginWidget('zii.widgets.jui.CJuiDialog', array(
-    'id' => 'soReportDialogBox',
-    'options' => array(
-        'title' => 'MR PREVIEW',
-        'autoOpen' => false,
-        'modal' => true,
-        'width' => 1030,
-        'resizable' => false,
-    ),
+        'id' => 'soReportDialogBox',
+        'options' => array(
+                'title' => 'PR PREVIEW',
+                'autoOpen' => false,
+                'modal' => true,
+                'width' => 1030,
+                'resizable' => false,
+        ),
 ));
 ?>
 <div id='AjFlashReportSo' style="display:none;"></div>
 <?php $this->endWidget(); ?>
-
-
-<!--        modal-->
-<div class="modal fade" id="information-modal-payment-receipt" tabindex="-1" data-backdrop="static" role="dialog"
-     aria-labelledby="information-modal-payment-receipt" aria-hidden="true">
-    <div class="modal-dialog modal-dialog-centered modal-xl" role="document">
-        <div class="modal-content">
-            <div class="modal-header">
-                <h5 class="modal-title" id="exampleModalLabel">Invoice</h5>
-                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
-                    <span aria-hidden="true">&times;</span>
-                </button>
-            </div>
-            <div class="modal-body text-center">
-                <p>Loading...</p> <!-- this will be replaced by the response from the server -->
-            </div>
-            <div class="modal-footer">
-                <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
-            </div>
-        </div>
-    </div>
-</div>
-
-
-<!--        modal-->
-<div class="modal fade" id="information-modal" tabindex="-1" data-backdrop="static" role="dialog"
-     aria-labelledby="information-modal" aria-hidden="true">
-    <div class="modal-dialog modal-dialog-centered modal-xl" role="document">
-        <div class="modal-content">
-            <div class="modal-header">
-                <h5 class="modal-title" id="exampleModalLabel">Invoice</h5>
-                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
-                    <span aria-hidden="true">&times;</span>
-                </button>
-            </div>
-            <div class="modal-body text-center">
-                <p>Loading...</p> <!-- this will be replaced by the response from the server -->
-            </div>
-            <div class="modal-footer">
-                <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
-            </div>
-        </div>
-    </div>
-</div>
 <script>
-    $('#list').off('click', '.invoiceDetails').on('click', '.invoiceDetails', function () {
+    $(document).ready(function () {
 
-        var invoiceId = $(this).text();
-        var $this = $(this);
-        $this.html('<i class="fa fa-spinner fa-spin"></i>');
-        $.ajax({
-            url: '<?= Yii::app()->createUrl("commercial/purchaseOrder/voucherPreview") ?>',
-            type: 'POST',
-            data: {
-                invoiceId: invoiceId
-            },
-            success: function (response) {
-                $('#information-modal').modal('show');
-                $('#information-modal .modal-body').html(response);
-                $this.html(invoiceId);
-            },
-            error: function () {
-                $this.html(invoiceId);
-                toastr.error('Something went wrong');
+        /* var picker = new Lightpick({
+             field: document.getElementById('PaymentReceipt_date'),
+             minDate: moment(),
+             onSelect: function (date) {
+                 document.getElementById('PaymentReceipt_date').value = date.format('YYYY-MM-DD');
+             },
+
+         });*/
+
+        $('#payment_type_dropdown').change(function () {
+            let paymentType = $(this).val();
+
+            $('#bank_section').addClass('d-none');
+            $('#cheque_no_section').addClass('d-none');
+            $('#cheque_date_section').addClass('d-none');
+
+            if (paymentType == '<?= MoneyReceipt::CASH ?>') {
+                // Do nothing
+            } else if (paymentType == '<?= MoneyReceipt::CHECK ?>') {
+                $('#bank_section').removeClass('d-none');
+                $('#cheque_no_section').removeClass('d-none');
+                $('#cheque_date_section').removeClass('d-none');
+            } else if (paymentType == '<?= MoneyReceipt::ONLINE ?>') {
+                $('#bank_section').removeClass('d-none');
             }
         });
-    });
-</script>
-</script>
 
+        // Allow only numbers and dot
+        function sanitizeNumericInput(element) {
+            let sanitized = element.value.replace(/[^0-9.]/g, '');
+
+            // Allow only one dot
+            let parts = sanitized.split('.');
+            if (parts.length > 2) {
+                sanitized = parts[0] + '.' + parts[1];
+            }
+            element.value = sanitized;
+        }
+
+        // on key up in amount and discount fields, calculate remaining due amount
+        $('#PaymentReceipt_amount, #PaymentReceipt_discount').on('input', function () {
+            sanitizeNumericInput(this);
+
+            let amount = parseFloat($('#PaymentReceipt_amount').val()) || 0;
+            let discount = parseFloat($('#PaymentReceipt_discount').val()) || 0;
+            let currentDueAmt = parseFloat(<?= $currentDueAmount ?>) || 0;
+
+            let remainingDueAmt = currentDueAmt - (amount + discount);
+            $('#remaining_due_amt').val(remainingDueAmt.toFixed(2));
+        });
+    });
+
+</script>

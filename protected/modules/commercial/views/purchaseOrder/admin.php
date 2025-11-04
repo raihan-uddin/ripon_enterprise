@@ -144,15 +144,16 @@ endforeach;
                         'style' => 'width: 80px;'
                     ]
                 ),
+
+                    array(
+                            'name' => 'cash_due',
+                            'type' => 'raw',
+                            'value' => ' Lookup::item("cash_due", $data->cash_due)',
+                            'filter' => Lookup::items('cash_due'),
+                            'htmlOptions' => ['class' => 'text-center']
+                    ),
                 array(
                     'name' => 'date',
-                    'htmlOptions' => ['class' => 'text-center']
-                ),
-                array(
-                    'name' => 'cash_due',
-                    'type' => 'raw',
-                    'value' => ' Lookup::item("cash_due", $data->cash_due)',
-                    'filter' => Lookup::items('cash_due'),
                     'htmlOptions' => ['class' => 'text-center']
                 ),
                 array(
@@ -168,13 +169,7 @@ endforeach;
                     'name' => 'grand_total',
                     'htmlOptions' => ['class' => 'text-center']
                 ),
-                array(
-                    'name' => 'is_paid',
-                    'filter' => [PurchaseOrder::PAID => 'PAID', PurchaseOrder::DUE => 'DUE'],
-                    'value' => 'SellOrder::model()->isPaid($data->is_paid)',
-                    'type' => 'raw',
-                    'htmlOptions' => ['class' => 'text-center']
-                ),
+
                 array(
                     'name' => 'created_by',
                     'value' => 'Users::model()->nameOfThis($data->created_by)',
@@ -195,8 +190,7 @@ endforeach;
                             'label' => '<i class="fa fa-money fa-2x" style="color: green;"></i>&nbsp;&nbsp;',
                             'imageUrl' => false,
                             'options' => array('rel' => 'tooltip', 'data-toggle' => 'tooltip', 'title' => Yii::t('app', 'Create PR')),
-                            'url' => 'Yii::app()->controller->createUrl("/accounting/paymentReceipt/create",array("id"=>$data->supplier_id, "order_id"=>$data->id))',
-                            'visible' => '$data->is_paid == 0 ? TRUE : FALSE',
+                            'url' => 'Yii::app()->controller->createUrl("/accounting/paymentReceipt/create",array("id"=>$data->supplier_id,))',
                         ),
                         'update' => array(
                             'label' => '<i class="fa fa-pencil-square-o fa-2x" style="color: black;"></i>&nbsp;&nbsp;',

@@ -75,7 +75,6 @@ echo "</div>";
             <th style="width: 2%; box-shadow: 0px 0px 0px 1px black inset;">SL</th>
             <th style="width: 10%; box-shadow: 0px 0px 0px 1px black inset;">Date</th>
             <th style="box-shadow: 0px 0px 0px 1px black inset;">Customer</th>
-            <th style="width: 5%;box-shadow: 0px 0px 0px 1px black inset;">Order No</th>
             <th style="width: 10%;box-shadow: 0px 0px 0px 1px black inset;">Payment By</th>
             <th style="width: 10%;box-shadow: 0px 0px 0px 1px black inset;">Amount</th>
         </tr>
@@ -98,7 +97,6 @@ echo "</div>";
                     <td style="text-align: center;"><?php echo $sl++; ?></td>
                     <td style="text-align: center;"><?php echo $dmr->date; ?></td>
                     <td style="text-align: left;"><?php echo $dmr->customer_name; ?></td>
-                    <td style="text-align: center;"><?php echo $dmr->order_id; ?></td>
                     <td style="text-align: left;"><?php echo $dmr->username; ?></td>
                     <td style="text-align: right;"><?php echo number_format($dmr->amount, 2); ?></td>
                 </tr>
@@ -109,7 +107,7 @@ echo "</div>";
         if (!$rowFound) {
             ?>
             <tr>
-                <td colspan='8' style='text-align: center; font-size: 18px; text-transform: uppercase; '>
+                <td colspan='7' style='text-align: center; font-size: 18px; text-transform: uppercase; '>
                     <div class='alert alert-warning'><i class='fa fa-exclamation-triangle'></i> No result found !</div>
                 </td>
             </tr>
@@ -118,7 +116,7 @@ echo "</div>";
         ?>
 
         <tr>
-            <th style="text-align: right;" colspan="5">Ground Total</th>
+            <th style="text-align: right;" colspan="4">Ground Total</th>
             <th style="text-align: right;"><?= number_format($row_closing, 2) ?></th>
         </tr>
 
