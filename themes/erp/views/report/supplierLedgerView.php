@@ -4,226 +4,400 @@
 /** @var double $opening_payment_amount */
 /** @var string $message */
 /** @var mixed $data */
+
+date_default_timezone_set("Asia/Dhaka");
+
+$total_purchase = $total_payment = $row_closing = 0;
+$row_closing += $opening;
+
+if ($data) {
+    foreach ($data as $dmr) {
+        if ($dmr['trx_type'] === 'purchase') {
+            $row_closing += $dmr['amount'];
+            $total_purchase += $dmr['amount'];
+        } else {
+            $row_closing -= $dmr['amount'];
+            $total_payment += $dmr['amount'];
+        }
+    }
+}
+$closing_class = $row_closing < 0 ? 'negative' : 'positive';
 ?>
+
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+
 <style>
+    body {
+        font-family: "Inter", "Roboto", Arial, sans-serif;
+        background: #f9fafc;
+        color: #2f3542;
+    }
+
+    /* ==== SUMMARY STRIP ==== */
+    .summary-strip {
+        display: flex;
+        flex-wrap: wrap;
+        gap: 12px;
+        margin-bottom: 18px;
+    }
+
+    .summary-item {
+        flex: 1;
+        min-width: 180px;
+        background: #fff;
+        border: 1px solid #e5e7eb;
+        border-radius: 8px;
+        padding: 10px 12px;
+        text-align: center;
+        box-shadow: 0 1px 3px rgba(0, 0, 0, 0.05);
+    }
+
+    .summary-item .label {
+        font-size: 12px;
+        color: #64748b;
+        text-transform: uppercase;
+        font-weight: 600;
+        letter-spacing: 0.3px;
+    }
+
+    .summary-item .value {
+        font-size: 17px;
+        font-weight: 700;
+        margin-top: 3px;
+    }
+
+    .summary-item.opening .value {
+        color: #1976d2;
+    }
+
+    .summary-item.purchase .value {
+        color: #2e7d32;
+    }
+
+    .summary-item.payment .value {
+        color: #d32f2f;
+    }
+
+    .summary-item.closing.positive .value {
+        color: #2e7d32;
+    }
+
+    .summary-item.closing.negative .value {
+        color: #c62828;
+    }
+
+    /* ==== TABLE ==== */
     .summaryTab {
-        float: left;
         width: 100%;
-        margin-bottom: 10px;
-        font-size: 12px;
-        border: none;
         border-collapse: collapse;
+        background: #fff;
+        border-radius: 8px;
+        overflow: hidden;
+        box-shadow: 0 2px 6px rgba(0, 0, 0, 0.06);
+        font-size: 13px;
     }
 
-    .summaryTab tr {
-        border: 1px dotted #a6a6a6;
-    }
-
-    .summaryTab tr td,
-    .summaryTab tr th {
-        padding: 5px;
-        font-size: 12px;
-        border: 1px solid #a6a6a6;
-        text-align: left;
-    }
-
-    .summaryTab tr th {
-        background-color: #c0c0c0;
-        font-weight: bold;
-        border: 1px solid #a6a6a6;
+    .summaryTab thead tr:first-child td {
+        background: #1e88e5;
+        color: #fff;
+        text-transform: uppercase;
+        font-weight: 600;
+        letter-spacing: 0.4px;
+        padding: 10px;
         text-align: center;
     }
 
-
-    .final-result .sticky {
-        position: sticky;
-        position: -webkit-sticky;
-        top: 0;
-        background: white;
+    .summaryTab thead tr.titlesTr {
+        background: #f1f5f9;
+        color: #37474f;
+        font-weight: 600;
     }
 
-    .final-result tbody tr:hover {
-        background: #dedede;
-        transition: background-color 100ms;
+    .summaryTab th, .summaryTab td {
+        border: 1px solid #e3e6ea;
+        padding: 8px 10px;
+        text-align: center;
+        vertical-align: middle;
+    }
+
+    .summaryTab tbody tr:nth-child(even) {
+        background: #f9fbfc;
+    }
+
+    .summaryTab tbody tr:hover {
+        background: #eef4ff;
+        transition: background .2s ease;
+    }
+
+    /* Transaction type badge */
+    .trx-badge {
+        display: inline-block;
+        padding: 3px 8px;
+        border-radius: 12px;
+        font-size: 12px;
+        font-weight: 600;
+        color: #fff;
+    }
+
+    .trx-purchase {
+        background: #2e7d32;
+    }
+
+    .trx-payment {
+        background: #d32f2f;
+    }
+
+    .trx-other {
+        background: #607d8b;
+    }
+
+    /* Trend arrow */
+    .trend-up {
+        color: #2e7d32;
+        font-weight: 700;
+    }
+
+    .trend-down {
+        color: #c62828;
+        font-weight: 700;
+    }
+
+    /* Sticky Header */
+    .titlesTr th {
+        position: sticky;
+        top: 0;
+        background: #f1f5f9;
+        z-index: 10;
+    }
+
+
+    /* Print mode */
+    @media print {
+        body {
+            -webkit-print-color-adjust: exact;
+            print-color-adjust: exact;
+            background: #fff;
+            font-size: 12px;
+        }
+
+        /* Hide UI elements */
+        .printBtn,
+        .exportToExcel {
+            display: none !important;
+        }
+
+        /* Hide trend icons */
+        .trend-up,
+        .trend-down {
+            display: none !important;
+        }
+
+        /* --- Show summary strip only on first page --- */
+        .summary-strip {
+            display: block !important;
+            page-break-after: avoid;
+            margin-bottom: 10px;
+            border: 1px solid #aaa;
+            box-shadow: none !important;
+            background: #fafafa !important;
+        }
+
+        /* Hide duplicate summary if printed more than once */
+        .summary-strip + .summary-strip {
+            display: none !important;
+        }
+
+        /* Table cleanup */
+        .summaryTab {
+            box-shadow: none;
+            border: 1px solid #000;
+        }
+
+        .summaryTab thead tr.titlesTr th {
+            background: #ddd !important;
+            color: #000 !important;
+        }
+
+        .summaryTab tbody tr:hover {
+            background: white !important;
+        }
+    }
+
+
+    /* Export Icon */
+    .printBtn {
+        margin-bottom: 12px;
+    }
+
+    .printBtn img {
+        /*height: 28px;*/
+        cursor: pointer;
+        opacity: 0.85;
+        transition: transform .2s ease, opacity .2s;
+    }
+
+    .exportToExcel {
+        height: 50px;
+    }
+
+    .printBtn img:hover {
+        transform: scale(1.1);
+        opacity: 1;
     }
 
 </style>
 
-<?php
-date_default_timezone_set("Asia/Dhaka");
+<div class="printBtn">
+    <img class="exportToExcel" id="exportToExcel"
+         src="<?= Yii::app()->theme->baseUrl ?>/images/excel.png"
+         title="EXPORT TO EXCEL" alt="excel export">
+    <?php
+    $this->widget('ext.mPrint.mPrint', array(
+            'title' => ' ',
+            'tooltip' => 'Print',
+            'text' => '',
+            'element' => '.printAllTableForThisReport',
+            'exceptions' => array(),
+            'publishCss' => TRUE,
+            'visible' => !Yii::app()->user->isGuest,
+            'alt' => 'print',
+            'debug' => FALSE,
+            'id' => 'print-div2'
+    ));
+    ?>
+</div>
 
-echo "<div class='printBtn' style='width: unset;'>";
-echo "  <img class='exportToExcel' id='exportToExcel'  src='" . Yii::app()->theme->baseUrl . "/images/excel.png' title='EXPORT TO EXCEL'>";
-$this->widget('ext.mPrint.mPrint', array(
-    'title' => ' ', //the title of the document. Defaults to the HTML title
-    'tooltip' => 'Print', //tooltip message of the print icon. Defaults to 'print'
-    'text' => '', //text which will appear beside the print icon. Defaults to NULL
-    'element' => '.printAllTableForThisReport', //the element to be printed.
-    'exceptions' => array(//the element/s which will be ignored
-    ),
-    'publishCss' => TRUE, //publish the CSS for the whole page?
-    'visible' => !Yii::app()->user->isGuest, //should this be visible to the current user?
-    'alt' => 'print', //text which will appear if image can't be loaded
-    'debug' => FALSE, //enable the debugger to see what you will get
-    'id' => 'print-div2'         //id of the print link
-));
-echo "</div>";
+<!-- === SUMMARY STRIP === -->
+<div class="summary-strip">
+    <div class="summary-item opening">
+        <div class="label">Opening</div>
+        <div class="value"><?= number_format((float)$opening, 2) ?></div>
+    </div>
+    <div class="summary-item purchase">
+        <div class="label">Total Purchase</div>
+        <div class="value"><?= number_format((float)$total_purchase, 2) ?></div>
+    </div>
+    <div class="summary-item payment">
+        <div class="label">Total Payment</div>
+        <div class="value"><?= number_format((float)$total_payment, 2) ?></div>
+    </div>
+    <div class="summary-item closing <?= $closing_class ?>">
+        <div class="label">Closing Balance</div>
+        <div class="value"><?= number_format((float)$row_closing, 2) ?></div>
+    </div>
+</div>
 
-?>
 <script src="<?= Yii::app()->theme->baseUrl ?>/js/jquery.table2excel.js"></script>
-<div class='printAllTableForThisReport table-responsive p-0"'>
-    <table class="summaryTab final-result table2excel table2excel_with_colors table table-bordered table-sm"
-           id="table-1">
+
+<div class="printAllTableForThisReport table-responsive p-0">
+    <table class="summaryTab table2excel table2excel_with_colors" id="table-1">
         <thead>
         <tr>
-            <td colspan="10" style="font-size:16px; font-weight:bold; text-align:center">
-                <?php echo $message; ?>
+            <td colspan="10" style="text-align:center; font-weight:600; font-size:15px; padding:8px;">
+                <?= nl2br($message) ?>
             </td>
         </tr>
-        <tr class="titlesTr sticky">
-            <th style="width: 2%; box-shadow: 0px 0px 0px 1px black inset;">SL</th>
-            <th style="width: 10%; box-shadow: 0px 0px 0px 1px black inset;">Trx Type</th>
-            <th style="width: 10%; box-shadow: 0px 0px 0px 1px black inset;">Date</th>
-            <th style="width: 5%;box-shadow: 0px 0px 0px 1px black inset;">ID</th>
-            <th style="width: 10%;box-shadow: 0px 0px 0px 1px black inset;">Invoice No</th>
-            <th style="width: 10%;box-shadow: 0px 0px 0px 1px black inset;">Remarks</th>
-            <th style="width: 10%;box-shadow: 0px 0px 0px 1px black inset;">Debit</th>
-            <th style="width: 10%;box-shadow: 0px 0px 0px 1px black inset;">Credit</th>
-            <th style="width: 10%;box-shadow: 0px 0px 0px 1px black inset; min-width: 60px;">Closing</th>
+        <tr class="titlesTr">
+            <th>SL</th>
+            <th>Trx Type</th>
+            <th>Date</th>
+            <th>ID</th>
+            <th>Invoice No</th>
+            <th>Amount</th>
+            <th>Closing</th>
         </tr>
         </thead>
         <tbody>
         <?php
         $sl = 1;
         $rowFound = false;
-        $groundTotal = 0;
-        $row_closing = 0;
+        $previous_closing = $opening;
+        $row_closing = $opening;
+
         if ($opening) {
-            $opening_debit = $opening < 0 ? number_format(abs($opening), 2) : '-';
-            $opening_credit = $opening > 0 ? number_format($opening, 2) : '-';
-            ?>
-            <tr>
-                <td></td>
-                <td style="text-align: center;">Opening</td>
-                <td colspan="4"></td>
-                <td style="text-align: right;"><?= $opening_debit ?></td> <!-- Payment (advance) -->
-                <td style="text-align: right;"><?= $opening_credit ?></td> <!-- Payable -->
-                <td style="text-align: right;"><?= number_format($opening, 2) ?></td> <!-- Closing -->
-            </tr>
-            <?php
+            echo "<tr style='background:#e3f2fd;font-weight:600;color:#1976d2;'>
+                    <td></td>
+                    <td>Opening</td>
+                    <td colspan='3'></td>
+                    <td style='text-align:right;'>" . number_format((float)$opening, 2) . "</td>
+                    <td></td>
+                  </tr>";
         }
-        $total_purchase = $total_payment = $drTotal = $crTotal = 0;
-        $row_closing += $opening;
+
         if ($data) {
             foreach ($data as $dmr) {
                 $trx_type = $dmr['trx_type'];
                 $amount = $dmr['amount'];
-                $paymentType = $remarks = '';
-                $debit = $credit = 0;
-                if ($trx_type == 'purchase') {
-                    $debit = $amount;
-                    $drTotal += $amount;
-                    $row_closing += $dmr['amount'];
-                    $total_purchase += $dmr['amount'];
+                if ($trx_type === 'purchase') {
+                    $row_closing += $amount;
                 } else {
-                    $credit = $amount;
-                    $crTotal += $amount;
-                    $row_closing -= $dmr['amount'];
-                    $total_payment += $dmr['amount'];
-                    $payment = $dmr['payment_type'];
-                    $paymentType = PaymentReceipt::model()->paymentTypeStringWithoutBedge($payment);
-                    $bankName = ComBank::model()->nameOfThis($dmr['bank_id']);
-                    $cheque = $dmr['cheque_no'];
-                    $cheque_date = $dmr['cheque_date'];
-                    if ($bankName) {
-                        $remarks .= strtoupper($bankName);
-                    }
-                    if ($cheque) {
-                        $remarks .= " | " . strtoupper($cheque);
-                    }
-                    if ($cheque_date) {
-                        $cheque_date = date('d-m-Y', strtotime($cheque_date));
-                        $remarks .= " | " . $cheque_date;
-                    }
-                    $dmr['trx_type'] = ucfirst($paymentType . " " . $dmr['trx_type']);
+                    $row_closing -= $amount;
                 }
-                $rowFound = true;
-                ?>
-                <tr>
-                    <td style="text-align: center;"><?php echo $sl++; ?></td>
-                    <td style="text-align: center; text-transform: capitalize;"><?php echo $dmr['trx_type']; ?></td>
-                    <td style="text-align: center;"><?php echo $dmr['date']; ?></td>
-                    <td style="text-align: center;"><?php echo $dmr['id']; ?></td>
-                    <td style="text-align: left;"><?php echo $dmr['order_no']; ?></td>
-                    <td style="text-align: left;"><?php echo $remarks; ?></td>
-                    <td style="text-align: right;"><?php echo $debit ? number_format($debit, 2) : ''; ?></td>
-                    <td style="text-align: right;"><?php echo $credit ? number_format($credit, 2) : ''; ?></td>
-                    <td style="text-align: right;"><?php echo number_format($row_closing, 2); ?></td>
-                </tr>
-                <?php
 
+                $previous_closing = $row_closing;
+                $rowFound = true;
+
+                $badgeClass = $trx_type === 'purchase' ? 'trx-purchase' :
+                        ($trx_type === 'payment' ? 'trx-payment' : 'trx-other');
+
+                echo "<tr>
+                        <td>{$sl}</td>
+                        <td><span>" . ucfirst($trx_type) . "</span></td>
+                        <td>{$dmr['date']}</td>
+                        <td>{$dmr['id']}</td>
+                        <td style='text-align:left;'>{$dmr['order_no']}</td>
+                        <td style='text-align:right;'>" . number_format((float)$amount, 2) . "</td>
+                        <td style='text-align:right;'>" . number_format((float)$row_closing, 2) . "</td>
+                      </tr>";
+                $sl++;
             }
         }
-        if (!$rowFound) {
-            ?>
-            <tr>
-                <td colspan='8' style='text-align: center; font-size: 18px; text-transform: uppercase; '>
-                    <div class='alert alert-warning'><i class='fa fa-exclamation-triangle'></i> No result found !</div>
-                </td>
-            </tr>
-            <?php
-        }
-        ?>
-        <tr>
-            <th colspan="4"></th>
-            <th>Opening Purchase</th>
-            <th>Opening Payment</th>
-            <th>Date Range Purchase</th>
-            <th>Date Range Payment</th>
-            <th>Closing</th>
-        </tr>
-        <tr>
-            <td colspan="4"></td>
-            <td style="text-align: center; font-weight: bold;"><?= $opening_purchase_amount ? number_format($opening_purchase_amount, 2) : 0 ?></td>
-            <td style="text-align: center; font-weight: bold;"><?= $opening_payment_amount ? number_format($opening_payment_amount, 2) : 0 ?></td>
-            <td style="text-align: center; font-weight: bold;"><?= $total_purchase ? number_format($total_purchase, 2) : 0 ?></td>
-            <td style="text-align: center; font-weight: bold;"><?= $total_payment ? number_format($total_payment, 2) : 0 ?></td>
-            <td style="text-align: center; font-weight: bold;"><?= $row_closing ? number_format($row_closing, 2) : 0 ?></td>
-        </tr>
 
+        if (!$rowFound) {
+            echo "<tr><td colspan='7'>
+                    <div class='alert alert-warning' style='text-align:center; font-weight:600;'>
+                        <i class='fa fa-exclamation-triangle'></i> No result found!
+                    </div>
+                  </td></tr>";
+        }
+
+        echo "<tr style='background:#f1f5f9;font-weight:600;color:#37474f;'>
+                <td colspan='2'></td>
+                <td>Opening Purchase</td>
+                <td>Opening Payment</td>
+                <td>Date Range Purchase</td>
+                <td>Date Range Payment</td>
+                <td>Closing</td>
+              </tr>
+              <tr style='background:#e8f5e9;font-weight:600;color:#2e7d32;'>
+                <td colspan='2'></td>
+                <td>" . number_format((float)$opening_purchase_amount, 2) . "</td>
+                <td>" . number_format((float)$opening_payment_amount, 2) . "</td>
+                <td>" . number_format((float)$total_purchase, 2) . "</td>
+                <td>" . number_format((float)$total_payment, 2) . "</td>
+                <td>" . number_format((float)$row_closing, 2) . "</td>
+              </tr>";
+        ?>
         </tbody>
     </table>
 </div>
 
-<style>
-    .summaryTab tr td, .summaryTab tr {
-        padding: 3px 3px 3px 3px;
-        margin: 5px;
-        font-size: 12px;
-        border: 1px solid #a6a6a6;
-        text-align: left;
-    }
-</style>
-
 <script>
     $(function () {
-        $(".exportToExcel").click(function (e) {
+        $(".exportToExcel").click(function () {
             var table = $('.table2excel');
-
-            if (table && table.length) {
-                var preserveColors = (table.hasClass('table2excel_with_colors') ? true : false);
+            if (table.length) {
                 $(table).table2excel({
                     exclude: ".noExl",
-                    name: "Excel Document Name",
-                    filename: "CUSTOMER_LEDGER-" + new Date().toISOString().replace(/[\-\:\.]/g, "") + ".xls",
+                    name: "Supplier Ledger",
+                    filename: "SUPPLIER_LEDGER-" + new Date().toISOString().replace(/[\-\:\.]/g, "") + ".xls",
                     fileext: ".xls",
                     exclude_img: true,
                     exclude_links: true,
                     exclude_inputs: true,
-                    preserveColors: preserveColors
+                    preserveColors: true
                 });
             }
         });
-
     });
 </script>

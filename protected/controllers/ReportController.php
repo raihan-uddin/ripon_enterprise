@@ -246,7 +246,7 @@ class ReportController extends RController
     public function actionSupplierLedger()
     {
         $model = new Inventory();
-        $this->pageTitle = 'CUSTOMER LEDGER';
+        $this->pageTitle = 'SUPPLIER LEDGER';
         $this->render('supplierLedger', array('model' => $model));
     }
 
@@ -289,7 +289,7 @@ class ReportController extends RController
                     UNION
                     SELECT id, date, pr_no AS order_no, supplier_id, SUM(amount) as amount, 'payment', created_at, payment_type, bank_id, cheque_no, cheque_date
                     FROM payment_receipt
-                    WHERE date BETWEEN '$dateFrom' AND '$dateTo' " . ($customer_id > 0 ? " AND supplier_id = $customer_id AND is_deleted = 0" : "") . " GROUP BY date, pr_no, created_by
+                    WHERE date BETWEEN '$dateFrom' AND '$dateTo' " . ($customer_id > 0 ? " AND supplier_id = $customer_id AND is_deleted = 0" : "") . " GROUP BY date, pr_no, supplier_id, created_by
                 ) temp
                 
                 ORDER BY created_at ASC;";
