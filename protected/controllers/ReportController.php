@@ -186,14 +186,28 @@ class ReportController extends RController
             ROUND(SUM(t.sale_amount), 2) AS total_sale_amount,
             ROUND(SUM(t.receipt_amount), 2) AS total_receipt_amount,
             ROUND(SUM(t.return_amount), 2) AS total_return_amount,
-            ROUND(SUM(amount), 2) AS due_amount
+            ROUND(SUM(amount), 2) AS due_amount,
+            MAX(t.activity_date) AS last_activity_date,
+            DATEDIFF(CURDATE(), MAX(t.activity_date)) AS aging_days,
+            CASE
+                WHEN DATEDIFF(CURDATE(), MAX(t.activity_date)) >= 90 THEN 'Critical'
+                WHEN DATEDIFF(CURDATE(), MAX(t.activity_date)) >= 60 THEN 'High Risk'
+                WHEN DATEDIFF(CURDATE(), MAX(t.activity_date)) >= 30 THEN 'Warning'
+                ELSE 'Active'
+            END AS customer_status,
+            CASE 
+                WHEN SUM(t.sale_amount) = 0 THEN 0
+                ELSE ROUND((SUM(t.receipt_amount) / SUM(t.sale_amount)) * 100, 2)
+            END AS payment_ratio
+
         FROM 
             (SELECT 
                 customer_id, 
                 grand_total AS sale_amount,
                 0 AS receipt_amount,
                 0 AS return_amount,
-                grand_total AS amount 
+                grand_total AS amount,
+                date as activity_date
             FROM 
                 sell_order
             WHERE 
@@ -205,7 +219,8 @@ class ReportController extends RController
                 0 AS sale_amount,
                 (amount + discount) AS receipt_amount,
                 0 AS return_amount,
-                -(amount + discount) AS amount
+                -(amount + discount) AS amount,
+                date as activity_date
             FROM 
                 money_receipt
             WHERE 
@@ -217,7 +232,8 @@ class ReportController extends RController
                 0 AS sale_amount,
                 0 AS receipt_amount,
                 return_amount AS return_amount,
-                -return_amount AS amount
+                -return_amount AS amount,
+                return_date as activity_date
             FROM 
                 sell_return
             WHERE 
