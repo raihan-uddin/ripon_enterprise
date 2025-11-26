@@ -6,17 +6,16 @@
 </style>
 <?php
 $this->widget('application.components.BreadCrumb', array(
-    'crumbs' => array(
-        array('name' => 'Report', 'url' => array('')),
-        array('name' => 'Sell', 'url' => array('')),
-        array('name' => 'Customer Due Report',),
-    ),
-//    'delimiter' => ' &rarr; ',
+        'crumbs' => array(
+                array('name' => 'Report', 'url' => array('')),
+                array('name' => 'Sell', 'url' => array('')),
+                array('name' => 'Customer Due Report',),
+        ),
 ));
 ?>
 <?php
 $form = $this->beginWidget('CActiveForm', array(
-    'id' => 'inventory-form',
+        'id' => 'inventory-form',
 ));
 ?>
 <div class="card card-primary">
@@ -26,43 +25,11 @@ $form = $this->beginWidget('CActiveForm', array(
             <button type="button" class="btn btn-tool" data-card-widget="collapse">
                 <i class="fa fa-minus"></i>
             </button>
-            <!--            <button type="button" class="btn btn-tool" data-card-widget="remove">-->
-            <!--                <i class="fa fa-times"></i>-->
-            <!--            </button>-->
         </div>
     </div>
 
     <div class="card-body">
         <div class="row">
-
-            <div class="col-sm-12 col-md-4" style="display: none">
-                <div class="form-group" style="">
-                    <?php echo $form->labelEx($model, 'date_from', ['class' => 'col-form-label']); ?>
-                    <div class="input-group" id="date_from" data-target-input="nearest">
-                        <?php echo $form->textField($model, 'date_from', array('class' => 'form-control datetimepicker-input', 'placeholder' => 'YYYY-MM-DD', 'value' => date('Y-m-d'))); ?>
-                        <div class="input-group-append">
-                            <div class="input-group-text"><i class="fa fa-calendar"></i></div>
-                        </div>
-                    </div>
-                    <span class="help-block"
-                          style="color: red; width: 100%"> <?php echo $form->error($model, 'date_from'); ?></span>
-                </div>
-            </div>
-
-            <div class="col-sm-12 col-md-2" style="display: none">
-                <div class="form-group" style="">
-                    <?php echo $form->labelEx($model, 'date_to', ['class' => 'col-form-label']); ?>
-                    <div class="input-group" id="date_to" data-target-input="nearest">
-                        <?php echo $form->textField($model, 'date_to', array('class' => 'form-control datetimepicker-input', 'placeholder' => 'YYYY-MM-DD', 'value' => date('Y-m-d'))); ?>
-                        <div class="input-group-append">
-                            <div class="input-group-text"><i class="fa fa-calendar"></i></div>
-                        </div>
-                    </div>
-                    <span class="help-block"
-                          style="color: red; width: 100%"> <?php echo $form->error($model, 'date_to'); ?></span>
-                </div>
-            </div>
-
             <div class="col-sm-12 col-md-4">
                 <div class="form-group" style="">
                     <?php echo $form->labelEx($model, 'customer_id', ['class' => 'col-form-label']); ?>
@@ -108,35 +75,35 @@ $form = $this->beginWidget('CActiveForm', array(
     <div class="card-footer">
         <?php
         echo CHtml::submitButton('Search', array(
-                'ajax' => array(
-                    'type' => 'POST',
-                    'url' => CController::createUrl('/report/customerDueReportView'),
-                    'beforeSend' => 'function(){
+                        'ajax' => array(
+                                'type' => 'POST',
+                                'url' => CController::createUrl('/report/customerDueReportView'),
+                                'beforeSend' => 'function(){
                                 $(".ajaxLoaderResultView").show();
                                 $("#reportSearchButton").prop("disabled", true);
                                 $("#reportSearchButton").val("Please wait ...");
                             }',
-                    'error' => 'function(XMLHttpRequest, textStatus, errorThrown){
+                                'error' => 'function(XMLHttpRequest, textStatus, errorThrown){
                                 $(".ajaxLoaderResultView").hide();
 					           // showErrorText(XMLHttpRequest, textStatus, errorThrown);
 					            $("#reportSearchButton").prop("disabled", false);
                                 $("#reportSearchButton").val("Search");
 						    }',
-                    'complete' => 'function(){
+                                'complete' => 'function(){
                                 $(".ajaxLoaderResultView").hide();
 					            $("#reportSearchButton").prop("disabled", false);
                                 $("#reportSearchButton").val("Search");
                             }',
-                    'done' => 'function(data){
+                                'done' => 'function(data){
                                 $(".ajaxLoaderResultView").hide();
 					            $("#reportSearchButton").prop("disabled", false);
                                 $("#reportSearchButton").val("Search");
 						    }',
-                    'update' => '#resultDiv',
-                ),
-                'class' => 'btn btn-success btn-md',
-                'id' => 'reportSearchButton',
-            )
+                                'update' => '#resultDiv',
+                        ),
+                        'class' => 'btn btn-success btn-md',
+                        'id' => 'reportSearchButton',
+                )
         );
         ?>
 
@@ -159,31 +126,8 @@ $form = $this->beginWidget('CActiveForm', array(
 <?php $this->endWidget(); ?>
 <script>
 
-    var startDate = moment().startOf('month').format('YYYY-MM-DD');
-    var endDate = moment().format('YYYY-MM-DD');
-
-    var picker = new Lightpick({
-        field: document.getElementById('Inventory_date_from'),
-        // minDate: moment(),
-        onSelect: function (date) {
-            document.getElementById('Inventory_date_from').value = date.format('YYYY-MM-DD');
-        }
-    });
-    picker.setStartDate(startDate);
-
-    var picker2 = new Lightpick({
-        field: document.getElementById('Inventory_date_to'),
-        // minDate: moment(),
-        onSelect: function (date) {
-            document.getElementById('Inventory_date_to').value = date.format('YYYY-MM-DD');
-        }
-    });
-    picker2.setStartDate(endDate);
-
     $("#resetBtn").click(function () {
         $("#inventory-form")[0].reset();
-        $("#Inventory_date_from").val("");
-        $("#Inventory_date_to").val("");
         clearProduct();
     });
 

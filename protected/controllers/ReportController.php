@@ -1,1042 +1,322 @@
+<style>
+    .summaryTab {
+        float: left;
+        width: 100%;
+        margin-bottom: 10px;
+        font-size: 12px;
+        border: none;
+        border-collapse: collapse;
+    }
+
+    .summaryTab tr {
+        border: 1px dotted #a6a6a6;
+    }
+
+    .summaryTab tr td,
+    .summaryTab tr th {
+        padding: 5px;
+        font-size: 12px;
+        border: 1px solid #a6a6a6;
+        text-align: left;
+    }
+
+    .summaryTab tr th {
+        background-color: #c0c0c0;
+        font-weight: bold;
+        border: 1px solid #a6a6a6;
+        text-align: center;
+    }
+
+
+    .final-result .sticky {
+        position: sticky;
+        position: -webkit-sticky;
+        top: 0;
+        background: white;
+    }
+
+    .final-result tbody tr:hover {
+        background: #dedede;
+        transition: background-color 100ms;
+    }
+
+</style>
+
 <?php
-
-class ReportController extends RController
-{
-
-    /**
-     * @var string the default layout for the views. Defaults to '//layouts/column2', meaning
-     * using two-column layout. See 'protected/views/layouts/column2.php'.
-     */
-    public $layout = '//layouts/column1';
-    public $defaultAction = 'index';
-
-    /**
-     * @return array action filters
-     */
-    public function filters()
-    {
-        return array(
-            'rights
-            -purchaseInvoiceDetailsPreview
-            -ExpensePreview
-            -saleInvoiceDetailsPreview
-            ', // perform access control for CRUD operations
-        );
-    }
-
-    public function allowedActions()
-    {
-        return '';
-    }
-
-    public function actionCustomerLedger()
-    {
-        $model = new Inventory();
-        $this->pageTitle = 'CUSTOMER LEDGER';
-        $this->render('customerLedger', array('model' => $model));
-    }
-
-    public function actionCustomerLedgerView()
-    {
-
-        if (Yii::app()->request->isAjaxRequest) {
-            Yii::app()->clientScript->scriptMap['jquery.js'] = false;
-        }
-
-        date_default_timezone_set("Asia/Dhaka");
-        $dateFrom = $_POST['Inventory']['date_from'];
-        $dateTo = $_POST['Inventory']['date_to'];
-        $customer_id = $_POST['Inventory']['customer_id'];
-
-        $message = "";
-        $data = NULL;
-
-        if ($dateFrom != "" && $dateTo != '' & $customer_id > 0) {
-            $message .= "Customer: " . Customers::model()->nameOfThis($customer_id);
-            $message .= "<br>  Date: " . date('d/m/Y', strtotime($dateFrom)) . "-" . date('d/m/Y', strtotime($dateTo));
-
-            $criteriaOpSell = new CDbCriteria();
-            $criteriaOpSell->select = " sum(grand_total) as grand_total";
-            $criteriaOpSell->addColumnCondition(['customer_id' => $customer_id, 't.is_deleted' => 0,]);
-            $criteriaOpSell->addCondition(" date < '$dateFrom'");
-            $data_opening_sell = SellOrder::model()->findByAttributes([], $criteriaOpSell);
-
-            $criteriaOpMr = new CDbCriteria();
-            $criteriaOpMr->select = " sum(amount+discount) as amount";
-            $criteriaOpMr->addColumnCondition(['customer_id' => $customer_id, 't.is_deleted' => 0]);
-            $criteriaOpMr->addCondition(" date < '$dateFrom'");
-            $data_opening_mr = MoneyReceipt::model()->findByAttributes([], $criteriaOpMr);
-            $opening = ($data_opening_sell ? $data_opening_sell->grand_total : 0) - ($data_opening_mr ? $data_opening_mr->amount : 0);
-
-            $criteriaOpReturn = new CDbCriteria();
-            $criteriaOpReturn->select = " sum(return_amount) as return_amount";
-            $criteriaOpReturn->addColumnCondition(['customer_id' => $customer_id, 't.is_deleted' => 0]);
-            $criteriaOpReturn->addCondition(" return_date < '$dateFrom'");
-            $data_opening_return = SellReturn::model()->findByAttributes([], $criteriaOpReturn);
-            $opening -= ($data_opening_return ? $data_opening_return->return_amount : 0);
-
-            $sql = "
-                SELECT temp.*
-                FROM (
-                    -- Sales
-                    SELECT 
-                        id, 
-                        date, 
-                        so_no AS order_no, 
-                        customer_id, 
-                        grand_total AS amount, 
-                        'sale' AS trx_type, 
-                        created_at, 
-                        '' AS payment_type, 
-                        '' AS bank_id, 
-                        '' AS cheque_no, 
-                        '' AS cheque_date
-                    FROM sell_order
-                    WHERE 
-                        date BETWEEN '$dateFrom' AND '$dateTo'
-                        " . ($customer_id > 0 ? " AND customer_id = $customer_id" : "") . "
-                        AND is_deleted = 0
-            
-                    UNION ALL
-            
-                    -- Collections (Money Receipts)
-                    SELECT 
-                        GROUP_CONCAT(DISTINCT id SEPARATOR ',') AS id, 
-                        date, 
-                        GROUP_CONCAT(DISTINCT invoice_id SEPARATOR ',') AS order_no, 
-                        customer_id, 
-                        SUM(COALESCE(amount, 0)) + SUM(COALESCE(discount, 0)) AS amount, 
-                        'collection' AS trx_type, 
-                        MAX(created_at) AS created_at, 
-                        payment_type, 
-                        bank_id, 
-                        cheque_no, 
-                        cheque_date
-                    FROM money_receipt
-                    WHERE 
-                        date BETWEEN '$dateFrom' AND '$dateTo'
-                        " . ($customer_id > 0 ? " AND customer_id = $customer_id" : "") . "
-                        AND is_deleted = 0
-                    GROUP BY customer_id, date, payment_type, bank_id, cheque_no, cheque_date, max_sl_no, created_by
-            
-                    UNION ALL
-            
-                    -- Returns
-                    SELECT 
-                        id, 
-                        return_date AS date, 
-                        sell_id AS order_no, 
-                        customer_id, 
-                        return_amount AS amount, 
-                        'return' AS trx_type, 
-                        created_at, 
-                        '' AS payment_type, 
-                        '' AS bank_id, 
-                        '' AS cheque_no, 
-                        '' AS cheque_date
-                    FROM sell_return
-                    WHERE 
-                        return_date BETWEEN '$dateFrom' AND '$dateTo'
-                        " . ($customer_id > 0 ? " AND customer_id = $customer_id" : "") . "
-                        AND is_deleted = 0
-                ) AS temp
-                ORDER BY created_at ASC;
-            ";
-
-            $command = Yii::app()->db->createCommand($sql);
-            $data = $command->queryAll();
-        }
-        echo $this->renderPartial('customerLedgerView', array(
-            'data' => $data,
-            'message' => $message,
-            'opening' => $opening,
-        ), true, true);
-        Yii::app()->end();
-    }
-
-    public function actionCustomerDueReport()
-    {
-        $model = new Inventory();
-        $this->pageTitle = 'CUSTOMER DUE REPORT';
-        $this->render('customerDueReport', array('model' => $model));
-    }
-
-    public function actionCustomerDueReportView()
-    {
-
-        if (Yii::app()->request->isAjaxRequest) {
-            Yii::app()->clientScript->scriptMap['jquery.js'] = false;
-        }
-
-        date_default_timezone_set("Asia/Dhaka");
-        $dateFrom = $_POST['Inventory']['date_from'];
-        $dateTo = $_POST['Inventory']['date_to'];
-        $customer_id = $_POST['Inventory']['customer_id'];
-
-        $message = "";
-        $data = NULL;
-
-
-        $message .= "DUE REPORT";
-
-        $sql = "SELECT 
-            customer_id, 
-            c.company_name,
-            c.company_contact_no,
-            ROUND(SUM(t.sale_amount), 2) AS total_sale_amount,
-            ROUND(SUM(t.receipt_amount), 2) AS total_receipt_amount,
-            ROUND(SUM(t.return_amount), 2) AS total_return_amount,
-            ROUND(SUM(amount), 2) AS due_amount,
-            MAX(t.activity_date) AS last_activity_date,
-            DATEDIFF(CURDATE(), MAX(t.activity_date)) AS aging_days,
-            CASE
-                WHEN DATEDIFF(CURDATE(), MAX(t.activity_date)) >= 90 THEN 'Critical'
-                WHEN DATEDIFF(CURDATE(), MAX(t.activity_date)) >= 60 THEN 'High Risk'
-                WHEN DATEDIFF(CURDATE(), MAX(t.activity_date)) >= 30 THEN 'Warning'
-                ELSE 'Active'
-            END AS customer_status,
-            CASE 
-                WHEN SUM(t.sale_amount) = 0 THEN 0
-                ELSE ROUND((SUM(t.receipt_amount) / SUM(t.sale_amount)) * 100, 2)
-            END AS payment_ratio
-
-        FROM 
-            (SELECT 
-                customer_id, 
-                grand_total AS sale_amount,
-                0 AS receipt_amount,
-                0 AS return_amount,
-                grand_total AS amount,
-                date as activity_date
-            FROM 
-                sell_order
-            WHERE 
-                is_deleted = 0 
-                " . ($customer_id > 0 ? " AND customer_id = $customer_id" : "") . "
-            UNION ALL
-            SELECT 
-                customer_id, 
-                0 AS sale_amount,
-                (amount + discount) AS receipt_amount,
-                0 AS return_amount,
-                -(amount + discount) AS amount,
-                date as activity_date
-            FROM 
-                money_receipt
-            WHERE 
-                is_deleted = 0
-                " . ($customer_id > 0 ? " AND customer_id = $customer_id" : "") . "
-            UNION ALL
-            SELECT 
-                customer_id,
-                0 AS sale_amount,
-                0 AS receipt_amount,
-                return_amount AS return_amount,
-                -return_amount AS amount,
-                return_date as activity_date
-            FROM 
-                sell_return
-            WHERE 
-                is_deleted = 0
-                " . ($customer_id > 0 ? " AND customer_id = $customer_id" : "") . "
-            ) AS t
-        LEFT JOIN 
-            customers c ON t.customer_id = c.id
-        GROUP BY 
-            customer_id
-        HAVING 
-            due_amount <> 0
-        ORDER BY 
-            c.company_name;";
-
-        $command = Yii::app()->db->createCommand($sql);
-        $data = $command->queryAll();
-
-        echo $this->renderPartial('customerDueReportView', array(
-            'data' => $data,
-            'message' => $message,
-        ), true, true);
-        Yii::app()->end();
-    }
-
-    public function actionSupplierLedger()
-    {
-        $model = new Inventory();
-        $this->pageTitle = 'SUPPLIER LEDGER';
-        $this->render('supplierLedger', array('model' => $model));
-    }
-
-    public function actionSupplierLedgerView()
-    {
-
-        if (Yii::app()->request->isAjaxRequest) {
-            Yii::app()->clientScript->scriptMap['jquery.js'] = false;
-        }
-
-        date_default_timezone_set("Asia/Dhaka");
-        $dateFrom = $_POST['Inventory']['date_from'];
-        $dateTo = $_POST['Inventory']['date_to'];
-        $customer_id = $_POST['Inventory']['supplier_id'];
-
-        $message = "";
-        $data = NULL;
-
-        if ($dateFrom != "" && $dateTo != '' & $customer_id > 0) {
-            $message .= "Supplier: " . Suppliers::model()->nameOfThis($customer_id);
-            $message .= "<br>  Date: " . date('d/m/Y', strtotime($dateFrom)) . "-" . date('d/m/Y', strtotime($dateTo));
-
-            $criteriaOpSell = new CDbCriteria();
-            $criteriaOpSell->select = " sum(grand_total) as total_amount";
-            $criteriaOpSell->addColumnCondition(['supplier_id' => $customer_id, 't.is_deleted' => 0]);
-            $criteriaOpSell->addCondition(" date < '$dateFrom'");
-            $data_opening_purchase = PurchaseOrder::model()->findByAttributes([], $criteriaOpSell);
-
-            $criteriaOpPr = new CDbCriteria();
-            $criteriaOpPr->select = " sum(amount) as amount";
-            $criteriaOpPr->addColumnCondition(['supplier_id' => $customer_id, 't.is_deleted' => 0]);
-            $criteriaOpPr->addCondition(" date < '$dateFrom'");
-            $data_opening_pr = PaymentReceipt::model()->findByAttributes([], $criteriaOpPr);
-            $opening = ($data_opening_purchase ? $data_opening_purchase->total_amount : 0) - ($data_opening_pr ? $data_opening_pr->amount : 0);
-
-            $sql = "SELECT temp.* FROM (
-                    SELECT id, date, po_no AS order_no, supplier_id, grand_total AS amount, 'purchase' as trx_type, created_at, '' AS payment_type, '' AS bank_id, '' AS cheque_no, '' AS cheque_date
-                    FROM purchase_order
-                    WHERE date BETWEEN '$dateFrom' AND '$dateTo' " . ($customer_id > 0 ? " AND supplier_id = $customer_id AND is_deleted = 0" : "") . "
-                    UNION
-                    SELECT id, date, pr_no AS order_no, supplier_id, SUM(amount) as amount, 'payment', created_at, payment_type, bank_id, cheque_no, cheque_date
-                    FROM payment_receipt
-                    WHERE date BETWEEN '$dateFrom' AND '$dateTo' " . ($customer_id > 0 ? " AND supplier_id = $customer_id AND is_deleted = 0" : "") . " GROUP BY date, pr_no, supplier_id, created_by
-                ) temp
-                
-                ORDER BY created_at ASC;";
-            $command = Yii::app()->db->createCommand($sql);
-            $data = $command->queryAll();
-        }
-        echo $this->renderPartial('supplierLedgerView', array(
-            'data' => $data,
-            'message' => $message,
-            'opening' => $opening,
-            'opening_purchase_amount' => ($data_opening_purchase ? $data_opening_purchase->total_amount : 0),
-            'opening_payment_amount' => ($data_opening_pr ? $data_opening_pr->amount : 0),
-        ), true, true);
-        Yii::app()->end();
-    }
-
-    public function actionSupplierDueReport()
-    {
-        $model = new Inventory();
-        $this->pageTitle = 'SUPPLIER DUE REPORT';
-        $this->render('supplierDueReport', array('model' => $model));
-    }
-
-    public function actionSupplierDueReportView()
-    {
-
-        if (Yii::app()->request->isAjaxRequest) {
-            Yii::app()->clientScript->scriptMap['jquery.js'] = false;
-        }
-
-        date_default_timezone_set("Asia/Dhaka");
-        $dateFrom = $_POST['Inventory']['date_from'];
-        $dateTo = $_POST['Inventory']['date_to'];
-        $customer_id = $_POST['Inventory']['supplier_id'];
-
-        $message = "";
-        $data = NULL;
-
-
-        $message .= "DUE REPORT";
-
-        $sql = "SELECT 
-                supplier_id, 
-                s.company_name,
-                s.company_contact_no,
-                ROUND(SUM(t.purchase_amount), 2) AS total_purchase_amount,
-                ROUND(SUM(t.payment_amount), 2) AS total_payment_amount,
-                ROUND(SUM(amount), 2) AS due_amount
-            FROM 
-                (SELECT 
-                    supplier_id, 
-                    grand_total as purchase_amount,
-                    0 as payment_amount,
-                    grand_total as amount 
-                FROM 
-                    purchase_order
-                        WHERE is_deleted = 0
-                    " . ($customer_id > 0 ? " AND supplier_id = $customer_id" : "") . "
-                UNION ALL
-                SELECT 
-                    supplier_id, 
-                    0 as purchase_amount,
-                    amount as payment_amount,
-                    -amount 
-                FROM 
-                    payment_receipt
-                        WHERE is_deleted = 0
-                    " . ($customer_id > 0 ? " AND supplier_id = $customer_id" : "") . "
-                ) AS t
-            inner join suppliers s on t.supplier_id = s.id
-            GROUP BY 
-                supplier_id
-            HAVING 
-                due_amount <> 0
-            ORDER BY s.company_name;";
-        $command = Yii::app()->db->createCommand($sql);
-        $data = $command->queryAll();
-
-        echo $this->renderPartial('supplierDueReportView', array(
-            'data' => $data,
-            'message' => $message,
-        ), true, true);
-        Yii::app()->end();
-    }
-
-    public function actionDayInOutReport()
-    {
-        $model = new Inventory();
-        $this->pageTitle = 'DAY IN/OUT REPORT';
-        $this->render('dayInOutReport', array('model' => $model));
-    }
-
-    public function actionDayInOutReportView()
-    {
-
-        if (Yii::app()->request->isAjaxRequest) {
-            Yii::app()->clientScript->scriptMap['jquery.js'] = false;
-        }
-
-        date_default_timezone_set("Asia/Dhaka");
-        $dateFrom = $_POST['Inventory']['date_from'];
-        $dateTo = $_POST['Inventory']['date_to'];
-
-        $message = "";
-        $data = NULL;
-        $opening = 0;
-        if ($dateFrom != "" && $dateTo != '') {
-
-            $message = "<br>  Date: " . date('d/m/Y', strtotime($dateFrom)) . "-" . date('d/m/Y', strtotime($dateTo));
-
-            $criteriaOpMr = new CDbCriteria();
-            $criteriaOpMr->select = " sum(amount) as amount";
-            $criteriaOpMr->addColumnCondition(['is_deleted' => 0]);
-            $criteriaOpMr->addCondition(" date < '$dateFrom'");
-            $data_opening_mr = MoneyReceipt::model()->findByAttributes([], $criteriaOpMr);
-
-            $criteriaOpPr = new CDbCriteria();
-            $criteriaOpPr->select = " sum(amount) as amount";
-            $criteriaOpPr->addColumnCondition(['is_deleted' => 0]);
-            $criteriaOpPr->addCondition(" date < '$dateFrom'");
-            $data_opening_pr = PaymentReceipt::model()->findByAttributes([], $criteriaOpPr);
-
-            $criteriaOpExp = new CDbCriteria();
-            $criteriaOpExp->select = " sum(amount) as amount";
-            $criteriaOpPr->addColumnCondition(['is_deleted' => 0]);
-            $criteriaOpExp->addCondition(" date < '$dateFrom'");
-            $data_opening_exp = Expense::model()->findByAttributes([], $criteriaOpExp);
-
-            $opening = ($data_opening_mr ? $data_opening_mr->amount : 0) - (($data_opening_pr ? $data_opening_pr->amount : 0) + ($data_opening_exp ? $data_opening_exp->amount : 0));
-
-            $sql = "SELECT date, 
-               SUM(CASE WHEN transaction_type = 'Expense' THEN amount ELSE 0 END) AS expense, 
-               SUM(CASE WHEN transaction_type = 'Income' THEN amount ELSE 0 END) AS income, 
-               SUM(CASE WHEN transaction_type = 'Outgoing Payment' THEN amount ELSE 0 END) AS payment 
-                FROM (
-                        (SELECT 'Expense' AS transaction_type, date, amount
-                         FROM expense
-                         WHERE date BETWEEN '$dateFrom' AND '$dateTo' AND is_deleted = 0)
-                
-                         UNION ALL
-                
-                         (SELECT 'Income' AS transaction_type, date, amount
-                         FROM money_receipt
-                         WHERE date BETWEEN '$dateFrom' AND '$dateTo' AND is_deleted = 0)
-                
-                         UNION ALL
-                
-                         (SELECT 'Outgoing Payment' AS transaction_type, date, amount
-                         FROM payment_receipt
-                         WHERE date BETWEEN '$dateFrom' AND '$dateTo' AND is_deleted = 0)
-                     ) AS t
-                GROUP BY date ORDER BY date ASC;";
-            $command = Yii::app()->db->createCommand($sql);
-            $data = $command->queryAll();
-        }
-        echo $this->renderPartial('dayInOutReportView', array(
-            'data' => $data,
-            'message' => $message,
-            'opening' => $opening,
-        ), true, true);
-        Yii::app()->end();
-    }
-
-    public function actionCollectionReport()
-    {
-        $model = new Inventory();
-        $this->pageTitle = 'COLLECTION REPORT';
-        $this->render('collectionReport', array('model' => $model));
-    }
-
-    public function actionCollectionReportView()
-    {
-
-        if (Yii::app()->request->isAjaxRequest) {
-            Yii::app()->clientScript->scriptMap['jquery.js'] = false;
-        }
-
-        date_default_timezone_set("Asia/Dhaka");
-        $dateFrom = $_POST['Inventory']['date_from'];
-        $dateTo = $_POST['Inventory']['date_to'];
-        $customer_id = $_POST['Inventory']['customer_id'];
-        $created_by = $_POST['Inventory']['created_by'];
-
-        $message = "";
-        $data = NULL;
-
-        $companyName = Yii::app()->params['company']['name'];
-        $message = $companyName;
-        if ($dateFrom != "" && $dateTo != '') {
-            $message .= "<br>  Date: " . date('d/m/Y', strtotime($dateFrom)) . "-" . date('d/m/Y', strtotime($dateTo));
-
-            $criteria = new CDbCriteria();
-            $criteria->addBetweenCondition('t.date', $dateFrom, $dateTo);
-            $criteria->addColumnCondition(['t.is_deleted' => 0]);
-            if ($customer_id > 0) {
-                $criteria->addColumnCondition(['t.customer_id' => $customer_id]);
-            }
-            if ($created_by > 0) {
-                $criteria->addColumnCondition(['t.created_by' => $created_by]);
-            }
-            $criteria->join = " INNER JOIN users u on t.created_by = u.id ";
-            $criteria->join .= " LEFT JOIN customers c on t.customer_id = c.id ";
-            $criteria->select = "t.*, u.username, c.company_name as customer_name, c.company_contact_no as contact_no";
-            $criteria->order = 't.date asc';
-            $data = MoneyReceipt::model()->findAll($criteria);
-        }
-        echo $this->renderPartial('collectionReportView', array(
-            'data' => $data,
-            'message' => $message,
-        ), true, true);
-        Yii::app()->end();
-    }
-
-
-    public function actionPaymentReport()
-    {
-        $model = new Inventory();
-        $this->pageTitle = 'PAYMENT REPORT';
-        $this->render('paymentReport', array('model' => $model));
-    }
-
-    public function actionPaymentReportView()
-    {
-
-        if (Yii::app()->request->isAjaxRequest) {
-            Yii::app()->clientScript->scriptMap['jquery.js'] = false;
-        }
-
-        date_default_timezone_set("Asia/Dhaka");
-        $dateFrom = $_POST['Inventory']['date_from'];
-        $dateTo = $_POST['Inventory']['date_to'];
-        $supplier_id = $_POST['Inventory']['supplier_id'];
-        $created_by = $_POST['Inventory']['created_by'];
-
-        $message = "";
-        $data = NULL;
-
-        if ($dateFrom != "" && $dateTo != '') {
-            $message .= "<br>  Date: " . date('d/m/Y', strtotime($dateFrom)) . "-" . date('d/m/Y', strtotime($dateTo));
-
-            $criteria = new CDbCriteria();
-            $criteria->addBetweenCondition('t.date', $dateFrom, $dateTo);
-
-            $criteria->addColumnCondition(['t.is_deleted' => 0]);
-
-            if ($supplier_id > 0) {
-                $criteria->addColumnCondition(['t.supplier_id' => $supplier_id]);
-            }
-            if ($created_by > 0) {
-                $criteria->addColumnCondition(['t.created_by' => $created_by]);
-            }
-            $criteria->join = " INNER JOIN users u on t.created_by = u.id ";
-            $criteria->join .= " INNER JOIN suppliers c on t.supplier_id = c.id ";
-            $criteria->select = "t.*, u.username, c.company_name as customer_name, c.company_contact_no as contact_no";
-            $criteria->order = 't.date asc';
-            $data = PaymentReceipt::model()->findAll($criteria);
-        }
-        echo $this->renderPartial('paymentReportView', array(
-            'data' => $data,
-            'message' => $message,
-        ), true, true);
-        Yii::app()->end();
-    }
-
-    // sales report
-    public function actionSalesReport()
-    {
-        $model = new Inventory();
-        $this->pageTitle = 'SALES REPORT';
-        $this->render('salesReport', array('model' => $model));
-    }
-
-    // sales report view
-    public function actionSalesReportView()
-    {
-        if (Yii::app()->request->isAjaxRequest) {
-            Yii::app()->clientScript->scriptMap['jquery.js'] = false;
-        }
-
-        date_default_timezone_set("Asia/Dhaka");
-        $dateFrom = $_POST['Inventory']['date_from'];
-        $dateTo = $_POST['Inventory']['date_to'];
-        $customer_id = $_POST['Inventory']['customer_id'];
-        $order_type = $_POST['Inventory']['order_type'];
-        $group_by = $_POST['Inventory']['group_by'];
-        $sort_by = $_POST['Inventory']['sort_by'];
-        $sort_order = $_POST['Inventory']['sort_order'];
-        $created_by = isset($_POST['Inventory']['created_by']) ? $_POST['Inventory']['created_by'] : 0;
-
-        $message = "";
-        $data = NULL;
-
-        $companyName = Yii::app()->params['company']['name'];
-        $message = $companyName;
-        if ($dateFrom != "" && $dateTo != '') {
-            $message .= "<br>  Date: " . date('d/m/Y', strtotime($dateFrom)) . "-" . date('d/m/Y', strtotime($dateTo));
-
-            $criteria = new CDbCriteria();
-            $criteria->addBetweenCondition('t.date', $dateFrom, $dateTo);
-            $criteria->addColumnCondition(['t.is_deleted' => 0]);
-            if ($customer_id > 0) {
-                $criteria->addColumnCondition(['t.customer_id' => $customer_id]);
-            }
-            if ($created_by > 0) {
-                $criteria->addColumnCondition(['t.created_by' => $created_by]);
-            }
-            if ($order_type > 0) {
-                $criteria->addColumnCondition(['t.order_type' => $order_type]);
-            }
-            $criteria->join .= " LEFT JOIN customers c on t.customer_id = c.id ";
-            $criteria->select = "SUM(t.total_amount) as total_amount, 
-                                SUM(t.total_return) as return_amount, 
-                                SUM(t.delivery_charge) as delivery_charge, 
-                                SUM(t.discount_amount) as discount_amount, 
-                                SUM(t.grand_total) as grand_total, 
-                                SUM(t.costing) as costing, 
-                                SUM(t.total_amount) as total_amount, 
-                                SUM(t.total_due) as total_due,
-                                t.date,
-                                t.customer_id,
-                                t.id,
-                                c.company_name as customer_name, 
-                                c.owner_mobile_no as contact_no";
-            if ($group_by) {
-                $criteria->group = $group_by;
-            } else {
-                $criteria->group = 't.id';
-            }
-            if ($sort_by && $sort_order) {
-                $criteria->order = "$sort_by $sort_order";
-            } else {
-                $criteria->order = 't.date asc';
-            }
-            $data = SellOrder::model()->findAll($criteria);
-        }
-        echo $this->renderPartial('salesReportView', array(
-            'data' => $data,
-            'message' => $message,
-            'group_by' => $group_by,
-        ), true, true);
-        Yii::app()->end();
-    }
-
-    public function actionSaleDetailsReport()
-    {
-        $model = new Inventory();
-        $this->pageTitle = 'SALE DETAILS REPORT';
-        $this->render('saleDetailsReport', array('model' => $model));
-    }
-
-    public function actionSaleDetailsReportView()
-    {
-        if (Yii::app()->request->isAjaxRequest) {
-            Yii::app()->clientScript->scriptMap['jquery.js'] = false;
-        }
-
-        date_default_timezone_set("Asia/Dhaka");
-        $dateFrom = $_POST['Inventory']['date_from'];
-        $dateTo = $_POST['Inventory']['date_to'];
-        $model_id = $_POST['Inventory']['model_id'];
-        $customer_id = $_POST['Inventory']['customer_id'];
-        $created_by = $_POST['Inventory']['created_by'];
-        $manufacturer_id = $_POST['Inventory']['manufacturer_id'];
-
-        $message = "";
-        $data = NULL;
-
-
-        $companyName = Yii::app()->params['company']['name'];
-        $message = $companyName;
-
-        if ($dateFrom != "" && $dateTo != '') {
-            $message .= "<br>  Date: " . date('d/m/Y', strtotime($dateFrom)) . "-" . date('d/m/Y', strtotime($dateTo));
-
-            $criteria = new CDbCriteria();
-            $criteria->addBetweenCondition('t.date', $dateFrom, $dateTo);
-            $criteria->addColumnCondition(['t.order_type' => SellOrder::NEW_ORDER, 't.is_deleted' => 0, 'sod.is_deleted' => 0]);
-            if ($customer_id > 0) {
-                $criteria->addColumnCondition(['t.customer_id' => $customer_id]);
-            }
-            if ($model_id > 0) {
-                $criteria->addColumnCondition(['sod.model_id' => $model_id]);
-            }
-            if ($created_by > 0) {
-                $criteria->addColumnCondition(['t.created_by' => $created_by]);
-            }
-            if ($manufacturer_id > 0) {
-                $criteria->addColumnCondition(['p.manufacturer_id' => $manufacturer_id]);
-            }
-            $criteria->join .= " INNER JOIN sell_order_details sod on t.id = sod.sell_order_id ";
-            $criteria->join .= " INNER JOIN prod_models p on sod.model_id = p.id ";
-            $criteria->join .= " LEFT JOIN customers c on t.customer_id = c.id ";
-            $criteria->select = "t.*, c.company_name as customer_name, c.owner_mobile_no as contact_no, 
-                                p.model_name as product_name, p.code as product_code, p.purchase_price as current_pp, p.sell_price as current_sp,
-                                sod.product_sl_no, sod.qty, sod.amount,  sod.row_total, sod.costing";
-            $criteria->order = 't.date asc';
-            $data = SellOrder::model()->findAll($criteria);
-        }
-        echo $this->renderPartial('saleDetailsReportView', array(
-            'data' => $data,
-            'message' => $message,
-        ), true, true);
-        Yii::app()->end();
-    }
-
-    public function actionPurchaseReport()
-    {
-        $model = new Inventory();
-        $this->pageTitle = 'PURCHASE REPORT';
-        $this->render('purchaseReport', array('model' => $model));
-    }
-
-    public function actionPurchaseReportView()
-    {
-        if (Yii::app()->request->isAjaxRequest) {
-            Yii::app()->clientScript->scriptMap['jquery.js'] = false;
-        }
-
-        date_default_timezone_set("Asia/Dhaka");
-        $dateFrom = $_POST['Inventory']['date_from'];
-        $dateTo = $_POST['Inventory']['date_to'];
-        $supplier_id = $_POST['Inventory']['supplier_id'];
-        $created_by = $_POST['Inventory']['created_by'];
-
-        $message = "";
-        $data = NULL;
-
-        $companyName = Yii::app()->params['company']['name'];
-        $message = $companyName;
-
-        if ($dateFrom != "" && $dateTo != '') {
-            $message .= "<br>  Date: " . date('d/m/Y', strtotime($dateFrom)) . "-" . date('d/m/Y', strtotime($dateTo));
-
-            $criteria = new CDbCriteria();
-            $criteria->addBetweenCondition('t.date', $dateFrom, $dateTo);
-            $criteria->addColumnCondition(['t.is_deleted' => 0]);
-            if ($supplier_id > 0) {
-                $criteria->addColumnCondition(['t.supplier_id' => $supplier_id]);
-            }
-            if ($created_by > 0) {
-                $criteria->addColumnCondition(['t.created_by' => $created_by]);
-            }
-            $criteria->join .= " INNER JOIN suppliers c on t.supplier_id = c.id ";
-            $criteria->select = "t.*, c.company_name as company_name, c.company_contact_no as contact_no";
-            $criteria->order = 't.date asc';
-            $data = PurchaseOrder::model()->findAll($criteria);
-        }
-        echo $this->renderPartial('purchaseReportView', array(
-            'data' => $data,
-            'message' => $message,
-        ), true, true);
-        Yii::app()->end();
-    }
-
-    public function actionPurchaseDetailsReport()
-    {
-        $model = new Inventory();
-        $this->pageTitle = 'PURCHASE DETAILS REPORT';
-        $this->render('purchaseDetailsReport', array('model' => $model));
-    }
-
-    public function actionPriceListView()
-    {
-        $criteria = new CDbCriteria();
-        $criteria->addNotInCondition('t.item_id', [1, 3, 4]); // service/multimedia/sound
-        $criteria->join = " LEFT join companies c on t.manufacturer_id = c.id ";
-        $criteria->join .= " LEFT join prod_brands b on t.brand_id = b.id ";
-        $criteria->order = 'b.brand_name asc, c.name asc';
-        $criteria->select = "t.*, c.name as company_name, b.brand_name";
-        $products = ProdModels::model()->findAll($criteria);
-        $this->pageTitle = 'PRICE LIST';
-        $this->render('priceListView', array('products' => $products));
-
-    }
-
-
-    public function actionPurchaseDetailsReportView()
-    {
-        if (Yii::app()->request->isAjaxRequest) {
-            Yii::app()->clientScript->scriptMap['jquery.js'] = false;
-        }
-
-        date_default_timezone_set("Asia/Dhaka");
-        $dateFrom = $_POST['Inventory']['date_from'];
-        $dateTo = $_POST['Inventory']['date_to'];
-        $model_id = $_POST['Inventory']['model_id'];
-        $manufacturer_id = $_POST['Inventory']['manufacturer_id'];
-        $item_id = $_POST['Inventory']['item_id'];
-        $brand_id = $_POST['Inventory']['brand_id'];
-        $supplier_id = $_POST['Inventory']['supplier_id'];
-        $created_by = $_POST['Inventory']['created_by'];
-
-        $message = "";
-        $data = NULL;
-
-
-        $companyName = Yii::app()->params['company']['name'];
-        $message = $companyName;
-
-        if ($dateFrom != "" && $dateTo != '') {
-            $message .= "<br>  Date: " . date('d/m/Y', strtotime($dateFrom)) . "-" . date('d/m/Y', strtotime($dateTo));
-
-            $criteria = new CDbCriteria();
-            $criteria->addBetweenCondition('t.date', $dateFrom, $dateTo);
-            $criteria->addColumnCondition(['t.is_deleted' => 0, 'pod.is_deleted' => 0]);
-            if ($supplier_id > 0) {
-                $criteria->addColumnCondition(['t.supplier_id' => $supplier_id]);
-            }
-            if ($model_id > 0) {
-                $criteria->addColumnCondition(['pod.model_id' => $model_id]);
-            }
-            if ($manufacturer_id > 0) {
-                $criteria->addColumnCondition(['pm.manufacturer_id' => $manufacturer_id]);
-            }
-            if ($item_id > 0) {
-                $criteria->addColumnCondition(['pm.item_id' => $item_id]);
-            }
-            if ($brand_id > 0) {
-                $criteria->addColumnCondition(['pm.brand_id' => $brand_id]);
-            }
-            if ($created_by > 0) {
-                $criteria->addColumnCondition(['t.created_by' => $created_by]);
-            }
-            $criteria->join .= " INNER JOIN suppliers c on t.supplier_id = c.id ";
-            $criteria->join .= " INNER JOIN purchase_order_details pod on pod.order_id = t.id ";
-            $criteria->join .= " INNER JOIN prod_models pm on pod.model_id = pm.id ";
-            $criteria->join .= " INNER JOIN units u on pm.unit_id = u.id ";
-            $criteria->select = "t.*, 
-                                pod.product_sl_no, pod.qty, pod.unit_price, pod.row_total,
-                                c.company_name as company_name, c.company_contact_no as contact_no, 
-                                pm.model_name as product_name, pm.code as product_code, u.label";
-            $criteria->order = 't.date asc';
-            $data = PurchaseOrder::model()->findAll($criteria);
-        }
-        echo $this->renderPartial('purchaseDetailsReportView', array(
-            'data' => $data,
-            'message' => $message,
-        ), true, true);
-        Yii::app()->end();
-    }
-
-    public function actionSlowMovingProductReport()
-    {
-        $model = new Inventory();
-        $this->pageTitle = 'SLOW MOVING PRODUCT REPORT';
-        $this->render('slowMovingProductReport', array('model' => $model));
-    }
-
-    // product that are less sold or not sold on a specific date range but on in my stock are slow moving product
-    public function actionSlowMovingProductReportView()
-    {
-        if (Yii::app()->request->isAjaxRequest) {
-            Yii::app()->clientScript->scriptMap['jquery.js'] = false;
-        }
-
-        date_default_timezone_set("Asia/Dhaka");
-        $dateFrom = $_POST['Inventory']['date_from'];
-        $dateTo = $_POST['Inventory']['date_to'];
-
-        $message = "";
-        $data = NULL;
-
-
-        $companyName = Yii::app()->params['company']['name'];
-        $message = $companyName;
-
-        if ($dateFrom != "" && $dateTo != '') {
-            $message .= "<br>  Date: " . date('d/m/Y', strtotime($dateFrom)) . "-" . date('d/m/Y', strtotime($dateTo));
-
-            $sql = "SELECT p.id, p.model_name, p.code, p.purchase_price, p.sell_price, p.qty, p.qty_sold, p.qty_sold_amount, p.qty_sold_costing, p.qty_sold_profit, p.qty_sold_profit_percent, p.qty_sold_date
-                    FROM prod_models p
-                    WHERE p.qty > 0 AND p.qty_sold = 0
-                    ORDER BY p.id ASC;";
-            $command = Yii::app()->db->createCommand($sql);
-            $data = $command->queryAll();
-        }
-        echo $this->renderPartial('slowMovingProductReportView', array(
-            'data' => $data,
-            'message' => $message,
-        ), true, true);
-        Yii::app()->end();
-    }
-
-    public function actionExpenseSummaryReport()
-    {
-        $model = new Inventory();
-        $this->pageTitle = 'EXPENSE SUMMARY REPORT';
-        $this->render('expenseSummaryReport', array('model' => $model));
-    }
-
-    public function actionExpenseSummaryReportView()
-    {
-        if (Yii::app()->request->isAjaxRequest) {
-            Yii::app()->clientScript->scriptMap['jquery.js'] = false;
-        }
-
-        date_default_timezone_set("Asia/Dhaka");
-        $dateFrom = $_POST['Inventory']['date_from'];
-        $dateTo = $_POST['Inventory']['date_to'];
-        $created_by = $_POST['Inventory']['created_by'];
-
-        $message = "";
-        $data = NULL;
-
-
-        $companyName = Yii::app()->params['company']['name'];
-        $message = $companyName;
-
-        if ($dateFrom != "" && $dateTo != '') {
-            $message .= "<br>  Date: " . date('d/m/Y', strtotime($dateFrom)) . "-" . date('d/m/Y', strtotime($dateTo));
-
-            $criteria = new CDbCriteria();
-            $criteria->addBetweenCondition('t.date', $dateFrom, $dateTo);
-            $criteria->addColumnCondition(['t.is_deleted' => 0]);
-            if ($created_by > 0) {
-                $criteria->addColumnCondition(['t.created_by' => $created_by]);
-            }
-            $criteria->join .= " INNER JOIN users u on t.created_by = u.id ";
-            $criteria->select = "t.*, u.username";
-            $criteria->order = 't.date asc';
-            $data = Expense::model()->findAll($criteria);
-        }
-        echo $this->renderPartial('expenseSummaryReportView', array(
-            'data' => $data,
-            'message' => $message,
-        ), true, true);
-        Yii::app()->end();
-    }
-
-    public function actionExpenseDetailsReport()
-    {
-        $model = new Inventory();
-        $this->pageTitle = 'EXPENSE DETAILS REPORT';
-        $this->render('expenseDetailsReport', array('model' => $model));
-    }
-
-    public function actionExpenseDetailsReportView()
-    {
-        if (Yii::app()->request->isAjaxRequest) {
-            Yii::app()->clientScript->scriptMap['jquery.js'] = false;
-        }
-
-        date_default_timezone_set("Asia/Dhaka");
-        $dateFrom = $_POST['Inventory']['date_from'];
-        $dateTo = $_POST['Inventory']['date_to'];
-        $created_by = $_POST['Inventory']['created_by'];
-        $expense_head_id = $_POST['Inventory']['expense_head_id'];
-
-        $message = "";
-        $data = NULL;
-
-
-        $companyName = Yii::app()->params['company']['name'];
-        $message = $companyName;
-
-        if ($dateFrom != "" && $dateTo != '') {
-            $message .= "<br>  Date: " . date('d/m/Y', strtotime($dateFrom)) . "-" . date('d/m/Y', strtotime($dateTo));
-
-            $criteria = new CDbCriteria();
-            $criteria->addColumnCondition(['t.is_deleted' => 0, 'ed.is_deleted' => 0]);
-            $criteria->addBetweenCondition('t.date', $dateFrom, $dateTo);
-            if ($created_by > 0) {
-                $criteria->addColumnCondition(['t.created_by' => $created_by]);
-            }
-            if ($expense_head_id > 0) {
-                $criteria->addColumnCondition(['eh.id' => $expense_head_id]);
-            }
-            $criteria->join .= " INNER JOIN users u on t.created_by = u.id ";
-            $criteria->join .= " INNER JOIN expense_details ed on t.id = ed.expense_id ";
-            $criteria->join .= " INNER JOIN expense_head eh on ed.expense_head_id = eh.id ";
-            $criteria->select = "t.*, u.username, ed.amount as expense_amount, eh.title as expense_head_name, ed.remarks as expense_head_remarks";
-            $criteria->order = 't.date asc';
-            $data = Expense::model()->findAll($criteria);
-        }
-        echo $this->renderPartial('expenseDetailsReportView', array(
-            'data' => $data,
-            'message' => $message,
-        ), true, true);
-        Yii::app()->end();
-    }
-
-    public function actionProductStockLedgerView()
-    {
-        if (Yii::app()->request->isAjaxRequest) {
-            Yii::app()->clientScript->scriptMap['jquery.js'] = false;
-        }
-
-        $model_id = $_POST['Inventory']['model_id'];
-        $dateFrom = isset($_POST['Inventory']['date_from']) ? $_POST['Inventory']['date_from'] : "";
-        $dateTo = isset($_POST['Inventory']['date_to']) ? $_POST['Inventory']['date_to'] : "";
-
-        $criteria = new CDbCriteria();
-        $criteria->addColumnCondition(['t.is_deleted' => 0]);
-        if ($model_id > 0) {
-            $criteria->addColumnCondition(['t.model_id' => $model_id]);
-        }
-        if ($dateFrom != "" && $dateTo != '') {
-            $criteria->addBetweenCondition('t.date', $dateFrom, $dateTo);
-        }
-        $criteria->join .= " INNER JOIN prod_models pm on t.model_id = pm.id ";
-        $criteria->join .= " LEFT JOIN units u on pm.unit_id = u.id ";
-        $criteria->join .= " LEFT JOIN sell_order so on t.master_id = so.id and t.stock_status = 3";
-        $criteria->join .= " LEFT JOIN sell_order_details sod on t.source_id = sod.id and t.stock_status = 3";
-        $criteria->join .= " LEFT JOIN customers c on so.customer_id = c.id";
-        $criteria->join .= " LEFT JOIN purchase_order po on t.master_id = po.id and t.stock_status = 1";
-        $criteria->join .= " LEFT JOIN suppliers s on po.supplier_id = s.id";
-        $criteria->select = "t.*, pm.model_name as product_name, pm.code as product_code, u.label,
-                                c.company_name as customer_name, c.id as customer_id, c.customer_code, c.owner_mobile_no as customer_contact_no,
-                                s.company_name as supplier_name, s.id as supplier_id, s.company_contact_no as supplier_contact_no, 
-                                po.po_no, so.so_no as invoice_no, sod.warranty as sales_warranty";
-        $criteria->order = 't.date desc';
-        $data = Inventory::model()->findAll($criteria);
-        if ($data) {
-            echo $this->renderPartial('productStockLedgerView', array(
-                'data' => $data,
-                'model_id' => $model_id,
-                'dateFrom' => $dateFrom,
-                'dateTo' => $dateTo,
-            ), true, true);
-        } else {
-            echo '<div class="alert alert-danger alert-dismissible fade show" role="alert">
-                        <strong>Sorry!</strong> No data found.
-                        <br>
-                        <span class="text-uppercase">Search Params: Product ID: ' . $model_id . ', Date From: ' . $dateFrom . ', Date To: ' . $dateTo . '</span>
-                        <button type="button" class="close" data-dismiss="alert" aria-label="Close">
-                            <span aria-hidden="true">&times;</span>
-                        </button>
-                    </div>';
-        }
-        Yii::app()->end();
-    }
-
-
+date_default_timezone_set("Asia/Dhaka");
+$yourCompanyInfo = YourCompany::model()->findByAttributes(array('is_active' => YourCompany::ACTIVE,));
+if ($yourCompanyInfo) {
+    $yourCompanyName = $yourCompanyInfo->company_name;
+    $yourCompanyLocation = $yourCompanyInfo->location;
+    $yourCompanyRoad = $yourCompanyInfo->road;
+    $yourCompanyHouse = $yourCompanyInfo->house;
+    $yourCompanyContact = $yourCompanyInfo->contact;
+    $yourCompanyEmail = $yourCompanyInfo->email;
+    $yourCompanyWeb = $yourCompanyInfo->web;
+} else {
+    $yourCompanyName = 'N/A';
+    $yourCompanyLocation = 'N/A';
+    $yourCompanyRoad = 'N/A';
+    $yourCompanyHouse = 'N/A';
+    $yourCompanyContact = 'N/A';
+    $yourCompanyEmail = 'N/A';
+    $yourCompanyWeb = 'N/A';
 }
+
+echo "<div class='printBtn' style='width: unset;'>";
+echo "  <img class='exportToExcel' id='exportToExcel'  src='" . Yii::app()->theme->baseUrl . "/images/excel.png' title='EXPORT TO EXCEL'>";
+$this->widget('ext.mPrint.mPrint', array(
+    'title' => ' ', //the title of the document. Defaults to the HTML title
+    'tooltip' => 'Print', //tooltip message of the print icon. Defaults to 'print'
+    'text' => '', //text which will appear beside the print icon. Defaults to NULL
+    'element' => '.printAllTableForThisReport', //the element to be printed.
+    'exceptions' => array(//the element/s which will be ignored
+    ),
+    'publishCss' => TRUE, //publish the CSS for the whole page?
+    'visible' => !Yii::app()->user->isGuest, //should this be visible to the current user?
+    'alt' => 'print', //text which will appear if image can't be loaded
+    'debug' => FALSE, //enable the debugger to see what you will get
+    'id' => 'print-div2'         //id of the print link
+));
+echo "</div>";
+
+?>
+<script src="<?= Yii::app()->theme->baseUrl ?>/js/jquery.table2excel.js"></script>
+<div class="aging-legend">
+    <strong>Aging Indicator:</strong>
+    <span class="legend-box legend-green"></span> <small>Active (Last 30 Days)</small>
+    <span class="legend-box legend-yellow"></span> <small>30–59 Days Inactive</small>
+    <span class="legend-box legend-orange"></span> <small>60–89 Days Inactive</small>
+    <span class="legend-box legend-red"></span> <small>90+ Days Overdue</small>
+</div>
+
+<div class="aging-filter-container">
+    <label><strong>Filter by Aging :</strong></label>
+
+    <button type="button" class="aging-filter-btn" data-filter="all">All</button>
+    <button type="button" class="aging-filter-btn legend-green" data-filter="green">Active</button>
+    <button type="button" class="aging-filter-btn legend-yellow" data-filter="yellow">30–59 Days</button>
+    <button type="button" class="aging-filter-btn legend-orange" data-filter="orange">60–89 Days</button>
+    <button type="button" class="aging-filter-btn legend-red" data-filter="red">90+ Days</button>
+</div>
+
+
+<div class='printAllTableForThisReport table-responsive p-0"'>
+    <table class="summaryTab final-result table2excel table2excel_with_colors table table-bordered table-sm"
+           id="table-1">
+        <thead>
+        <tr>
+            <td colspan="12" style="font-size:16px; font-weight:bold; text-align:center">
+                <div class="report-header">
+                    <h4>CUSTOMER DUE REPORT</h4>
+                    <div class="meta">
+                        <div><b>Generated:</b> <?= date("d M Y h:i A") ?></div>
+                        <div><b>User:</b> <?= Yii::app()->user->name ?></div>
+                    </div>
+                </div>
+            </td>
+        </tr>
+        <tr class="titlesTr sticky">
+            <th style="width: 2%; box-shadow: 0px 0px 0px 1px black inset;">SL</th>
+            <th style="width: 5%; box-shadow: 0px 0px 0px 1px black inset;">Customer ID</th>
+            <th style="width: 15%; box-shadow: 0px 0px 0px 1px black inset;">Name</th>
+            <th style="width: 10%; box-shadow: 0px 0px 0px 1px black inset;">Phone</th>
+            <th style="width: 5%; box-shadow: 0px 0px 0px 1px black inset;">Last Activity Date</th>
+            <th style="width: 5%; box-shadow: 0px 0px 0px 1px black inset;">Aging (Days)</th>
+            <th style="width: 10%;box-shadow: 0px 0px 0px 1px black inset;">Sale</th>
+            <th style="width: 10%;box-shadow: 0px 0px 0px 1px black inset;">Return</th>
+            <th style="width: 10%;box-shadow: 0px 0px 0px 1px black inset;">Collection</th>
+            <th style="width: 10%;box-shadow: 0px 0px 0px 1px black inset;">Due</th>
+            <th style="width: 5%; box-shadow: 0px 0px 0px 1px black inset;">Status</th>
+            <th style="width: 5%; box-shadow: 0px 0px 0px 1px black inset;">Payment Ratio</th>
+        </tr>
+        </thead>
+        <tbody>
+        <?php
+        $sl = 1;
+        $rowFound = false;
+        $total_sale = 0;
+        $total_return = 0;
+        $total_collection = 0;
+        $total_due = 0;
+        ?>
+
+        <?php
+        if ($data) {
+            foreach ($data as $dmr) {
+                $total_sale += $dmr['total_sale_amount'];
+                $total_return += $dmr['total_return_amount'];
+                $total_collection += $dmr['total_receipt_amount'];
+                $total_due += $dmr['due_amount'];
+                $rowFound = true;
+
+                $lastActivity = $dmr['last_activity_date'];
+                $daysDiff = (strtotime(date('Y-m-d')) - strtotime($lastActivity)) / 86400;
+                $rowClass = '';
+
+                if ($daysDiff >= 90) {
+                    $rowClass = 'legend-red';
+                } elseif ($daysDiff >= 60) {
+                    $rowClass = 'legend-orange';
+                } elseif ($daysDiff >= 30) {
+                    $rowClass = 'legend-yellow';
+                } else {
+                    $rowClass = 'legend-green';
+                }
+                ?>
+                <tr class="<?= $rowClass ?>">
+                    <td style="text-align: center;"><?php echo $sl++; ?></td>
+                    <td style="text-align: center; "><?php echo $dmr['customer_id']; ?></td>
+                    <td style="text-align: left;"><?php echo $dmr['company_name']; ?></td>
+                    <td style="text-align: center;"><?php echo $dmr['company_contact_no']; ?></td>
+                    <td style="text-align: center;"><?php echo $dmr['last_activity_date']; ?></td>
+                    <td style="text-align:right;"><?= $dmr['aging_days'] ?></td>
+                    <td style="text-align: right;"><?php echo number_format($dmr['total_sale_amount'], 2); ?></td>
+                    <td style="text-align: right;"><?php echo number_format($dmr['total_return_amount'], 2); ?></td>
+                    <td style="text-align: right;"><?php echo number_format($dmr['total_receipt_amount'], 2); ?></td>
+                    <td style="text-align: right;"><?php echo number_format($dmr['due_amount'], 2); ?></td>
+                    <td style="text-align:right;"><?= $dmr['customer_status'] ?></td>
+                    <td style="text-align:right;"><?= $dmr['payment_ratio'] ?>%</td>
+                </tr>
+                <?php
+
+            }
+        }
+        ?>
+        <?php
+        if (!$rowFound) {
+            ?>
+            <tr>
+                <td colspan="11"
+                    style='text-align: center; font-size: 18px; text-transform: uppercase; font-weight: bold;'>
+                    <div class="alert alert-warning"><i class="fa fa-exclamation-triangle"></i> No result found !</div>
+                </td>
+            </tr>
+            <?php
+        } else {
+            ?>
+            <tr>
+                <th style="text-align: right;" colspan="6">Ground Total</th>
+                <th style="text-align: right;"><?= number_format($total_sale, 2) ?></th>
+                <th style="text-align: right;"><?= number_format($total_return, 2) ?></th>
+                <th style="text-align: right;"><?= number_format($total_collection, 2) ?></th>
+                <th style="text-align: right;"><?= number_format($total_due, 2) ?></th>
+                <th></th>
+                <th></th>
+            </tr>
+            <?php
+        }
+        ?>
+        </tbody>
+    </table>
+</div>
+
+<style>
+    .summaryTab tr td, .summaryTab tr {
+        padding: 3px 3px 3px 3px;
+        margin: 5px;
+        font-size: 12px;
+        border: 1px solid #a6a6a6;
+        text-align: left;
+    }
+
+    .report-header h2 {
+        margin: 0;
+    }
+    .report-header .meta {
+        font-size: 11px;
+        color: #555;
+    }
+
+    .aging-filter-container {
+        margin-bottom: 10px;
+        display: flex;
+        align-items: center;
+        gap: 8px;
+    }
+
+    .aging-filter-btn {
+        padding: 4px 10px;
+        border: 1px solid #999;
+        background: #f8f8f8;
+        cursor: pointer;
+        font-size: 12px;
+        border-radius: 4px;
+    }
+
+    .aging-filter-btn:hover {
+        background: #e1e1e1;
+    }
+
+    .aging-filter-btn.active {
+        border: 2px solid #000;
+        background: #dcdcdc;
+    }
+
+    .aging-legend {
+        margin-bottom: 10px;
+        font-size: 12px;
+        display: flex;
+        gap: 12px;
+        align-items: center;
+    }
+
+    .legend-box {
+        display: inline-block;
+        width: 14px;
+        height: 14px;
+        border-radius: 3px;
+        margin-right: 4px;
+        border: 1px solid #ccc;
+    }
+
+    .legend-green { background-color: #ffffff; }
+    .legend-yellow { background-color: #fff3cd; }
+    .legend-orange { background-color: #ffe5b4; }
+    .legend-red    { background-color: #f8d7da; }
+
+</style>
+
+<script>
+    $(function () {
+        $(".exportToExcel").click(function (e) {
+            var table = $('.table2excel');
+
+            if (table && table.length) {
+                var preserveColors = (table.hasClass('table2excel_with_colors') ? true : false);
+                $(table).table2excel({
+                    exclude: ".noExl",
+                    name: "Excel Document Name",
+                    filename: "CUSTOMER_DUE_REPORT-" + new Date().toISOString().replace(/[\-\:\.]/g, "") + ".xls",
+                    fileext: ".xls",
+                    exclude_img: true,
+                    exclude_links: true,
+                    exclude_inputs: true,
+                    preserveColors: preserveColors
+                });
+            }
+        });
+
+    });
+
+    $(document).on("click", ".aging-filter-btn", function () {
+
+        $(".aging-filter-btn").removeClass("active");
+        $(this).addClass("active");
+
+        const filter = $(this).data("filter");
+
+        if (filter === "all") {
+            $("#table-1 tbody tr").show();
+            return;
+        }
+
+        // Hide all rows
+        $("#table-1 tbody tr").hide();
+
+        // Show rows matching selected aging class
+        $("#table-1 tbody tr." + "legend-" + filter).show();
+    });
+
+
+</script>
