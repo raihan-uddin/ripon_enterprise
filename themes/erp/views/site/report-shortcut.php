@@ -4,8 +4,8 @@
         $stockReportPermission = Yii::app()->createUrl("inventory/inventory/stockReport");
         $productPerformanceReportPermission = Yii::app()->createUrl("report/productPerformanceReport");
         if (
-            $stockReportPermission ||
-            $productPerformanceReportPermission
+                $stockReportPermission ||
+                $productPerformanceReportPermission
         ) {
             ?>
             <div class="btn-group pr-2 pb-2">
@@ -20,6 +20,8 @@
                         ?>
                         <a class="dropdown-item" href="<?= Yii::app()->createUrl("inventory/inventory/stockReport") ?>">Stock
                             Report</a>
+                        <a class="dropdown-item" href="<?= Yii::app()->createUrl("inventory/inventory/stockReportSupplierWise") ?>">Stock
+                            Report (Supplier Wise)</a>
                         <?php
                     }
                     ?>
@@ -43,13 +45,13 @@
         $dayInOutReportPermission = Yii::app()->createUrl("report/dayInOutReport");
 
         if (
-            $collectionReportPermission
-            || $customerDueReportPermission
-            || $customerLedgerPermission
-            || $paymentReportPermission
-            || $supplierDueReportPermission
-            || $supplierLedgerPermission
-            || $dayInOutReportPermission
+                $collectionReportPermission
+                || $customerDueReportPermission
+                || $customerLedgerPermission
+                || $paymentReportPermission
+                || $supplierDueReportPermission
+                || $supplierLedgerPermission
+                || $dayInOutReportPermission
         ) {
             ?>
             <div class="btn-group pr-2 pb-2">
@@ -144,10 +146,10 @@
 
         <?php
         if (
-            Yii::app()->user->checkAccess('Report.SalesReport')
-            || Yii::app()->user->checkAccess('Report.SaleDetailsReport')
-            || Yii::app()->user->checkAccess('Report.PurchaseReport')
-            || Yii::app()->user->checkAccess('Report.PurchaseDetailsReport')
+                Yii::app()->user->checkAccess('Report.SalesReport')
+                || Yii::app()->user->checkAccess('Report.SaleDetailsReport')
+                || Yii::app()->user->checkAccess('Report.PurchaseReport')
+                || Yii::app()->user->checkAccess('Report.PurchaseDetailsReport')
         ) {
             ?>
 

@@ -46,6 +46,7 @@ class PurchaseOrder extends CActiveRecord
     public $unit_price;
     public $note;
     public $web;
+    public $pod;
     public $address;
     public $contact_no;
     public $unit_id;

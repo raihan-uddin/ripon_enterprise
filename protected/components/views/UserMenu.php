@@ -127,6 +127,7 @@ $this->widget('application.extensions.mbmenu.MbMenu', array(
                 array('label' => 'INVENTORY',
                     'items' => array(
                         ['label' => Yii::t('app', 'STOCK REPORT'), 'url' => ['/inventory/inventory/stockReport'], 'visible' => Yii::app()->user->checkAccess('Inventory.Inventory.StockReport')],
+                        ['label' => Yii::t('app', 'STOCK REPORT SUPPLIER'), 'url' => ['/inventory/inventory/stockReportSupplierWise'], 'visible' => Yii::app()->user->checkAccess('Inventory.Inventory.StockReportSupplierWise')],
                         // price-list
                         ['label' => Yii::t('app', 'PRICE LIST'), 'url' => ['/Report/priceListView'], 'visible' => Yii::app()->user->checkAccess('Report.PriceListView')],
                         // ['label' => Yii::t('app', 'STOCK ALERT'), 'url' => ['/inventory/inventory/stockAlert'], 'visible' => Yii::app()->user->checkAccess('Inventory.Inventory.StockAlert')],

@@ -359,9 +359,6 @@ class InventoryController extends RController
         $message = "";
         $data = "";
 
-        $companyName = Yii::app()->params['company']['name'];
-        $message = $companyName;
-
         if ($dateFrom != "" && $dateTo != '') {
             $criteria = new CDbCriteria;
             $criteria->select = "
@@ -375,8 +372,8 @@ class InventoryController extends RController
             AVG(CASE WHEN inv.stock_status = 1 THEN inv.purchase_price END) AS avg_purchase_price
             ";
             // get the purchase avg price if stock_status = 1
-         
-            $message .= "<br>Stock Report from  $dateFrom To $dateTo";
+
+            $message .= "Stock Report from  $dateFrom To $dateTo";
 
             $criteria->addColumnCondition(['stockable' => 1]);
 
@@ -408,6 +405,130 @@ class InventoryController extends RController
             'endDate' => $dateTo,
             'message' => $message,
         ), true, true);
+        Yii::app()->end();
+    }
+
+
+    public function actionStockReportSupplierWise()
+    {
+        $model = new Inventory();
+        $this->pageTitle = 'STOCK REPORT (SUPPLIER WISE)';
+        $this->render('stockReportSupplierWise', array('model' => $model));
+    }
+
+    public function actionStockReportSupplierWiseView()
+    {
+        if (Yii::app()->request->isAjaxRequest) {
+            Yii::app()->clientScript->scriptMap['jquery.js'] = false;
+        }
+
+        date_default_timezone_set("Asia/Dhaka");
+        $model_id = $_POST['Inventory']['model_id'];
+        $manufacturer_id = $_POST['Inventory']['manufacturer_id'];
+        $item_id = $_POST['Inventory']['item_id'];
+        $brand_id = $_POST['Inventory']['brand_id'];
+        $selectedSupplierId = $_POST['Inventory']['supplier_id'];
+
+        $message = "";
+        $data = "";
+
+        // PRODUCT STOCK BASE DATA
+
+        $supplierProducts = [];
+        if ($selectedSupplierId > 0) {
+            $supplierPurchaseCriteria = new CDbCriteria;
+            $supplierPurchaseCriteria->select = "DISTINCT t.model_id";
+            $supplierPurchaseCriteria->join = " INNER JOIN purchase_order po ON t.order_id = po.id ";
+            $supplierPurchaseCriteria->compare('po.supplier_id', $selectedSupplierId);
+
+            $purchasedProducts = PurchaseOrderDetails::model()->findAll($supplierPurchaseCriteria);
+
+            if (!empty($purchasedProducts)) {
+                $supplierProducts = array_map(function($item){
+                    return $item->model_id;
+                }, $purchasedProducts);
+            }
+        }
+
+        $criteria = new CDbCriteria;
+        $criteria->select = "pm.model_name, 
+                            t.model_id, 
+                            sum(stock_in) - sum(stock_out) as closing_stock, 
+                            pm.sell_price, 
+                            pm.purchase_price as cpp, 
+                            AVG(CASE WHEN t.stock_status = 1 THEN t.purchase_price END) AS avg_purchase_price ";
+
+        $criteria->order = 'pm.model_name ASC';
+        $criteria->join = " INNER JOIN prod_models pm on t.model_id = pm.id ";
+        $criteria->group = 't.model_id';
+
+        if ($model_id > 0) $criteria->addColumnCondition(['model_id' => $model_id]);
+        if ($manufacturer_id > 0) $criteria->addColumnCondition(['t.manufacturer_id' => $manufacturer_id]);
+        if ($item_id > 0) $criteria->addColumnCondition(['t.item_id' => $item_id]);
+        if ($brand_id > 0) $criteria->addColumnCondition(['t.brand_id' => $brand_id]);
+
+        if ($selectedSupplierId > 0 && count($supplierProducts) > 0) {
+            $criteria->addInCondition('t.model_id', $supplierProducts);
+        }
+
+        $products = Inventory::model()->findAll($criteria);
+
+
+        $allSuppliers = Suppliers::model()->findAll([
+            'select' => 't.id, t.company_name'
+        ]);
+
+        // Create simple ID -> Name mapping
+        $supplierMap = [];
+        foreach ($allSuppliers as $s) {
+            $supplierMap[$s->id] = $s->company_name;
+        }
+
+        // Final array for view
+        $finalSupplierOutput = [];
+
+
+        foreach ($products as $p) {
+
+            $modelId = $p->model_id;
+            $closingStock = (int)$p->closing_stock;
+
+            if ($closingStock <= 0) continue;
+
+            // 🔥 FIFO Supplier Allocation
+            $allocations = Inventory::model()->getSupplierWiseLastStock($modelId, $closingStock);
+
+            foreach ($allocations as $supplierId => $qty) {
+                if ($selectedSupplierId > 0 && $supplierId != $selectedSupplierId) {
+                    continue;
+                }
+
+
+                if (!isset($finalSupplierOutput[$supplierId])) {
+                    $finalSupplierOutput[$supplierId] = [
+                        'supplier_id'   => $supplierId,
+                        'supplier_name' => isset($supplierMap[$supplierId])
+                            ? $supplierMap[$supplierId]
+                            : "Unknown Supplier",
+                        'products'      => []
+                    ];
+                }
+
+                $finalSupplierOutput[$supplierId]['products'][] = [
+                    'product_name' => $p->model_name,
+                    'model_id'     => $modelId,
+                    'qty'          => $qty,
+                    'sell_price'   => $p->sell_price,
+                    'avg_pp'       => $p->avg_purchase_price,
+                ];
+            }
+        }
+
+        // Send data to view
+        echo $this->renderPartial('stockReportSupplierWiseView', [
+            'data'    => $finalSupplierOutput,
+            'message' => "Supplier Closing Stock Report (FIFO Applied)"
+        ], true, true);
         Yii::app()->end();
     }
 
@@ -501,42 +622,42 @@ class InventoryController extends RController
         $criteria = new CDbCriteria();
         $criteria->select = "SUM(stock_in - stock_out) as closing_stock";
         $criteria->addColumnCondition(['model_id' => $model_id]);
-        if($product_sl_no){
+        if ($product_sl_no) {
             $criteria->addColumnCondition(['product_sl_no' => $product_sl_no]);
         }
         $data = Inventory::model()->findByAttributes([], $criteria);
-        
+
         $message = "Adjustment Done. Please Reopen the modal for change!";
-        $remove_rows= false;
-        if($data){
+        $remove_rows = false;
+        if ($data) {
             $model = new Inventory();
             $model->model_id = $model_id;
             $model->date = date('Y-m-d');
-            $model->challan_no = Inventory::maxSlNo()+1;
+            $model->challan_no = Inventory::maxSlNo() + 1;
             $model->sl_no = $model->challan_no;
             $model->product_sl_no = $product_sl_no;
-            if($modify_stock_flag > 0){
-                if($data->closing_stock > $physical_stock){
+            if ($modify_stock_flag > 0) {
+                if ($data->closing_stock > $physical_stock) {
                     $model->stock_out = $data->closing_stock - $physical_stock;
                 } else {
                     $model->stock_in = $physical_stock - $data->closing_stock;
                 }
             } else {
-                if($data->closing_stock > 0){
+                if ($data->closing_stock > 0) {
                     $model->stock_out = $data->closing_stock;
                 } else {
                     $model->stock_in = abs($data->closing_stock);
                 }
                 $remove_rows = 1;
             }
-            
+
             $model->stock_status = Inventory::MANUAL_ENTRY;
             $product = ProdModels::model()->findByPk($model_id);
             $model->sell_price = $product->sell_price;
             $model->purchase_price = $product->purchase_price;
             $model->row_total = $model->stock_in > 0 ? round($model->stock_in * $model->sell_price, 2) : round($model->stock_out * $model->sell_price, 2);
-            $model->remarks = $remarks ? $remarks :  "Serial No: $product_sl_no removed from current stock! ";
-            if($model->stock_in > 0 || $model->stock_out > 0){
+            $model->remarks = $remarks ? $remarks : "Serial No: $product_sl_no removed from current stock! ";
+            if ($model->stock_in > 0 || $model->stock_out > 0) {
                 $model->save();
                 $model->save();
                 echo CJSON::encode(array(
@@ -558,10 +679,10 @@ class InventoryController extends RController
                 'remove_rows' => false,
             ));
         }
-        
+
         Yii::app()->end();
     }
-    
+
     public function actionFixPurchasePrice()
     {
         $criteria = new CDbCriteria();

@@ -53,6 +53,10 @@ class Inventory extends CActiveRecord
     public $unit_id;
     public $item_id;
     public $brand_id;
+    public $cpp;
+    public $opening_stock_value;
+    public $stock_in_value;
+    public $stock_out_value;
     public $supplier_name;
     public $customer_name;
     public $image;
@@ -288,6 +292,60 @@ class Inventory extends CActiveRecord
             $badge = "";
         return $badge;
 
+    }
+
+    public function getSupplierWiseLastStock($modelId, $closingStock)
+    {
+        $remaining = (int)$closingStock;
+        $allocated = [];
+
+        // Incremental chunk sizes (fast & efficient)
+        $batchSizes = [10, 20, 30, 50, 100, 200];
+
+        $offset = 0;
+
+        foreach ($batchSizes as $batchSize) {
+
+            if ($remaining <= 0) break;
+
+            $criteria = new CDbCriteria;
+            $criteria->select = "t.id, t.date, t.supplier_id, pod.qty";
+            $criteria->join   = "INNER JOIN purchase_order_details pod ON t.id = pod.order_id";
+            $criteria->condition = "pod.model_id = :mid";
+            $criteria->params = [ ':mid' => $modelId ];
+            $criteria->order  = "t.date DESC, t.id DESC";
+            $criteria->limit  = $batchSize;
+            $criteria->offset = $offset;
+
+            $batches = PurchaseOrder::model()->findAll($criteria);
+
+            if (!$batches)
+                break;
+
+            // Next chunk offset
+            $offset += $batchSize;
+
+            // Reverse FIFO allocation
+            foreach ($batches as $batch) {
+
+                if ($remaining <= 0) break;
+
+                $qty = (int)$batch->qty;
+                $take = min($remaining, $qty);
+
+                $sid = $batch->supplier_id;
+
+                if (!isset($allocated[$sid])) {
+                    $allocated[$sid] = 0;
+                }
+
+                $allocated[$sid] += $take;
+
+                $remaining -= $take;
+            }
+        }
+
+        return $allocated;  // format: [ supplier_id => qty ]
     }
 
 }

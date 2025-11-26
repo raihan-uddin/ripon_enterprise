@@ -32,6 +32,7 @@ class Suppliers extends CActiveRecord
     public $date_diff;
     public $column_no;
     public $column_vals;
+    public $products;
 
     /**
      * @return string the associated database table name
