@@ -57,6 +57,62 @@
         background-color: black;
         height: 1px;
     }
+
+
+    .invoice-header-wrapper {
+        display: flex;
+        align-items: center;
+        font-family: 'Segoe UI', sans-serif;
+        margin-bottom: 8px;
+    }
+
+    .header-left {
+        padding: 10px 25px;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        width: 30%;
+        height: 120px;
+    }
+
+    .header-left img {
+        max-height: 100%;
+        width: auto;
+    }
+
+    .header-center {
+        flex-grow: 1;
+        padding: 0 20px;
+        color: #333;
+        width: 30%;
+        text-align: center;
+    }
+
+    .header-center h1 {
+        font-size: 16px;
+        margin: 0;
+        font-weight: bold;
+    }
+
+    .header-center p {
+        margin: 3px 0 0 0;
+        font-size: 12px;
+        color: #777;
+    }
+
+    .header-right {
+        text-align: right;
+        font-size: 12px;
+        color: #333;
+        padding-right: 20px;
+    }
+
+    .header-right b {
+        display: block;
+        font-size: 14px;
+        margin-bottom: 3px;
+    }
+
 </style>
 
 <div class="card card-success">
@@ -67,9 +123,6 @@
             <button type="button" class="btn btn-tool" data-card-widget="collapse">
                 <i class="fa fa-minus"></i>
             </button>
-            <!--            <button type="button" class="btn btn-tool" data-card-widget="remove">-->
-            <!--                <i class="fa fa-times"></i>-->
-            <!--            </button>-->
         </div>
     </div>
     <div class="card-body">
@@ -90,18 +143,6 @@
                 'id' => 'print-div'         //id of the print link
             ));
             echo "</div>";
-            $yourCompany = YourCompany::model()->findByAttributes(['is_active' => YourCompany::ACTIVE]);
-            $company_name = $company_location = $company_road = $company_house = $company_contact = $company_email = $company_web = $company_trn_no = "N/A";
-            if ($yourCompany) {
-                $company_name = $yourCompany->company_name;
-                $company_location = $yourCompany->location;
-                $company_road = $yourCompany->road;
-                $company_house = $yourCompany->house;
-                $company_contact = $yourCompany->contact;
-                $company_email = $yourCompany->email;
-                $company_web = $yourCompany->web;
-                $company_trn_no = $yourCompany->trn_no;
-            }
             ?>
         </div>
         <?php
@@ -111,41 +152,28 @@
                 <table style="width: 100%; border-collapse: collapse; font-size: 15px;" class="item-list">
                     <tr>
                         <td>
-                            <div style="width: 100%; float: left; clear: right;">
-                                <div style="width: 70%; float: left; clear: right;">
-                                    <img src="<?= Yii::app()->theme->baseUrl . "/images/logo.png" ?>"
-                                         style="width: 130px; height: 100px;">
+                            <div class="invoice-header-wrapper">
+                                <div class="header-left">
+                                    <img
+                                            style="width: 250px;"
+                                            src="<?= Yii::app()->theme->baseUrl ?>/images/voucher-logo.png" alt="Logo">
                                 </div>
-                                <div style="float: right; width: 29%;">
-                                    <div style="float: right;  text-align: right;">Tel.: <?= $company_contact ?> </div>
-                                    <br>
-                                    <div style="float: right;  text-align: right;">
-                                        <?= $company_house ?>
-                                    </div>
-                                    <br>
-                                    <div style="float: right; text-align: right;"> <?= $company_road ?></div>
-                                    <br>
-                                    <div style="float: right;  text-align: right;"> <?= $company_location ?></div>
+
+                                <div class="header-center">
+                                    <h1>PAYMENT RECEIPT</h1>
+                                </div>
+
+                                <div class="header-right">
+                                    <b style="font-size: 20px; white-space: nowrap;"><?= strtoupper(Yii::app()->params['company']['name']) ?></b>
+                                    <?php echo Yii::app()->params['company']['address_line_1']; ?><br>
+                                    <?php echo Yii::app()->params['company']['address_line_2']; ?><br>
+                                    Phone: <?php echo Yii::app()->params['company']['phone_1']; ?><br>
+                                    Email: <?php echo Yii::app()->params['company']['email_1']; ?><br>
+                                    Website: <?php echo Yii::app()->params['company']['web']; ?>
                                 </div>
                             </div>
                             <hr>
-                            <div style="width: 100%; float: left; clear: right;">
-                                <div style="width: 33%; text-align: center; float: left;clear:right; vertical-align: middle;">
-                                    <img src="<?= Yii::app()->theme->baseUrl . "/images/globe_icon.png" ?>"
-                                         style="width: 16px; height: 16px; vertical-align: middle;">
-                                    <?= $company_web ?>
-                                </div>
-                                <div style="width: 33%; text-align: center; float: left;clear:right; vertical-align: middle;">
-                                    <img src="<?= Yii::app()->theme->baseUrl . "/images/email.png" ?>"
-                                         style="width: 16px; height: 16px; vertical-align: middle;">
-                                    <?= $company_email ?>
-                                </div>
-                                <div style="width: 33%; text-align: center; float: left;clear:right; vertical-align: middle;">
-                                    <img src="<?= Yii::app()->theme->baseUrl . "/images/email.png" ?>"
-                                         style="width: 16px; height: 16px; vertical-align: middle;">
-                                    sales@tmebd.com
-                                </div>
-                            </div>
+
                             <hr>
                             <div style="width: 100%; float: left; clear: right;">
                                 <div style="width: 30%; float: left; clear: right;">
@@ -234,7 +262,7 @@
                                     <div style="width: 75%; float: left; clear: right; border-bottom: 1px dotted black;"><?= Users::model()->nameOfThis($dt->created_by) ?></div>
                                 </div>
                                 <div style="width: 50%; float: left; clear: right; text-align: center;">
-                                    <span style="border-top: 1px dotted black;">FOR <?= strtoupper($company_name) ?></span>
+                                    <span style="border-top: 1px dotted black;">FOR <?= strtoupper(Yii::app()->params['company']['name']) ?></span>
                                 </div>
                             </div>
                         </td>
