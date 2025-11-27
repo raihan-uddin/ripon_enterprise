@@ -153,10 +153,10 @@ echo "</div>";
                         <td><?= $d->code ?></td>
                         <td><?= $d->manufacturer_name ?></td>
                         <td style="text-align:center"><?= $d->total_stock_out ?></td>
-                        <td style="text-align:right"><?= number_format($d->sell_price, 2) ?></td>
-                        <td style="text-align:right"><?= number_format($d->sale_value, 2) ?></td>
-                        <td style="text-align:right"><?= number_format($d->purchase_price, 2) ?></td>
-                        <td style="text-align:right"><?= number_format($d->total_out_value, 2) ?></td>
+                        <td style="text-align:right"><?= number_format(floatval($d->sell_price), 2) ?></td>
+                        <td style="text-align:right"><?= number_format(floatval($d->sale_value), 2) ?></td>
+                        <td style="text-align:right"><?= number_format(floatval($d->purchase_price), 2) ?></td>
+                        <td style="text-align:right"><?= number_format(floatval($d->total_out_value), 2) ?></td>
                     </tr>
                     <?php
                 }
@@ -178,9 +178,9 @@ echo "</div>";
         ?>
         <tr>
             <th colspan="6" style="text-align:right;">Grand Total</th>
-            <th style="text-align:right;"><?= number_format($grandSale, 2) ?></th>
+            <th style="text-align:right;"><?= number_format(floatval($grandSale), 2) ?></th>
             <th></th>
-            <th style="text-align:right;"><?= number_format($grandOutValue, 2) ?></th>
+            <th style="text-align:right;"><?= number_format(floatval($grandOutValue), 2) ?></th>
         </tr>
 
         </tbody>
