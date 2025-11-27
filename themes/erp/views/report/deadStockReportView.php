@@ -151,7 +151,7 @@ echo "</div>";
 
         <tr>
             <th colspan="9" style="text-align:right;">Total Stock Value</th>
-            <th style="text-align:right;"><?= number_format(floatval($grandStockValue, 2)) ?></th>
+            <th style="text-align:right;"><?= number_format(floatval($grandStockValue), 2) ?></th>
         </tr>
 
         </tbody>
@@ -234,7 +234,7 @@ echo "</div>";
         });
 
     });
-    
+
 
     $('body').off('click', '.showProductLedger').on('click', '.showProductLedger', showProductLedger);
 
