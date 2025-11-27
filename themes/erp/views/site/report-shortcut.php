@@ -12,7 +12,7 @@
                 <button type="button" class="btn btn-primary dropdown-toggle" data-toggle="dropdown"
                         aria-haspopup="true"
                         aria-expanded="false">
-                    <i class="fa fa-boxes"></i> Inventory Report
+                    <i class="fa fa-cubes"></i> Inventory Report
                 </button>
                 <div class="dropdown-menu" role="menu">
                     <?php
