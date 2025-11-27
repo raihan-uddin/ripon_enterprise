@@ -362,7 +362,8 @@ class InventoryController extends RController
         if ($dateFrom != "" && $dateTo != '') {
             $criteria = new CDbCriteria;
             $criteria->select = "
-            t.model_name, t.code, inv.model_id, t.sell_price, t.purchase_price as cpp,
+            t.model_name, t.code, inv.model_id, t.sell_price, t.purchase_price as cpp, 
+            c.name as manufacturer_name,
             IFNULL((SELECT (SUM(op.stock_in) - SUM(op.stock_out)) FROM inventory op where op.date < '$dateFrom' AND op.model_id = t.id AND op.is_deleted = 0), 0) as opening_stock,
             IFNULL((SELECT (SUM(op.stock_in*op.purchase_price) - SUM(op.stock_out*op.purchase_price)) FROM inventory op where op.date < '$dateFrom' AND op.model_id = t.id  AND op.is_deleted = 0), 0) as opening_stock_value,
             SUM(CASE WHEN (inv.date BETWEEN '$dateFrom' AND '$dateTo') THEN inv.stock_in ELSE 0 END) as stock_in, 
@@ -393,6 +394,7 @@ class InventoryController extends RController
             $criteria->addColumnCondition(['inv.is_deleted' => 0]);
 
             $criteria->join = " LEFT JOIN inventory inv  on inv.model_id = t.id ";
+            $criteria->join .= " LEFT JOIN companies c ON t.manufacturer_id = c.id ";
             $criteria->group = " t.id ";
             $criteria->order = 't.model_name ASC';
             $data = ProdModels::model()->findAll($criteria);
@@ -455,15 +457,17 @@ class InventoryController extends RController
                             t.model_id, 
                             sum(stock_in) - sum(stock_out) as closing_stock, 
                             pm.sell_price, 
-                            pm.purchase_price as cpp, 
+                            pm.purchase_price as cpp,  
+                            c.name as manufacturer_name,
                             AVG(CASE WHEN t.stock_status = 1 THEN t.purchase_price END) AS avg_purchase_price ";
 
         $criteria->order = 'pm.model_name ASC';
         $criteria->join = " INNER JOIN prod_models pm on t.model_id = pm.id ";
+        $criteria->join .= " LEFT JOIN companies c ON pm.manufacturer_id = c.id ";
         $criteria->group = 't.model_id';
 
         if ($model_id > 0) $criteria->addColumnCondition(['model_id' => $model_id]);
-        if ($manufacturer_id > 0) $criteria->addColumnCondition(['t.manufacturer_id' => $manufacturer_id]);
+        if ($manufacturer_id > 0) $criteria->addColumnCondition(['pm.manufacturer_id' => $manufacturer_id]);
         if ($item_id > 0) $criteria->addColumnCondition(['t.item_id' => $item_id]);
         if ($brand_id > 0) $criteria->addColumnCondition(['t.brand_id' => $brand_id]);
 
@@ -516,6 +520,7 @@ class InventoryController extends RController
 
                 $finalSupplierOutput[$supplierId]['products'][] = [
                     'product_name' => $p->model_name,
+                    'manufacturer_name' => $p->manufacturer_name,
                     'model_id'     => $modelId,
                     'qty'          => $qty,
                     'sell_price'   => $p->sell_price,

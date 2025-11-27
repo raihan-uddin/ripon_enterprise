@@ -58,6 +58,7 @@ class Inventory extends CActiveRecord
     public $stock_in_value;
     public $stock_out_value;
     public $supplier_name;
+    public $manufacturer_name;
     public $customer_name;
     public $image;
     public $stock;

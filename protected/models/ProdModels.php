@@ -41,6 +41,12 @@ class ProdModels extends CActiveRecord
     public $stock_out_value;
     public $min_order_qty;
     public $qty;
+    public $total_stock_out;
+    public $sale_value;
+    public $total_out_value;
+    public $manufacturer_name;
+    public $stock_value;
+    public $closing_stock;
     public $barCodeGenerator;
     public $image2;
     public $opening_stock;

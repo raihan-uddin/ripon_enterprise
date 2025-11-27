@@ -3,7 +3,7 @@
  * @var string $message
  * @var string $startDate
  * @var string $endDate
- * @var mixed $data 
+ * @var mixed $data
  */
 ?>
 
@@ -62,161 +62,107 @@ date_default_timezone_set("Asia/Dhaka");
 echo "<div class='printBtn' style='width: unset;'>";
 echo "  <img class='exportToExcel' id='exportToExcel'  src='" . Yii::app()->theme->baseUrl . "/images/excel.png' title='EXPORT TO EXCEL'>";
 $this->widget('ext.mPrint.mPrint', array(
-    'title' => ' ', //the title of the document. Defaults to the HTML title
-    'tooltip' => 'Print', //tooltip message of the print icon. Defaults to 'print'
-    'text' => '', //text which will appear beside the print icon. Defaults to NULL
-    'element' => '.printAllTableForThisReport', //the element to be printed.
-    'exceptions' => array(//the element/s which will be ignored
-    ),
-    'publishCss' => TRUE, //publish the CSS for the whole page?
-    'visible' => !Yii::app()->user->isGuest, //should this be visible to the current user?
-    'alt' => 'print', //text which will appear if image can't be loaded
-    'debug' => FALSE, //enable the debugger to see what you will get
-    'id' => 'print-div2'         //id of the print link
+        'title' => ' ', //the title of the document. Defaults to the HTML title
+        'tooltip' => 'Print', //tooltip message of the print icon. Defaults to 'print'
+        'text' => '', //text which will appear beside the print icon. Defaults to NULL
+        'element' => '.printAllTableForThisReport', //the element to be printed.
+        'exceptions' => array(//the element/s which will be ignored
+        ),
+        'publishCss' => TRUE, //publish the CSS for the whole page?
+        'visible' => !Yii::app()->user->isGuest, //should this be visible to the current user?
+        'alt' => 'print', //text which will appear if image can't be loaded
+        'debug' => FALSE, //enable the debugger to see what you will get
+        'id' => 'print-div2'         //id of the print link
 ));
 echo "</div>";
 
 ?>
-<!--need a radio button group for show only stock, zero stock, negative stock-->
-<div class="btn-group" data-toggle="buttons">
-    <label class="btn btn-secondary active">
-        <input type="radio" name="stockFilter" value="all" checked> Show All
-    </label>
-    <label class="btn btn-secondary">
-        <input type="radio" name="stockFilter" value="negative"> Negative Stock
-    </label>
-    <label class="btn btn-secondary">
-        <input type="radio" name="stockFilter" value="zero"> Zero Stock
-    </label>
-    <label class="btn btn-secondary">
-        <input type="radio" name="stockFilter" value="positive"> Only Stock
-    </label>
-</div>
+
 <script src="<?= Yii::app()->theme->baseUrl ?>/js/jquery.table2excel.js"></script>
-<div class='printAllTableForThisReport table-responsive p-0"'>
-    <table class="summaryTab final-result table2excel table2excel_with_colors table table-bordered table-sm"
-           id="table-1">
+<div class='printAllTableForThisReport table-responsive'>
+    <div class="report-conditions-box"
+         style="background:#f9f9f9; border:1px solid #ccc; padding:12px; margin-bottom:12px; font-size:13px; line-height:18px;">
+
+        <strong style="font-size:14px;">Report Conditions:</strong>
+        <br><br>
+
+        <ul style="margin:0 0 0 18px; padding:0;">
+            <li><strong>Date Range:</strong> <?= $startDate ?> to <?= $endDate ?></li>
+
+            <li><strong>Non-Moving Logic:</strong> Showing items with
+                <u>zero stock-out</u> (no sales/issuance) during the selected date range.
+            </li>
+
+            <li><strong>Dead Stock Logic:</strong> Closing Stock > 0 but
+                <u>no movement</u> within the selected period.
+            </li>
+
+            <li><strong>Closing Stock Formula:</strong> (Opening Stock + Stock In) − Stock Out</li>
+
+            <li><strong>Stock Value Formula:</strong> Closing Stock × Purchase Price</li>
+
+        </ul>
+    </div>
+
+    <table class="summaryTab table-bordered table-sm" id="dead-stock-table">
+
         <thead>
-        <tr class=" negative zero positive">
-            <td colspan="13" style="font-size:16px; font-weight:bold; text-align:center">
-                <?php echo $message; ?></td>
+        <tr>
+            <th colspan="10" style="font-size:16px; font-weight:bold; text-align:center">
+                <?= $message ?>
+            </th>
         </tr>
-        <tr class="titlesTr sticky negative zero positive">
-            <th style="width: 2%; box-shadow: 0px 0px 0px 1px black inset;">SL</th>
-            <th style="box-shadow: 0px 0px 0px 1px black inset;">Product Name</th>
-            <th style="box-shadow: 0px 0px 0px 1px black inset;">Manufacturer</th>
-            <th style="box-shadow: 0px 0px 0px 1px black inset; width: 10%; min-width: 30px;">Opening</th>
-            <th style="box-shadow: 0px 0px 0px 1px black inset;  width: 10%; min-width: 60px;">Stock In</th>
-            <th style="box-shadow: 0px 0px 0px 1px black inset;  width: 10%; min-width: 60px;">Stock Out</th>
-            <th style="box-shadow: 0px 0px 0px 1px black inset;  width: 10%; min-width: 60px;">
-                Closing Stock
-            </th>
-            <th style="box-shadow: 0px 0px 0px 1px black inset;">S.P</th>
-            <th style="box-shadow: 0px 0px 0px 1px black inset;  width: 10%; min-width: 60px;">
-                Sell Value
-            </th>
-
-            <th style="box-shadow: 0px 0px 0px 1px black inset;  width: 10%; min-width: 60px;">
-                AVG P.P
-            </th>
-            <th style="box-shadow: 0px 0px 0px 1px black inset;  width: 10%; min-width: 50px;">
-                Stock Value
-            </th>
-
+        <tr>
+            <th>SL</th>
+            <th>Product Name</th>
+            <th>Code</th>
+            <th>Company</th>
+            <th>Opening</th>
+            <th>Stock In</th>
+            <th>Stock Out</th>
+            <th>Closing Stock</th>
+            <th>Purchase Price</th>
+            <th>Stock Value</th>
         </tr>
         </thead>
+
         <tbody>
+
         <?php
         $sl = 1;
-        $rowFound = false;
-        $groundTotalSaleValue = 0;
-        $groundTotalStockValue = 0;
-        foreach ($data as $dmr) {
-            $avg_purchase_price = $dmr->avg_purchase_price;
-            if ($dmr->opening_stock != 0 || $dmr->stock_in != 0 || $dmr->stock_out) {
-                $closing = (($dmr->opening_stock + $dmr->stock_in) - $dmr->stock_out);
-                $stockSaleValue = $closing * $dmr->sell_price;
-                $cpp = $dmr->cpp;
-                $rowFound = true;
-                $groundTotalSaleValue += $stockSaleValue;
+        $grandStockValue = 0;
 
-                $opening_stock_value = $dmr->opening_stock_value;
-                $stock_in_value = $dmr->stock_in_value;
-                $stock_out_value = $dmr->stock_out_value;
-                $row_stock_closing_value = $closing > 0 ? $closing * $avg_purchase_price : 0;
-
-                $groundTotalStockValue += $row_stock_closing_value;
-
-
-                $negativeStockClass = $closing < 0 ? '  negative ' : ' ';
-                $zeroStockClass = $closing == 0 ? '  zero ' : ' ';
-                $positiveStockClass = $closing > 0 ? ' positive ' : ' ';
-                ?>
-                <tr class="<?= $positiveStockClass . $zeroStockClass . $negativeStockClass ?>">
-                    <td style="text-align: center;"><?php echo $sl++; ?></td>
-                    <td style="text-align: left;">
-                        <a href="#"
-                            onclick="currentStockPreview(this, <?= $dmr->model_id > 0 ? $dmr->model_id : 0 ?>);">
-                            <?php echo $dmr->model_name; ?>
-                        </a>
-                    </td>
-                    <td style="text-align: left;"><?php echo $dmr->manufacturer_name; ?></td>
-                    <td style="text-align: center;"
-                        title="Stock Value: <?= number_format($opening_stock_value, 2) ?>"><?php echo $dmr->opening_stock; ?></td>
-                    <td style="text-align: center;" title="Stock Value: <?= number_format($stock_in_value, 2) ?>"><a
-                                href="#" onclick="currentStockInPreview( this,
-                        <?= $dmr->model_id > 0 ? $dmr->model_id : 0 ?>,
-                        <?= strtotime($startDate) ?>,
-                        <?= strtotime($endDate) ?> )"
-                        ><?php echo $dmr->stock_in; ?></a></td>
-                    <td style="text-align: center;" title="Stock Value: <?= number_format($stock_out_value, 2) ?>"><a
-                                href="#" onclick="currentStockOutPreview(this,
-                        <?= $dmr->model_id > 0 ? $dmr->model_id : 0 ?>,
-                        <?= strtotime($startDate) ?>,
-                        <?= strtotime($endDate) ?> )"
-                        ><?php echo $dmr->stock_out; ?></a></td>
-                    <td style="text-align: center;" class="showProductLedger" data-id="<?= $dmr->model_id ?>">
-                        <a href="#">
-                            <?php echo $closing; ?>
-                        </a>
-                    </td>
-                    <td style="text-align: center;"><?php echo is_numeric($dmr->sell_price) ? number_format($dmr->sell_price, 2) : ''; ?></td>
-                    <td style="text-align: right;"><?php echo is_numeric($stockSaleValue) ? number_format($stockSaleValue, 2) : ''; ?></td>
-                    <td style="text-align: right;"><?php echo is_numeric($avg_purchase_price) ? number_format($avg_purchase_price, 2) : ''; ?></td>
-                    <td style="text-align: right;"><?php echo is_numeric($row_stock_closing_value) ? number_format($row_stock_closing_value, 2) : ''; ?></td>
-                </tr>
-                <?php
-            }
-        }
-        ?>
-        <?php
-        if (!$rowFound) {
+        foreach ($data as $d) {
+            $grandStockValue += $d->stock_value;
             ?>
             <tr>
-                <td colspan="14"
-                    style='text-align: center; font-size: 18px; text-transform: uppercase; font-weight: bold;'>
-                    <div class="alert alert-warning"><i class="fa fa-exclamation-triangle"></i> No result found !</div>
-                </td>
+                <td><?= $sl++; ?></td>
+                <td><?= $d->model_name ?></td>
+                <td><?= $d->code ?></td>
+                <td><?= $d->manufacturer_name ?></td>
+                <td style="text-align:center"><?= $d->opening_stock ?></td>
+                <td style="text-align:center"><?= $d->stock_in ?></td>
+                <td style="text-align:center"><?= $d->stock_out ?></td>
+                <td style="text-align:center"><?= $d->closing_stock ?></td>
+                <td style="text-align:right"><?= number_format($d->purchase_price, 2) ?></td>
+                <td style="text-align:right"><?= number_format($d->stock_value, 2) ?></td>
             </tr>
-            <?php
-        } else {
-            ?>
-            <tr>
-                <th style="text-align: right;" colspan="9">Ground Total</th>
-                <th style="text-align: right;"><?= number_format($groundTotalSaleValue, 2) ?></th>
-                <th style="text-align: right;"><?= number_format($groundTotalStockValue, 2) ?></th>
-            </tr>
-            <?php
-        }
-        ?>
+        <?php } ?>
+
+        <tr>
+            <th colspan="9" style="text-align:right;">Total Stock Value</th>
+            <th style="text-align:right;"><?= number_format($grandStockValue, 2) ?></th>
+        </tr>
+
         </tbody>
+
     </table>
 </div>
 
 
 <!--        modal-->
 <div class="modal fade" id="information-modal" tabindex="-1" data-backdrop="static" role="dialog"
-    aria-labelledby="information-modal" aria-hidden="true">
+     aria-labelledby="information-modal" aria-hidden="true">
     <div class="modal-dialog modal-dialog-centered modal-xl" role="document">
         <div class="modal-content">
             <div class="modal-header">
@@ -237,7 +183,7 @@ echo "</div>";
 
 <!-- modal for stock qty modify -->
 <div class="modal fade" id="stockQtyModifyModal" tabindex="-1" role="dialog" aria-labelledby="stockQtyModifyModal"
-    aria-hidden="true">
+     aria-hidden="true">
     <div class="modal-dialog modal-dialog-centered" role="document">
         <div class="modal-content">
             <div class="modal-header">
@@ -252,7 +198,6 @@ echo "</div>";
         </div>
     </div>
 </div>
-
 
 
 <style>
@@ -272,12 +217,13 @@ echo "</div>";
     $(function () {
         $(".exportToExcel").click(function (e) {
             var table = $('.table2excel');
+            console.log(table);
             if (table && table.length) {
                 var preserveColors = (table.hasClass('table2excel_with_colors') ? true : false);
                 $(table).table2excel({
                     exclude: ".noExl",
                     name: "Excel Document Name",
-                    filename: "STOCK_REPORT-" + new Date().toISOString().replace(/[\-\:\.]/g, "") + ".xls",
+                    filename: "FAST_MOVING_REPORT-" + new Date().toISOString().replace(/[\-\:\.]/g, "") + ".xls",
                     fileext: ".xls",
                     exclude_img: true,
                     exclude_links: true,
@@ -384,23 +330,7 @@ echo "</div>";
         });
     }
 
-    $(document).ready(function () {
-        $('input[name="stockFilter"]').change(function () {
-            var selectedValue = $(this).val();
-            $('#table-1 tr').each(function () {
-                if (selectedValue === "all") {
-                    $(this).show();
-                } else if ($(this).hasClass(selectedValue)) {
-                    $(this).show();
-                } else {
-                    $(this).hide();
-                }
-            });
-        });
 
-        // Initial execution to show all rows
-        $('input[value="all"]').change();
-    });
     $('body').off('click', '.showProductLedger').on('click', '.showProductLedger', showProductLedger);
 
     function showProductLedger() {

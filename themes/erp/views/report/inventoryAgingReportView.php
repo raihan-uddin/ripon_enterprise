@@ -1,6 +1,8 @@
 <?php
 /**
  * @var string $message
+ * @var string $startDate
+ * @var string $endDate
  * @var mixed $data
  */
 ?>
@@ -75,185 +77,68 @@ $this->widget('ext.mPrint.mPrint', array(
 echo "</div>";
 
 ?>
+
 <script src="<?= Yii::app()->theme->baseUrl ?>/js/jquery.table2excel.js"></script>
-<div class='printAllTableForThisReport table-responsive p-0"'>
-    <table class="summaryTab final-result table2excel table2excel_with_colors table table-bordered table-sm"
-           id="table-1">
+<div class='printAllTableForThisReport table-responsive'>
+    <div style="background:#f9f9f9; border:1px solid #ccc; padding:12px; margin-bottom:12px; font-size:13px;">
+        <strong>Report Logic:</strong><br><br>
+        <ul style="margin-left:18px">
+            <li><strong>Aging As Of:</strong> <?= $endDate ?></li>
+            <li><strong>FIFO Allocation:</strong> Oldest purchase batches are consumed first.</li>
+            <li><strong>Aging Buckets:</strong>
+                0–30, 31–60, 61–90, 91–180, 180+ days.
+            </li>
+            <li><strong>Closing Stock:</strong> SUM(stock_in − stock_out up to selected date)</li>
+            <li><strong>Bucket Qty:</strong> Closing stock allocated against purchase batches.</li>
+        </ul>
+    </div>
+
+
+    <table class="summaryTab table-bordered table-sm" id="dead-stock-table">
+
         <thead>
-        <tr class=" negative zero positive">
-            <td colspan="13" style="font-size:16px; font-weight:bold; text-align:center">
-                <?php echo $message; ?></td>
+        <tr>
+            <th colspan="10" style="font-size:16px; font-weight:bold; text-align:center">
+                <?= $message ?>
+            </th>
         </tr>
-        <tr class="titlesTr sticky negative zero positive">
-            <th style="width: 2%; box-shadow: 0px 0px 0px 1px black inset;">SL</th>
-            <th style="box-shadow: 0px 0px 0px 1px black inset;">Product Name</th>
-            <th style="box-shadow: 0px 0px 0px 1px black inset;">Manufacturer</th>
-            <th style="box-shadow: 0px 0px 0px 1px black inset;  width: 10%; min-width: 60px;">
-                Stock
-            </th>
-            <th style="box-shadow: 0px 0px 0px 1px black inset;">S.P</th>
-            <th style="box-shadow: 0px 0px 0px 1px black inset;  width: 10%; min-width: 60px;">
-                Sell Value
-            </th>
-
-            <th style="box-shadow: 0px 0px 0px 1px black inset;  width: 10%; min-width: 60px;">
-                AVG P.P
-            </th>
-            <th style="box-shadow: 0px 0px 0px 1px black inset;  width: 10%; min-width: 50px;">
-                Stock Value
-            </th>
-
+        <tr>
+            <th>SL</th>
+            <th>Product Name</th>
+            <th>Code</th>
+            <th>Manufacturer</th>
+            <th>Closing Stock</th>
+            <th>0–30 Days</th>
+            <th>31–60 Days</th>
+            <th>61–90 Days</th>
+            <th>91–180 Days</th>
+            <th>180+ Days</th>
         </tr>
         </thead>
         <tbody>
 
-        <?php
-        $sl = 1;
-        $rowFound = false;
-
-        $grandTotalSellValue = 0;
-        $grandTotalStockValue = 0;
-
-        if (!empty($data)):
-
-            foreach ($data as $supplierId => $sup):
-
-                $supplierTotalSell = 0;
-                $supplierTotalStock = 0;
-                $rowFound = true;
-                ?>
-
-                <!-- ======================= SUPPLIER HEADER ======================= -->
-                <tr class="supplier-header">
-                    <td colspan="7">
-                        <div class="supplier-box">
-                            <div class="supplier-name">
-                                <i class="fa fa-industry"></i> <?= $sup['supplier_name'] ?>
-                            </div>
-                        </div>
-                    </td>
-                </tr>
-                <!-- ======================= PRODUCTS ======================= -->
-                <?php foreach ($sup['products'] as $prod): ?>
-
-                <?php
-                $sellValue = floatval($prod['sell_price'] * $prod['qty']);
-                $stockValue = floatval($prod['avg_pp'] * $prod['qty']);
-
-                $supplierTotalSell += $sellValue;
-                $supplierTotalStock += $stockValue;
-
-                $grandTotalSellValue += $sellValue;
-                $grandTotalStockValue += $stockValue;
-                ?>
-
-                <tr class="product-row">
-                    <td><?= $sl++ ?></td>
-                    <td><?= $prod['product_name'] ?></td>
-                    <td><?= $prod['manufacturer_name'] ?></td>
-                    <td style="text-align:right;"><?= $prod['qty'] ?></td>
-                    <td style="text-align:right;"><?= number_format(floatval($prod['sell_price']), 2) ?></td>
-                    <td style="text-align:right;"><?= number_format(floatval($sellValue), 2) ?></td>
-                    <td style="text-align:right;"><?= number_format(floatval($prod['avg_pp']), 2) ?></td>
-                    <td style="text-align:right;"><?= number_format(floatval($stockValue), 2) ?></td>
-                </tr>
-
-            <?php endforeach; ?>
-
-                <!-- ======================= SUPPLIER TOTAL ======================= -->
-                <tr class="supplier-total">
-                    <td colspan="4" style="text-align:right;">Supplier Total</td>
-                    <td style="text-align:right;"><?= number_format(floatval($supplierTotalSell), 2) ?></td>
-                    <td></td>
-                    <td style="text-align:right;"><?= number_format(floatval($supplierTotalStock), 2) ?></td>
-                </tr>
-
-                <tr>
-                    <td colspan="7" style="background:#fff;"></td>
-                </tr>
-
-            <?php endforeach; ?>
-
-        <?php endif; ?>
-
-
-        <?php if (!$rowFound): ?>
-
+        <?php $sl = 1;
+        foreach ($data as $row): ?>
             <tr>
-                <td colspan="13" style='text-align:center; font-size:18px;'>
-                    <div class="alert alert-warning"><i class="fa fa-exclamation-triangle"></i> No result found!</div>
+                <td><?= $sl++ ?></td>
+                <td><?= $row['product']->model_name ?></td>
+                <td><?= $row['product']->code ?></td>
+                <td><?= $row['product']->manufacturer_name ?></td>
+
+                <td style="text-align:center"><b><?= $row['closingStock'] ?></b></td>
+
+                <td style="text-align:center"><?= $row['bucket']['0_30'] ?></td>
+                <td style="text-align:center"><?= $row['bucket']['31_60'] ?></td>
+                <td style="text-align:center"><?= $row['bucket']['61_90'] ?></td>
+                <td style="text-align:center"><?= $row['bucket']['91_180'] ?></td>
+                <td style="text-align:center; color:red; font-weight:bold">
+                    <?= $row['bucket']['181_plus'] ?>
                 </td>
             </tr>
-
-        <?php else: ?>
-
-            <!-- ======================= GRAND TOTAL ======================= -->
-            <tr class="grand-total">
-                <td colspan="4" style="text-align:right;">Grand Total</td>
-                <td style="text-align:right;"><?= number_format(floatval($grandTotalSellValue), 2) ?></td>
-                <td></td>
-                <td style="text-align:right;"><?= number_format(floatval($grandTotalStockValue), 2) ?></td>
-            </tr>
-
-        <?php endif; ?>
-
+        <?php endforeach; ?>
         </tbody>
-
     </table>
 </div>
-<style>
-    .supplier-header td {
-        padding: 0 !important;
-        background: #eef5ff;
-    }
-
-    .supplier-box {
-        padding: 10px;
-        font-size: 15px;
-        font-weight: bold;
-        border-left: 4px solid #3b7ddd;
-        background: #eef5ff;
-    }
-
-    .supplier-name i {
-        margin-right: 6px;
-        color: #3b7ddd;
-    }
-
-    .product-row:hover {
-        background: #f1f1f1 !important;
-    }
-
-    .product-row td.num {
-        text-align: right !important;
-    }
-
-    .supplier-total {
-        background: #fafafa;
-        font-weight: bold;
-    }
-
-    .supplier-total td {
-        border-top: 2px solid #ccc;
-        border-bottom: 2px solid #ccc;
-    }
-
-    .grand-total {
-        background: #d0f0d0;
-        font-weight: bold;
-        font-size: 13px;
-    }
-
-    .grand-total td {
-        border-top: 2px solid #8BC34A;
-        border-bottom: 2px solid #8BC34A;
-    }
-
-    .no-result {
-        font-size: 18px;
-        text-align: center;
-    }
-</style>
 
 
 <!--        modal-->
@@ -319,7 +204,7 @@ echo "</div>";
                 $(table).table2excel({
                     exclude: ".noExl",
                     name: "Excel Document Name",
-                    filename: "STOCK_REPORT-" + new Date().toISOString().replace(/[\-\:\.]/g, "") + ".xls",
+                    filename: "FAST_MOVING_REPORT-" + new Date().toISOString().replace(/[\-\:\.]/g, "") + ".xls",
                     fileext: ".xls",
                     exclude_img: true,
                     exclude_links: true,
@@ -332,7 +217,7 @@ echo "</div>";
     });
 
 
-    function currentStockPreview(element, product_id) {
+    function currentStockPreview(element, product_id, start_date, end_date) {
         if (anyLedgerCall) {
             toastr.warning('Please wait for the previous request to complete');
             return;
@@ -362,7 +247,7 @@ echo "</div>";
         });
     }
 
-    function currentStockOutPreview(element, product_id) {
+    function currentStockOutPreview(element, product_id, start_date, end_date) {
         if (anyLedgerCall) {
             toastr.warning('Please wait for the previous request to complete');
             return;
@@ -376,6 +261,8 @@ echo "</div>";
             type: 'GET',
             data: {
                 product_id: product_id,
+                start_date: start_date,
+                end_date: end_date
             },
             success: function (response) {
                 $('#information-modal').modal('show');
@@ -405,7 +292,9 @@ echo "</div>";
             url: '<?= Yii::app()->createUrl("inventory/inventory/currentStockInReportBatchWiseView") ?>',
             type: 'GET',
             data: {
-                product_id: product_id
+                product_id: product_id,
+                start_date: start_date,
+                end_date: end_date
             },
             success: function (response) {
                 $('#information-modal').modal('show');
@@ -414,40 +303,6 @@ echo "</div>";
             },
             error: function () {
                 element.innerHTML = invoiceId;
-                toastr.error('Something went wrong');
-            },
-            complete: function () {
-                anyLedgerCall = false;
-            }
-        });
-    }
-
-
-    $('body').off('click', '.showProductLedger').on('click', '.showProductLedger', showProductLedger);
-
-    function showProductLedger() {
-        if (anyLedgerCall) {
-            toastr.warning('Please wait for the previous request to complete');
-            return;
-        }
-
-        let model_id = $(this).data('id');
-        let currentText = $(this).text();
-        let $this = $(this);
-        $this.html('<i class="fa fa-spinner fa-spin"></i>');
-        $.ajax({
-            url: '<?= Yii::app()->createUrl("report/productStockLedgerView") ?>',
-            type: 'POST',
-            data: {
-                'Inventory[model_id]': model_id,
-            },
-            success: function (response) {
-                $('#information-modal').modal('show');
-                $('#information-modal .modal-body').html(response);
-                $this.html(currentText);
-            },
-            error: function () {
-                $this.html(currentText);
                 toastr.error('Something went wrong');
             },
             complete: function () {

@@ -1037,4 +1037,302 @@ class ReportController extends RController
     }
 
 
+    public function actionFastMovingReport()
+    {
+        $model = new Inventory();
+        $this->pageTitle = 'FAST MOVING REPORT';
+        $this->render('fastMovingReport', array('model' => $model));
+    }
+
+    public function actionFastMovingReportView()
+    {
+        if (Yii::app()->request->isAjaxRequest) {
+            Yii::app()->clientScript->scriptMap['jquery.js'] = false;
+        }
+
+        date_default_timezone_set("Asia/Dhaka");
+        $dateFrom = $_POST['Inventory']['date_from'];
+        $dateTo = $_POST['Inventory']['date_to'];
+        $manufacturer_id = $_POST['Inventory']['manufacturer_id'];
+        $item_id = $_POST['Inventory']['item_id'];
+        $brand_id = $_POST['Inventory']['brand_id'];
+
+        $message = "";
+        $data = "";
+
+        if ($dateFrom != "" && $dateTo != "") {
+
+            $criteria = new CDbCriteria();
+            $criteria->select = "
+                    t.model_name,
+                    t.code,
+                    t.sell_price,
+                    t.purchase_price,
+                    c.name as manufacturer_name,
+                    SUM(CASE WHEN (inv.date BETWEEN '$dateFrom' AND '$dateTo') 
+                        THEN inv.stock_out ELSE 0 END) AS total_stock_out,
+        
+                    SUM(CASE WHEN (inv.date BETWEEN '$dateFrom' AND '$dateTo') 
+                        THEN inv.stock_out * inv.purchase_price ELSE 0 END) AS total_out_value,
+        
+                    SUM(CASE WHEN (inv.date BETWEEN '$dateFrom' AND '$dateTo') 
+                        THEN inv.stock_out * t.sell_price ELSE 0 END) AS sale_value
+                ";
+
+            $criteria->join = " LEFT JOIN inventory inv ON inv.model_id = t.id AND inv.is_deleted = 0 ";
+            $criteria->join .= " LEFT JOIN companies c ON t.manufacturer_id = c.id ";
+            $criteria->addColumnCondition(['t.stockable' => 1]);
+            $criteria->group = "t.id";
+            $criteria->order = "total_stock_out DESC"; // Highest movement first
+
+            if ($manufacturer_id > 0) {
+                $criteria->addColumnCondition(['t.manufacturer_id' => $manufacturer_id]);
+            }
+            if ($item_id > 0) {
+                $criteria->addColumnCondition(['t.item_id' => $item_id]);
+            }
+            if ($brand_id > 0) {
+                $criteria->addColumnCondition(['t.brand_id' => $brand_id]);
+            }
+
+            $message = "Fast Moving Report: $dateFrom To $dateTo";
+
+            $data = ProdModels::model()->findAll($criteria);
+
+        } else {
+            $message = "<div class='alert alert-warning'>Please select date range!</div>";
+        }
+
+        echo $this->renderPartial('fastMovingReportView', array(
+            'data' => $data,
+            'startDate' => $dateFrom,
+            'endDate' => $dateTo,
+            'message' => $message,
+        ), true, true);
+
+        Yii::app()->end();
+    }
+
+    public function actionDeadStockReport()
+    {
+        $model = new Inventory();
+        $this->pageTitle = 'DEAD / NON-MOVING STOCK REPORT';
+        $this->render('deadStockReport', array('model' => $model));
+    }
+
+    public function actionDeadStockReportView()
+    {
+        if (Yii::app()->request->isAjaxRequest) {
+            Yii::app()->clientScript->scriptMap['jquery.js'] = false;
+        }
+
+        date_default_timezone_set("Asia/Dhaka");
+        $dateFrom = $_POST['Inventory']['date_from'];
+        $dateTo = $_POST['Inventory']['date_to'];
+        $manufacturer_id = $_POST['Inventory']['manufacturer_id'];
+        $item_id = $_POST['Inventory']['item_id'];
+        $brand_id = $_POST['Inventory']['brand_id'];
+
+        $message = "";
+        $data = "";
+
+        if ($dateFrom != "" && $dateTo != "") {
+
+            $criteria = new CDbCriteria();
+
+            $criteria->select = "
+            t.model_name,
+            t.code,
+            t.sell_price,
+            t.purchase_price,
+            c.name as manufacturer_name,
+
+            -- opening stock calc
+            IFNULL((SELECT SUM(stock_in - stock_out)
+                    FROM inventory op 
+                    WHERE op.model_id = t.id 
+                    AND op.date < '$dateFrom'
+                    AND op.is_deleted = 0), 0) AS opening_stock,
+
+            -- stock in / out inside range
+            SUM(CASE WHEN (inv.date BETWEEN '$dateFrom' AND '$dateTo') 
+                THEN inv.stock_in ELSE 0 END) AS stock_in,
+
+            SUM(CASE WHEN (inv.date BETWEEN '$dateFrom' AND '$dateTo') 
+                THEN inv.stock_out ELSE 0 END) AS stock_out,
+
+            -- closing stock
+            (IFNULL((SELECT SUM(stock_in - stock_out)
+                    FROM inventory op 
+                    WHERE op.model_id = t.id 
+                    AND op.date < '$dateFrom'
+                    AND op.is_deleted = 0), 0)
+             +
+             SUM(CASE WHEN (inv.date BETWEEN '$dateFrom' AND '$dateTo') 
+                THEN inv.stock_in ELSE 0 END)
+             -
+             SUM(CASE WHEN (inv.date BETWEEN '$dateFrom' AND '$dateTo') 
+                THEN inv.stock_out ELSE 0 END)
+            ) AS closing_stock,
+
+            -- stock value
+            t.purchase_price * (
+                IFNULL((SELECT SUM(stock_in - stock_out)
+                    FROM inventory op 
+                    WHERE op.model_id = t.id 
+                    AND op.date < '$dateFrom'
+                    AND op.is_deleted = 0), 0)
+                +
+                SUM(CASE WHEN (inv.date BETWEEN '$dateFrom' AND '$dateTo') 
+                    THEN inv.stock_in ELSE 0 END)
+                -
+                SUM(CASE WHEN (inv.date BETWEEN '$dateFrom' AND '$dateTo') 
+                    THEN inv.stock_out ELSE 0 END)
+            ) AS stock_value
+        ";
+
+            $criteria->join = " LEFT JOIN inventory inv ON inv.model_id = t.id AND inv.is_deleted = 0 ";
+            $criteria->join .= " LEFT JOIN companies c ON t.manufacturer_id = c.id ";
+            $criteria->group = "t.id";
+
+            // only NON-moving items
+            $criteria->having = "stock_out = 0 AND closing_stock > 0";
+
+            $criteria->order = "stock_value DESC";
+
+            // Filters
+            if ($manufacturer_id > 0) $criteria->addColumnCondition(['t.manufacturer_id' => $manufacturer_id]);
+            if ($item_id > 0) $criteria->addColumnCondition(['t.item_id' => $item_id]);
+            if ($brand_id > 0) $criteria->addColumnCondition(['t.brand_id' => $brand_id]);
+
+            $message = "Dead / Non-Moving Stock: $dateFrom To $dateTo";
+
+            $data = ProdModels::model()->findAll($criteria);
+
+        } else {
+            $message = "<div class='alert alert-warning'>Please select date range!</div>";
+        }
+
+        echo $this->renderPartial('deadStockReportView', array(
+            'data' => $data,
+            'startDate' => $dateFrom,
+            'endDate' => $dateTo,
+            'message' => $message,
+        ), true, true);
+
+        Yii::app()->end();
+    }
+
+    public function actionInventoryAgingReport()
+    {
+        $model = new Inventory();
+        $this->pageTitle = 'INVENTORY AGING REPORT';
+        $this->render('inventoryAgingReport', array('model' => $model));
+    }
+
+    public function actionInventoryAgingReportView()
+    {
+        if (Yii::app()->request->isAjaxRequest) {
+            Yii::app()->clientScript->scriptMap['jquery.js'] = false;
+        }
+
+        date_default_timezone_set("Asia/Dhaka");
+
+        $dateTo = $_POST['Inventory']['date_to'];   // aging as of this date
+        $manufacturer_id = $_POST['Inventory']['manufacturer_id'];
+        $item_id = $_POST['Inventory']['item_id'];
+        $brand_id = $_POST['Inventory']['brand_id'];
+
+        $message = "";
+        $data = [];
+
+        if ($dateTo != "") {
+
+            // fetch all products
+            $criteria = new CDbCriteria();
+            $criteria->select = "t.id, t.model_name, t.code, t.purchase_price, t.sell_price, c.name as manufacturer_name";
+            $criteria->join = " LEFT JOIN companies c ON c.id = t.manufacturer_id";
+            $criteria->addColumnCondition(['t.stockable' => 1]);
+            $criteria->order = "t.model_name ASC";
+
+            if ($manufacturer_id > 0) $criteria->addColumnCondition(['t.manufacturer_id' => $manufacturer_id]);
+            if ($item_id > 0) $criteria->addColumnCondition(['t.item_id' => $item_id]);
+            if ($brand_id > 0) $criteria->addColumnCondition(['t.brand_id' => $brand_id]);
+
+            $products = ProdModels::model()->findAll($criteria);
+
+            foreach ($products as $p) {
+
+                // get closing stock
+                $closingStock = Yii::app()->db->createCommand("
+                SELECT SUM(stock_in - stock_out) AS closing_stock
+                FROM inventory
+                WHERE model_id = {$p->id}
+                AND date <= '$dateTo'
+                AND is_deleted = 0
+            ")->queryScalar();
+
+                if ($closingStock <= 0) continue; // skip items without stock
+
+                // fetch FIFO purchase batches
+                $batches = Yii::app()->db->createCommand("
+                SELECT id, date, stock_in, stock_out, purchase_price,
+                (stock_in - stock_out) AS qty_available
+                FROM inventory
+                WHERE model_id = {$p->id}
+                AND stock_in > 0
+                AND date <= '$dateTo'
+                AND is_deleted = 0
+                ORDER BY date ASC
+            ")->queryAll();
+
+                $remaining = $closingStock;
+
+                $bucket = [
+                    '0_30' => 0,
+                    '31_60' => 0,
+                    '61_90' => 0,
+                    '91_180' => 0,
+                    '181_plus' => 0,
+                ];
+
+                foreach ($batches as $b) {
+                    if ($remaining <= 0) break;
+
+                    $qty = min($remaining, $b['qty_available']);
+                    if ($qty <= 0) continue;
+
+                    $ageDays = (strtotime($dateTo) - strtotime($b['date'])) / 86400;
+
+                    if ($ageDays <= 30) $bucket['0_30'] += $qty;
+                    elseif ($ageDays <= 60) $bucket['31_60'] += $qty;
+                    elseif ($ageDays <= 90) $bucket['61_90'] += $qty;
+                    elseif ($ageDays <= 180) $bucket['91_180'] += $qty;
+                    else                       $bucket['181_plus'] += $qty;
+
+                    $remaining -= $qty;
+                }
+
+                // store for view
+                $data[] = [
+                    'product' => $p,
+                    'closingStock' => $closingStock,
+                    'bucket' => $bucket,
+                ];
+            }
+
+            $message = "Inventory Aging Report as of $dateTo";
+
+        } else {
+            $message = "<div class='alert alert-warning'>Please select date!</div>";
+        }
+
+        echo $this->renderPartial('inventoryAgingReportView', [
+            'data' => $data,
+            'endDate' => $dateTo,
+            'message' => $message,
+        ], true, true);
+
+        Yii::app()->end();
+    }
 }
