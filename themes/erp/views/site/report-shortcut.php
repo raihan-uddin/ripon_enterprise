@@ -35,43 +35,43 @@
                     <div class="dropdown-divider"></div>
 
                     <!-- NEW REPORTS -->
-                    <a class="dropdown-item" href="#">
+                    <a class="dropdown-item disabled" href="#">
                         <i class="fa fa-bolt mr-2 text-warning"></i> Fast Moving Report
                     </a>
 
-                    <a class="dropdown-item" href="#">
+                    <a class="dropdown-item disabled" href="#">
                         <i class="fa fa-ban mr-2 text-danger"></i> Non-Moving / Dead Stock
                     </a>
 
-                    <a class="dropdown-item" href="#">
+                    <a class="dropdown-item disabled" href="#">
                         <i class="fa fa-hourglass-half mr-2 text-orange"></i> Near Expiry Stock
                     </a>
 
-                    <a class="dropdown-item" href="#">
+                    <a class="dropdown-item disabled" href="#">
                         <i class="fa fa-bars mr-2 text-secondary"></i> Batch Wise Stock
                     </a>
 
-                    <a class="dropdown-item" href="#">
+                    <a class="dropdown-item disabled" href="#">
                         <i class="fa fa-balance-scale mr-2 text-dark"></i> Stock Valuation
                     </a>
 
-                    <a class="dropdown-item" href="#">
+                    <a class="dropdown-item disabled" href="#">
                         <i class="fa fa-level-down mr-2 text-success"></i> Reorder Level Report
                     </a>
 
-                    <a class="dropdown-item" href="#">
+                    <a class="dropdown-item disabled" href="#">
                         <i class="fa fa-archive mr-2 text-primary"></i> Overstock Report
                     </a>
 
-                    <a class="dropdown-item" href="#">
+                    <a class="dropdown-item disabled" href="#">
                         <i class="fa fa-calendar mr-2 text-info"></i> Inventory Aging Report
                     </a>
 
-                    <a class="dropdown-item" href="#">
+                    <a class="dropdown-item disabled" href="#">
                         <i class="fa fa-pencil-square-o mr-2 text-purple"></i> Stock Adjustment Report
                     </a>
 
-                    <a class="dropdown-item" href="#">
+                    <a class="dropdown-item disabled" href="#">
                         <i class="fa fa-list-alt mr-2 text-secondary"></i> Item Stock Ledger
                     </a>
 
