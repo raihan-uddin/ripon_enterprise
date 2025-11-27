@@ -9,7 +9,7 @@ $this->widget('application.components.BreadCrumb', array(
         'crumbs' => array(
                 array('name' => 'Report', 'url' => array('')),
                 array('name' => 'Inventory', 'url' => array('')),
-                array('name' => 'Stock Report',),
+                array('name' => 'Fast Moving Report',),
         ),
 ));
 ?>
@@ -20,7 +20,7 @@ $form = $this->beginWidget('CActiveForm', array(
 ?>
 <div class="card card-primary">
     <div class="card-header">
-        <h3 class="card-title">Search Conditions (STOCK REPORT)</h3>
+        <h3 class="card-title">Search Conditions (Fast Moving Report)</h3>
         <div class="card-tools">
             <button type="button" class="btn btn-tool" data-card-widget="collapse">
                 <i class="fa fa-minus"></i>
