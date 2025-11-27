@@ -90,6 +90,17 @@ echo "</div>";
     <span class="legend-box legend-red"></span> <small>90+ Days Overdue</small>
 </div>
 
+<div class="aging-filter-container">
+    <label><strong>Filter by Aging :</strong></label>
+
+    <button type="button" class="aging-filter-btn" data-filter="all">All</button>
+    <button type="button" class="aging-filter-btn legend-green" data-filter="green">Active</button>
+    <button type="button" class="aging-filter-btn legend-yellow" data-filter="yellow">30–59 Days</button>
+    <button type="button" class="aging-filter-btn legend-orange" data-filter="orange">60–89 Days</button>
+    <button type="button" class="aging-filter-btn legend-red" data-filter="red">90+ Days</button>
+</div>
+
+
 <div class='printAllTableForThisReport table-responsive p-0"'>
     <table class="summaryTab final-result table2excel table2excel_with_colors table table-bordered table-sm"
            id="table-1">
@@ -217,6 +228,31 @@ echo "</div>";
         color: #555;
     }
 
+    .aging-filter-container {
+        margin-bottom: 10px;
+        display: flex;
+        align-items: center;
+        gap: 8px;
+    }
+
+    .aging-filter-btn {
+        padding: 4px 10px;
+        border: 1px solid #999;
+        background: #f8f8f8;
+        cursor: pointer;
+        font-size: 12px;
+        border-radius: 4px;
+    }
+
+    .aging-filter-btn:hover {
+        background: #e1e1e1;
+    }
+
+    .aging-filter-btn.active {
+        border: 2px solid #000;
+        background: #dcdcdc;
+    }
+
     .aging-legend {
         margin-bottom: 10px;
         font-size: 12px;
@@ -251,7 +287,7 @@ echo "</div>";
                 $(table).table2excel({
                     exclude: ".noExl",
                     name: "Excel Document Name",
-                    filename: "CUSTOMER_LEDGER-" + new Date().toISOString().replace(/[\-\:\.]/g, "") + ".xls",
+                    filename: "CUSTOMER_DUE_REPORT-" + new Date().toISOString().replace(/[\-\:\.]/g, "") + ".xls",
                     fileext: ".xls",
                     exclude_img: true,
                     exclude_links: true,
@@ -262,5 +298,25 @@ echo "</div>";
         });
 
     });
+
+    $(document).on("click", ".aging-filter-btn", function () {
+
+        $(".aging-filter-btn").removeClass("active");
+        $(this).addClass("active");
+
+        const filter = $(this).data("filter");
+
+        if (filter === "all") {
+            $("#table-1 tbody tr").show();
+            return;
+        }
+
+        // Hide all rows
+        $("#table-1 tbody tr").hide();
+
+        // Show rows matching selected aging class
+        $("#table-1 tbody tr." + "legend-" + filter).show();
+    });
+
 
 </script>
