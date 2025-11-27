@@ -113,13 +113,13 @@
             <div class="btn-group pr-2 pb-2">
                 <button type="button" class="btn btn-info dropdown-toggle" data-toggle="dropdown" aria-haspopup="true"
                         aria-expanded="false">
-                    Ledger Reports
+                    <i class="fa fa-book"></i> Ledger Reports
                 </button>
                 <div class="dropdown-menu" role="menu">
                     <?php
                     if ($collectionReportPermission) {
                         ?>
-                        <a class="dropdown-item" href="<?= Yii::app()->createUrl("report/collectionReport") ?>">Collection
+                        <a class="dropdown-item" href="<?= Yii::app()->createUrl("report/collectionReport") ?>"><i class="fa fa-money"></i> Collection
                             Report</a>
                         <?php
                     }
@@ -127,7 +127,7 @@
                     <?php
                     if ($customerDueReportPermission) {
                         ?>
-                        <a class="dropdown-item" href="<?= Yii::app()->createUrl("report/customerDueReport") ?>">Customer
+                        <a class="dropdown-item" href="<?= Yii::app()->createUrl("report/customerDueReport") ?>"><i class="fa fa-exclamation-circle"></i> Customer
                             Due
                             Report</a>
                         <?php
@@ -137,7 +137,7 @@
                     <?php
                     if ($customerLedgerPermission) {
                         ?>
-                        <a class="dropdown-item" href="<?= Yii::app()->createUrl("report/customerLedger") ?>">Customer
+                        <a class="dropdown-item" href="<?= Yii::app()->createUrl("report/customerLedger") ?>"<i class="fa fa-list-alt"></i> Customer
                             Ledger</a>
                         <?php
                     }
