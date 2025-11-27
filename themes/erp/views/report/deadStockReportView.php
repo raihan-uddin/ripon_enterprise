@@ -144,14 +144,14 @@ echo "</div>";
                 <td style="text-align:center"><?= $d->stock_in ?></td>
                 <td style="text-align:center"><?= $d->stock_out ?></td>
                 <td style="text-align:center"><?= $d->closing_stock ?></td>
-                <td style="text-align:right"><?= number_format($d->purchase_price, 2) ?></td>
-                <td style="text-align:right"><?= number_format($d->stock_value, 2) ?></td>
+                <td style="text-align:right"><?= number_format(floatval($d->purchase_price), 2) ?></td>
+                <td style="text-align:right"><?= number_format(floatval($d->stock_value), 2) ?></td>
             </tr>
         <?php } ?>
 
         <tr>
             <th colspan="9" style="text-align:right;">Total Stock Value</th>
-            <th style="text-align:right;"><?= number_format($grandStockValue, 2) ?></th>
+            <th style="text-align:right;"><?= number_format(floatval($grandStockValue, 2)) ?></th>
         </tr>
 
         </tbody>
@@ -223,7 +223,7 @@ echo "</div>";
                 $(table).table2excel({
                     exclude: ".noExl",
                     name: "Excel Document Name",
-                    filename: "FAST_MOVING_REPORT-" + new Date().toISOString().replace(/[\-\:\.]/g, "") + ".xls",
+                    filename: "DEAD_STOCK_REPORT-" + new Date().toISOString().replace(/[\-\:\.]/g, "") + ".xls",
                     fileext: ".xls",
                     exclude_img: true,
                     exclude_links: true,
@@ -234,102 +234,7 @@ echo "</div>";
         });
 
     });
-
-
-    function currentStockPreview(element, product_id, start_date, end_date) {
-        if (anyLedgerCall) {
-            toastr.warning('Please wait for the previous request to complete');
-            return;
-        }
-        anyLedgerCall = true;
-
-        var invoiceId = element.innerHTML;
-        element.innerHTML = '<i class="fa fa-spinner fa-spin"></i>';
-        $.ajax({
-            url: '<?= Yii::app()->createUrl("inventory/inventory/currentStockReportBatchWiseView") ?>',
-            type: 'GET',
-            data: {
-                product_id: product_id
-            },
-            success: function (response) {
-                $('#information-modal').modal('show');
-                $('#information-modal .modal-body').html(response);
-                element.innerHTML = invoiceId;
-            },
-            error: function () {
-                element.innerHTML = invoiceId;
-                toastr.error('Something went wrong');
-            },
-            complete: function () {
-                anyLedgerCall = false;
-            }
-        });
-    }
-
-    function currentStockOutPreview(element, product_id, start_date, end_date) {
-        if (anyLedgerCall) {
-            toastr.warning('Please wait for the previous request to complete');
-            return;
-        }
-        anyLedgerCall = true;
-
-        var invoiceId = element.innerHTML;
-        element.innerHTML = '<i class="fa fa-spinner fa-spin"></i>';
-        $.ajax({
-            url: '<?= Yii::app()->createUrl("inventory/inventory/currentStockOutReportBatchWiseView") ?>',
-            type: 'GET',
-            data: {
-                product_id: product_id,
-                start_date: start_date,
-                end_date: end_date
-            },
-            success: function (response) {
-                $('#information-modal').modal('show');
-                $('#information-modal .modal-body').html(response);
-                element.innerHTML = invoiceId;
-            },
-            error: function () {
-                element.innerHTML = invoiceId;
-                toastr.error('Something went wrong');
-            },
-            complete: function () {
-                anyLedgerCall = false;
-            }
-        });
-    }
-
-    function currentStockInPreview(element, product_id, start_date, end_date) {
-
-        if (anyLedgerCall) {
-            toastr.warning('Please wait for the previous request to complete');
-            return;
-        }
-
-        var invoiceId = element.innerHTML;
-        element.innerHTML = '<i class="fa fa-spinner fa-spin"></i>';
-        $.ajax({
-            url: '<?= Yii::app()->createUrl("inventory/inventory/currentStockInReportBatchWiseView") ?>',
-            type: 'GET',
-            data: {
-                product_id: product_id,
-                start_date: start_date,
-                end_date: end_date
-            },
-            success: function (response) {
-                $('#information-modal').modal('show');
-                $('#information-modal .modal-body').html(response);
-                element.innerHTML = invoiceId;
-            },
-            error: function () {
-                element.innerHTML = invoiceId;
-                toastr.error('Something went wrong');
-            },
-            complete: function () {
-                anyLedgerCall = false;
-            }
-        });
-    }
-
+    
 
     $('body').off('click', '.showProductLedger').on('click', '.showProductLedger', showProductLedger);
 
