@@ -185,7 +185,7 @@ class PurchaseOrderController extends RController
         }
         if (isset($_POST['PurchaseOrder'], $_POST['PurchaseOrderDetails'])) {
             $currentInvoiceValue = $_POST['PurchaseOrder']['grand_total'];
-            $currentInvoicePaid = PaymentReceipt::model()->totalPaidAmountOfThisOrder($id);
+            /*$currentInvoicePaid = PaymentReceipt::model()->totalPaidAmountOfThisOrder($id);
             if ($currentInvoiceValue < $currentInvoicePaid) {
                 $message = 'The total amount paid (BDT' . $currentInvoicePaid . ') is greater than the invoice total (BDT' . $currentInvoiceValue . '). Please review your payment details.';
                 echo CJSON::encode(array(
@@ -194,12 +194,13 @@ class PurchaseOrderController extends RController
                 ));
                 Yii::app()->end();
             }
-            $model->attributes = $_POST['PurchaseOrder'];
             if ($currentInvoicePaid >= $currentInvoiceValue) {
                 $model->is_paid = PurchaseOrder::PAID;
             } else {
                 $model->is_paid = PurchaseOrder::DUE;
             }
+            */
+            $model->attributes = $_POST['PurchaseOrder'];
             // Begin transaction
             $transaction = Yii::app()->db->beginTransaction();
             try {
