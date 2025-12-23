@@ -77,7 +77,7 @@ class PurchaseOrderController extends RController
                     $model2->unit_price = $_POST['PurchaseOrderDetails']['temp_unit_price'][$key];
                     $model2->row_total = $_POST['PurchaseOrderDetails']['temp_row_total'][$key];
                     $model2->product_sl_no = $_POST['PurchaseOrderDetails']['temp_product_sl_no'][$key];
-                    $model2->note = $_POST['PurchaseOrderDetails']['temp_note'][$key];
+                    $model2->note = "";
                     $model2->is_all_received = PurchaseOrder::ALL_RECEIVED;
                     if (!$model2->save()) {
                         //  Rollback transaction if an error occurred
@@ -185,7 +185,7 @@ class PurchaseOrderController extends RController
         }
         if (isset($_POST['PurchaseOrder'], $_POST['PurchaseOrderDetails'])) {
             $currentInvoiceValue = $_POST['PurchaseOrder']['grand_total'];
-            /*$currentInvoicePaid = PaymentReceipt::model()->totalPaidAmountOfThisOrder($id);
+            $currentInvoicePaid = PaymentReceipt::model()->totalPaidAmountOfThisOrder($id);
             if ($currentInvoiceValue < $currentInvoicePaid) {
                 $message = 'The total amount paid (BDT' . $currentInvoicePaid . ') is greater than the invoice total (BDT' . $currentInvoiceValue . '). Please review your payment details.';
                 echo CJSON::encode(array(
@@ -194,13 +194,12 @@ class PurchaseOrderController extends RController
                 ));
                 Yii::app()->end();
             }
+            $model->attributes = $_POST['PurchaseOrder'];
             if ($currentInvoicePaid >= $currentInvoiceValue) {
                 $model->is_paid = PurchaseOrder::PAID;
             } else {
                 $model->is_paid = PurchaseOrder::DUE;
             }
-            */
-            $model->attributes = $_POST['PurchaseOrder'];
             // Begin transaction
             $transaction = Yii::app()->db->beginTransaction();
             try {
@@ -244,7 +243,7 @@ class PurchaseOrderController extends RController
                     $model2->product_sl_no = $product_sl_no;
                     $model2->unit_price = $_POST['PurchaseOrderDetails']['temp_unit_price'][$key];
                     $model2->row_total = $_POST['PurchaseOrderDetails']['temp_row_total'][$key];
-                    $model2->note = $_POST['PurchaseOrderDetails']['temp_note'][$key];
+                    $model2->note = "";
                     if (!$model2->save()) {
                         // get validation errors
                         $errors = $model2->getErrors();
@@ -295,7 +294,7 @@ class PurchaseOrderController extends RController
             } catch (Exception $e) {
                 // Rollback transaction if an error occurred
                 $transaction->rollback();
-                throw new Exception('fucking Details!');
+                throw new Exception('fucking Details!' . $e->getMessage());
 
                 // Return JSON response with error message
                 echo CJSON::encode(array(
