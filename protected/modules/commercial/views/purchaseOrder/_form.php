@@ -391,11 +391,10 @@ Yii::app()->clientScript->registerCoreScript("jquery.ui");
                         <div class="input-group" data-target-input="nearest">
                             <!-- Single / Multiple dropdown -->
                             <div class="input-group-prepend">
-                                <label for="product_sl_mode"></label><select id="product_sl_mode"
-                                                                             class="custom-select"
-                                                                             style="max-width: 110px;">
-                                    <option value="single" selected>Single</option>
-                                    <option value="multiple">Multiple</option>
+                                <label for="product_sl_mode"></label>
+                                <select id="product_sl_mode" class="form-control" style="max-width: 110px;">
+                                    <option value="single" selected title="Single">S</option>
+                                    <option value="multiple" title="Multiple">M</option>
                                 </select>
                             </div>
                             <!-- Single mode (text input) -->
@@ -682,19 +681,10 @@ Yii::app()->clientScript->registerCoreScript("jquery.ui");
         let qty = checkIsMultipleSl ? 1 : $("#PurchaseOrderDetails_qty").val();
         let row_total = $("#PurchaseOrderDetails_row_total").val();
         let isproductpresent = false;
-        let temp_codearray = document.getElementsByName("PurchaseOrderDetails[temp_model_id][]");
         let temp_sl_array = document.getElementsByName("PurchaseOrderDetails[temp_product_sl_no][]");
 
         if (!checkIsMultipleSl) {
-            if (product_sl_no.length > 0) {
-                for (let l = 0; l < temp_sl_array.length; l++) {
-                    let code = temp_sl_array[l].value;
-                    if (code === product_sl_no) {
-                        isproductpresent = true;
-                        break;
-                    }
-                }
-            }
+            isproductpresent = checkDuplicateSerialNoForSingleSel(product_sl_no);
         }
 
 
@@ -736,6 +726,23 @@ Yii::app()->clientScript->registerCoreScript("jquery.ui");
             prev_model_id = model_id;
             prev_pp = unit_price;
         }
+    }
+
+
+    function checkDuplicateSerialNoForSingleSel(product_sl_no) {
+        let temp_sl_array = document.getElementsByName("PurchaseOrderDetails[temp_product_sl_no][]");
+
+        let isproductpresent = false;
+        if (product_sl_no.length > 0) {
+            for (let l = 0; l < temp_sl_array.length; l++) {
+                let code = temp_sl_array[l].value;
+                if (code === product_sl_no) {
+                    isproductpresent = true;
+                    break;
+                }
+            }
+        }
+        return isproductpresent;
     }
 
     function buildRow({
