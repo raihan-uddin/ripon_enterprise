@@ -245,7 +245,7 @@ Yii::app()->clientScript->registerCoreScript("jquery.ui");
             <div class="card-body">
                 <div class="row">
                     <div class="table table-responsive">
-                        <table class="table table-bordered table-striped table-valign-middle" id="list">
+                        <table class="table table-bordered table-sm table-striped table-valign-middle" id="list">
                             <thead class="table-info">
                             <tr>
                                 <th>SL</th>

@@ -307,7 +307,7 @@ Yii::app()->clientScript->registerCoreScript("jquery.ui");
                 </div>
                 <div class="row">
                     <div class="table table-responsive">
-                        <table class="table table-bordered table-striped table-valign-middle" id="list">
+                        <table class="table table-bordered table-striped table-sm table-valign-middle" id="list">
                             <thead class="table-info">
                             <tr>
                                 <th>SL</th>
@@ -318,7 +318,7 @@ Yii::app()->clientScript->registerCoreScript("jquery.ui");
                                 <th style="width: 10%;" class="text-center">Qty</th>
                                 <th style="width: 10%;" class="text-center">Unit Price</th>
                                 <th style="width: 10%;" class="text-center">Row Total</th>
-                                <th style="width: 4%;" class="text-center">Action</th>
+<!--                                <th style="width: 4%;" class="text-center">Action</th>-->
                             </tr>
                             </thead>
                             <tbody>
@@ -586,11 +586,11 @@ Yii::app()->clientScript->registerCoreScript("jquery.ui");
                            name="SellOrderDetails[temp_row_total][]">
                 </td>
 
-                <td>
-                    <button type="button" class="btn btn-danger dlt">
-                        <i class="fa fa-trash-o"></i>
-                    </button>
-                </td>
+<!--                <td>-->
+<!--                    <button type="button" class="btn btn-danger dlt">-->
+<!--                        <i class="fa fa-trash-o"></i>-->
+<!--                    </button>-->
+<!--                </td>-->
             </tr>
         `);
 
