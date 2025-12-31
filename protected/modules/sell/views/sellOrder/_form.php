@@ -1,19 +1,19 @@
 <?php
 $this->widget('application.components.BreadCrumb', array(
-    'crumbs' => array(
-        array('name' => 'Sales', 'url' => array('admin')),
-        array('name' => 'Order', 'url' => array('admin')),
-        array('name' => 'Create'),
-    ),
+        'crumbs' => array(
+                array('name' => 'Sales', 'url' => array('admin')),
+                array('name' => 'Order', 'url' => array('admin')),
+                array('name' => 'Create'),
+        ),
 //    'delimiter' => ' &rarr; ',
 ));
 ?>
 <?php
 $form = $this->beginWidget('CActiveForm', array(
-    'id' => 'bom-form',
-    'enableAjaxValidation' => false,
-    'enableClientValidation' => true,
-    'clientOptions' => array('validateOnSubmit' => true),
+        'id' => 'bom-form',
+        'enableAjaxValidation' => false,
+        'enableClientValidation' => true,
+        'clientOptions' => array('validateOnSubmit' => true),
 ));
 Yii::app()->clientScript->registerCoreScript("jquery.ui");
 
@@ -36,7 +36,7 @@ Yii::app()->clientScript->registerCoreScript("jquery.ui");
     <div class="card-body">
         <div class="row">
             <div class="col-xs-12 col-sm-12 col-md-4 col-lg-4">
-                <div class="form-group row" >
+                <div class="form-group row">
                     <?php echo $form->labelEx($model, 'date', ['class' => 'col-sm-4 col-form-label']); ?>
                     <div class="col-sm-8">
                         <div class="input-group" id="entry_date" data-target-input="nearest">
@@ -54,9 +54,9 @@ Yii::app()->clientScript->registerCoreScript("jquery.ui");
                     <div class="col-sm-8">
                         <?php
                         echo $form->dropDownList(
-                            $model, 'order_type', [SellOrder::NEW_ORDER => 'NEW',], array(
-                            'prompt' => 'Select',
-                            'class' => 'form-control',
+                                $model, 'order_type', [SellOrder::NEW_ORDER => 'NEW',], array(
+                                'prompt' => 'Select',
+                                'class' => 'form-control',
                         ));
                         ?>
                     </div>
@@ -68,12 +68,12 @@ Yii::app()->clientScript->registerCoreScript("jquery.ui");
                     <div class="col-sm-8">
                         <?php
                         echo $form->dropDownList(
-                            $model, 'cash_due', Lookup::items('cash_due'), array(
+                                $model, 'cash_due', Lookup::items('cash_due'), array(
 //                            'prompt' => 'Select',
-                            'class' => 'form-control',
-                            'options' => array(
-                                Lookup::DUE => array('selected' => 'selected')
-                            ),
+                                'class' => 'form-control',
+                                'options' => array(
+                                        Lookup::DUE => array('selected' => 'selected')
+                                ),
                         ));
                         ?>
                     </div>
@@ -97,7 +97,7 @@ Yii::app()->clientScript->registerCoreScript("jquery.ui");
             </div>
 
             <div class="col-xs-12 col-sm-12 col-md-4 col-lg-4">
-                <div class="form-group row" >
+                <div class="form-group row">
                     <?php echo $form->labelEx($model, 'customer_id', ['class' => 'col-sm-4 col-form-label']); ?>
                     <div class="col-sm-8">
                         <div class="input-group" data-target-input="nearest">
@@ -107,20 +107,20 @@ Yii::app()->clientScript->registerCoreScript("jquery.ui");
                                 <div class="input-group-text">
                                     <?php
                                     echo CHtml::link(' <i class="fa fa-plus"></i>', "", // the link for open the dialog
-                                        array(
-                                            'onclick' => "{addDistributor(); $('#dialogAddDistributor').dialog('open');}"));
+                                            array(
+                                                    'onclick' => "{addDistributor(); $('#dialogAddDistributor').dialog('open');}"));
                                     ?>
                                     <?php
                                     $this->beginWidget('zii.widgets.jui.CJuiDialog', array(// the dialog
-                                        'id' => 'dialogAddDistributor',
-                                        'options' => array(
-                                            'title' => 'Add Customer',
-                                            'autoOpen' => false,
-                                            'modal' => true,
-                                            'width' => '1288px',
-                                            'left' => '30px',
-                                            'resizable' => false,
-                                        ),
+                                            'id' => 'dialogAddDistributor',
+                                            'options' => array(
+                                                    'title' => 'Add Customer',
+                                                    'autoOpen' => false,
+                                                    'modal' => true,
+                                                    'width' => '1288px',
+                                                    'left' => '30px',
+                                                    'resizable' => false,
+                                            ),
                                     ));
                                     ?>
                                     <div class="divForForm">
@@ -135,17 +135,17 @@ Yii::app()->clientScript->registerCoreScript("jquery.ui");
                                         function addDistributor() {
                                             <?php
                                             echo CHtml::ajax(array(
-                                                'url' => array('/sell/customers/createCustomerFromOutSide'),
-                                                'data' => "js:$(this).serialize()",
-                                                'type' => 'post',
-                                                'dataType' => 'json',
-                                                'beforeSend' => "function(){
+                                                    'url' => array('/sell/customers/createCustomerFromOutSide'),
+                                                    'data' => "js:$(this).serialize()",
+                                                    'type' => 'post',
+                                                    'dataType' => 'json',
+                                                    'beforeSend' => "function(){
                                             $('.ajaxLoaderFormLoad').show();
                                         }",
-                                                'complete' => "function(){
+                                                    'complete' => "function(){
                                             $('.ajaxLoaderFormLoad').hide();
                                         }",
-                                                'success' => "function(data){
+                                                    'success' => "function(data){
                                             if (data.status == 'failure')
                                             {
                                                 $('#dialogAddDistributor div.divForForm').html(data.div);
@@ -215,7 +215,7 @@ Yii::app()->clientScript->registerCoreScript("jquery.ui");
                           style="color: red; width: 100%"> <?php echo $form->error($model, 'qty'); ?></span>
                 </div>
 
-                <div class="form-group row" >
+                <div class="form-group row">
                     <?php echo $form->labelEx($model, 'total_amount', ['class' => 'col-sm-4 col-form-label']); ?>
                     <div class="col-sm-8">
                         <div class="input-group">
@@ -229,7 +229,7 @@ Yii::app()->clientScript->registerCoreScript("jquery.ui");
                           style="color: red; width: 100%"> <?php echo $form->error($model, 'total_amount'); ?></span>
                 </div>
 
-                <div class="form-group row" >
+                <div class="form-group row">
                     <?php echo $form->labelEx($model, 'vat', ['class' => 'col-sm-4 col-form-label']); ?>
                     <div class="col-sm-3">
                         <div class="input-group">
@@ -264,7 +264,7 @@ Yii::app()->clientScript->registerCoreScript("jquery.ui");
                 </div>
 
 
-                <div class="form-group row" >
+                <div class="form-group row">
                     <?php echo $form->labelEx($model, 'delivery_charge', ['class' => 'col-sm-4 col-form-label']); ?>
                     <div class="col-sm-8">
                         <?php echo $form->textField($model, 'delivery_charge', array('maxlength' => 255, 'class' => 'form-control', 'onkeyup' => 'addDeliveryCharge();')); ?>
@@ -273,7 +273,7 @@ Yii::app()->clientScript->registerCoreScript("jquery.ui");
                           style="color: red; width: 100%"> <?php echo $form->error($model, 'delivery_charge'); ?></span>
                 </div>
 
-                <div class="form-group row" >
+                <div class="form-group row">
                     <?php echo $form->labelEx($model, 'discount_amount', ['class' => 'col-sm-4 col-form-label']); ?>
                     <div class="col-sm-8">
                         <?php echo $form->textField($model, 'discount_amount', array('maxlength' => 255, 'class' => 'form-control', 'onkeyup' => 'addDiscount();')); ?>
@@ -282,7 +282,7 @@ Yii::app()->clientScript->registerCoreScript("jquery.ui");
                           style="color: red; width: 100%"> <?php echo $form->error($model, 'discount_amount'); ?></span>
                 </div>
 
-                <div class="form-group row" >
+                <div class="form-group row">
                     <?php echo $form->labelEx($model, 'grand_total', ['class' => 'col-sm-4 col-form-label']); ?>
                     <div class="col-sm-8">
                         <div class="input-group">
@@ -313,350 +313,24 @@ Yii::app()->clientScript->registerCoreScript("jquery.ui");
             </div>
             <div class="card-body">
                 <div class="row">
-                    <div class="form-group col-xs-12 col-md-3">
-                        <?php echo $form->labelEx($model2, 'model_id'); ?>
-                        <div class="input-group" data-target-input="nearest">
-                            <div class="input-group-prepend">
-                                <div class="input-group-text">
-                                    <?php
-                                    echo CHtml::link(' <i class="fa fa-plus"></i>', "", // the link for open the dialog
-                                        array(
-                                            'onclick' => "{addProdModel(); $('#dialogAddProdModel').dialog('open');}"));
-                                    ?>
-
-                                    <?php
-                                    $this->beginWidget('zii.widgets.jui.CJuiDialog', array(// the dialog
-                                        'id' => 'dialogAddProdModel',
-                                        'options' => array(
-                                            'title' => 'Add Product',
-                                            'autoOpen' => false,
-                                            'modal' => true,
-                                            'width' => '1288px',
-                                            'left' => '30px',
-                                            'resizable' => false,
-                                        ),
-                                    ));
-                                    ?>
-                                    <div class="divForForm">
-                                        <div class="ajaxLoaderFormLoad" style="display: none;"><img
-                                                    src="<?php echo Yii::app()->theme->baseUrl; ?>/images/ajax-loader.gif"/>
-                                        </div>
-
-                                    </div>
-
-                                    <?php $this->endWidget(); ?>
-
-                                    <script type="text/javascript">
-                                        // here is the magic
-                                        function addProdModel() {
-                                            <?php
-                                            echo CHtml::ajax(array(
-                                                'url' => array('/prodModels/createProdModelsFromOutSide'),
-                                                'data' => "js:$(this).serialize()",
-                                                'type' => 'post',
-                                                'dataType' => 'json',
-                                                'beforeSend' => "function(){
-                                                        $('.ajaxLoaderFormLoad').show();
-                                                    }",
-                                                'complete' => "function(){
-                                                        $('.ajaxLoaderFormLoad').hide();
-                                                    }",
-                                                'success' => "function(data){
-                                                            if (data.status == 'failure')
-                                                            {
-                                                                $('#dialogAddProdModel div.divForForm').html(data.div);
-                                                                      // Here is the trick: on submit-> once again this function!
-                                                                $('#dialogAddProdModel div.divForForm form').submit(addProdModel);
-                                                            }
-                                                            else
-                                                            {
-                                                                $('#dialogAddProdModel div.divForForm').html(data.div);
-                                                                setTimeout(\"$('#dialogAddProdModel').dialog('close') \",1000);
-                                                                $('#SellOrderDetails_model_id').val(data.value);
-                                                                $('#model_id_text').val(data.label);
-                                                            }
-                                                        }",
-                                            ))
-                                            ?>
-                                            return false;
-                                        }
-                                    </script>
-                                </div>
-                            </div>
-                            <input type="text" id="model_id_text" class="form-control">
-                            <?php echo $form->hiddenField($model2, 'model_id', array('maxlength' => 255, 'class' => 'form-control', 'readonly' => true)); ?>
-                            <div class="input-group-append" onclick="resetProduct()">
-                                <span class="input-group-text">
-                                 <i class="fa fa-refresh"></i>
-                                </span>
-                            </div>
-                        </div>
-                        <span class="help-block"
-                              style="color: red; width: 100%"> <?php echo $form->error($model, 'model_id'); ?></span>
-
-                        <script>
-                            $(document).ready(function () {
-                                $('#model_id_text').autocomplete({
-                                    source: function (request, response) {
-                                        var search = request.term;
-                                        $.post('<?php echo Yii::app()->baseUrl ?>/index.php/prodModels/Jquery_showprodSearch', {
-                                            "q": search,
-                                        }, function (data) {
-                                            response(data);
-
-                                            // Check if there's only one item and trigger select event
-                                            if (data.length === 1 && data[0].id) {
-                                                $('#model_id_text').val(data[0].value);
-                                                $('#SellOrderDetails_model_id').val(data[0].id);
-                                                $('#SellOrderDetails_amount').val(data[0].sell_price);
-                                                // Trigger select event
-                                                $('#model_id_text').autocomplete('option', 'select').call($('#model_id_text')[0], null, {
-                                                    item: data[0]
-                                                });
-                                                showPurchasePrice(data[0].purchasePrice);
-                                                showCurrentStock(data[0].stock);
-                                            }
-                                        }, "json");
-                                    },
-                                    minLength: 1,
-                                    delay: 700,
-                                    select: function (event, ui) {
-                                        $('#model_id_text').val(ui.item.value);
-                                        $('#SellOrderDetails_model_id').val(ui.item.id);
-                                        $('#SellOrderDetails_amount').val(ui.item.sell_price);
-                                        $('#SellOrderDetails_warranty').val(ui.item.warranty);
-                                        showPurchasePrice(ui.item.purchasePrice);
-                                        showCurrentStock(ui.item.stock);
-
-                                        // Move cursor to the next visible input field
-                                        var $form = $('#model_id_text').closest('form');
-                                        var $inputs = $form.find(':input:visible:not([disabled])');
-                                        var currentIndex = $inputs.index($('#model_id_text'));
-                                        $inputs.eq(currentIndex + 1).focus();
-                                    }
-                                }).data("ui-autocomplete")._renderItem = function (ul, item) {
-                                    // Use Bootstrap styling for the autocomplete results
-                                    var listItem = $("<li class='list-group-item p-2'></li>")
-                                        .data("item.autocomplete", item)
-                                        .append(`
-                                        <div class="row align-items-center">
-                                            <div class="col-10 0">
-                                                <p class="m-1">${item.name}</p>
-                                                <p class="m-1">
-                                                    <small><strong>Code:</strong> ${item.code}</small>,
-                                                    <small><strong>Purchase Price:</strong> ${item.purchasePrice}</small>,
-                                                    <small><strong>Selling Price:</strong> ${item.sell_price}</small>
-                                                    <small><strong>Stock:</strong> ${item.stock}</small>
-                                                </p>
-                                            </div>
-                                        </div>`);
-
-                                    return listItem.appendTo(ul);
-                                };
-                            });
-
-
-                        </script>
-                    </div>
-                    <div class="form-group col-sm-12 col-md-3">
-                        <?php echo $form->labelEx($model, 'product_sl_no'); ?>
-
-                        <div class="input-group" data-target-input="nearest">
-                            <input type="text" id="product_sl_no" class="form-control">
-                            <div class="input-group-append" onclick="resetProductSlNo()">
-                                <span class="input-group-text">
-                                 <i class="fa fa-refresh"></i>
-                                </span>
-                            </div>
-                        </div>
-                        <span class="help-block"
-                              style="color: red; width: 100%"> <?php echo $form->error($model, 'product_sl_no'); ?></span>
-
-                        <script>
-                            $(document).ready(function () {
-                                $('#product_sl_no').autocomplete({
-                                    source: function (request, response) {
-                                        var search = request.term;
-                                        $.post('<?php echo Yii::app()->baseUrl ?>/index.php/inventory/inventory/Jquery_showprodSlNoSearch', {
-                                            "q": search,
-                                            "model_id": $('#SellOrderDetails_model_id').val(),
-                                        }, function (data) {
-                                            response(data);
-                                            // console.log(`length: ${data.length}, data: ${JSON.stringify(data)}`);
-                                            // Check if there's only one item and trigger select event
-                                            if (data.length === 1 && data[0].id) {
-                                                $('#model_id_text').val(data[0].label);
-                                                $('#product_sl_no').val(data[0].product_sl_no);
-                                                $('#SellOrderDetails_model_id').val(data[0].id);
-                                                if (data[0].id == prev_product_id)
-                                                    sp = prev_sell_price
-                                                else
-                                                    sp = data[0].sell_price
-                                                $('#SellOrderDetails_amount').val(sp);
-                                                $('#SellOrderDetails_qty').val(1);
-                                                $('#SellOrderDetails_row_total').val(sp);
-                                                showPurchasePrice(data[0].purchasePrice);
-                                                showCurrentStock(data[0].stock);
-
-                                                // Trigger select event
-                                                $('#product_sl_no').autocomplete('option', 'select').call($('#product_sl_no')[0], null, {
-                                                    item: data[0]
-                                                });
-                                            }
-                                        }, "json");
-                                    },
-                                    minLength: 1,
-                                    delay: 700,
-                                    select: function (event, ui) {
-                                        $('#model_id_text').val(ui.item.label);
-                                        $('#product_sl_no').val(ui.item.product_sl_no);
-                                        $('#SellOrderDetails_model_id').val(ui.item.id);
-                                        if (ui.item.id == prev_product_id)
-                                            sp = prev_sell_price
-                                        else
-                                            sp = ui.item.sell_price
-                                        $('#SellOrderDetails_amount').val(sp);
-                                        $('#SellOrderDetails_qty').val(1);
-                                        $('#SellOrderDetails_row_total').val(sp);
-                                        $('#SellOrderDetails_warranty').val(ui.item.warranty);
-                                        // $('.product_unit_text').html($('#Inventory_unit_id option:selected').text());
-                                        showPurchasePrice(ui.item.purchasePrice);
-                                        showCurrentStock(ui.item.stock);
-
-                                        // Move cursor to the next visible input field
-                                        var $form = $('#product_sl_no').closest('form');
-                                        var $inputs = $form.find(':input:visible:not([disabled])');
-                                        var currentIndex = $inputs.index($('#product_sl_no'));
-                                        $inputs.eq(currentIndex + 1).focus();
-
-                                        // addToList();
-                                    }
-                                }).data("ui-autocomplete")._renderItem = function (ul, item) {
-                                    var listItem = $("<li class='list-group-item p-2'></li>")
-                                        .data("item.autocomplete", item)
-                                        .append(`
-                                        <div class="row align-items-center">
-                                            <div class="col-12">
-                                                <p class="m-1">${item.product_sl_no}</p>
-                                                <p class="mb-0" style="font-size: 10px;">
-                                                    <small><strong>Name:</strong> ${item.name}</small>, <br>
-                                                    <small><strong>Code:</strong> ${item.code}</small>,
-                                                    <small><strong>Sell Price:</strong> ${item.sell_price}</small>,
-                                                    <small><strong>Purchase Price:</strong> ${item.purchasePrice}</small>,
-                                                    <small><strong>Stock:</strong> ${item.stock}</small>
-                                                </p>
-                                            </div>
-                                        </div>`);
-
-                                    return listItem.appendTo(ul);
-                                };
-                            });
-
-                        </script>
-                    </div>
                     <div class="form-group col-xs-12 col-md-2">
-                        <?php echo $form->labelEx($model2, 'qty'); ?>
-                        <?php echo $form->textField($model2, 'qty', array('maxlength' => 255, 'class' => 'form-control qty-amount')); ?>
+                        <?php echo $form->labelEx($model, 'manufacturer_id'); ?>
+                        <?php
+                        echo $form->dropDownList(
+                                $model, 'manufacturer_id', CHtml::listData(Company::model()->findAll(array('order' => 'name ASC')), 'id', 'name'), array(
+                                'prompt' => 'Select',
+                                'class' => 'form-control',
+                        ));
+                        ?>
                         <!-- Display Stock without margin and padding -->
                         <span class="help-block current-stock"
                               style="font-size: 12px; color: #333; margin: 0; padding: 0; width: 100%"></span>
                         <span class="help-block"
                               style="color: red; width: 100%"> <?php echo $form->error($model2, 'qty'); ?></span>
                     </div>
-
-                    <div class="form-group col-xs-12 col-md-2" style="position: relative;">
-                        <?php echo $form->labelEx($model2, 'amount'); ?>
-                        <?php echo $form->textField($model2, 'amount', array(
-                                'maxlength' => 255,
-                                'class' => 'form-control qty-amount'
-                        )); ?>
-
-                        <!-- Hidden Costing Amount -->
-                        <?php echo $form->hiddenField($model2, 'pp', array(
-                                'maxlength' => 255,
-                                'class' => 'form-control pp'
-                        )); ?>
-
-                        <!-- Eye icon (hidden by default) -->
-                        <i class="fa fa-eye toggle-costing"
-                           style="position: absolute; right: 10px; top: 35px; cursor: pointer; color: #888; display: none;"></i>
-
-                        <!-- Display Costing Amount (initially hidden) -->
-                        <span class="help-block costing-amount"
-                              style="
-                                  font-size: 13px;
-                                  font-weight: 600;
-                                  color: #1e88e5;
-                                  background: #e3f2fd;
-                                  border-radius: 4px;
-                                  padding: 3px 6px;
-                                  margin-top: 4px;
-                                  display: none;
-                                  width: fit-content;
-                              ">
-                        </span>
-
-                        <span class="help-block" style="color: red; width: 100%;">
-                            <?php echo $form->error($model2, 'amount'); ?>
-                        </span>
-                    </div>
-
-                    <script>
-                        $(document).ready(function () {
-                            var $eye = $('.toggle-costing');
-                            var $pp = $('.pp');
-                            var $costing = $('.costing-amount');
-
-                            // Show the eye icon if costing value exists
-                            if ($pp.val() && $pp.val().length > 0) {
-                                $eye.show();
-                            }
-
-                            // Toggle costing show/hide
-                            $eye.on('click', function () {
-                                if ($costing.is(':visible')) {
-                                    $costing.hide();
-                                    $(this).removeClass('fa-eye-slash').addClass('fa-eye');
-                                } else {
-                                    $costing.text('Costing: ' + $pp.val()).show();
-                                    $(this).removeClass('fa-eye').addClass('fa-eye-slash');
-                                }
-                            });
-                        });
-                    </script>
-
-
-
-                    <div class="form-group col-xs-12 col-md-2">
-                        <?php echo $form->labelEx($model2, 'row_total'); ?>
-                        <?php echo $form->textField($model2, 'row_total', array('maxlength' => 255, 'class' => 'form-control', 'readonly' => true)); ?>
-                        <span class="help-block"
-                              style="color: red; width: 100%"> <?php echo $form->error($model2, 'row_total'); ?></span>
-                    </div>
-                    <div class="form-group col-xs-12 col-md-2">
-                        <?php echo $form->labelEx($model2, 'warranty'); ?>
-                        <?php echo $form->textField($model2, 'warranty', array('maxlength' => 255, 'class' => 'form-control warranty')); ?>
-                        <span class="help-block"
-                              style="color: red; width: 100%"> <?php echo $form->error($model2, 'warranty'); ?></span>
-                    </div>
-                    <div class="form-group col-xs-12 col-md-2" style="display: none;">
-                        <?php echo $form->labelEx($model2, 'color'); ?>
-                        <?php echo $form->textField($model2, 'color', array('maxlength' => 255, 'class' => 'form-control')); ?>
-                        <span class="help-block"
-                              style="color: red; width: 100%"> <?php echo $form->error($model2, 'color'); ?></span>
-                    </div>
-                    <div class="form-group col-xs-12 col-md-2">
-                        <?php echo $form->labelEx($model2, 'note'); ?>
-                        <?php echo $form->textArea($model2, 'note', array('maxlength' => 255, 'class' => 'form-control', 'style' => 'height: 36px;')); ?>
-                        <span class="help-block"
-                              style="color: red; width: 100%"> <?php echo $form->error($model2, 'note'); ?></span>
-                    </div>
                     <div class="form-group col-xs-12 col-md-1">
                         <button class="btn  btn-success mt-4" onclick="addToList()" type="button" title="ADD TO LIST"><i
                                     class="fa fa-cart-arrow-down" aria-hidden="true"></i>
-                        </button>
-                        <button class="btn  btn-danger mt-4" onclick="resetDynamicItem()" type="button" title="RESET">
-                            <i class="fa fa-refresh" aria-hidden="true"></i>
                         </button>
                     </div>
                 </div>
@@ -667,9 +341,9 @@ Yii::app()->clientScript->registerCoreScript("jquery.ui");
                             <tr>
                                 <th>SL</th>
                                 <th>Product Name</th>
-                                <th style="width: 20%;" class="text-center">Product Sl No</th>
-                                <th style="width: 10%;" class="text-center">Warranty(Mon.)</th>
-                                <th style="width: 10%;" class="text-center">Product Note</th>
+                                <th style="width: 20%; display: none;" class="text-center">Product Sl No</th>
+                                <th style="width: 10%; display: none;" class="text-center">Warranty(Mon.)</th>
+                                <th style="width: 10%; display: none;" class="text-center">Product Note</th>
                                 <th style="width: 10%; display: none;" class="text-center">Color</th>
                                 <th style="width: 10%;" class="text-center">Qty</th>
                                 <th style="width: 10%;" class="text-center">Unit Price</th>
@@ -699,9 +373,9 @@ Yii::app()->clientScript->registerCoreScript("jquery.ui");
         <div class="col-md-12">
             <?php
             echo CHtml::ajaxSubmitButton('Save', CHtml::normalizeUrl(array('/sell/sellOrder/create', 'render' => true)), array(
-                'dataType' => 'json',
-                'type' => 'post',
-                'success' => 'function(data) {
+                    'dataType' => 'json',
+                    'type' => 'post',
+                    'success' => 'function(data) {
                 $("#ajaxLoader").hide();  
                     if(data.status=="success"){
                         $("#formResult").fadeIn();
@@ -722,7 +396,7 @@ Yii::app()->clientScript->registerCoreScript("jquery.ui");
                         });
                     }       
                 }',
-                'beforeSend' => 'function(){  
+                    'beforeSend' => 'function(){  
                     let count_item =  $(".item").length; 
                     let cash_due = $("#SellOrder_cash_due").val();  
                     let date = $("#SellOrder_date").val();  
@@ -748,7 +422,7 @@ Yii::app()->clientScript->registerCoreScript("jquery.ui");
                         $("#ajaxLoader").show();
                     }
                  }',
-                'error' => 'function(xhr, status, error) { 
+                    'error' => 'function(xhr, status, error) { 
                     // Code to handle errors
                     toastr.error(xhr.responseText); // Displaying error message using Toastr
                     // Optionally, you can display additional error details
@@ -758,7 +432,7 @@ Yii::app()->clientScript->registerCoreScript("jquery.ui");
                 
                     $("#overlay").fadeOut(300);
               }',
-                'complete' => 'function() {
+                    'complete' => 'function() {
                     $("#overlay").fadeOut(300);
                  $("#ajaxLoaderReport").hide(); 
               }',
@@ -782,20 +456,12 @@ Yii::app()->clientScript->registerCoreScript("jquery.ui");
 </div>
 
 <script>
-    let prev_product_id = 0;
-    let prev_sell_price = 0;
+   let company_products = [];
     var picker = new Lightpick({
         field: document.getElementById('entry_date'),
         minDate: moment(),
         onSelect: function (date) {
             document.getElementById('SellOrder_date').value = date.format('YYYY-MM-DD');
-        }
-    });
-    var picker2 = new Lightpick({
-        field: document.getElementById('SellOrder_exp_delivery_date'),
-        minDate: moment(),
-        onSelect: function (date) {
-            document.getElementById('SellOrder_exp_delivery_date').value = date.format('YYYY-MM-DD');
         }
     });
 
@@ -821,7 +487,22 @@ Yii::app()->clientScript->registerCoreScript("jquery.ui");
     });
 
     function addToList() {
-        let model_id = $("#SellOrderDetails_model_id").val();
+        let company_id = $("#SellOrder_manufacturer_id").val();
+
+        getCompanyProducts(company_id, function (data) {
+            if (data.length === 0) {
+                toastr.error("No products found for the selected company.");
+                return;
+            }
+
+            // // Assuming you want to add the first product from the list
+            // let product = data[0];
+            // addProductToList(product.model_id, product.model_name);
+        });
+        console.log("xx")
+       console.log(company_products);
+        console.log("xx")
+        return;
         let model_id_text = $("#model_id_text").val();
         let unit_price = parseFloat($("#SellOrderDetails_amount").val());
         unit_price = unit_price > 0 ? unit_price : 0;
@@ -833,79 +514,127 @@ Yii::app()->clientScript->registerCoreScript("jquery.ui");
         let color = $("#SellOrderDetails_color").val();
         let warranty = $("#SellOrderDetails_warranty").val();
         let pp = parseFloat($("#SellOrderDetails_pp").val());
-        pp = pp > 0 ? pp : 0;
-        let isproductpresent = false;
-        let temp_codearray = document.getElementsByName("SellOrderDetails[temp_model_id][]");
-        let temp_sl_array = document.getElementsByName("SellOrderDetails[temp_product_sl_no][]");
-        
 
-        if (product_sl_no.length > 0) {
-            for (let l = 0; l < temp_sl_array.length; l++) {
-                let code = temp_sl_array[l].value;
-                if (code === product_sl_no) {
-                    isproductpresent = true;
-                    break;
-                }
-            }
-        }
-
-
-        if (model_id == "" || model_id_text == "") {
-            toastr.error("Please select materials");
-            return false;
-        } else if (isproductpresent == true) {
-            toastr.error(model_id_text + " is already on the list! Please add another!");
-            return false;
-        } else if (unit_price == "") {
-            toastr.error("Please insert unit price");
-            return false;
-        } else if (qty == "" || qty == 0) {
-            toastr.error("Please enter qty");
-            return false;
-        } else if (row_total == "" || row_total == 0) {
-            toastr.error("Please enter qty & amount!");
-            return false;
-        } else {
-            $("#list tbody").prepend(`
-                <tr class="item">
-                    <td class="serial"></td>
-                    <td>
-                        ${model_id_text}
-                        <input type="hidden" class="form-control temp_model_id" value="${model_id}" name="SellOrderDetails[temp_model_id][]" >
-                    </td>
-                    <td class="text-center">
-                        <input type="text" class="form-control text-center" value="${product_sl_no}" name="SellOrderDetails[temp_product_sl_no][]">
-                    </td>
-                    <td class="text-center">
-                        <input type="text" class="form-control text-center" value="${warranty}" name="SellOrderDetails[temp_warranty][]">
-                    </td>
-                    <td class="text-center">
-                        <input type="text" class="form-control text-center" value="${note}" name="SellOrderDetails[temp_note][]">
-                    </td>
-                    <td class="text-center" style="display: none;">
-                        <input type="text" class="form-control" value="${color}" name="SellOrderDetails[temp_color][]" >
-                    </td>
-                    <td class="text-center">
-                        <input type="text" class="form-control text-center temp_qty" value="${qty}" name="SellOrderDetails[temp_qty][]">
-                    </td>
-                    <td class="text-center">
-                        <input type="text" class="form-control temp_unit_price text-right" value="${unit_price}" name="SellOrderDetails[temp_unit_price][]" >
-                        <input type="hidden" class="form-control text-center temp-costing" value="${pp}" name="SellOrderDetails[temp_pp][]">
-                    </td>
-                    <td class="text-center">
-                       <input type="text" readonly class="form-control row-total text-right" value="${row_total}" name="SellOrderDetails[temp_row_total][]" >
-                    </td>
-                    <td>
-                        <button type="button" class="btn btn-danger dlt"><i class="fa fa-trash-o"></i> </button>
-                    </td>
-                </tr>
-                `);
-            calculateTotal();
-            clearDynamicItem(product_sl_no);
-            prev_sell_price = unit_price;
-            prev_product_id = model_id;
-        }
+        prependSellOrderRow({
+            model_id_text: model_id_text,
+            model_id: model_id,
+            product_sl_no: product_sl_no,
+            warranty: warranty,
+            note: note,
+            color: color,
+            qty: qty,
+            unit_price: unit_price,
+            pp: pp,
+            row_total: row_total
+        });
+        calculateTotal();
+        clearDynamicItem(product_sl_no);
     }
+
+
+    function getCompanyProducts(company_id, callback) {
+        $.ajax({
+            url: '<?php echo Yii::app()->baseUrl ?>/index.php/prodModels/Jquery_getCompanyProducts',
+            type: 'GET',
+            data: { company_id: company_id },
+            dataType: 'json',
+            success: function (data) {
+                company_products = data;
+                callback(data);
+            },
+            error: function () {
+                toastr.error("An error occurred while fetching products.");
+                callback([]);
+            }
+        });
+    }
+
+    function prependSellOrderRow(data) {
+        const {
+            model_id_text,
+            model_id,
+            product_sl_no,
+            warranty,
+            note,
+            color,
+            qty,
+            unit_price,
+            pp,
+            row_total
+        } = data;
+
+        $("#list tbody").prepend(`
+            <tr class="item">
+                <td class="serial"></td>
+                <td>
+                    ${model_id_text}
+                    <input type="hidden" class="form-control temp_model_id"
+                           value="${model_id}"
+                           name="SellOrderDetails[temp_model_id][]">
+                </td>
+
+                <td class="text-center" style="display:none;">
+                    <input type="text" class="form-control text-center"
+                           value="${product_sl_no}"
+                           name="SellOrderDetails[temp_product_sl_no][]">
+                </td>
+
+                <td class="text-center" style="display:none;">
+                    <input type="text" class="form-control text-center"
+                           value="${warranty}"
+                           name="SellOrderDetails[temp_warranty][]">
+                </td>
+
+                <td class="text-center" style="display:none;">
+                    <input type="text" class="form-control text-center"
+                           value="${note}"
+                           name="SellOrderDetails[temp_note][]">
+                </td>
+
+                <td class="text-center" style="display:none;">
+                    <input type="text" class="form-control"
+                           value="${color}"
+                           name="SellOrderDetails[temp_color][]">
+                </td>
+
+                <td class="text-center">
+                    <input type="text"
+                           class="form-control text-center temp_qty"
+                           value="${qty}"
+                           name="SellOrderDetails[temp_qty][]">
+                </td>
+
+                <td class="text-center">
+                    <input type="text"
+                           class="form-control temp_unit_price text-right"
+                           value="${unit_price}"
+                           name="SellOrderDetails[temp_unit_price][]">
+                    <input type="hidden"
+                           class="form-control temp-costing"
+                           value="${pp}"
+                           name="SellOrderDetails[temp_pp][]">
+                </td>
+
+                <td class="text-center">
+                    <input type="text"
+                           readonly
+                           class="form-control row-total text-right"
+                           value="${row_total}"
+                           name="SellOrderDetails[temp_row_total][]">
+                </td>
+
+                <td>
+                    <button type="button" class="btn btn-danger dlt">
+                        <i class="fa fa-trash-o"></i>
+                    </button>
+                </td>
+            </tr>
+        `);
+
+        calculateTotal();
+        clearDynamicItem(product_sl_no);
+    }
+
 
     $("#list").on("click", ".dlt", function () {
         $(this).closest("tr").remove();
@@ -934,11 +663,11 @@ Yii::app()->clientScript->registerCoreScript("jquery.ui");
         calculateTotal();
     });
 
-    function changeUnitPriceForSameModel(model_id, price){
-         // find all same model id and change the price except the current row
-        $(".temp_qty").each(function(){
-            if($(this).closest("tr").find(".temp_model_id").val() == model_id){
-                if($(this).closest("tr").find(".temp_unit_price").val() != price){
+    function changeUnitPriceForSameModel(model_id, price) {
+        // find all same model id and change the price except the current row
+        $(".temp_qty").each(function () {
+            if ($(this).closest("tr").find(".temp_model_id").val() == model_id) {
+                if ($(this).closest("tr").find(".temp_unit_price").val() != price) {
                     $(this).closest("tr").find(".temp_unit_price").val(price);
                     let qty = parseFloat($(this).val());
                     qty = qty > 0 ? qty : 0;
@@ -1146,14 +875,14 @@ Yii::app()->clientScript->registerCoreScript("jquery.ui");
 
 <?php
 $this->beginWidget('zii.widgets.jui.CJuiDialog', array(
-    'id' => 'soReportDialogBox',
-    'options' => array(
-        'title' => 'ORDER VOUCHER PREVIEW',
-        'autoOpen' => false,
-        'modal' => true,
-        'width' => 1030,
-        'resizable' => false,
-    ),
+        'id' => 'soReportDialogBox',
+        'options' => array(
+                'title' => 'ORDER VOUCHER PREVIEW',
+                'autoOpen' => false,
+                'modal' => true,
+                'width' => 1030,
+                'resizable' => false,
+        ),
 ));
 ?>
 <div id='AjFlashReportSo' style="display:none;"></div>

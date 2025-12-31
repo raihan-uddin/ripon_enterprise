@@ -19,6 +19,7 @@ class ProdModelsController extends RController
             'rights
             -Jquery_showprodSearch
             -Jquery_showprodCodeSearch
+            -Jquery_getCompanyProducts
             -SubCatOfThisCat',
         );
     }
@@ -28,6 +29,49 @@ class ProdModelsController extends RController
         return '';
     }
 
+    public function actionJquery_getCompanyProducts()
+    {
+        $company_id = isset($_REQUEST['company_id']) ? trim($_REQUEST['company_id']) : '';
+//        die("ssss: $company_id");
+        $criteria = new CDbCriteria();
+        $criteria->addCondition("t.manufacturer_id = $company_id"); // 'status' => ProdModels::ACTIVE
+        $criteria->order = "t.item_id, t.brand_id, t.model_name asc";
+        $criteria->join = " INNER JOIN prod_items pi ON pi.id = t.item_id ";
+        $criteria->join .= " INNER JOIN prod_brands pb ON pb.id = t.brand_id ";
+        $criteria->select = "t.id, t.model_name, t.code, pi.item_name, pb.brand_name, t.purchase_price, t.sell_price";
+        $prodInfos = ProdModels::model()->findAll($criteria);
+//        print_r($prodInfos);
+//        die();
+        $results = [];
+        if ($prodInfos) {
+            foreach ($prodInfos as $prodInfo) {
+                $code = $prodInfo->code;
+                $value = "$prodInfo->model_name || $code";
+                $label = "$prodInfo->model_name || $code";
+                $id = $prodInfo->id;
+                $name = $prodInfo->model_name;
+                $purchasePrice = $prodInfo->purchase_price;
+                $item_name = $prodInfo->item_name;
+                $brand_name = $prodInfo->brand_name;
+                $sellPrice = $prodInfo->sell_price;
+                $results[] = array(
+                    'id' => $id,
+                    'name' => $name,
+                    'value' => $value,
+                    'label' => $label,
+                    'item_name' => $item_name,
+                    'brand_name' => $brand_name,
+                    'code' => $code,
+                    'purchasePrice' => $purchasePrice,
+                    'sell_price' => $sellPrice,
+                );
+            }
+        }
+        header('Content-Type: application/json; charset=utf-8');
+        echo CJSON::encode($results);
+        Yii::app()->end();
+    }
+
     public function actionJquery_showprodSearch()
     {
         $search_prodName = isset($_POST['q']) ? trim($_POST['q']) : '';
@@ -35,7 +79,7 @@ class ProdModelsController extends RController
         $item_id = isset($_POST['item_id']) ? $_POST['item_id'] : [];
         $item_id_excluded = isset($_POST['item_id_excluded']) ? trim($_POST['item_id_excluded']) : false;
         $criteria = new CDbCriteria();
-        if(strlen($search_prodName) > 0){
+        if (strlen($search_prodName) > 0) {
             $criteria2 = new CDbCriteria();
             $criteria2->compare('t.model_name', $search_prodName, true);
             $criteria2->compare('t.code', $search_prodName, true, "OR");

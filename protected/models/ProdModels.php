@@ -56,6 +56,9 @@ class ProdModels extends CActiveRecord
     public $company_name;
     public $brand_name;
     public $avg_purchase_price;
+    public $item_name;
+
+    const ACTIVE=1;
 
     public static function prodNameOfThis($id)
     {
