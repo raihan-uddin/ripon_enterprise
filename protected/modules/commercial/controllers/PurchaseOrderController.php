@@ -55,7 +55,7 @@ class PurchaseOrderController extends RController
             $model->attributes = $_POST['PurchaseOrder'];
             $model->max_sl_no = PurchaseOrder::maxSlNo();
             $model->discount_percentage = 0;
-            $model->po_no = "PO" . date('y') . "-" . date('m') . str_pad($model->max_sl_no, 5, "0", STR_PAD_LEFT);
+            $model->po_no = date('y') . "-" . date('m') . str_pad($model->max_sl_no, 5, "0", STR_PAD_LEFT);
             $model->is_all_received = PurchaseOrder::ALL_RECEIVED;
             try {
                 if (!$model->save()) {
@@ -64,11 +64,14 @@ class PurchaseOrderController extends RController
                     $error = CActiveForm::validate($model);
                     if ($error != '[]')
                         echo $error;
-                    Yii::app()->end();
                 }
                 $sl_no = Inventory::maxSlNo();
                 $challan_no = "PUR-" . str_pad($sl_no, 6, '0', STR_PAD_LEFT);
                 foreach ($_POST['PurchaseOrderDetails']['temp_model_id'] as $key => $model_id) {
+                    $qty = $_POST['PurchaseOrderDetails']['temp_qty'][$key];
+                    if ($qty <= 0) {
+                        continue; // Skip this iteration if qty is zero or negative
+                    }
                     $product = ProdModels::model()->findByPk($model_id);
                     $model2 = new PurchaseOrderDetails();
                     $model2->order_id = $model->id;
@@ -76,13 +79,12 @@ class PurchaseOrderController extends RController
                     $model2->qty = $_POST['PurchaseOrderDetails']['temp_qty'][$key];
                     $model2->unit_price = $_POST['PurchaseOrderDetails']['temp_unit_price'][$key];
                     $model2->row_total = $_POST['PurchaseOrderDetails']['temp_row_total'][$key];
-                    $model2->product_sl_no = $_POST['PurchaseOrderDetails']['temp_product_sl_no'][$key];
                     $model2->note = "";
                     $model2->is_all_received = PurchaseOrder::ALL_RECEIVED;
                     if (!$model2->save()) {
                         //  Rollback transaction if an error occurred
                         $transaction->rollback();
-                        throw new Exception('Error in saving Purchase Order Details!');
+                        throw new Exception($model2->getErrors());
                     }
                     $inv = new Inventory();
                     $inv->model_id = $model_id;
@@ -95,7 +97,6 @@ class PurchaseOrderController extends RController
                     $inv->sell_price = $product->sell_price;
                     $inv->purchase_price = $model2->unit_price;
                     $inv->row_total = $model2->row_total;
-                    $inv->product_sl_no = $model2->product_sl_no;
                     $inv->stock_status = Inventory::PURCHASE_RECEIVE;
                     $inv->source_id = $model2->id;
                     $inv->master_id = $model->id;
@@ -103,7 +104,7 @@ class PurchaseOrderController extends RController
                     if (!$inv->save()) {
                         // Rollback transaction if an error occurred
                         $transaction->rollback();
-                        throw new Exception('Error in saving Inventory!');
+                        throw new Exception($inv->getErrors());
                     }
                 }
 
@@ -185,21 +186,9 @@ class PurchaseOrderController extends RController
         }
         if (isset($_POST['PurchaseOrder'], $_POST['PurchaseOrderDetails'])) {
             $currentInvoiceValue = $_POST['PurchaseOrder']['grand_total'];
-            $currentInvoicePaid = PaymentReceipt::model()->totalPaidAmountOfThisOrder($id);
-            if ($currentInvoiceValue < $currentInvoicePaid) {
-                $message = 'The total amount paid (BDT' . $currentInvoicePaid . ') is greater than the invoice total (BDT' . $currentInvoiceValue . '). Please review your payment details.';
-                echo CJSON::encode(array(
-                    'status' => 'error',
-                    'message' => $message,
-                ));
-                Yii::app()->end();
-            }
+
             $model->attributes = $_POST['PurchaseOrder'];
-            if ($currentInvoicePaid >= $currentInvoiceValue) {
-                $model->is_paid = PurchaseOrder::PAID;
-            } else {
-                $model->is_paid = PurchaseOrder::DUE;
-            }
+
             // Begin transaction
             $transaction = Yii::app()->db->beginTransaction();
             try {
@@ -211,7 +200,7 @@ class PurchaseOrderController extends RController
                         echo $error;
                     Yii::app()->end();
                 }
-                
+
                 // now delete all the previous data of this order from PurchaseOrderDetails table & Inventory table
                 // $detailsDelete = PurchaseOrderDetails::model()->deleteAll(['order_id' => $id]);
                 $detailsDelete = PurchaseOrderDetails::model()->deleteAll('order_id = :order_id', [':order_id' => $id]);
@@ -228,19 +217,22 @@ class PurchaseOrderController extends RController
                     $transaction->rollback();
                     throw new Exception('Error in deleting Inventory!');
                 }
-                
+
 
                 $sl_no = Inventory::maxSlNo();
                 $challan_no = "PUR-" . str_pad($sl_no, 6, '0', STR_PAD_LEFT);
                 foreach ($_POST['PurchaseOrderDetails']['temp_model_id'] as $key => $model_id) {
+                    $qty = $_POST['PurchaseOrderDetails']['temp_qty'][$key];
+
+                    if ($qty <= 0) {
+                        continue; // Skip this iteration if qty is zero or negative
+                    }
                     $product = ProdModels::model()->findByPk($model_id);
-                    $product_sl_no = $_POST['PurchaseOrderDetails']['temp_product_sl_no'][$key];
-                    
+
                     $model2 = new PurchaseOrderDetails();
                     $model2->order_id = $model->id;
                     $model2->model_id = $model_id;
                     $model2->qty = $_POST['PurchaseOrderDetails']['temp_qty'][$key];
-                    $model2->product_sl_no = $product_sl_no;
                     $model2->unit_price = $_POST['PurchaseOrderDetails']['temp_unit_price'][$key];
                     $model2->row_total = $_POST['PurchaseOrderDetails']['temp_row_total'][$key];
                     $model2->note = "";
@@ -253,7 +245,7 @@ class PurchaseOrderController extends RController
                         $transaction->rollback();
                         throw new Exception('Error in saving Purchase Order Details:' . CVarDumper::dumpAsString($errors));
                     }
-                    
+
                     $inv = new Inventory();
                     $challan_no = $challan_no;
                     $sl_no = $sl_no;
@@ -267,12 +259,11 @@ class PurchaseOrderController extends RController
                     $inv->sell_price = $product->sell_price;
                     $inv->row_total = $model2->row_total;
                     $inv->purchase_price = $model2->unit_price;
-                    $inv->product_sl_no = $model2->product_sl_no;
                     $inv->stock_status = Inventory::PURCHASE_RECEIVE;
                     $inv->source_id = $model2->id;
                     $inv->master_id = $model->id;
                     $inv->remarks = $model2->note;
-                    if(!$inv->save()){
+                    if (!$inv->save()) {
                         // Get validation errors
                         $errors = $inv->getErrors();
                         // Log or display the errors for debugging
@@ -281,7 +272,7 @@ class PurchaseOrderController extends RController
                         $transaction->rollback();
                         throw new Exception('Error in saving Inventory:' . CVarDumper::dumpAsString($errors));
                     }
-                }                
+                }
 
                 $transaction->commit();
 
@@ -306,17 +297,22 @@ class PurchaseOrderController extends RController
 
 
         $criteria = new CDbCriteria();
-        $criteria->select = "t.*, pm.model_name, pm.code";
+        $criteria->select = "t.*, pm.model_name, pm.code,  pb.brand_name, pi.item_name, pm.manufacturer_id";
         $criteria->addColumnCondition(['order_id' => $id]);
         $criteria->join = " INNER JOIN prod_models pm on t.model_id = pm.id ";
+        $criteria->join .= " INNER JOIN prod_brands pb on pm.brand_id = pb.id ";
+        $criteria->join .= " INNER JOIN prod_items pi on pb.item_id = pi.id ";
         $criteria->order = "pm.model_name ASC";
         $data = PurchaseOrderDetails::model()->findAll($criteria);
+
+        $baseCompanyId = $data ? $data[0]->manufacturer_id : 0;
 
         $this->pageTitle = 'UPDATE ORDER';
         $this->render('update', array(
             'model' => $model,
             'model2' => $model2,
             'model3' => $data,
+            'baseCompanyId' => $baseCompanyId,
         ));
     }
 

@@ -38,6 +38,7 @@ class PurchaseOrder extends CActiveRecord
     public $item_count;
     public $row_total;
     public $print_type;
+    public $manufacturer_id;
     public $exp_delivery_date;
     public $customer_id;
     public $qty;
@@ -137,6 +138,7 @@ class PurchaseOrder extends CActiveRecord
             'ship_to' => 'Ship To',
             'exp_receive_date' => 'Exp. Rcv. Date',
             'order_note' => 'Order Note',
+            'manufacturer_id' => 'Company'
         );
     }
 

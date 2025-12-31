@@ -52,6 +52,7 @@ class SellOrder extends CActiveRecord
     public $total_sales;
     public $return_amount;
     public $group_by;
+    public $manufacturer_id;
 
     const NEW_ORDER = 1;
     const REPAIR_ORDER = 2;
@@ -140,6 +141,7 @@ class SellOrder extends CActiveRecord
             'costing' => 'Costing',
             'is_opening' => 'Is Opening',
             'total_return' => 'Total Return',
+            'manufacturer_id' => 'Company'
         );
     }
 
