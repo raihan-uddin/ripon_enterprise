@@ -5,10 +5,7 @@ $this->widget('application.components.BreadCrumb', array(
                 array('name' => 'Order', 'url' => array('admin')),
                 array('name' => 'Create'),
         ),
-//    'delimiter' => ' &rarr; ',
 ));
-?>
-<?php
 $form = $this->beginWidget('CActiveForm', array(
         'id' => 'bom-form',
         'enableAjaxValidation' => false,
@@ -69,7 +66,6 @@ Yii::app()->clientScript->registerCoreScript("jquery.ui");
                         <?php
                         echo $form->dropDownList(
                                 $model, 'cash_due', Lookup::items('cash_due'), array(
-//                            'prompt' => 'Select',
                                 'class' => 'form-control',
                                 'options' => array(
                                         Lookup::DUE => array('selected' => 'selected')
@@ -79,20 +75,6 @@ Yii::app()->clientScript->registerCoreScript("jquery.ui");
                     </div>
                     <span class="help-block"
                           style="color: red; width: 100%"> <?php echo $form->error($model, 'cash_due'); ?></span>
-                </div>
-
-                <div class="form-group row" style="display: none;">
-                    <?php echo $form->labelEx($model, 'exp_delivery_date', ['class' => 'col-sm-4 col-form-label']); ?>
-                    <div class="col-sm-8">
-                        <div class="input-group" id="exp_delivery_date" data-target-input="nearest">
-                            <?php echo $form->textField($model, 'exp_delivery_date', array('class' => 'form-control datetimepicker-input', 'placeholder' => 'YYYY-MM-DD',)); ?>
-                            <div class="input-group-append">
-                                <div class="input-group-text"><i class="fa fa-calendar"></i></div>
-                            </div>
-                        </div>
-                    </div>
-                    <span class="help-block"
-                          style="color: red; width: 100%"> <?php echo $form->error($model, 'exp_delivery_date'); ?></span>
                 </div>
             </div>
 
@@ -140,28 +122,28 @@ Yii::app()->clientScript->registerCoreScript("jquery.ui");
                                                     'type' => 'post',
                                                     'dataType' => 'json',
                                                     'beforeSend' => "function(){
-                                            $('.ajaxLoaderFormLoad').show();
-                                        }",
+                                                    $('.ajaxLoaderFormLoad').show();
+                                                }",
                                                     'complete' => "function(){
-                                            $('.ajaxLoaderFormLoad').hide();
-                                        }",
+                                                    $('.ajaxLoaderFormLoad').hide();
+                                                }",
                                                     'success' => "function(data){
-                                            if (data.status == 'failure')
-                                            {
-                                                $('#dialogAddDistributor div.divForForm').html(data.div);
-                                                      // Here is the trick: on submit-> once again this function!
-                                                $('#dialogAddDistributor div.divForForm form').submit(addDistributor);
-                                            }
-                                            else
-                                            {
-                                                $('#dialogAddDistributor div.divForForm').html(data.div);
-                                                setTimeout(\"$('#dialogAddDistributor').dialog('close') \",1000);
-                                                $('#customer_id_text').val(data.label);
-                                                $('#SellOrder_customer_id').val(data.id).change();
-                                                $('#SellOrder_city').val(data.city).change();
-                                                $('#SellOrder_state').val(data.state).change();
-                                            }
-                                        }",
+                                                    if (data.status == 'failure')
+                                                    {
+                                                        $('#dialogAddDistributor div.divForForm').html(data.div);
+                                                              // Here is the trick: on submit-> once again this function!
+                                                        $('#dialogAddDistributor div.divForForm form').submit(addDistributor);
+                                                    }
+                                                    else
+                                                    {
+                                                        $('#dialogAddDistributor div.divForForm').html(data.div);
+                                                        setTimeout(\"$('#dialogAddDistributor').dialog('close') \",1000);
+                                                        $('#customer_id_text').val(data.label);
+                                                        $('#SellOrder_customer_id').val(data.id).change();
+                                                        $('#SellOrder_city').val(data.city).change();
+                                                        $('#SellOrder_state').val(data.state).change();
+                                                    }
+                                                }",
                                             ))
                                             ?>
                                             return false;
@@ -204,7 +186,6 @@ Yii::app()->clientScript->registerCoreScript("jquery.ui");
                         });
                     </script>
                 </div>
-
 
                 <div class="form-group row" style="display: none;">
                     <?php echo $form->labelEx($model, 'city', ['class' => 'col-sm-4 col-form-label']); ?>
@@ -313,7 +294,7 @@ Yii::app()->clientScript->registerCoreScript("jquery.ui");
             </div>
             <div class="card-body">
                 <div class="row">
-                    <div class="form-group col-xs-12 col-md-2">
+                    <div class="form-group col-xs-12 col-md-4">
                         <?php echo $form->labelEx($model, 'manufacturer_id'); ?>
                         <?php
                         echo $form->dropDownList(
@@ -322,16 +303,6 @@ Yii::app()->clientScript->registerCoreScript("jquery.ui");
                                 'class' => 'form-control',
                         ));
                         ?>
-                        <!-- Display Stock without margin and padding -->
-                        <span class="help-block current-stock"
-                              style="font-size: 12px; color: #333; margin: 0; padding: 0; width: 100%"></span>
-                        <span class="help-block"
-                              style="color: red; width: 100%"> <?php echo $form->error($model2, 'qty'); ?></span>
-                    </div>
-                    <div class="form-group col-xs-12 col-md-1">
-                        <button class="btn  btn-success mt-4" onclick="addToList()" type="button" title="ADD TO LIST"><i
-                                    class="fa fa-cart-arrow-down" aria-hidden="true"></i>
-                        </button>
                     </div>
                 </div>
                 <div class="row">
@@ -340,11 +311,10 @@ Yii::app()->clientScript->registerCoreScript("jquery.ui");
                             <thead class="table-info">
                             <tr>
                                 <th>SL</th>
+                                <th>Category</th>
                                 <th>Product Name</th>
-                                <th style="width: 20%; display: none;" class="text-center">Product Sl No</th>
-                                <th style="width: 10%; display: none;" class="text-center">Warranty(Mon.)</th>
-                                <th style="width: 10%; display: none;" class="text-center">Product Note</th>
-                                <th style="width: 10%; display: none;" class="text-center">Color</th>
+                                <th>Code</th>
+                                <th>Stock</th>
                                 <th style="width: 10%;" class="text-center">Qty</th>
                                 <th style="width: 10%;" class="text-center">Unit Price</th>
                                 <th style="width: 10%;" class="text-center">Row Total</th>
@@ -376,62 +346,62 @@ Yii::app()->clientScript->registerCoreScript("jquery.ui");
                     'dataType' => 'json',
                     'type' => 'post',
                     'success' => 'function(data) {
-                $("#ajaxLoader").hide();  
-                    if(data.status=="success"){
-                        $("#formResult").fadeIn();
-                        $("#formResult").html("Data saved successfully.");
-                        toastr.success("Data saved successfully.");
-                        $("#bom-form")[0].reset();
-                        $("#formResult").animate({opacity:1.0},1000).fadeOut("slow");
-                        $("#list").empty();
-                        // $("#soReportDialogBox").dialog("open");
-                        //$("#AjFlashReportSo").html(data.soReportInfo).show();
-                        $("#information-modal").modal("show");
-                        $("#information-modal .modal-body").html(data.soReportInfo);  
-                    }else{
-                        //$("#formResultError").html("Data not saved. Please solve the following errors.");
-                        $.each(data, function(key, val) {
-                            $("#bom-form #"+key+"_em_").html(""+val+"");                                                    
-                            $("#bom-form #"+key+"_em_").show();
-                        });
-                    }       
-                }',
+                    $("#ajaxLoader").hide();  
+                        if(data.status=="success"){
+                            $("#formResult").fadeIn();
+                            $("#formResult").html("Data saved successfully.");
+                            toastr.success("Data saved successfully.");
+                            $("#bom-form")[0].reset();
+                            $("#formResult").animate({opacity:1.0},1000).fadeOut("slow");
+                            $("#list tbody").empty();
+                            // $("#soReportDialogBox").dialog("open");
+                            //$("#AjFlashReportSo").html(data.soReportInfo).show();
+                            $("#information-modal").modal("show");
+                            $("#information-modal .modal-body").html(data.soReportInfo);  
+                        }else{
+                            //$("#formResultError").html("Data not saved. Please solve the following errors.");
+                            $.each(data, function(key, val) {
+                                $("#bom-form #"+key+"_em_").html(""+val+"");                                                    
+                                $("#bom-form #"+key+"_em_").show();
+                            });
+                        }       
+                    }',
                     'beforeSend' => 'function(){  
-                    let count_item =  $(".item").length; 
-                    let cash_due = $("#SellOrder_cash_due").val();  
-                    let date = $("#SellOrder_date").val();  
-                    let customer_id = $("#SellOrder_customer_id").val();  
-                    let grand_total = $("#SellOrder_grand_total").val();  
-                    if(cash_due == ""){
-                        toastr.error("Please select Cash/Due.");
-                        return false;
-                    }else if(date == ""){
-                        toastr.error("Please insert date.");
-                        return false;
-                    }else if(customer_id == ""){
-                        toastr.error("Please select customer from the list!");
-                        return false;
-                    }else if(count_item <= 0){
-                        toastr.error("Please add materials to list.");
-                        return false;
-                    }else if(grand_total == "" || grand_total <= 0){
-                        toastr.error("Grand total amount is 0");
-                        return false;
-                    }else {                
-                        $("#overlay").fadeIn(300);
-                        $("#ajaxLoader").show();
-                    }
-                 }',
+                        let count_item =  $(".item").length; 
+                        let cash_due = $("#SellOrder_cash_due").val();  
+                        let date = $("#SellOrder_date").val();  
+                        let customer_id = $("#SellOrder_customer_id").val();  
+                        let grand_total = $("#SellOrder_grand_total").val();  
+                        if(cash_due == ""){
+                            toastr.error("Please select Cash/Due.");
+                            return false;
+                        }else if(date == ""){
+                            toastr.error("Please insert date.");
+                            return false;
+                        }else if(customer_id == ""){
+                            toastr.error("Please select customer from the list!");
+                            return false;
+                        }else if(count_item <= 0){
+                            toastr.error("Please add materials to list.");
+                            return false;
+                        }else if(grand_total == "" || grand_total <= 0){
+                            toastr.error("Grand total amount is 0");
+                            return false;
+                        }else {                
+                            $("#overlay").fadeIn(300);
+                            $("#ajaxLoader").show();
+                        }
+                     }',
                     'error' => 'function(xhr, status, error) { 
-                    // Code to handle errors
-                    toastr.error(xhr.responseText); // Displaying error message using Toastr
-                    // Optionally, you can display additional error details
-                    console.error(xhr.statusText);
-                    console.error(xhr.status);
-                    console.error(xhr.responseText);
-                
-                    $("#overlay").fadeOut(300);
-              }',
+                        // Code to handle errors
+                        toastr.error(xhr.responseText); // Displaying error message using Toastr
+                        // Optionally, you can display additional error details
+                        console.error(xhr.statusText);
+                        console.error(xhr.status);
+                        console.error(xhr.responseText);
+                    
+                        $("#overlay").fadeOut(300);
+                  }',
                     'complete' => 'function() {
                     $("#overlay").fadeOut(300);
                  $("#ajaxLoaderReport").hide(); 
@@ -456,7 +426,7 @@ Yii::app()->clientScript->registerCoreScript("jquery.ui");
 </div>
 
 <script>
-   let company_products = [];
+    let company_products = [];
     var picker = new Lightpick({
         field: document.getElementById('entry_date'),
         minDate: moment(),
@@ -465,6 +435,11 @@ Yii::app()->clientScript->registerCoreScript("jquery.ui");
         }
     });
 
+    function safeNumber(val) {
+        val = parseFloat(val);
+        return isNaN(val) ? 0 : val;
+    }
+    
     $(document).ready(function () {
         $(".qty-amount").keyup(function () {
             var $this = $(this);
@@ -472,8 +447,8 @@ Yii::app()->clientScript->registerCoreScript("jquery.ui");
         });
 
         $(".qty-amount").on("keydown keyup", function () {
-            let amount = parseFloat($("#SellOrderDetails_amount").val());
-            let qty = parseFloat($("#SellOrderDetails_qty").val());
+            let amount = safeNumber($("#SellOrderDetails_amount").val());
+            let qty = safeNumber($("#SellOrderDetails_qty").val());
             amount = amount > 0 ? amount : 0;
             qty = qty > 0 ? qty : 0;
 
@@ -486,115 +461,103 @@ Yii::app()->clientScript->registerCoreScript("jquery.ui");
         });
     });
 
-    function addToList() {
-        let company_id = $("#SellOrder_manufacturer_id").val();
+    $(function () {
 
-        getCompanyProducts(company_id, function (data) {
-            if (data.length === 0) {
-                toastr.error("No products found for the selected company.");
-                return;
+        let xhrCompanyProducts = null;
+
+        $('#SellOrder_manufacturer_id').on('change', function () {
+
+            const companyId = $(this).val();
+            if (!companyId) return;
+
+            const $tbody = $('#list tbody');
+
+            // 1️⃣ If tbody has rows → confirm
+            if ($tbody.children('tr').length > 0) {
+                const confirmed = confirm(
+                    'Changing manufacturer will remove all existing items.\nDo you want to continue?'
+                );
+
+                if (!confirmed) {
+                    // revert dropdown selection
+                    $(this).val($(this).data('prev'));
+                    return;
+                }
+
+                // user confirmed → clear table
+                $tbody.empty();
             }
 
-            // // Assuming you want to add the first product from the list
-            // let product = data[0];
-            // addProductToList(product.model_id, product.model_name);
-        });
-        console.log("xx")
-       console.log(company_products);
-        console.log("xx")
-        return;
-        let model_id_text = $("#model_id_text").val();
-        let unit_price = parseFloat($("#SellOrderDetails_amount").val());
-        unit_price = unit_price > 0 ? unit_price : 0;
+            // save current selection (for revert)
+            $(this).data('prev', companyId);
 
-        let note = $("#SellOrderDetails_note").val();
-        let product_sl_no = $("#product_sl_no").val();
-        let qty = $("#SellOrderDetails_qty").val();
-        let row_total = $("#SellOrderDetails_row_total").val();
-        let color = $("#SellOrderDetails_color").val();
-        let warranty = $("#SellOrderDetails_warranty").val();
-        let pp = parseFloat($("#SellOrderDetails_pp").val());
-
-        prependSellOrderRow({
-            model_id_text: model_id_text,
-            model_id: model_id,
-            product_sl_no: product_sl_no,
-            warranty: warranty,
-            note: note,
-            color: color,
-            qty: qty,
-            unit_price: unit_price,
-            pp: pp,
-            row_total: row_total
-        });
-        calculateTotal();
-        clearDynamicItem(product_sl_no);
-    }
-
-
-    function getCompanyProducts(company_id, callback) {
-        $.ajax({
-            url: '<?php echo Yii::app()->baseUrl ?>/index.php/prodModels/Jquery_getCompanyProducts',
-            type: 'GET',
-            data: { company_id: company_id },
-            dataType: 'json',
-            success: function (data) {
-                company_products = data;
-                callback(data);
-            },
-            error: function () {
-                toastr.error("An error occurred while fetching products.");
-                callback([]);
+            // Abort previous request if still running
+            if (xhrCompanyProducts !== null) {
+                xhrCompanyProducts.abort();
             }
+
+            // Disable dropdown while loading
+            const $ddl = $('#SellOrder_manufacturer_id');
+            $ddl.prop('disabled', true).addClass('loading');
+
+            xhrCompanyProducts = $.ajax({
+                url: '<?php echo Yii::app()->createUrl("prodModels/Jquery_getCompanyProducts"); ?>',
+                type: 'GET',
+                dataType: 'json',
+                data: {
+                    company_id: companyId
+                },
+                success: function (res) {
+                    console.log('Products:', res);
+
+                    $.each(res, function (i, row) {
+                        prependSellOrderRow(row);
+                    });
+                },
+                error: function (xhr, status) {
+                    if (status !== 'abort') {
+                        alert('Failed to load products');
+                    }
+                },
+                complete: function () {
+                    $ddl.prop('disabled', false).removeClass('loading');
+                }
+            });
+
         });
-    }
+
+    });
+
 
     function prependSellOrderRow(data) {
-        const {
-            model_id_text,
-            model_id,
-            product_sl_no,
-            warranty,
-            note,
-            color,
-            qty,
-            unit_price,
-            pp,
-            row_total
-        } = data;
+        const item_name = data.item_name;
+        const model_id = data.id;
+        const model_id_text = data.name;
+        const code = data.code;
+        const unit_price = data.sell_price ?? 0;
+        const pp = data.purchasePrice ?? 0;
+        const stock = data.current_stock ?? 0;
+        const qty = '';
+        const row_total = qty * unit_price;
+        // console.log('Adding product:', data);
 
         $("#list tbody").prepend(`
             <tr class="item">
-                <td class="serial"></td>
+                <td class="serial text-center"></td>
+                <td>
+                    ${item_name}
+                </td>
                 <td>
                     ${model_id_text}
                     <input type="hidden" class="form-control temp_model_id"
                            value="${model_id}"
                            name="SellOrderDetails[temp_model_id][]">
                 </td>
-
-                <td class="text-center" style="display:none;">
-                    <input type="text" class="form-control text-center"
-                           value="${product_sl_no}"
-                           name="SellOrderDetails[temp_product_sl_no][]">
+                <td>
+                    ${code}
                 </td>
-
-                <td class="text-center" style="display:none;">
-                    <input type="text" class="form-control text-center"
-                           value="${warranty}"
-                           name="SellOrderDetails[temp_warranty][]">
-                </td>
-
-                <td class="text-center" style="display:none;">
-                    <input type="text" class="form-control text-center"
-                           value="${note}"
-                           name="SellOrderDetails[temp_note][]">
-                </td>
-
-                <td class="text-center" style="display:none;">
-                    <input type="text" class="form-control"
-                           value="${color}"
-                           name="SellOrderDetails[temp_color][]">
+                <td class="text-center">
+                    ${stock}
                 </td>
 
                 <td class="text-center">
@@ -632,7 +595,6 @@ Yii::app()->clientScript->registerCoreScript("jquery.ui");
         `);
 
         calculateTotal();
-        clearDynamicItem(product_sl_no);
     }
 
 
@@ -643,8 +605,8 @@ Yii::app()->clientScript->registerCoreScript("jquery.ui");
 
     // on temp_qty change or keyup event calculate row total
     $("#list").on("keyup", ".temp_qty", function () {
-        let qty = parseFloat($(this).val());
-        let unit_price = parseFloat($(this).closest("tr").find(".temp_unit_price").val());
+        let qty = safeNumber($(this).val());
+        let unit_price = safeNumber($(this).closest("tr").find(".temp_unit_price").val());
         qty = qty > 0 ? qty : 0;
         unit_price = unit_price > 0 ? unit_price : 0;
         $(this).closest("tr").find(".row-total").val((qty * unit_price).toFixed(2));
@@ -654,8 +616,8 @@ Yii::app()->clientScript->registerCoreScript("jquery.ui");
 
     // on temp_unit_price change or keyup event calculate row total
     $("#list").on("keyup", ".temp_unit_price", function () {
-        let unit_price = parseFloat($(this).val());
-        let qty = parseFloat($(this).closest("tr").find(".temp_qty").val());
+        let unit_price = safeNumber($(this).val());
+        let qty = safeNumber($(this).closest("tr").find(".temp_qty").val());
         qty = qty > 0 ? qty : 0;
         unit_price = unit_price > 0 ? unit_price : 0;
         $(this).closest("tr").find(".row-total").val((qty * unit_price).toFixed(2));
@@ -669,7 +631,7 @@ Yii::app()->clientScript->registerCoreScript("jquery.ui");
             if ($(this).closest("tr").find(".temp_model_id").val() == model_id) {
                 if ($(this).closest("tr").find(".temp_unit_price").val() != price) {
                     $(this).closest("tr").find(".temp_unit_price").val(price);
-                    let qty = parseFloat($(this).val());
+                    let qty = safeNumber($(this).val());
                     qty = qty > 0 ? qty : 0;
                     $(this).closest("tr").find(".row-total").val((qty * price).toFixed(2));
                 }
@@ -679,12 +641,12 @@ Yii::app()->clientScript->registerCoreScript("jquery.ui");
 
 
     function calculateVat() {
-        let total_amount = parseFloat($("#SellOrder_total_amount").val());
-        let vat_p = parseFloat($("#SellOrder_vat_percentage").val());
+        let total_amount = safeNumber($("#SellOrder_total_amount").val());
+        let vat_p = safeNumber($("#SellOrder_vat_percentage").val());
         total_amount = total_amount > 0 ? total_amount : 0;
         vat_p = vat_p > 0 ? vat_p : 0;
-        let vat = parseFloat(((vat_p / 100) * total_amount));
-        let grand_total = parseFloat(total_amount + vat);
+        let vat = safeNumber(((vat_p / 100) * total_amount));
+        let grand_total = safeNumber(total_amount + vat);
         $("#SellOrder_vat_amount").val(vat.toFixed(2));
         $("#SellOrder_grand_total").val(grand_total.toFixed(2));
     }
@@ -693,7 +655,6 @@ Yii::app()->clientScript->registerCoreScript("jquery.ui");
     function resetProduct() {
         $("#model_id_text").val('');
         $("#SellOrderDetails_model_id").val('');
-        $("#SellOrderDetails_warranty").val('');
         resetProductSlNo();
         showPurchasePrice(0);
     }
@@ -702,33 +663,21 @@ Yii::app()->clientScript->registerCoreScript("jquery.ui");
         $("#product_sl_no").val('');
     }
 
-    function clearDynamicItem(product_sl_no) {
-        if (product_sl_no.length > 0) {
-            $("#product_sl_no").val('');
-            $("#product_sl_no").focus();
-        } else {
-            $("#SellOrderDetails_model_id").val('');
-            $("#product_sl_no").val('');
-            $("#model_id_text").val('');
-            $("#product_sl_no").val('');
-            $("#SellOrderDetails_amount").val('');
-            $("#SellOrderDetails_row_total").val('');
-            $("#SellOrderDetails_qty").val('');
-            $("#SellOrderDetails_color").val('');
-            $("#SellOrderDetails_note").val('');
-        }
+    function clearDynamicItem() {
+        $("#SellOrderDetails_model_id").val('');
+        $("#product_sl_no").val('');
+        $("#model_id_text").val('');
+        $("#SellOrderDetails_amount").val('');
+        $("#SellOrderDetails_row_total").val('');
+        $("#SellOrderDetails_qty").val('');
     }
 
     function resetDynamicItem() {
         $("#SellOrderDetails_model_id").val('');
         $("#model_id_text").val('');
-        $("#product_sl_no").val('');
         $("#SellOrderDetails_amount").val('');
         $("#SellOrderDetails_row_total").val('');
         $("#SellOrderDetails_qty").val('');
-        $("#SellOrderDetails_color").val('');
-        $("#SellOrderDetails_note").val('');
-        $("#SellOrderDetails_warranty").val('');
         showPurchasePrice(0);
     }
 
@@ -737,7 +686,7 @@ Yii::app()->clientScript->registerCoreScript("jquery.ui");
 
         let total = 0;
         $('.row-total').each(function () {
-            total += parseFloat($(this).val());
+            total += safeNumber($(this).val());
         });
 
 
@@ -751,9 +700,9 @@ Yii::app()->clientScript->registerCoreScript("jquery.ui");
     }
 
     function addDeliveryCharge() {
-        let delivery_charge = parseFloat($("#SellOrder_delivery_charge").val());
-        let total_amount = parseFloat($("#SellOrder_total_amount").val());
-        let vat_amount = parseFloat($("#SellOrder_vat_amount").val());
+        let delivery_charge = safeNumber($("#SellOrder_delivery_charge").val());
+        let total_amount = safeNumber($("#SellOrder_total_amount").val());
+        let vat_amount = safeNumber($("#SellOrder_vat_amount").val());
 
         delivery_charge = isNaN(delivery_charge) ? 0 : delivery_charge;
         vat_amount = isNaN(vat_amount) ? 0 : vat_amount;
@@ -764,10 +713,10 @@ Yii::app()->clientScript->registerCoreScript("jquery.ui");
     }
 
     function addDiscount() {
-        let delivery_charge = parseFloat($("#SellOrder_delivery_charge").val());
-        let total_amount = parseFloat($("#SellOrder_total_amount").val());
-        let vat_amount = parseFloat($("#SellOrder_vat_amount").val());
-        let discount_amount = parseFloat($("#SellOrder_discount_amount").val());
+        let delivery_charge = safeNumber($("#SellOrder_delivery_charge").val());
+        let total_amount = safeNumber($("#SellOrder_total_amount").val());
+        let vat_amount = safeNumber($("#SellOrder_vat_amount").val());
+        let discount_amount = safeNumber($("#SellOrder_discount_amount").val());
 
         delivery_charge = isNaN(delivery_charge) ? 0 : delivery_charge;
         vat_amount = isNaN(vat_amount) ? 0 : vat_amount;
@@ -785,8 +734,8 @@ Yii::app()->clientScript->registerCoreScript("jquery.ui");
         let total_costing = 0;
         if ($(".temp-costing").length > 0) {
             $(".temp-costing").each(function () {
-                let qty = parseFloat($(this).closest("tr").find(".temp_qty").val());
-                let pp = parseFloat($(this).val());
+                let qty = safeNumber($(this).closest("tr").find(".temp_qty").val());
+                let pp = safeNumber($(this).val());
                 qty = isNaN(qty) ? 0 : qty;
                 pp = isNaN(pp) ? 0 : pp;
 
@@ -795,7 +744,7 @@ Yii::app()->clientScript->registerCoreScript("jquery.ui");
             });
         }
         // console.log(total_costing);
-        $(".current-costing-amount").html('<span style="color: green;">Costing: <b>' + parseFloat(total_costing).toFixed(2) + '</b></span>');
+        $(".current-costing-amount").html('<span style="color: green;">Costing: <b>' + safeNumber(total_costing).toFixed(2) + '</b></span>');
         return total_costing;
     }
 
@@ -803,13 +752,13 @@ Yii::app()->clientScript->registerCoreScript("jquery.ui");
     function lossAlert() {
         calculateTotalCosting();
         let total_costing = calculateTotalCosting();
-        let grand_total = parseFloat($("#SellOrder_grand_total").val());
+        let grand_total = safeNumber($("#SellOrder_grand_total").val());
         grand_total = grand_total > 0 ? grand_total : 0;
 
-        let loss = parseFloat(grand_total - total_costing);
+        let loss = safeNumber(grand_total - total_costing);
         if (loss < 0) {
-            // let message =   "You are going to loss " + parseFloat(loss).toFixed(2) + " BDT from this invoice!";
-            let message = `You are going to loss ${parseFloat(loss).toFixed(2)} BDT from this invoice!`;
+            // let message =   "You are going to loss " + safeNumber(loss).toFixed(2) + " BDT from this invoice!";
+            let message = `You are going to loss ${safeNumber(loss).toFixed(2)} BDT from this invoice!`;
             toastr.error(message);
             $("#formResultError").html(message).removeClass("d-none");
         } else {
@@ -838,14 +787,13 @@ Yii::app()->clientScript->registerCoreScript("jquery.ui");
         let keycode = (event.keyCode ? event.keyCode : event.which);
         if (keycode == '13') {
             console.log('You pressed a "enter" key in somewhere');
-            addToList();
             return false;
         }
     });
 
     function showPurchasePrice(purchasePrice = 0) {
         if (purchasePrice > 0)
-            $('.costing-amount').html('<span style="color: green;">P.P: <b>' + parseFloat(purchasePrice).toFixed(2) + '</b></span>');
+            $('.costing-amount').html('<span style="color: green;">P.P: <b>' + safeNumber(purchasePrice).toFixed(2) + '</b></span>');
         else
             $('.costing-amount').html('');
         $("#SellOrderDetails_pp").val(purchasePrice);
@@ -853,9 +801,9 @@ Yii::app()->clientScript->registerCoreScript("jquery.ui");
 
     function showCurrentStock(stock = 0) {
         if (stock >= 0)
-            $('.current-stock').html('<span style="color: green;">Stock: <b>' + parseFloat(stock).toFixed(2) + '</b></span>');
+            $('.current-stock').html('<span style="color: green;">Stock: <b>' + safeNumber(stock).toFixed(2) + '</b></span>');
         else
-            $('.current-stock').html('<span style="color: red;">Stock: <b>' + parseFloat(stock).toFixed(2) + '</b></span>');
+            $('.current-stock').html('<span style="color: red;">Stock: <b>' + safeNumber(stock).toFixed(2) + '</b></span>');
     }
 
 

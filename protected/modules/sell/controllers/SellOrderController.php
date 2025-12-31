@@ -80,15 +80,34 @@ class SellOrderController extends RController
             $transaction = Yii::app()->db->beginTransaction();
             try {
                 if ($model->save()) {
-                    // count total $_POST['SellOrderDetails']['temp_model_id']
-                    $total_item = count($_POST['SellOrderDetails']['temp_model_id']);
+                    $qtyList = $_POST['SellOrderDetails']['temp_qty'] ?? [];
+
+                    $total_item = count(array_filter($qtyList, function ($qty) {
+                        return (int)$qty > 0;
+                    }));
+                    $modelIds = $_POST['SellOrderDetails']['temp_model_id'] ?? [];
+                    $qtys = $_POST['SellOrderDetails']['temp_qty'] ?? [];
+                    $prices = $_POST['SellOrderDetails']['temp_unit_price'] ?? [];
+                    $pps = $_POST['SellOrderDetails']['temp_pp'] ?? [];
+                    $totals = $_POST['SellOrderDetails']['temp_row_total'] ?? [];
+
                     $per_item_discount = $model->discount_amount / $total_item;
-                    foreach ($_POST['SellOrderDetails']['temp_model_id'] as $key => $model_id) {
 
-                        $percentage_discount = ($per_item_discount / $_POST['SellOrderDetails']['temp_unit_price'][$key]) * 100;
+                    foreach ($modelIds as $key => $model_id) {
+                        $qty = isset($qtys[$key]) ? (int)$qtys[$key] : 0;
 
+                        // ✅ Skip rows with no quantity
+                        if ($qty <= 0) {
+                            continue;
+                        }
 
-                        $purchasePrice = $_POST['SellOrderDetails']['temp_pp'][$key];
+                        $unitPrice = isset($prices[$key]) ? (float)$prices[$key] : 0;
+                        $pp = isset($pps[$key]) ? (float)$pps[$key] : 0;
+                        $rowTotal = isset($totals[$key]) ? (float)$totals[$key] : 0;
+
+                        $percentage_discount = ($per_item_discount / $unitPrice) * 100;
+
+                        $purchasePrice = $pp;
                         if (!$purchasePrice > 0) {
                             $purchasePrice = ProdModels::model()->findByPk($model_id)->purchase_price;
                         }
@@ -96,13 +115,9 @@ class SellOrderController extends RController
                         $model2 = new SellOrderDetails();
                         $model2->sell_order_id = $model->id;
                         $model2->model_id = $model_id;
-                        $model2->qty = $_POST['SellOrderDetails']['temp_qty'][$key];
-                        $model2->warranty = $_POST['SellOrderDetails']['temp_warranty'][$key];
-                        $model2->amount = $_POST['SellOrderDetails']['temp_unit_price'][$key];
-                        $model2->product_sl_no = $_POST['SellOrderDetails']['temp_product_sl_no'][$key];
-                        $model2->row_total = $_POST['SellOrderDetails']['temp_row_total'][$key];
-                        $model2->color = $_POST['SellOrderDetails']['temp_color'][$key];
-                        $model2->note = $_POST['SellOrderDetails']['temp_note'][$key];
+                        $model2->qty = $qty;
+                        $model2->amount = $unitPrice;
+                        $model2->row_total = $rowTotal;
                         $model2->discount_amount = $per_item_discount;
                         $model2->discount_percentage = $percentage_discount;
                         $model2->pp = $purchasePrice;
@@ -111,28 +126,26 @@ class SellOrderController extends RController
                             $transaction->rollBack();
                             throw new CHttpException(500, sprintf('Error in saving order details! %s <br>', json_encode($model2->getErrors())));
                         }
-                        if ($model->order_type == SellOrder::NEW_ORDER) {
-                            if ($product->stockable) {
-                                $inventory = new Inventory();
-                                $inventory->sl_no = $inv_sl;
-                                $inventory->date = $model->date;
-                                $inventory->challan_no = $model->so_no;
-                                $inventory->store_id = 1;
-                                $inventory->location_id = 1;
-                                $inventory->model_id = $model2->model_id;
-                                $inventory->stock_out = $model2->qty;
-                                $inventory->sell_price = $model2->amount;
-                                $inventory->purchase_price = $purchasePrice;
-                                $inventory->row_total = $model2->row_total;
-                                $inventory->product_sl_no = $model2->product_sl_no;
-                                $inventory->warranty = $model2->warranty;
-                                $inventory->stock_status = Inventory::SALES_DELIVERY;
-                                $inventory->source_id = $model2->id;
-                                $inventory->master_id = $model->id;
-                                if (!$inventory->save()) {
-                                    $transaction->rollBack();
-                                    throw new CHttpException(500, 'Error in saving inventory! <br> ' . json_encode($inventory->getErrors()));
-                                }
+                        if ($product->stockable) {
+                            $inventory = new Inventory();
+                            $inventory->sl_no = $inv_sl;
+                            $inventory->date = $model->date;
+                            $inventory->challan_no = $model->so_no;
+                            $inventory->store_id = 1;
+                            $inventory->location_id = 1;
+                            $inventory->model_id = $model2->model_id;
+                            $inventory->stock_out = $model2->qty;
+                            $inventory->sell_price = $model2->amount;
+                            $inventory->purchase_price = $purchasePrice;
+                            $inventory->row_total = $model2->row_total;
+                            $inventory->product_sl_no = $model2->product_sl_no;
+                            $inventory->warranty = $model2->warranty;
+                            $inventory->stock_status = Inventory::SALES_DELIVERY;
+                            $inventory->source_id = $model2->id;
+                            $inventory->master_id = $model->id;
+                            if (!$inventory->save()) {
+                                $transaction->rollBack();
+                                throw new CHttpException(500, 'Error in saving inventory! <br> ' . json_encode($inventory->getErrors()));
                             }
                         }
 
@@ -231,8 +244,19 @@ class SellOrderController extends RController
                 $model->total_due = $_POST['SellOrder']['grand_total'] - $model->total_paid;
                 if ($model->save()) {
 
-                    $total_item = count($_POST['SellOrderDetails']['temp_model_id']);
+                    $qtyList = $_POST['SellOrderDetails']['temp_qty'] ?? [];
+
+                    $total_item = count(array_filter($qtyList, function ($qty) {
+                        return (int)$qty > 0;
+                    }));
+                    $modelIds = $_POST['SellOrderDetails']['temp_model_id'] ?? [];
+                    $qtys = $_POST['SellOrderDetails']['temp_qty'] ?? [];
+                    $prices = $_POST['SellOrderDetails']['temp_unit_price'] ?? [];
+                    $pps = $_POST['SellOrderDetails']['temp_pp'] ?? [];
+                    $totals = $_POST['SellOrderDetails']['temp_row_total'] ?? [];
+
                     $per_item_discount = $model->discount_amount / $total_item;
+
 
                     // save all order details first on the SellOrderDetailsBackup table & then delete
 
@@ -250,12 +274,8 @@ class SellOrderController extends RController
                         $model2->row_total = $item->row_total;
                         $model2->pp = $item->pp;
                         $model2->costing = $item->costing;
-                        $model2->color = $item->color;
-                        $model2->note = $item->note;
                         $model2->discount_amount = $item->discount_amount;
                         $model2->discount_percentage = $item->discount_percentage;
-                        $model2->is_delivery_done = $item->is_delivery_done;
-                        $model2->is_invoice_done = $item->is_invoice_done;
                         $model2->created_by = $item->created_by;
                         $model2->created_at = $item->created_at;
                         $model2->updated_by = $item->updated_by;
@@ -274,30 +294,34 @@ class SellOrderController extends RController
                     $criteriaDel = new CDbCriteria;
                     $criteriaDel->addColumnCondition(['sell_order_id' => $id, 'is_deleted' => 0]);
                     SellOrderDetails::model()->deleteAll($criteriaDel);
-                    
-                    foreach ($_POST['SellOrderDetails']['temp_model_id'] as $key => $model_id) {
-                        $product_sl_no = $_POST['SellOrderDetails']['temp_product_sl_no'][$key];
-                        $purchasePrice = $_POST['SellOrderDetails']['temp_pp'][$key];
-                        $percentage_discount = ($per_item_discount / $_POST['SellOrderDetails']['temp_unit_price'][$key]) * 100;
+
+                    foreach ($modelIds as $key => $model_id) {
+                        $qty = isset($qtys[$key]) ? (int)$qtys[$key] : 0;
+                        // ✅ Skip rows with no quantity
+                        if ($qty <= 0) {
+                            continue;
+                        }
+                        $unitPrice = isset($prices[$key]) ? (float)$prices[$key] : 0;
+                        $pp = isset($pps[$key]) ? (float)$pps[$key] : 0;
+                        $rowTotal = isset($totals[$key]) ? (float)$totals[$key] : 0;
+
+                        $purchasePrice = $pp;
+                        $percentage_discount = ($per_item_discount / $unitPrice) * 100;
 
                         if (!$purchasePrice > 0) {
                             $purchasePrice = ProdModels::model()->findByPk($model_id)->purchase_price;
                         }
-                        
+
                         $model2 = new SellOrderDetails();
                         $model2->sell_order_id = $model->id;
                         $model2->model_id = $model_id;
-                        $model2->qty = $_POST['SellOrderDetails']['temp_qty'][$key];
-                        $model2->amount = $_POST['SellOrderDetails']['temp_unit_price'][$key];
-                        $model2->row_total = $_POST['SellOrderDetails']['temp_row_total'][$key];
-                        $model2->color = $_POST['SellOrderDetails']['temp_color'][$key];
-                        $model2->note = $_POST['SellOrderDetails']['temp_note'][$key];
-                        $model2->warranty = $_POST['SellOrderDetails']['temp_warranty'][$key];
+                        $model2->qty = $qty;
+                        $model2->amount = $unitPrice;
+                        $model2->row_total = $rowTotal;
                         $model2->discount_amount = $per_item_discount;
                         $model2->discount_percentage = $percentage_discount;
                         $model2->pp = $purchasePrice;
                         $model2->costing = round(($model2->qty * $purchasePrice), 2);
-                        $model2->product_sl_no = $product_sl_no;
                         if (!$model2->save()) {
                             $transaction->rollBack();
                             throw new CHttpException(500, sprintf('Error in saving order details! %s <br>', json_encode($model2->getErrors())));
@@ -308,7 +332,7 @@ class SellOrderController extends RController
                         $details_id_arr[] = $model2->id;
                         $costing += $model2->costing;
                     }
-                    
+
                     // get current saved data
                     $criteria2 = new CDbCriteria();
                     $criteria2->addColumnCondition(['sell_order_id' => $id, 'is_deleted' => 0]);
@@ -322,9 +346,8 @@ class SellOrderController extends RController
                     $inv_sl = Inventory::maxSlNo();
                     foreach ($sellOrderDetails as $detail) {
                         $product = ProdModels::model()->findByPk($detail->model_id);
-
-                        $inventory = new Inventory();
                         if ($product->stockable) {
+                            $inventory = new Inventory();
                             $inventory->sl_no = $inv_sl;
                             $inventory->date = $model->date;
                             $inventory->challan_no = $model->so_no;
@@ -366,18 +389,21 @@ class SellOrderController extends RController
                 }
             }
 
-//        if ($model->total_paid == 0) {
-
             $criteria = new CDbCriteria();
-            $criteria->select = "t.*, pm.model_name, pm.code";
+            $criteria->select = "t.*, pm.model_name, pm.code, pb.brand_name, pi.item_name, pm.manufacturer_id";
             $criteria->addColumnCondition(['sell_order_id' => $id]);
             $criteria->join = " INNER JOIN prod_models pm on t.model_id = pm.id ";
-            $criteria->order = "pm.model_name ASC, t.product_sl_no ASC";
+            $criteria->join .= " INNER JOIN prod_brands pb on pm.brand_id = pb.id ";
+            $criteria->join .= " INNER JOIN prod_items pi on pb.item_id = pi.id ";
+            $criteria->order = "pi.item_name, pb.brand_name, pm.model_name ";
+            $data = SellOrderDetails::model()->findAll($criteria);
+            $baseCompanyId = $data ? $data[0]->manufacturer_id : 0;
             $this->pageTitle = 'UPDATE ORDER';
             $this->render('update', array(
                 'model' => $model,
                 'model2' => $model2,
-                'model3' => SellOrderDetails::model()->findAll($criteria),
+                'model3' => $data,
+                'baseCompanyId' => $baseCompanyId,
             ));
         } catch (PDOException $e) {
             if ($transaction->active) {
@@ -388,7 +414,7 @@ class SellOrderController extends RController
             if ($transaction->active) {
                 $transaction->rollBack();
             }
-             // Handle the exception (e.g., log it or display a message)
+            // Handle the exception (e.g., log it or display a message)
             Yii::log($e->getMessage(), CLogger::LEVEL_ERROR);
             throw new CHttpException(500, $e->getMessage());
         }
@@ -497,7 +523,7 @@ class SellOrderController extends RController
             $data = SellOrder::model()->findAllByAttributes([], $criteria);
 
             if ($data) {
-                if($preview_type == SellOrder::DELIVERY_CHALLAN_PRINT){
+                if ($preview_type == SellOrder::DELIVERY_CHALLAN_PRINT) {
                     $view = "challanPreview";
                 } else {
                     $view = "voucherPreview";
@@ -594,16 +620,16 @@ class SellOrderController extends RController
         $criteria = new CDbCriteria();
         $criteria->select = "pp as purchase_price, amount as sell_price";
         $criteria->addColumnCondition(['model_id' => $model_id]);
-        if($product_sl_no){
+        if ($product_sl_no) {
             $criteria->addColumnCondition(['product_sl_no' => $product_sl_no]);
         }
-        if($customer_id){
+        if ($customer_id) {
             $criteria->addColumnCondition(['customer_id' => $customer_id]);
         }
         $criteria->order = "id DESC";
         $criteria->limit = 1;
         $data = SellOrderDetails::model()->findByAttributes([], $criteria);
-        if($data){
+        if ($data) {
             echo CJSON::encode(array(
                 'status' => 'success',
                 'purchase_price' => $data->purchase_price,
@@ -628,7 +654,7 @@ class SellOrderController extends RController
         if ($customer_id > 0) {
             $criteria2->addColumnCondition(['t.customer_id' => $customer_id]);
         }
-        
+
 
         $criteria = new CDbCriteria();
         $criteria->select = "t.id, t.so_no, t.customer_id, t.grand_total, c.company_name as customer_name";
@@ -664,7 +690,8 @@ class SellOrderController extends RController
         Yii::app()->end();
     }
 
-    public function actionJquery_showProductSearch(){
+    public function actionJquery_showProductSearch()
+    {
         $sale_id = isset($_POST['sale_id']) ? $_POST['sale_id'] : 0;
         $customer_id = isset($_POST['customer_id']) ? $_POST['customer_id'] : 0;
         $search_prodName = trim($_POST['q']);
@@ -675,16 +702,16 @@ class SellOrderController extends RController
 
         $criteria = new CDbCriteria();
         $criteria->select = " pm.id, pm.model_name, pm.code, t.warranty, t.amount as sell_price, t.sell_order_id, so.so_no,
-                            so.customer_id, t.qty, t.pp as purchase_price, c.company_name as customer_name";   
+                            so.customer_id, t.qty, t.pp as purchase_price, c.company_name as customer_name";
         $criteria->join = " INNER JOIN prod_models pm on t.model_id = pm.id ";
         $criteria->join .= " INNER JOIN sell_order so on t.sell_order_id = so.id ";
         $criteria->join .= " INNER JOIN customers c on so.customer_id = c.id ";
 
         $criteria->mergeWith($criteria2);
-        if($sale_id > 0){
+        if ($sale_id > 0) {
             $criteria->addColumnCondition(['t.sell_order_id' => $sale_id]);
         }
-        if($customer_id > 0){
+        if ($customer_id > 0) {
             $criteria->addColumnCondition(['so.customer_id' => $customer_id]);
         }
         $criteria->order = "so.id DESC, pm.model_name ASC";
@@ -745,7 +772,8 @@ class SellOrderController extends RController
         Yii::app()->end();
     }
 
-    public function actionJquery_showProductSlSearchForReturn(){
+    public function actionJquery_showProductSlSearchForReturn()
+    {
         $sale_id = isset($_POST['sale_id']) ? $_POST['sale_id'] : 0;
         $customer_id = isset($_POST['customer_id']) ? $_POST['customer_id'] : 0;
         $model_id = isset($_POST['model_id']) ? $_POST['model_id'] : 0;
@@ -756,19 +784,19 @@ class SellOrderController extends RController
 
         $criteria = new CDbCriteria();
         $criteria->select = " pm.id, pm.model_name, pm.code, t.warranty, t.amount as sell_price, t.sell_order_id, so.so_no, t.product_sl_no,
-                            so.customer_id, t.qty, t.pp as purchase_price, c.company_name as customer_name";   
+                            so.customer_id, t.qty, t.pp as purchase_price, c.company_name as customer_name";
         $criteria->join = " INNER JOIN prod_models pm on t.model_id = pm.id ";
         $criteria->join .= " INNER JOIN sell_order so on t.sell_order_id = so.id ";
         $criteria->join .= " INNER JOIN customers c on so.customer_id = c.id ";
 
         $criteria->mergeWith($criteria2);
-        if($sale_id > 0){
+        if ($sale_id > 0) {
             $criteria->addColumnCondition(['t.sell_order_id' => $sale_id]);
         }
-        if($customer_id > 0){
+        if ($customer_id > 0) {
             $criteria->addColumnCondition(['so.customer_id' => $customer_id]);
         }
-        if($model_id > 0){
+        if ($model_id > 0) {
             $criteria->addColumnCondition(['t.model_id' => $model_id]);
         }
         $criteria->order = "so.id DESC, t.product_sl_no ASC";

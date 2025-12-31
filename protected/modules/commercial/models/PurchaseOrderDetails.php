@@ -26,6 +26,9 @@ class PurchaseOrderDetails extends CActiveRecord
     public $model_name;
     public $code;
     public $image;
+    public $item_name;
+    public $brand_name;
+    public $manufacturer_id;
 
     /**
      * @return string the associated database table name

@@ -32,16 +32,20 @@ class ProdModelsController extends RController
     public function actionJquery_getCompanyProducts()
     {
         $company_id = isset($_REQUEST['company_id']) ? trim($_REQUEST['company_id']) : '';
-//        die("ssss: $company_id");
         $criteria = new CDbCriteria();
         $criteria->addCondition("t.manufacturer_id = $company_id"); // 'status' => ProdModels::ACTIVE
         $criteria->order = "t.item_id, t.brand_id, t.model_name asc";
         $criteria->join = " INNER JOIN prod_items pi ON pi.id = t.item_id ";
         $criteria->join .= " INNER JOIN prod_brands pb ON pb.id = t.brand_id ";
-        $criteria->select = "t.id, t.model_name, t.code, pi.item_name, pb.brand_name, t.purchase_price, t.sell_price";
+        $criteria->join .= "  LEFT JOIN (
+                                    SELECT 
+                                        model_id,
+                                        SUM(stock_in) - SUM(stock_out) AS closing_stock
+                                    FROM inventory
+                                    GROUP BY model_id
+                                ) inv ON inv.model_id = t.id ";
+        $criteria->select = "t.id, t.model_name, t.code, pi.item_name, pb.brand_name, t.purchase_price, t.sell_price,  IFNULL(inv.closing_stock, 0) AS closing_stock";
         $prodInfos = ProdModels::model()->findAll($criteria);
-//        print_r($prodInfos);
-//        die();
         $results = [];
         if ($prodInfos) {
             foreach ($prodInfos as $prodInfo) {
@@ -54,6 +58,7 @@ class ProdModelsController extends RController
                 $item_name = $prodInfo->item_name;
                 $brand_name = $prodInfo->brand_name;
                 $sellPrice = $prodInfo->sell_price;
+                $current_stock = $prodInfo->closing_stock;
                 $results[] = array(
                     'id' => $id,
                     'name' => $name,
@@ -64,6 +69,7 @@ class ProdModelsController extends RController
                     'code' => $code,
                     'purchasePrice' => $purchasePrice,
                     'sell_price' => $sellPrice,
+                    'current_stock' => $current_stock,
                 );
             }
         }

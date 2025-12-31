@@ -160,11 +160,6 @@
                             <td style="text-align: center;"><?= $i++ ?></td>
                             <td colspan="2" style="text-align: left;">
                                 <?= $dt->model_name ?>
-                                <?php
-                                if (strlen($dt->product_sl_no) > 0) {
-                                    echo "<br><br>$dt->product_sl_no";
-                                }
-                                ?>
                             </td>
                             <td style="text-align: center;"><?= number_format($dt->qty, 2) ?></td>
                             <td style="text-align: right;"><?= number_format($dt->unit_price , 2)?></td>
