@@ -221,7 +221,7 @@ if (Yii::app()->user->checkAccess('Sell.SellOrderQuotation.VoucherPreview')) {
                 array
                 (
                     'header' => 'Options',
-                    'template' => '{update}{delete}',
+                    'template' => '{delete}', //{update}
                     'class' => 'CButtonColumn',
                     'htmlOptions' => ['style' => 'width: 200px', 'class' => 'text-center'],
                     'buttons' => array(
