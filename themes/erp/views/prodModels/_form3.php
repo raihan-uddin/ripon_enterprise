@@ -1,6 +1,6 @@
 <?php
 $form = $this->beginWidget('CActiveForm', array(
-    'id' => 'prod-models-form',
+        'id' => 'prod-models-form',
 ));
 ?>
 
@@ -12,9 +12,6 @@ $form = $this->beginWidget('CActiveForm', array(
             <button type="button" class="btn btn-tool" data-card-widget="collapse">
                 <i class="fa fa-minus"></i>
             </button>
-            <!--            <button type="button" class="btn btn-tool" data-card-widget="remove">-->
-            <!--                <i class="fa fa-times"></i>-->
-            <!--            </button>-->
         </div>
     </div>
     <div class="card-body">
@@ -24,26 +21,26 @@ $form = $this->beginWidget('CActiveForm', array(
                 <?php echo $form->labelEx($model, 'item_id'); ?>
                 <?php
                 echo $form->dropDownList(
-                    $model, 'item_id', CHtml::listData(ProdItems::model()->findAll(array('order' => 'item_name ASC')), 'id', 'item_name'), array(
-                    'prompt' => 'Select',
-                    'class' => 'form-control',
-                    'ajax' => array(
-                        'type' => 'POST',
-                        'dataType' => 'json',
-                        'url' => CController::createUrl('prodModels/subCatOfThisCat'),
-                        'success' => 'function(data) {
+                        $model, 'item_id', CHtml::listData(ProdItems::model()->findAll(array('order' => 'item_name ASC')), 'id', 'item_name'), array(
+                        'prompt' => 'Select',
+                        'class' => 'form-control',
+                        'ajax' => array(
+                                'type' => 'POST',
+                                'dataType' => 'json',
+                                'url' => CController::createUrl('prodModels/subCatOfThisCat'),
+                                'success' => 'function(data) {
                                     $("#ProdModels_brand_id").html(data.subCatList);
                              }',
-                        'data' => array(
-                            'catId' => 'js:jQuery("#ProdModels_item_id").val()',
-                        ),
-                        'beforeSend' => 'function(){
+                                'data' => array(
+                                        'catId' => 'js:jQuery("#ProdModels_item_id").val()',
+                                ),
+                                'beforeSend' => 'function(){
                                     document.getElementById("ProdModels_brand_id").style.background="url(' . Yii::app()->theme->baseUrl . '/images/ajax-loader.gif) no-repeat #FFFFFF 80% 1px";   
                          }',
-                        'complete' => 'function(){
+                                'complete' => 'function(){
                             document.getElementById("ProdModels_brand_id").style.background="url(' . Yii::app()->theme->baseUrl . '/images/downDrop.png) no-repeat #FFFFFF 98% 2px"; 
                         }',
-                    ),
+                        ),
                 ));
                 ?>
                 <span class="help-block"
@@ -54,9 +51,9 @@ $form = $this->beginWidget('CActiveForm', array(
                 <?php echo $form->labelEx($model, 'brand_id'); ?>
                 <?php
                 echo $form->dropDownList(
-                    $model, 'brand_id', CHtml::listData(ProdBrands::model()->findAll(array('order' => 'brand_name ASC')), 'id', 'brand_name'), array(
-                    'prompt' => 'Select',
-                    'class' => 'form-control',
+                        $model, 'brand_id', CHtml::listData(ProdBrands::model()->findAll(array('order' => 'brand_name ASC')), 'id', 'brand_name'), array(
+                        'prompt' => 'Select',
+                        'class' => 'form-control',
                 ));
                 ?>
                 <span class="help-block"
@@ -88,9 +85,9 @@ $form = $this->beginWidget('CActiveForm', array(
                 <?php echo $form->labelEx($model, 'unit_id'); ?>
                 <?php
                 echo $form->dropDownList(
-                    $model, 'unit_id', CHtml::listData(Units::model()->findAll(array('order' => 'label ASC')), 'id', 'label'), array(
-                    'prompt' => 'Select',
-                    'class' => 'form-control',
+                        $model, 'unit_id', CHtml::listData(Units::model()->findAll(array('order' => 'label ASC')), 'id', 'label'), array(
+                        'prompt' => 'Select',
+                        'class' => 'form-control',
                 ));
                 ?>
                 <span class="help-block"
@@ -101,9 +98,9 @@ $form = $this->beginWidget('CActiveForm', array(
                 <?php echo $form->labelEx($model, 'manufacturer_id'); ?>
                 <?php
                 echo $form->dropDownList(
-                    $model, 'manufacturer_id', CHtml::listData(Company::model()->findAll(array('order' => 'name ASC')), 'id', 'name'), array(
-                    'prompt' => 'Select',
-                    'class' => 'form-control',
+                        $model, 'manufacturer_id', CHtml::listData(Company::model()->findAll(array('order' => 'name ASC')), 'id', 'name'), array(
+                        'prompt' => 'Select',
+                        'class' => 'form-control',
                 ));
                 ?>
                 <span class="help-block"
@@ -115,8 +112,8 @@ $form = $this->beginWidget('CActiveForm', array(
                 <?php echo $form->labelEx($model, 'status'); ?>
                 <?php
                 echo $form->dropDownList(
-                    $model, 'status', [1 => 'ACTIVE', 0 => 'INACTIVE'], array(
-                    'class' => 'form-control',
+                        $model, 'status', [1 => 'ACTIVE', 0 => 'INACTIVE'], array(
+                        'class' => 'form-control',
                 ));
                 ?>
                 <span class="help-block"

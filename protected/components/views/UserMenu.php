@@ -80,7 +80,7 @@ $this->widget('application.extensions.mbmenu.MbMenu', array(
 
                     ),
                 ),
-                array('label' => 'QUOTATION',
+                array('label' => 'DRAFT',
                     'items' => array(
                         ['label' => Yii::t('app', 'CREATE'), 'url' => ['/sell/sellOrderQuotation/create'], 'visible' => Yii::app()->user->checkAccess('Sell.SellOrderQuotation.Create')],
                         ['label' => Yii::t('app', 'MANAGE'), 'url' => ['/sell/sellOrderQuotation/admin'], 'visible' => Yii::app()->user->checkAccess('Sell.SellOrderQuotation.Admin')],

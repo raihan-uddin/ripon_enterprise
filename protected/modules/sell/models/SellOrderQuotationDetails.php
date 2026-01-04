@@ -79,7 +79,7 @@ class SellOrderQuotationDetails extends CActiveRecord
 		// NOTE: you should only define rules for those attributes that
 		// will receive user inputs.
 		return array(
-            array('sell_order_id, model_id, qty, amount, row_total', 'required'),
+            array('sell_order_id, model_id', 'required'),
             array('sell_order_id, model_id,  created_by, updated_by, warranty', 'numerical', 'integerOnly' => true),
             array('discount_amount, discount_percentage, pp', 'numerical'),
             array('qty, amount, row_total, costing', 'numerical'),

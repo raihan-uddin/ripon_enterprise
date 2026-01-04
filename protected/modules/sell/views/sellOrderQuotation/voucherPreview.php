@@ -121,8 +121,7 @@
                         }
                         ?>
                         <div style="width: 100%; float: left; clear: right; margin-bottom: 10px;">
-                            <div style="width: 50%; float: left; clear: right;">
-                                <h5>Customer Details</h5>
+                            <div style="width: 33%; float: left; clear: right; text-align: left;">
                                 <?php
                                 $customer_name = $customer_zip = $customer_city = $customer_state = $customer_phone = $customer_trn_no = "N/A";
                                 if ($customer) {
@@ -134,19 +133,21 @@
                                     $customer_trn_no = $customer->trn_no;
                                 }
                                 echo "$customer_name<br>";
-                                echo ($customer_zip || $customer_state) ? "$customer_zip, $customer_state<br>" : "";
+/*                                echo ($customer_zip || $customer_state) ? "$customer_zip, $customer_state<br>" : "";
                                 echo ($customer_city) ? "$customer_city<br>" : "";
                                 echo ($customer_phone) ? "$customer_phone<br>" : "";
-                                echo ($customer_trn_no) ? "$customer_trn_no<br>" : "";
+                                echo ($customer_trn_no) ? "$customer_trn_no<br>" : "";*/
                                 ?>
                             </div>
-                            <div style="width: 50%; float: left; text-align: right; vertical-align: bottom; margin-top: 20px;">
-                                <b>Date:</b>
-                                <?= date('d.m.Y', strtotime($item->date)) ?>
-                                <br>
-
+                            <div style="width: 33%; float: left; text-align: center; vertical-align: bottom; ">
                                 <b>Quotation No:</b>
                                 <?= "$item->so_no" ?>
+                                <br>
+
+                            </div>
+                            <div style="width: 33%; float: left; text-align: right; vertical-align: bottom; ">
+                                <b>Date:</b>
+                                <?= date('d.m.Y', strtotime($item->date)) ?>
                                 <br>
 
                             </div>
@@ -182,10 +183,13 @@
                         if ($data2) {
                             $i = 1;
                             foreach ($data2 as $dt) {
+                                if (!$dt->qty > 0) {
+                                    continue;
+                                }
                                 ?>
                                 <tr>
                                     <td style="text-align: center;"><?= $i++ ?></td>
-                                    <td>
+                                    <td style="text-align: left;">
                                         <?= $dt->model_name ?>
                                         <?php
                                         if ($dt->note) {
@@ -273,37 +277,6 @@
                         </tr>
                         </tbody>
                     </table>
-
-                    <div style="width: 100%; float: left; clear: right; height: 150px; font-size: 12px; margin-top: 20px;">
-                        <div style="height: 30px; text-align: left; width: 100%; float: left; clear: right;">
-                            By signing this document, the customer agrees to he services and conditions
-                            described in this document.
-                        </div>
-                        <br>
-                        <div style="width: 100%; float: left; clear:right;">
-
-                            <div style="width: 50%; float: left;clear:right; text-decoration: overline; margin: auto; display: flex;  justify-content: center;  align-items: center;">
-                                <span style="text-decoration: underline; font-weight: bold;">The Mihan Engineers (TMEBD)</span>
-                            </div>
-                            <div style="width: 50%; float: left;clear:right; text-decoration: overline; margin: auto; display: flex;  justify-content: center;  align-items: center;">
-                                <span style="text-decoration: underline; font-weight: bold;"><?= $customer_name ?></span>
-                            </div>
-                        </div>
-                        <div style="height: 50px; width: 100%; float: left; clear: right; margin-top: 40px;">
-                            <div style="width: 50%; float: left; clear: right; margin: auto; display: flex; flex-direction: column; justify-content: center; align-items: center;">
-                                <div style="font-weight: bold; text-transform: uppercase;">
-                                    <?= User::model()->nameOfThis($item->created_by) ?>
-                                </div>
-                                <div style="text-decoration: overline;"><?= date('F d, Y') ?></div>
-                            </div>
-
-                            <div style="width: 50%; float: left;clear:right; text-decoration: overline; margin: auto; display: flex;  justify-content: center;  align-items: center;">
-                                <div>(&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;/&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;/&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
-                                    )
-                                </div>
-                            </div>
-                        </div>
-                    </div>
 
                     <div class="page-break-div"></div>
                 <?php

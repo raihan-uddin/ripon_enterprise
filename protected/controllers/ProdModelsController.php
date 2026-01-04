@@ -389,7 +389,7 @@ class ProdModelsController extends RController
         }
 
 
-        $this->pageTitle = "CREATE MATERIAL";
+        $this->pageTitle = "CREATE PRODUCT";
         $this->render('_form', array(
             'model' => $model,
         ));
@@ -440,7 +440,7 @@ class ProdModelsController extends RController
             }
         }
 
-        $this->pageTitle = "UPDATE MATERIAL: $model->model_name";
+        $this->pageTitle = "UPDATE PRODUCT: $model->model_name";
         $this->render('_form2', array(
             'model' => $model,
         ));
@@ -473,7 +473,7 @@ class ProdModelsController extends RController
         $model->unsetAttributes();  // clear any default values
         if (isset($_GET['ProdModels']))
             $model->attributes = $_GET['ProdModels'];
-        $this->pageTitle = "MANAGE MATERIAL";
+        $this->pageTitle = "MANAGE PRODUCT";
         $this->render('admin', array(
             'model' => $model,
         ));

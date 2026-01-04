@@ -5,7 +5,6 @@ $this->widget('application.components.BreadCrumb', array(
         array('name' => 'Quotation', 'url' => array('admin')),
         array('name' => 'Manage'),
     ),
-//    'delimiter' => ' &rarr; ',
 ));
 ?>
 <?php
@@ -42,7 +41,7 @@ if (Yii::app()->user->checkAccess('Sell.SellOrderQuotation.VoucherPreview')) {
     ?>
     <div class="card card-primary">
         <div class="card-header">
-            <h3 class="card-title">Preview Quotation</h3>
+            <h3 class="card-title">Preview Draft</h3>
 
             <div class="card-tools">
                 <button type="button" class="btn btn-tool" data-card-widget="collapse">
@@ -61,7 +60,7 @@ if (Yii::app()->user->checkAccess('Sell.SellOrderQuotation.VoucherPreview')) {
                     <div class="input-group">
                         <div class="input-group-prepend">
                             <span class="input-group-text"
-                                id="basic-addon1">Quotation No</span>
+                                id="basic-addon1">Draft No</span>
                         </div>
                         <?php /** @var mixed $model */
                         echo $form->textField($model, 'so_no', array('maxlength' => 255, 'class' => 'form-control', "aria-describedby" => "basic-addon1")); ?>
@@ -138,7 +137,7 @@ if (Yii::app()->user->checkAccess('Sell.SellOrderQuotation.VoucherPreview')) {
 ?>
 <div class="card card-primary">
     <div class="card-header">
-        <h3 class="card-title">Manage Quotation</h3>
+        <h3 class="card-title">Manage Draft</h3>
 
         <div class="card-tools">
             <button type="button" class="btn btn-tool" data-card-widget="collapse">
@@ -222,7 +221,7 @@ if (Yii::app()->user->checkAccess('Sell.SellOrderQuotation.VoucherPreview')) {
                 array
                 (
                     'header' => 'Options',
-                    'template' => '{update}{delete}',
+                    'template' => '{delete}', //{update}
                     'class' => 'CButtonColumn',
                     'htmlOptions' => ['style' => 'width: 200px', 'class' => 'text-center'],
                     'buttons' => array(
