@@ -99,9 +99,6 @@
             <button type="button" class="btn btn-tool" data-card-widget="collapse">
                 <i class="fa fa-minus"></i>
             </button>
-            <!--            <button type="button" class="btn btn-tool" data-card-widget="remove">-->
-            <!--                <i class="fa fa-times"></i>-->
-            <!--            </button>-->
         </div>
     </div>
     <div class="card-body">
@@ -455,7 +452,7 @@
                         <div style="width: 100%; float: left; clear:right;">
 
                             <div style="width: 50%; float: left;clear:right; text-decoration: overline; margin: auto; display: flex;  justify-content: center;  align-items: center;">
-                                <span style="text-decoration: underline; font-weight: bold;">The Mihan Engineers (TMEBD)</span>
+                                <span style="text-decoration: underline; font-weight: bold;"><?= strtoupper(Yii::app()->params['company']['name']) ?></span>
                             </div>
                             <div style="width: 50%; float: left;clear:right; text-decoration: overline; margin: auto; display: flex;  justify-content: center;  align-items: center;">
                                 <span style="text-decoration: underline; font-weight: bold;"><?= $customer_name ?></span>

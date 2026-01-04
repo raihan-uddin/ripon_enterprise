@@ -5,7 +5,6 @@ $this->widget('application.components.BreadCrumb', array(
         array('name' => 'Quotation', 'url' => array('admin')),
         array('name' => 'Update Quotation: ' . $model->so_no),
     ),
-//    'delimiter' => ' &rarr; ',
 ));
 ?>
 <?php

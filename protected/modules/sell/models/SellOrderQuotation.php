@@ -35,6 +35,7 @@ class SellOrderQuotation extends CActiveRecord
     public $item_count;
     public $row_total;
     public $customer_name;
+    public $manufacturer_id;
     public $invoice_id;
     public $username;
     public $contact_no;
@@ -116,10 +117,9 @@ class SellOrderQuotation extends CActiveRecord
             'id' => 'ID',
             'date' => 'Date',
             'max_sl_no' => 'Max Sl No',
-            'so_no' => 'Quotation No',
+            'so_no' => 'Draft No',
             'vat_percentage' => 'VAT(%)',
             'vat_amount' => 'VAT',
-            'customer_id' => 'Customer',
             'discount_percentage' => 'Discount Percentage',
             'discount_amount' => 'Discount Amount',
             'grand_total' => 'Grand Total',
@@ -132,6 +132,7 @@ class SellOrderQuotation extends CActiveRecord
             'delivery_charge' => 'Delivery Charge',
             'costing' => 'Costing',
             'customer_id' => 'Customer',
+            'manufacturer_id' => 'Company'
         );
 	}
 

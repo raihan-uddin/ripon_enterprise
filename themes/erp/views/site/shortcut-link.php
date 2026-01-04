@@ -29,20 +29,41 @@ $endDate = date('Y-m-t');
     }
     ?>
     <?php
+    if (Yii::app()->user->checkAccess('Sell.sellOrderQuotation.Admin')) {
+        ?>
+        <a class="btn btn-app bg-fuchsia" href="<?= Yii::app()->createUrl("/sell/sellOrderQuotation/create") ?>">
+        <span class="badge bg-teal"><?=
+            Yii::app()->db->createCommand()
+                    ->select('FORMAT(ROUND(SUM(grand_total)), 0) as total_amount')
+                    ->from('sell_order_quotation')
+                    ->where('date BETWEEN :start_date AND :end_date',
+                            array(
+                                    ':start_date' => $startDate,
+                                    ':end_date' => $endDate,
+                            ))
+                    ->queryScalar();
+
+            ?></span>
+            <i class="fa fa-inbox"></i> Draft
+            <small>(Ctrl+S)</small>
+        </a>
+        <?php
+    }
+    ?><?php
     if (Yii::app()->user->checkAccess('Sell.SellOrder.Admin')) {
         ?>
         <a class="btn btn-app bg-danger" href="<?= Yii::app()->createUrl("/sell/sellOrder/create") ?>">
         <span class="badge bg-teal"><?=
             Yii::app()->db->createCommand()
-                ->select('FORMAT(ROUND(SUM(grand_total)), 0) as total_amount')
-                ->from('sell_order')
-                ->where('order_type = :type AND date BETWEEN :start_date AND :end_date',
-                    array(
-                        ':type' => SellOrder::NEW_ORDER,
-                        ':start_date' => $startDate,
-                        ':end_date' => $endDate,
-                    ))
-                ->queryScalar();
+                    ->select('FORMAT(ROUND(SUM(grand_total)), 0) as total_amount')
+                    ->from('sell_order')
+                    ->where('order_type = :type AND date BETWEEN :start_date AND :end_date',
+                            array(
+                                    ':type' => SellOrder::NEW_ORDER,
+                                    ':start_date' => $startDate,
+                                    ':end_date' => $endDate,
+                            ))
+                    ->queryScalar();
             /*SellOrder::model()->countByAttributes(array(
                 'order_type' => SellOrder::NEW_ORDER
             )); */
@@ -60,14 +81,14 @@ $endDate = date('Y-m-t');
         <a class="btn btn-app bg-success" href="<?= Yii::app()->createUrl("sell/SellReturn/CreateProductReturn") ?>">
         <span class="badge bg-teal"><?=
             Yii::app()->db->createCommand()
-                ->select('FORMAT(ROUND(SUM(return_amount)), 0) as return_amount')
-                ->from('sell_return')
-                ->where('return_date BETWEEN :start_date AND :end_date',
-                    array(
-                        ':start_date' => $startDate,
-                        ':end_date' => $endDate,
-                    ))
-                ->queryScalar();
+                    ->select('FORMAT(ROUND(SUM(return_amount)), 0) as return_amount')
+                    ->from('sell_return')
+                    ->where('return_date BETWEEN :start_date AND :end_date',
+                            array(
+                                    ':start_date' => $startDate,
+                                    ':end_date' => $endDate,
+                            ))
+                    ->queryScalar();
             ?></span>
             <i class="fa fa-undo"></i> Return
         </a>
@@ -81,13 +102,13 @@ $endDate = date('Y-m-t');
         <a class="btn btn-app bg-info" href="<?= Yii::app()->createUrl("/commercial/purchaseOrder/create") ?>">
         <span class="badge bg-teal"><?=
             Yii::app()->db->createCommand()
-                ->select('FORMAT(ROUND(SUM(grand_total)), 0) as total_amount')
-                ->from('purchase_order')
-                ->where('date BETWEEN :start_date AND :end_date', array(
-                    ':start_date' => $startDate,
-                    ':end_date' => $endDate,
-                ))
-                ->queryScalar();
+                    ->select('FORMAT(ROUND(SUM(grand_total)), 0) as total_amount')
+                    ->from('purchase_order')
+                    ->where('date BETWEEN :start_date AND :end_date', array(
+                            ':start_date' => $startDate,
+                            ':end_date' => $endDate,
+                    ))
+                    ->queryScalar();
             ?></span>
             <i class="fa fa-inbox"></i> Purchase Order
             <small>(Ctrl+P)</small>
@@ -101,14 +122,14 @@ $endDate = date('Y-m-t');
         <a class="btn btn-app bg-gradient-warning" href="<?= Yii::app()->createUrl("/accounting/expense/create") ?>">
             <span class="badge bg-teal"><?=
                 Yii::app()->db->createCommand()
-                    ->select('FORMAT(ROUND(SUM(amount)), 0) as total_amount')
-                    ->from('expense')
-                    ->where(' date BETWEEN :start_date AND :end_date',
-                        array(
-                            ':start_date' => $startDate,
-                            ':end_date' => $endDate,
-                        ))
-                    ->queryScalar();
+                        ->select('FORMAT(ROUND(SUM(amount)), 0) as total_amount')
+                        ->from('expense')
+                        ->where(' date BETWEEN :start_date AND :end_date',
+                                array(
+                                        ':start_date' => $startDate,
+                                        ':end_date' => $endDate,
+                                ))
+                        ->queryScalar();
                 ?></span>
             <i class="fa fa-money"></i> Expense
         </a>
@@ -123,14 +144,14 @@ $endDate = date('Y-m-t');
            href="<?= Yii::app()->createUrl("/accounting/moneyReceipt/adminMoneyReceipt") ?>">
              <span class="badge bg-teal"><?=
                  Yii::app()->db->createCommand()
-                     ->select('FORMAT(ROUND(SUM(amount)), 0) as total_amount')
-                     ->from('money_receipt')
-                     ->where(' date BETWEEN :start_date AND :end_date',
-                         array(
-                             ':start_date' => $startDate,
-                             ':end_date' => $endDate,
-                         ))
-                     ->queryScalar();
+                         ->select('FORMAT(ROUND(SUM(amount)), 0) as total_amount')
+                         ->from('money_receipt')
+                         ->where(' date BETWEEN :start_date AND :end_date',
+                                 array(
+                                         ':start_date' => $startDate,
+                                         ':end_date' => $endDate,
+                                 ))
+                         ->queryScalar();
                  ?></span>
             <i class="fa fa-money"></i> Collection
         </a>
@@ -144,14 +165,14 @@ $endDate = date('Y-m-t');
            href="<?= Yii::app()->createUrl("/accounting/paymentReceipt/adminPaymentReceipt") ?>">
              <span class="badge bg-teal"><?=
                  Yii::app()->db->createCommand()
-                     ->select('FORMAT(ROUND(SUM(amount)), 0) as total_amount')
-                     ->from('payment_receipt')
-                     ->where(' date BETWEEN :start_date AND :end_date',
-                         array(
-                             ':start_date' => $startDate,
-                             ':end_date' => $endDate,
-                         ))
-                     ->queryScalar();
+                         ->select('FORMAT(ROUND(SUM(amount)), 0) as total_amount')
+                         ->from('payment_receipt')
+                         ->where(' date BETWEEN :start_date AND :end_date',
+                                 array(
+                                         ':start_date' => $startDate,
+                                         ':end_date' => $endDate,
+                                 ))
+                         ->queryScalar();
                  ?></span>
             <i class="fa fa-money"></i> Payment
         </a>

@@ -67,6 +67,7 @@ class SellOrderQuotationController extends RController
 
         if (Yii::app()->request->isAjaxRequest) {
             Yii::app()->clientScript->scriptMap['jquery.js'] = false;
+
         }
 
         $costing = 0;
@@ -76,20 +77,33 @@ class SellOrderQuotationController extends RController
             $model->discount_percentage = 0;
             $model->so_no = date('y') . date('m') . str_pad($model->max_sl_no, 5, "0", STR_PAD_LEFT);
             $transaction = Yii::app()->db->beginTransaction();
+
             try {
                 if ($model->save()) {
-                    $total_item = count($_POST['SellOrderQuotationDetails']['temp_model_id']);
-                    $per_item_discount = $model->discount_amount / $total_item;
+                    $qtyList = $_POST['SellOrderQuotationDetails']['temp_qty'] ?? [];
+                    $total_item = count(array_filter($qtyList, function ($qty) {
+                        return (int)$qty > 0;
+                    }));
+
+                    $qtys = $_POST['SellOrderQuotationDetails']['temp_qty'] ?? [];
+
+                    $per_item_discount = 0;
+
+                    if ($total_item > 0) {
+                        $per_item_discount = $model->discount_amount / $total_item;
+                    }
                     foreach ($_POST['SellOrderQuotationDetails']['temp_model_id'] as $key => $model_id) {
 
-                        $percentage_discount = ($per_item_discount / $_POST['SellOrderQuotationDetails']['temp_unit_price'][$key]) * 100;
+                        $percentage_discount = 0;
+                        if ($_POST['SellOrderQuotationDetails']['temp_unit_price'][$key] > 0) {
+                            $percentage_discount = ($per_item_discount / $_POST['SellOrderQuotationDetails']['temp_unit_price'][$key]) * 100;
+                        }
 
 
                         $purchasePrice = $_POST['SellOrderQuotationDetails']['temp_pp'][$key];
                         if (!$purchasePrice > 0) {
                             $purchasePrice = ProdModels::model()->findByPk($model_id)->purchase_price;
                         }
-                        $product = ProdModels::model()->findByPk($model_id);
                         $model2 = new SellOrderQuotationDetails();
                         $model2->sell_order_id = $model->id;
                         $model2->model_id = $model_id;
@@ -99,7 +113,7 @@ class SellOrderQuotationController extends RController
                         $model2->discount_amount = $per_item_discount;
                         $model2->discount_percentage = $percentage_discount;
                         $model2->pp = $purchasePrice;
-                        $model2->costing = round(($model2->qty * $purchasePrice), 2);
+                        $model2->costing = round(((float)$model2->qty * (float)$purchasePrice), 2);
                         if (!$model2->save()) {
                             $transaction->rollBack();
                             throw new CHttpException(500, sprintf('Error in saving order details! %s <br>', json_encode($model2->getErrors())));
@@ -129,8 +143,10 @@ class SellOrderQuotationController extends RController
             } catch (PDOException $e) {
                 $transaction->rollBack();
                 throw new CHttpException(500, $e->getMessage());
+                Yii::app()->end();
             } catch (Exception $e) {
                 throw new CHttpException(500, $e->getMessage());
+                Yii::app()->end();
             }
         }
         $this->pageTitle = 'CREATE ORDER';
@@ -182,11 +198,11 @@ class SellOrderQuotationController extends RController
                     $criteriaDel = new CDbCriteria;
                     $criteriaDel->addColumnCondition(['sell_order_id' => $id, 'is_deleted' => 0]);
                     SellOrderQuotationDetails::model()->deleteAll($criteriaDel);
-                    
+
                     foreach ($_POST['SellOrderQuotationDetails']['temp_model_id'] as $key => $model_id) {
                         $purchasePrice = $_POST['SellOrderQuotationDetails']['temp_pp'][$key];
                         $percentage_discount = ($per_item_discount / $_POST['SellOrderQuotationDetails']['temp_unit_price'][$key]) * 100;
-                        
+
                         $model2 = new SellOrderQuotationDetails();
                         $model2->sell_order_id = $model->id;
                         $model2->model_id = $model_id;
@@ -205,7 +221,7 @@ class SellOrderQuotationController extends RController
                         $details_id_arr[] = $model2->id;
                         $costing += $model2->costing;
                     }
-                    
+
                     $model->costing = $costing;
                     $model->save();
                     $transaction->commit();
@@ -245,7 +261,7 @@ class SellOrderQuotationController extends RController
             if ($transaction->active) {
                 $transaction->rollBack();
             }
-             // Handle the exception (e.g., log it or display a message)
+            // Handle the exception (e.g., log it or display a message)
             Yii::log($e->getMessage(), CLogger::LEVEL_ERROR);
             throw new CHttpException(500, $e->getMessage());
         }
@@ -350,7 +366,7 @@ class SellOrderQuotationController extends RController
             $data = SellOrderQuotation::model()->findAllByAttributes([], $criteria);
 
             if ($data) {
-                if($preview_type == SellOrderQuotation::DELIVERY_CHALLAN_PRINT){
+                if ($preview_type == SellOrderQuotation::DELIVERY_CHALLAN_PRINT) {
                     $view = "challanPreview";
                 } else {
                     $view = "voucherPreview";

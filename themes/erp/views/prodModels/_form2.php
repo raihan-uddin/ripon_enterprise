@@ -1,23 +1,22 @@
 <?php
 $this->widget('application.components.BreadCrumb', array(
-    'crumbs' => array(
-        array('name' => 'Inventory', 'url' => array('')),
-        array('name' => 'Config', 'url' => array('admin')),
-        array('name' => 'Product Setup', 'url' => array('admin')),
-        array('name' => $model->model_name),
-    ),
-//    'delimiter' => ' &rarr; ',
+        'crumbs' => array(
+                array('name' => 'Inventory', 'url' => array('')),
+                array('name' => 'Config', 'url' => array('admin')),
+                array('name' => 'Product Setup', 'url' => array('admin')),
+                array('name' => $model->model_name),
+        ),
 ));
 ?>
 
 
 <?php
 $form = $this->beginWidget('CActiveForm', array(
-    'id' => 'prod-models-form',
-    'enableAjaxValidation' => false,
-    'enableClientValidation' => true,
-    'clientOptions' => array('validateOnSubmit' => true),
-    'htmlOptions' => array('enctype' => 'multipart/form-data'),
+        'id' => 'prod-models-form',
+        'enableAjaxValidation' => false,
+        'enableClientValidation' => true,
+        'clientOptions' => array('validateOnSubmit' => true),
+        'htmlOptions' => array('enctype' => 'multipart/form-data'),
 ));
 ?>
 
@@ -40,60 +39,68 @@ $form = $this->beginWidget('CActiveForm', array(
             <button type="button" class="btn btn-tool" data-card-widget="collapse">
                 <i class="fa fa-minus"></i>
             </button>
-            <!--            <button type="button" class="btn btn-tool" data-card-widget="remove">-->
-            <!--                <i class="fa fa-times"></i>-->
-            <!--            </button>-->
         </div>
     </div>
     <div class="card-body">
         <div class="row">
-            <div class="col-sm-12 col-sm-10 col-lg-10">
+            <div class="col-sm-12 col-sm-12 col-lg-12">
                 <div class="row">
+                    <div class="form-group col-sm-12 col-md-6 col-lg-4">
+                        <?php echo $form->labelEx($model, 'manufacturer_id'); ?>
+                        <?php
+                        echo $form->dropDownList(
+                                $model, 'manufacturer_id', CHtml::listData(Company::model()->findAll(array('order' => 'name ASC')), 'id', 'name'), array(
+                                'prompt' => 'Select',
+                                'class' => 'form-control',
+                        ));
+                        ?>
+                        <span class="help-block"
+                              style="color: red; width: 100%"> <?php echo $form->error($model, 'stockable'); ?></span>
+                    </div>
                     <div class="form-group col-sm-12 col-md-6 col-lg-4" style="">
                         <?php echo $form->labelEx($model, 'item_id'); ?>
                         <div class="input-group" data-target-input="nearest"><?php
                             echo $form->dropDownList(
-                                $model, 'item_id', CHtml::listData(ProdItems::model()->findAll(array('order' => 'item_name ASC')), 'id', 'item_name'), array(
-                                'prompt' => 'Select',
-                                'class' => 'form-control',
-                                'ajax' => array(
-                                    'type' => 'POST',
-                                    'dataType' => 'json',
-                                    'url' => CController::createUrl('prodModels/subCatOfThisCat'),
-                                    'success' => 'function(data) {
+                                    $model, 'item_id', CHtml::listData(ProdItems::model()->findAll(array('order' => 'item_name ASC')), 'id', 'item_name'), array(
+                                    'prompt' => 'Select',
+                                    'class' => 'form-control',
+                                    'ajax' => array(
+                                            'type' => 'POST',
+                                            'dataType' => 'json',
+                                            'url' => CController::createUrl('prodModels/subCatOfThisCat'),
+                                            'success' => 'function(data) {
                                                 $("#ProdModels_brand_id").html(data.subCatList);
                                          }',
-                                    'data' => array(
-                                        'catId' => 'js:jQuery("#ProdModels_item_id").val()',
-                                    ),
-                                    'beforeSend' => 'function(){
+                                            'data' => array(
+                                                    'catId' => 'js:jQuery("#ProdModels_item_id").val()',
+                                            ),
+                                            'beforeSend' => 'function(){
                                                     document.getElementById("ProdModels_brand_id").style.background="url(' . Yii::app()->theme->baseUrl . '/images/ajax-loader.gif) no-repeat #FFFFFF 80% 1px";   
                                          }',
-                                    'complete' => 'function(){
+                                            'complete' => 'function(){
                                             document.getElementById("ProdModels_brand_id").style.background="url(' . Yii::app()->theme->baseUrl . '/images/downDrop.png) no-repeat #FFFFFF 98% 2px"; 
                                         }',
-                                ),
+                                    ),
                             ));
                             ?>
                             <div class="input-group-append">
                                 <div class="input-group-text">
                                     <?php
-                                    echo CHtml::link(' <i class="fa fa-plus"></i>', "", // the link for open the dialog
-                                        array(
-//                                    'class' => '',
-                                            'onclick' => "{addProdItem(); $('#dialogAddProdItem').dialog('open');}"));
+                                    echo CHtml::link(' <i class="fa fa-plus"></i>', "",
+                                            array(
+                                                    'onclick' => "{addProdItem(); $('#dialogAddProdItem').dialog('open');}"));
                                     ?>
 
                                     <?php
                                     $this->beginWidget('zii.widgets.jui.CJuiDialog', array(// the dialog
-                                        'id' => 'dialogAddProdItem',
-                                        'options' => array(
-                                            'title' => 'Add Product Category',
-                                            'autoOpen' => false,
-                                            'modal' => true,
-                                            'width' => 550,
-                                            'resizable' => false,
-                                        ),
+                                            'id' => 'dialogAddProdItem',
+                                            'options' => array(
+                                                    'title' => 'Add Product Category',
+                                                    'autoOpen' => false,
+                                                    'modal' => true,
+                                                    'width' => 550,
+                                                    'resizable' => false,
+                                            ),
                                     ));
                                     ?>
                                     <div class="divForForm">
@@ -109,17 +116,17 @@ $form = $this->beginWidget('CActiveForm', array(
                                         function addProdItem() {
                                             <?php
                                             echo CHtml::ajax(array(
-                                                'url' => array('prodItems/createProdItemsFromOutSide'),
-                                                'data' => "js:$(this).serialize()",
-                                                'type' => 'post',
-                                                'dataType' => 'json',
-                                                'beforeSend' => "function(){
+                                                    'url' => array('prodItems/createProdItemsFromOutSide'),
+                                                    'data' => "js:$(this).serialize()",
+                                                    'type' => 'post',
+                                                    'dataType' => 'json',
+                                                    'beforeSend' => "function(){
                                                     $('.ajaxLoaderFormLoad').show();
                                                 }",
-                                                'complete' => "function(){
+                                                    'complete' => "function(){
                                                     $('.ajaxLoaderFormLoad').hide();
                                                 }",
-                                                'success' => "function(data){
+                                                    'success' => "function(data){
                                         if (data.status == 'failure')
                                         {
                                             $('#dialogAddProdItem div.divForForm').html(data.div);
@@ -149,30 +156,29 @@ $form = $this->beginWidget('CActiveForm', array(
                         <?php echo $form->labelEx($model, 'brand_id'); ?>
                         <div class="input-group" data-target-input="nearest"><?php
                             echo $form->dropDownList(
-                                $model, 'brand_id', CHtml::listData(ProdBrands::model()->findAll(array('order' => 'brand_name ASC')), 'id', 'brand_name'), array(
-                                'prompt' => 'Select',
-                                'class' => 'form-control',
+                                    $model, 'brand_id', CHtml::listData(ProdBrands::model()->findAll(array('order' => 'brand_name ASC')), 'id', 'brand_name'), array(
+                                    'prompt' => 'Select',
+                                    'class' => 'form-control',
                             ));
                             ?>
                             <div class="input-group-append">
                                 <div class="input-group-text">
                                     <?php
                                     echo CHtml::link(' <i class="fa fa-plus"></i>', "", // the link for open the dialog
-                                        array(
-//                                    'class' => '',
-                                            'onclick' => "{addProdBrand(); $('#dialogAddProdBrand').dialog('open');}"));
+                                            array(
+                                                    'onclick' => "{addProdBrand(); $('#dialogAddProdBrand').dialog('open');}"));
                                     ?>
 
                                     <?php
                                     $this->beginWidget('zii.widgets.jui.CJuiDialog', array(// the dialog
-                                        'id' => 'dialogAddProdBrand',
-                                        'options' => array(
-                                            'title' => 'Add Product Type',
-                                            'autoOpen' => false,
-                                            'modal' => true,
-                                            'width' => 550,
-                                            'resizable' => false,
-                                        ),
+                                            'id' => 'dialogAddProdBrand',
+                                            'options' => array(
+                                                    'title' => 'Add Product Type',
+                                                    'autoOpen' => false,
+                                                    'modal' => true,
+                                                    'width' => 550,
+                                                    'resizable' => false,
+                                            ),
                                     ));
                                     ?>
                                     <div class="divForForm">
@@ -187,17 +193,17 @@ $form = $this->beginWidget('CActiveForm', array(
                                         function addProdBrand() {
                                             <?php
                                             echo CHtml::ajax(array(
-                                                'url' => array('prodBrands/createProdBrandsFromOutSide'),
-                                                'data' => "js:$(this).serialize()",
-                                                'type' => 'post',
-                                                'dataType' => 'json',
-                                                'beforeSend' => "function(){
+                                                    'url' => array('prodBrands/createProdBrandsFromOutSide'),
+                                                    'data' => "js:$(this).serialize()",
+                                                    'type' => 'post',
+                                                    'dataType' => 'json',
+                                                    'beforeSend' => "function(){
                                                     $('.ajaxLoaderFormLoad').show();
                                                 }",
-                                                'complete' => "function(){
+                                                    'complete' => "function(){
                                                     $('.ajaxLoaderFormLoad').hide();
                                                 }",
-                                                'success' => "function(data){
+                                                    'success' => "function(data){
                                         if (data.status == 'failure')
                                         {
                                             $('#dialogAddProdBrand div.divForForm').html(data.div);
@@ -237,7 +243,7 @@ $form = $this->beginWidget('CActiveForm', array(
                               style="color: red; width: 100%"> <?php echo $form->error($model, 'code'); ?></span>
                     </div>
 
-                    <div class="form-group col-sm-12 col-md-6 col-lg-4">
+                    <div class="form-group col-sm-12 col-md-6 col-lg-4" style="display: none;">
                         <?php echo $form->labelEx($model, 'warranty'); ?>
                         <?php echo $form->textField($model, 'warranty', array('maxlength' => 255, 'class' => 'form-control')); ?>
                         <span class="help-block"
@@ -248,29 +254,28 @@ $form = $this->beginWidget('CActiveForm', array(
                         <?php echo $form->labelEx($model, 'unit_id'); ?>
                         <div class="input-group" data-target-input="nearest"><?php
                             echo $form->dropDownList(
-                                $model, 'unit_id', CHtml::listData(Units::model()->findAll(array('order' => 'label ASC')), 'id', 'label'), array(
-                                'prompt' => 'Select',
-                                'class' => 'form-control',
+                                    $model, 'unit_id', CHtml::listData(Units::model()->findAll(array('order' => 'label ASC')), 'id', 'label'), array(
+                                    'prompt' => 'Select',
+                                    'class' => 'form-control',
                             ));
                             ?>
                             <div class="input-group-append">
                                 <div class="input-group-text">
                                     <?php
-                                    echo CHtml::link(' <i class="fa fa-plus"></i>', "", // the link for open the dialog
-                                        array(
-//                                    'class' => '',
-                                            'onclick' => "{addUnit(); $('#dialogAddUnit').dialog('open');}"));
+                                    echo CHtml::link(' <i class="fa fa-plus"></i>', "",
+                                            array(
+                                                    'onclick' => "{addUnit(); $('#dialogAddUnit').dialog('open');}"));
                                     ?>
                                     <?php
                                     $this->beginWidget('zii.widgets.jui.CJuiDialog', array(// the dialog
-                                        'id' => 'dialogAddUnit',
-                                        'options' => array(
-                                            'title' => 'Add Unit',
-                                            'autoOpen' => false,
-                                            'modal' => true,
-                                            'width' => 550,
-                                            'resizable' => false,
-                                        ),
+                                            'id' => 'dialogAddUnit',
+                                            'options' => array(
+                                                    'title' => 'Add Unit',
+                                                    'autoOpen' => false,
+                                                    'modal' => true,
+                                                    'width' => 550,
+                                                    'resizable' => false,
+                                            ),
                                     ));
                                     ?>
                                     <div class="divForForm">
@@ -287,17 +292,17 @@ $form = $this->beginWidget('CActiveForm', array(
                                         function addUnit() {
                                             <?php
                                             echo CHtml::ajax(array(
-                                                'url' => array('units/createUnitFromOutSide'),
-                                                'data' => "js:$(this).serialize()",
-                                                'type' => 'post',
-                                                'dataType' => 'json',
-                                                'beforeSend' => "function(){
+                                                    'url' => array('units/createUnitFromOutSide'),
+                                                    'data' => "js:$(this).serialize()",
+                                                    'type' => 'post',
+                                                    'dataType' => 'json',
+                                                    'beforeSend' => "function(){
                                             $('.ajaxLoaderFormLoad').show();
                                             }",
-                                                'complete' => "function(){
+                                                    'complete' => "function(){
                                             $('.ajaxLoaderFormLoad').hide();
                                             }",
-                                                'success' => "function(data){
+                                                    'success' => "function(data){
                                         if (data.status == 'failure')
                                         {
                                             $('#dialogAddUnit div.divForForm').html(data.div);
@@ -346,22 +351,9 @@ $form = $this->beginWidget('CActiveForm', array(
                         <?php echo $form->labelEx($model, 'stockable'); ?>
                         <?php
                         echo $form->dropDownList(
-                            $model, 'stockable', [1 => 'YES', 0 => 'NO'], array(
-                            'prompt' => 'Select',
-                            'class' => 'form-control',
-                        ));
-                        ?>
-                        <span class="help-block"
-                              style="color: red; width: 100%"> <?php echo $form->error($model, 'stockable'); ?></span>
-                    </div>
-
-                    <div class="form-group col-sm-12 col-md-6 col-lg-4">
-                        <?php echo $form->labelEx($model, 'manufacturer_id'); ?>
-                        <?php
-                        echo $form->dropDownList(
-                            $model, 'manufacturer_id', CHtml::listData(Company::model()->findAll(array('order' => 'name ASC')), 'id', 'name'), array(
-                            'prompt' => 'Select',
-                            'class' => 'form-control',
+                                $model, 'stockable', [1 => 'YES', 0 => 'NO'], array(
+                                'prompt' => 'Select',
+                                'class' => 'form-control',
                         ));
                         ?>
                         <span class="help-block"
@@ -373,8 +365,8 @@ $form = $this->beginWidget('CActiveForm', array(
                         <?php echo $form->labelEx($model, 'status'); ?>
                         <?php
                         echo $form->dropDownList(
-                            $model, 'status', [1 => 'ACTIVE', 0 => 'INACTIVE'], array(
-                            'class' => 'form-control',
+                                $model, 'status', [1 => 'ACTIVE', 0 => 'INACTIVE'], array(
+                                'class' => 'form-control',
                         ));
                         ?>
                         <span class="help-block"
@@ -389,7 +381,7 @@ $form = $this->beginWidget('CActiveForm', array(
                     </div>
                 </div>
             </div>
-            <div class="col-sm-12 col-sm-2 col-lg-2">
+            <div class="col-sm-12 col-sm-2 col-lg-2" style="display: none;">
                 <div class="row">
                     <div class="form-group col-sm-12 col-md-12 col-lg-12">
                         <div class="avatar-upload">
