@@ -1,13 +1,10 @@
 <div class="login-container d-flex align-items-center justify-content-center">
     <div class="login-card shadow-lg rounded-4">
-        <div class="text-center mb-4">
-            <img src="<?= Yii::app()->theme->baseUrl ?>/images/voucher-logo.png"
-                 alt="<?= Yii::app()->params['company']['name']; ?> Logo"
-                 class="company-logo mb-2">
-<!--            <p class="text-muted small">Admin Panel v--><?php //= Yii::app()->params['version']; ?><!--</p>-->
+        <!-- Brand -->
+        <div class="card-header text-center border-0 pt-4">
+            <h2 class="fw-bold text-primary mb-0">রিপন এন্টারপ্রাইজ</h2>
+            <small class="text-muted">Sign in to your account</small>
         </div>
-
-        <h5 class="text-center mb-3 fw-semibold">Sign in to your account</h5>
 
         <?php
         $form = $this->beginWidget('CActiveForm', [

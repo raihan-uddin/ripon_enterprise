@@ -9,8 +9,8 @@
     @media print {
         @page {
             size: A4;
-            margin-top: 4cm;
-            margin-bottom: 4cm;
+            /*margin-top: 4cm;*/
+            /*margin-bottom: 4cm;*/
         }
 
         .invoice-header-wrapper {

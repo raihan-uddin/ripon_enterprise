@@ -62,6 +62,7 @@ class SellOrderQuotationDetails extends CActiveRecord
     public $actual_sp;
     public $so_no;
     public $customer_id;
+    public $company_name;
 
 	/**
 	 * @return string the associated database table name

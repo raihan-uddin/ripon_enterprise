@@ -2,7 +2,7 @@
 $this->widget('application.components.BreadCrumb', array(
     'crumbs' => array(
         array('name' => 'Sales', 'url' => array('admin')),
-        array('name' => 'Quotation', 'url' => array('admin')),
+        array('name' => 'Draft', 'url' => array('admin')),
         array('name' => 'Create'),
     ),
 ));

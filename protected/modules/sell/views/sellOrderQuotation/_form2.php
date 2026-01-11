@@ -2,7 +2,7 @@
 $this->widget('application.components.BreadCrumb', array(
     'crumbs' => array(
         array('name' => 'Sales', 'url' => array('admin')),
-        array('name' => 'Quotation', 'url' => array('admin')),
+        array('name' => 'Draft', 'url' => array('admin')),
         array('name' => 'Update Quotation: ' . $model->so_no),
     ),
 ));
@@ -24,7 +24,7 @@ Yii::app()->clientScript->registerCoreScript("jquery.ui");
 
 <div class="card card-primary">
     <div class="card-header">
-        <h3 class="card-title"><?php echo($model->isNewRecord ? 'Create Quotation' : 'Update Order:' . $model->so_no); ?></h3>
+        <h3 class="card-title"><?php echo($model->isNewRecord ? 'Create Draft' : 'Update Draft:' . $model->so_no); ?></h3>
 
         <div class="card-tools">
             <button type="button" class="btn btn-tool" data-card-widget="collapse">
