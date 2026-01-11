@@ -121,7 +121,7 @@
                         }
                         ?>
                         <div style="width: 100%; float: left; clear: right; margin-bottom: 10px;">
-                            <div style="width: 33%; float: left; clear: right; text-align: left;">
+                            <div style="width: 25%; float: left; clear: right; text-align: left;">
                                 <?php
                                 $customer_name = $customer_zip = $customer_city = $customer_state = $customer_phone = $customer_trn_no = "N/A";
                                 if ($customer) {
@@ -139,7 +139,6 @@
                                 <b>Draft No:</b>
                                 <?= "$item->so_no" ?>
                                 <br>
-
                             </div>
                             <div style="width: 33%; float: left; text-align: right; vertical-align: bottom; ">
                                 <b>Date:</b>

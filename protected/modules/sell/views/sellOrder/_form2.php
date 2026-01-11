@@ -20,6 +20,44 @@ Yii::app()->clientScript->registerCoreScript("jquery.ui");
 <script>
     $(".alert").animate({opacity: 1.0}, 3000).fadeOut("slow");
 </script>
+<style>
+
+    /* Ultra compact table */
+    .table-compact {
+        margin-bottom: 0;
+        font-size: 12px;
+    }
+
+    .table-compact th,
+    .table-compact td {
+        padding: 4px 6px !important;
+        vertical-align: middle;
+    }
+
+    .table-compact input.form-control {
+        height: 24px;
+        padding: 2px 4px;
+        font-size: 12px;
+    }
+
+    .table-compact .form-control {
+        border-radius: 2px;
+    }
+
+    /* Compact header */
+    .table-compact thead th {
+        padding: 6px !important;
+        font-weight: 600;
+    }
+
+    /* Reduce row height further */
+    .table-compact tr {
+        line-height: 1.2;
+    }
+    .table-compact input.form-control {
+        border-color: #ccc;
+    }
+</style>
 
 <div class="card card-primary">
     <div class="card-header">
@@ -212,133 +250,120 @@ Yii::app()->clientScript->registerCoreScript("jquery.ui");
             <div class="card-body">
                 <div class="row">
                     <div class="table table-responsive">
-                        <table class="table table-bordered table-striped table-sm table-valign-middle" id="list">
-                            <thead class="table-info">
-                            <tr>
-                                <th>SL</th>
-                                <th>Category</th>
-                                <th>Product Name</th>
-                                <th>Code</th>
-                                <th style="width: 10%;" class="text-center">Qty</th>
-                                <th style="width: 10%;" class="text-center">Unit Price</th>
-                                <th style="width: 10%;" class="text-center">Row Total</th>
-<!--                                <th style="width: 4%;" class="text-center">Action</th>-->
-                            </tr>
-                            </thead>
+                        <table class="table table-bordered  table-sm table-valign-middle table-compact" id="list">
                             <tbody>
                             <?php
+                            $criteria = new CDbCriteria();
+                            $criteria->select = "
+                                t.id, t.model_name, t.code, t.sell_price, t.purchase_price,
+                                companies.name AS company_name,
+                                (SUM(inventory.stock_in) - SUM(inventory.stock_out)) AS current_stock
+                            ";
+                            $criteria->addColumnCondition(['t.status' => 1]);
+                            $criteria->join = "
+                                LEFT JOIN companies ON companies.id = t.manufacturer_id
+                                LEFT JOIN inventory ON inventory.model_id = t.id
+                            ";
+                            $criteria->group = "t.id";
+                            $criteria->order = "companies.name ASC, t.model_name ASC";
+                            $dataProducts = ProdModels::model()->findAll($criteria);
+
+
+                            $saleDetailsCriteria = new CDbCriteria();
+                            $saleDetailsCriteria->addCondition('sell_order_id=' . $model->id);
+                            $modelDetails = SellOrderDetails::model()->findAll($saleDetailsCriteria);
                             $totalCosting = 0;
-                            $currentProduct = [];
-                            foreach ($model3 as $key => $m3) {
-                                $currentProduct[] = $m3->model_id;
-                                $totalCosting += $m3->costing;
+                            $currentCompany = '';
+                            $groupIndex = 0;
+
+                            foreach ($dataProducts as $product) {
+
+                                // find sold qty from $modelDetails
+                                $soldQty = 0;
+                                $salePrice = 0;
+                                $purchasePrice = 0;
+                                $rowTotal = 0;
+                                $rowCosting = 0;
+                                foreach ($modelDetails as $detail) {
+                                    if ($detail->model_id == $product->id) {
+                                        $soldQty = $detail->qty;
+                                        $salePrice = $detail->amount;
+                                        $purchasePrice = $detail->purchase_price;
+                                        $rowTotal = $detail->row_total;
+                                        $rowCosting = $detail->costing;
+                                        break;
+                                    }
+                                }
+                                if ($purchasePrice <= 0) {
+                                    $purchasePrice = $product->purchase_price;
+                                }
+                                if ($rowCosting <= 0) {
+                                    $rowCosting = $purchasePrice * $soldQty;
+                                }
+                                $totalCosting += $rowCosting;
+                                if ($currentCompany !== $product->company_name) {
+                                    $groupIndex++;
+                                    $currentCompany = $product->company_name;
+                                    ?>
+
+                                    <!-- Company Header -->
+                                    <tr class="company-header"
+                                        data-target="company-<?= $groupIndex ?>"
+                                        style="cursor:pointer">
+                                        <td colspan="8">
+                                            🏭 <?= CHtml::encode($currentCompany) ?>
+                                            <span class="toggle-icon">▼</span>
+                                        </td>
+                                    </tr>
+                                    <tr class="company-<?= $groupIndex ?>" style="display:none;">
+                                        <th>SL</th>
+                                        <th>Product Name</th>
+                                        <th>Code</th>
+                                        <th>Stock</th>
+                                        <th style="width: 10%;" class="text-center">Qty</th>
+                                        <th style="width: 10%;" class="text-center">Unit Price</th>
+                                        <th style="width: 10%;" class="text-center">Row Total</th>
+                                    </tr>
+                                    <?php
+                                }
                                 ?>
-                                <tr class="item">
+                                <tr class="company-<?= $groupIndex ?> item" style="display:none;">
                                     <td class="serial"></td>
-                                    <td><?= $m3->item_name ?></td>
+                                    <td><?= $product->company_name ?></td>
                                     <td>
-                                        <?= $m3->model_name ?>
+                                        <?= $product->model_name ?>
                                         <input type="hidden" class="form-control temp_model_id"
-                                               value="<?= $m3->model_id ?>"
+                                               value="<?= $product->id ?>"
                                                name="SellOrderDetails[temp_model_id][]">
                                     </td>
-
-                                    <td><?= $m3->code ?></td>
+                                    <td><?= $product->code ?></td>
                                     <td class="text-center">
                                         <label>
                                             <input type="text" class="form-control text-center temp_qty"
-                                                   value="<?= $m3->qty ?>"
+                                                   value="<?= $soldQty != 0 ? $soldQty : '' ?>"
                                                    name=SellOrderDetails[temp_qty][]">
                                         </label>
-
                                     </td>
                                     <td class="text-center">
                                         <label>
                                             <input type="text" class="form-control temp_unit_price text-right"
-                                                   value="<?= $m3->amount ?>"
+                                                   value="<?= $soldQty != 0 ? $salePrice : $product->sell_price ?>"
                                                    name="SellOrderDetails[temp_unit_price][]">
                                         </label>
 
                                         <input type="hidden" class="form-control text-center temp-costing"
-                                               value="<?= round(($m3->costing / $m3->qty), 2) ?>"
+                                               value="<?= $purchasePrice ?>"
                                                name=SellOrderDetails[temp_pp][]">
                                     </td>
                                     <td class="text-center">
                                         <label>
                                             <input type="text" class="form-control row-total text-right" readonly
-                                                   value="<?= $m3->row_total ?>"
+                                                   value="<?= $soldQty != 0 ? $rowTotal : '' ?>"
                                                    name="SellOrderDetails[temp_row_total][]">
                                         </label>
                                     </td>
-<!--                                    <td>-->
-<!--                                        <button type="button" class="btn btn-danger dlt"><i class="fa fa-trash-o"></i>-->
-<!--                                        </button>-->
-<!--                                    </td>-->
                                 </tr>
                                 <?php
-                            }
-
-                            if (count($currentProduct) > 0) {
-                                $criteraia = new CDbCriteria();
-                                $criteraia->addNotInCondition('t.id', $currentProduct);
-                                $criteraia->addCondition('manufacturer_id=' . $baseCompanyId);
-                                $criteraia->order = "t.item_id, t.brand_id, t.model_name asc";
-                                $criteraia->join = " INNER JOIN prod_items pi ON pi.id = t.item_id ";
-                                $criteraia->join .= " INNER JOIN prod_brands pb ON pb.id = t.brand_id ";
-                                $criteraia->join .= "  LEFT JOIN (
-                                    SELECT 
-                                        model_id,
-                                        SUM(stock_in) - SUM(stock_out) AS closing_stock
-                                    FROM inventory
-                                    GROUP BY model_id
-                                ) inv ON inv.model_id = t.id ";
-                                $criteraia->select = "t.id, t.model_name, t.code, pi.item_name, pb.brand_name, t.purchase_price, t.sell_price,  IFNULL(inv.closing_stock, 0) AS closing_stock";
-
-                                $newProducts = ProdModels::model()->findAll($criteraia);
-                                foreach ($newProducts as $singleProduct) {
-                                    ?>
-                                    <tr class="item">
-                                        <td class="serial"></td>
-                                        <td><?= $singleProduct->item_name ?></td>
-                                        <td>
-                                            <?= $singleProduct->model_name ?>
-                                            <input type="hidden" class="form-control temp_model_id"
-                                                   value="<?= $singleProduct->id ?>"
-                                                   name="SellOrderDetails[temp_model_id][]">
-                                        </td>
-                                        <td><?= $singleProduct->code ?></td>
-                                        <td class="text-center">
-                                            <label>
-                                                <input type="text" class="form-control text-center temp_qty" value="0"
-                                                       name=SellOrderDetails[temp_qty][]">
-                                            </label>
-                                        </td>
-                                        <td class="text-center">
-                                            <label>
-                                                <input type="text" class="form-control temp_unit_price text-right"
-                                                       value="<?= $singleProduct->sell_price ?>"
-                                                       name="SellOrderDetails[temp_unit_price][]">
-                                            </label>
-
-                                            <input type="hidden" class="form-control text-center temp-costing"
-                                                   value="<?= $singleProduct->purchase_price ?>"
-                                                   name=SellOrderDetails[temp_pp][]">
-                                        </td>
-                                        <td class="text-center">
-                                            <label>
-                                                <input type="text" class="form-control row-total text-right" readonly
-                                                       value="0"
-                                                       name="SellOrderDetails[temp_row_total][]">
-                                            </label>
-                                        </td>
-<!--                                        <td>-->
-<!--                                            <button type="button" class="btn btn-danger dlt"><i-->
-<!--                                                        class="fa fa-trash-o"></i>-->
-<!--                                            </button>-->
-<!--                                        </td>-->
-                                    </tr>
-                                    <?php
-                                }
                             }
                             ?>
                             </tbody>
@@ -423,7 +448,7 @@ Yii::app()->clientScript->registerCoreScript("jquery.ui");
                             toastr.error("Please select customer from the list!");
                             return false;
                         }else if(count_item <= 0){
-                            toastr.error("Please add materials to list.");
+                            toastr.error("Please add product to list.");
                             return false;
                         }else if(grand_total == "" || grand_total <= 0){
                             toastr.error("Grand total amount is 0");
@@ -468,7 +493,21 @@ Yii::app()->clientScript->registerCoreScript("jquery.ui");
     </div>
 </div>
 <script>
+    $(function () {
 
+        $('.company-header').on('click', function () {
+            const target = $(this).data('target');
+            const rows = $('.' + target);
+            const icon = $(this).find('.toggle-icon');
+
+            const isOpen = rows.first().is(':visible');
+
+            rows.toggle(!isOpen);
+            $(this).toggleClass('open', !isOpen);
+            icon.html(isOpen ? '▼' : '▲');
+        });
+
+    });
     let prev_product_id = 0;
     let prev_sell_price = 0;
     var picker = new Lightpick({

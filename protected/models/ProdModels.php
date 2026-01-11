@@ -34,6 +34,8 @@ class ProdModels extends CActiveRecord
 
     public $maxProdId;
     public $activePrice;
+    public $name;
+    public $current_stock;
     public $cpp;
     public $deviceFile;
     public $opening_stock_value;

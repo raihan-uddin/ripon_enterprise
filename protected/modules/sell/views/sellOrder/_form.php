@@ -19,6 +19,43 @@ Yii::app()->clientScript->registerCoreScript("jquery.ui");
 <script>
     $(".alert").animate({opacity: 1.0}, 3000).fadeOut("slow");
 </script>
+<style>
+    /* Ultra compact table */
+    .table-compact {
+        margin-bottom: 0;
+        font-size: 12px;
+    }
+
+    .table-compact th,
+    .table-compact td {
+        padding: 4px 6px !important;
+        vertical-align: middle;
+    }
+
+    .table-compact input.form-control {
+        height: 24px;
+        padding: 2px 4px;
+        font-size: 12px;
+    }
+
+    .table-compact .form-control {
+        border-radius: 2px;
+    }
+
+    /* Compact header */
+    .table-compact thead th {
+        padding: 6px !important;
+        font-weight: 600;
+    }
+
+    /* Reduce row height further */
+    .table-compact tr {
+        line-height: 1.2;
+    }
+    .table-compact input.form-control {
+        border-color: #ccc;
+    }
+</style>
 
 <div class="card card-primary">
     <div class="card-header">
@@ -294,35 +331,104 @@ Yii::app()->clientScript->registerCoreScript("jquery.ui");
             </div>
             <div class="card-body">
                 <div class="row">
-                    <div class="form-group col-xs-12 col-md-4">
-                        <?php echo $form->labelEx($model, 'manufacturer_id'); ?>
-                        <?php
-                        echo $form->dropDownList(
-                                $model, 'manufacturer_id', CHtml::listData(Company::model()->findAll(array('order' => 'name ASC')), 'id', 'name'), array(
-                                'prompt' => 'Select',
-                                'class' => 'form-control',
-                        ));
-                        ?>
-                    </div>
-                </div>
-                <div class="row">
                     <div class="table table-responsive">
-                        <table class="table table-bordered table-striped table-sm table-valign-middle" id="list">
-                            <thead class="table-info">
-                            <tr>
-                                <th>SL</th>
-                                <th>Category</th>
-                                <th>Product Name</th>
-                                <th>Code</th>
-                                <th>Stock</th>
-                                <th style="width: 10%;" class="text-center">Qty</th>
-                                <th style="width: 10%;" class="text-center">Unit Price</th>
-                                <th style="width: 10%;" class="text-center">Row Total</th>
-<!--                                <th style="width: 4%;" class="text-center">Action</th>-->
-                            </tr>
-                            </thead>
+                        <table class="table table-bordered table-sm table-valign-middle table-sticky table-compact" id="list">
                             <tbody>
+                            <?php
+                            $criteria = new CDbCriteria();
+                            $criteria->select = "
+                                t.id, t.model_name, t.code, t.sell_price, t.purchase_price,
+                                companies.name AS company_name,
+                                (SUM(inventory.stock_in) - SUM(inventory.stock_out)) AS current_stock
+                            ";
+                            $criteria->addColumnCondition(['t.status' => 1]);
+                            $criteria->join = "
+                                LEFT JOIN companies ON companies.id = t.manufacturer_id
+                                LEFT JOIN inventory ON inventory.model_id = t.id
+                            ";
+                            $criteria->group = "t.id";
+                            $criteria->order = "companies.name ASC, t.model_name ASC";
+                            $data = ProdModels::model()->findAll($criteria);
 
+                            $sl = 1;
+                            $currentCompany = '';
+                            $groupIndex = 0;
+
+                            foreach ($data as $item) {
+                                if ($currentCompany !== $item->company_name) {
+                                    $groupIndex++;
+                                    $currentCompany = $item->company_name;
+                                    ?>
+
+                                    <!-- Company Header -->
+                                    <tr class="company-header"
+                                        data-target="company-<?= $groupIndex ?>"
+                                        style="cursor:pointer">
+                                        <td colspan="8">
+                                            🏭 <?= CHtml::encode($currentCompany) ?>
+                                            <span class="toggle-icon">▼</span>
+                                        </td>
+                                    </tr>
+                                    <tr class="company-<?= $groupIndex ?>" style="display:none;">
+                                        <th>SL</th>
+                                        <th>Product Name</th>
+                                        <th>Code</th>
+                                        <th>Stock</th>
+                                        <th style="width: 10%;" class="text-center">Qty</th>
+                                        <th style="width: 10%;" class="text-center">Unit Price</th>
+                                        <th style="width: 10%;" class="text-center">Row Total</th>
+                                    </tr>
+                                    <?php
+                                }
+                                ?>
+
+                                <!-- Product Row (collapsed by default) -->
+                                <tr class="company-<?= $groupIndex ?> item" style="display:none;">
+                                    <td class="serial text-center"><?= $sl++ ?></td>
+                                    <td>
+                                        <?php echo $item->model_name; ?>
+                                        <input type="hidden" class="form-control temp_model_id"
+                                               value="<?php echo $item->id; ?>"
+                                               name="SellOrderDetails[temp_model_id][]">
+                                    </td>
+                                    <td>
+                                        <?php echo $item->code; ?>
+                                    </td>
+                                    <td class="text-center">
+                                        <?php
+                                        echo $item->current_stock;
+                                        ?>
+                                    </td>
+
+                                    <td class="text-center">
+                                        <input type="text"
+                                               class="form-control text-center temp_qty"
+                                               value=""
+                                               name="SellOrderDetails[temp_qty][]">
+                                    </td>
+
+                                    <td class="text-center">
+                                        <input type="text"
+                                               class="form-control temp_unit_price text-right"
+                                               value="<?php echo $item->sell_price; ?>"
+                                               name="SellOrderDetails[temp_unit_price][]">
+                                        <input type="hidden"
+                                               class="form-control temp-costing"
+                                               value="<?php echo $item->purchase_price; ?>"
+                                               name="SellOrderDetails[temp_pp][]">
+                                    </td>
+
+                                    <td class="text-center">
+                                        <input type="text"
+                                               readonly
+                                               class="form-control row-total text-right"
+                                               value=""
+                                               name="SellOrderDetails[temp_row_total][]">
+                                    </td>
+                                </tr>
+                                <?php
+                            }
+                            ?>
                             </tbody>
                         </table>
                     </div>
@@ -382,7 +488,7 @@ Yii::app()->clientScript->registerCoreScript("jquery.ui");
                             toastr.error("Please select customer from the list!");
                             return false;
                         }else if(count_item <= 0){
-                            toastr.error("Please add materials to list.");
+                            toastr.error("Please add products to list.");
                             return false;
                         }else if(grand_total == "" || grand_total <= 0){
                             toastr.error("Grand total amount is 0");
@@ -424,8 +530,22 @@ Yii::app()->clientScript->registerCoreScript("jquery.ui");
         <span class="spinner"></span>
     </div>
 </div>
-
 <script>
+    $(function () {
+
+        $('.company-header').on('click', function () {
+            const target = $(this).data('target');
+            const rows = $('.' + target);
+            const icon = $(this).find('.toggle-icon');
+
+            const isOpen = rows.first().is(':visible');
+
+            rows.toggle(!isOpen);
+            $(this).toggleClass('open', !isOpen);
+            icon.html(isOpen ? '▼' : '▲');
+        });
+
+    });
     let company_products = [];
     var picker = new Lightpick({
         field: document.getElementById('entry_date'),
@@ -439,7 +559,7 @@ Yii::app()->clientScript->registerCoreScript("jquery.ui");
         val = parseFloat(val);
         return isNaN(val) ? 0 : val;
     }
-    
+
     $(document).ready(function () {
         $(".qty-amount").keyup(function () {
             var $this = $(this);
@@ -460,142 +580,6 @@ Yii::app()->clientScript->registerCoreScript("jquery.ui");
             addDiscount();
         });
     });
-
-    $(function () {
-
-        let xhrCompanyProducts = null;
-
-        $('#SellOrder_manufacturer_id').on('change', function () {
-
-            const companyId = $(this).val();
-            if (!companyId) return;
-
-            const $tbody = $('#list tbody');
-
-            // 1️⃣ If tbody has rows → confirm
-            if ($tbody.children('tr').length > 0) {
-                const confirmed = confirm(
-                    'Changing manufacturer will remove all existing items.\nDo you want to continue?'
-                );
-
-                if (!confirmed) {
-                    // revert dropdown selection
-                    $(this).val($(this).data('prev'));
-                    return;
-                }
-
-                // user confirmed → clear table
-                $tbody.empty();
-            }
-
-            // save current selection (for revert)
-            $(this).data('prev', companyId);
-
-            // Abort previous request if still running
-            if (xhrCompanyProducts !== null) {
-                xhrCompanyProducts.abort();
-            }
-
-            // Disable dropdown while loading
-            const $ddl = $('#SellOrder_manufacturer_id');
-            $ddl.prop('disabled', true).addClass('loading');
-
-            xhrCompanyProducts = $.ajax({
-                url: '<?php echo Yii::app()->createUrl("prodModels/Jquery_getCompanyProducts"); ?>',
-                type: 'GET',
-                dataType: 'json',
-                data: {
-                    company_id: companyId
-                },
-                success: function (res) {
-                    console.log('Products:', res);
-
-                    $.each(res, function (i, row) {
-                        prependSellOrderRow(row);
-                    });
-                },
-                error: function (xhr, status) {
-                    if (status !== 'abort') {
-                        alert('Failed to load products');
-                    }
-                },
-                complete: function () {
-                    $ddl.prop('disabled', false).removeClass('loading');
-                }
-            });
-
-        });
-
-    });
-
-
-    function prependSellOrderRow(data) {
-        const item_name = data.item_name;
-        const model_id = data.id;
-        const model_id_text = data.name;
-        const code = data.code;
-        const unit_price = data.sell_price ?? 0;
-        const pp = data.purchasePrice ?? 0;
-        const stock = data.current_stock ?? 0;
-        const qty = '';
-        const row_total = qty * unit_price;
-        // console.log('Adding product:', data);
-
-        $("#list tbody").prepend(`
-            <tr class="item">
-                <td class="serial text-center"></td>
-                <td>
-                    ${item_name}
-                </td>
-                <td>
-                    ${model_id_text}
-                    <input type="hidden" class="form-control temp_model_id"
-                           value="${model_id}"
-                           name="SellOrderDetails[temp_model_id][]">
-                </td>
-                <td>
-                    ${code}
-                </td>
-                <td class="text-center">
-                    ${stock}
-                </td>
-
-                <td class="text-center">
-                    <input type="text"
-                           class="form-control text-center temp_qty"
-                           value="${qty}"
-                           name="SellOrderDetails[temp_qty][]">
-                </td>
-
-                <td class="text-center">
-                    <input type="text"
-                           class="form-control temp_unit_price text-right"
-                           value="${unit_price}"
-                           name="SellOrderDetails[temp_unit_price][]">
-                    <input type="hidden"
-                           class="form-control temp-costing"
-                           value="${pp}"
-                           name="SellOrderDetails[temp_pp][]">
-                </td>
-
-                <td class="text-center">
-                    <input type="text"
-                           readonly
-                           class="form-control row-total text-right"
-                           value="${row_total}"
-                           name="SellOrderDetails[temp_row_total][]">
-                </td>
-
-<!--                <td>-->
-<!--                    <button type="button" class="btn btn-danger dlt">-->
-<!--                        <i class="fa fa-trash-o"></i>-->
-<!--                    </button>-->
-<!--                </td>-->
-            </tr>
-        `);
-
-        calculateTotal();
-    }
 
 
     $("#list").on("click", ".dlt", function () {
@@ -759,7 +743,7 @@ Yii::app()->clientScript->registerCoreScript("jquery.ui");
         if (loss < 0) {
             // let message =   "You are going to loss " + safeNumber(loss).toFixed(2) + " BDT from this invoice!";
             let message = `You are going to loss ${safeNumber(loss).toFixed(2)} BDT from this invoice!`;
-            toastr.error(message);
+            console.log(message);
             $("#formResultError").html(message).removeClass("d-none");
         } else {
             $("#formResultError").html("").addClass("d-none");
