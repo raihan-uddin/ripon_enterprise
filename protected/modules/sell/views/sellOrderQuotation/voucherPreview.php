@@ -234,41 +234,46 @@
                         }
                         ?>
                         <tr>
-                            <td rowspan="7" colspan="4"
+                            <td rowspan="8" colspan="4"
                                 style="border: none; background: white; text-align: left; letter-spacing: 1px; font-weight: bold;">
                             </td>
-                            <td colspan="2" style=" background: white; text-align: left;">Sub Total</td>
-                            <td style="text-align: right; "></td>
+                            <td colspan="2" style=" background: white; text-align: left; border-right: none;">Sub Total</td>
+                            <td style="text-align: right; border-left: none; "></td>
                         </tr>
                         <tr>
-                            <td colspan="2" style=" background: white; text-align: left;">Vat (+)
+                            <td colspan="2" style=" background: white; text-align: left; border-right: none;">Vat (+)
                             </td>
-                            <td style="text-align: right; "></td>
+                            <td style="text-align: right; border-left: none; "></td>
                         </tr>
                         <tr>
-                            <td colspan="2" style=" background: white; text-align: left;">Delivery Charge (+)</td>
-                            <td style="text-align: right; "></td>
+                            <td colspan="2" style=" background: white; text-align: left; border-right: none;">Delivery Charge (+)</td>
+                            <td style="text-align: right; border-left: none; "></td>
                         </tr>
                         <tr>
-                            <td colspan="2" style=" background: white; text-align: left;">Discount (-)</td>
-                            <td style="text-align: right; ">
-                            </td>
-                        </tr>
-                        <tr>
-                            <td colspan="2" style=" background: white; text-align: left;">Damage (-)</td>
-                            <td style="text-align: right; ">
+                            <td colspan="2" style=" background: white; text-align: left; border-right: none;">S.R Commission (-)</td>
+                            <td style="text-align: right; border-left: none; ">
                             </td>
                         </tr>
                         <tr>
-                            <td colspan="2" style=" background: white; text-align: left;">Road Charge (-)</td>
-                            <td style="text-align: right; ">
+                            <td colspan="2" style=" background: white; text-align: left; border-right: none;">Discount (-)</td>
+                            <td style="text-align: right; border-left: none; ">
+                            </td>
+                        </tr>
+                        <tr>
+                            <td colspan="2" style=" background: white; text-align: left; border-right: none;">Damage (-)</td>
+                            <td style="text-align: right; border-left: none; ">
+                            </td>
+                        </tr>
+                        <tr>
+                            <td colspan="2" style=" background: white; text-align: left; border-right: none;">Road Charge (-)</td>
+                            <td style="text-align: right; border-left: none; ">
                             </td>
                         </tr>
                         <tr style="font-weight: bold;">
-                            <td colspan="2" style=" background: white; text-align: left;">
+                            <td colspan="2" style=" background: white; text-align: left; border-right: none;">
                                 Net payable amount
                             </td>
-                            <td style="text-align: right; ">
+                            <td style="text-align: right; border-left: none; ">
                             </td>
                         </tr>
                         </tbody>
