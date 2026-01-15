@@ -26,6 +26,7 @@
  * @property double $total_paid
  * @property double $total_due
  * @property double $costing
+ * @property double $delivery_charge
  * @property boolean $is_paid
  * @property boolean $is_opening
  */
@@ -33,6 +34,8 @@ class SellOrder extends CActiveRecord
 {
     public $city;
     public $state;
+    public $total_qty;
+    public $avg_sp;
     public $invoice_no;
     public $item_count;
     public $row_total;
@@ -81,13 +84,13 @@ class SellOrder extends CActiveRecord
         // will receive user inputs.
         return array(
             array('max_sl_no, cash_due, so_no, date, customer_id, discount_percentage, discount_amount, grand_total, order_type', 'required'),
-            array('grand_total, discount_amount, discount_percentage, vat_percentage, vat_amount, is_opening, total_return,
+            array('grand_total, discount_amount, discount_percentage, vat_percentage, vat_amount, is_opening, total_return, road_fee, damage_value, sr_commission,
             total_amount, is_paid, total_paid, total_due, delivery_charge, costing', 'numerical'),
             array('max_sl_no, cash_due, customer_id, created_by, updated_by', 'numerical', 'integerOnly' => true),
             array('created_at, updated_at, date, exp_delivery_date, so_no, order_note', 'safe'),
             // The following rule is used by search().
             array('id, date, cash_due, exp_delivery_date, max_sl_no, vat_percentage, so_no, customer_id, discount_percentage, 
-            discount_amount, grand_total, created_by, total_return,
+            discount_amount, grand_total, created_by, total_return, damage_value, road_fee, sr_commission,
             created_at, updated_by, updated_at, total_amount, order_type, total_paid, total_due, delivery_charge,
             order_note, is_paid, costing, is_opening', 'safe', 'on' => 'search'),
         );
@@ -141,7 +144,10 @@ class SellOrder extends CActiveRecord
             'costing' => 'Costing',
             'is_opening' => 'Is Opening',
             'total_return' => 'Total Return',
-            'manufacturer_id' => 'Company'
+            'manufacturer_id' => 'Company',
+            'sr_commission' => 'SR Commission',
+            'road_fee' => 'Road Fee',
+            'damage_value' => 'Damage',
         );
     }
 
@@ -218,6 +224,10 @@ class SellOrder extends CActiveRecord
         $criteria->compare('total_amount', $this->total_amount, true);
         $criteria->compare('order_note', $this->order_note, true);
         $criteria->compare('costing', $this->costing, true);
+        $criteria->compare('road_fee', $this->road_fee, true);
+        $criteria->compare('damage_value', $this->damage_value, true);
+        $criteria->compare('sr_commission', $this->sr_commission, true);
+
 
         return new CActiveDataProvider($this, array(
             'criteria' => $criteria,

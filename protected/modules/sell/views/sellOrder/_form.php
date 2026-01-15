@@ -15,48 +15,78 @@ $form = $this->beginWidget('CActiveForm', array(
 Yii::app()->clientScript->registerCoreScript("jquery.ui");
 
 ?>
+<style>
+    /*    on input focus change backgroudn colr*/
+    input {
+        background-color: #fff;
+        color: #212529;
+        border: 1px solid #ced4da;
+        padding: 6px 10px;
+        transition: background-color 0.2s ease,
+        border-color 0.2s ease,
+        box-shadow 0.2s ease;
+    }
+
+    /* Hover effect */
+    input:hover {
+        background-color: #f1f7fb; /* subtle highlight */
+        border-color: #236280;
+        cursor: text; /* cursor change */
+    }
+
+    /* Focus (when clicked / typing) */
+    input:focus {
+        background-color: #ffffff;
+        border-color: #236280;
+        outline: none;
+        box-shadow: 0 0 0 0.15rem rgba(35, 98, 128, 0.25);
+    }
+
+    /* Disabled state (optional but standard) */
+    input:disabled {
+        background-color: #e9ecef;
+        cursor: not-allowed;
+        opacity: 0.7;
+    }
+
+    /* Compact table */
+    .table-compact td,
+    .table-compact th {
+        padding: 4px 6px;
+        font-size: 13px;
+        white-space: nowrap;
+    }
+
+    /* Sticky company header */
+    .company-header {
+        background: #f1f5f9;
+        font-weight: 600;
+        position: sticky;
+        top: 0;
+        z-index: 3;
+    }
+
+    /* Inputs fit cells */
+    .table-compact input.form-control {
+        height: 28px;
+        padding: 2px 6px;
+        font-size: 13px;
+    }
+
+    .hidden {
+        display: none;
+    }
+
+    tbody {
+        padding: 0;
+        margin: 0;
+    }
+
+</style>
 
 <script>
     $(".alert").animate({opacity: 1.0}, 3000).fadeOut("slow");
 </script>
-<style>
-    /* Ultra compact table */
-    .table-compact {
-        margin-bottom: 0;
-        font-size: 12px;
-    }
-
-    .table-compact th,
-    .table-compact td {
-        padding: 4px 6px !important;
-        vertical-align: middle;
-    }
-
-    .table-compact input.form-control {
-        height: 24px;
-        padding: 2px 4px;
-        font-size: 12px;
-    }
-
-    .table-compact .form-control {
-        border-radius: 2px;
-    }
-
-    /* Compact header */
-    .table-compact thead th {
-        padding: 6px !important;
-        font-weight: 600;
-    }
-
-    /* Reduce row height further */
-    .table-compact tr {
-        line-height: 1.2;
-    }
-    .table-compact input.form-control {
-        border-color: #ccc;
-    }
-</style>
-
 <div class="card card-primary">
     <div class="card-header">
         <h3 class="card-title"><?php echo($model->isNewRecord ? 'Create Order' : 'Update Order'); ?></h3>
@@ -83,39 +113,9 @@ Yii::app()->clientScript->registerCoreScript("jquery.ui");
                     <span class="help-block"
                           style="color: red; width: 100%"> <?php echo $form->error($model, 'date'); ?></span>
                 </div>
-                <div class="form-group row">
-                    <?php echo $form->labelEx($model, 'order_type', ['class' => 'col-sm-4 col-form-label']); ?>
-                    <div class="col-sm-8">
-                        <?php
-                        echo $form->dropDownList(
-                                $model, 'order_type', [SellOrder::NEW_ORDER => 'NEW',], array(
-                                'prompt' => 'Select',
-                                'class' => 'form-control',
-                        ));
-                        ?>
-                    </div>
-                    <span class="help-block"
-                          style="color: red; width: 100%"> <?php echo $form->error($model, 'order_type'); ?></span>
-                </div>
-                <div class="form-group row">
-                    <?php echo $form->labelEx($model, 'cash_due', ['class' => 'col-sm-4 col-form-label']); ?>
-                    <div class="col-sm-8">
-                        <?php
-                        echo $form->dropDownList(
-                                $model, 'cash_due', Lookup::items('cash_due'), array(
-                                'class' => 'form-control',
-                                'options' => array(
-                                        Lookup::DUE => array('selected' => 'selected')
-                                ),
-                        ));
-                        ?>
-                    </div>
-                    <span class="help-block"
-                          style="color: red; width: 100%"> <?php echo $form->error($model, 'cash_due'); ?></span>
-                </div>
             </div>
 
-            <div class="col-xs-12 col-sm-12 col-md-4 col-lg-4">
+            <div class="col-xs-12 col-sm-12 col-md-8 col-lg-4">
                 <div class="form-group row">
                     <?php echo $form->labelEx($model, 'customer_id', ['class' => 'col-sm-4 col-form-label']); ?>
                     <div class="col-sm-8">
@@ -124,13 +124,9 @@ Yii::app()->clientScript->registerCoreScript("jquery.ui");
                             <?php echo $form->hiddenField($model, 'customer_id', array('maxlength' => 255, 'class' => 'form-control')); ?>
                             <div class="input-group-append">
                                 <div class="input-group-text">
+                                    <?php echo CHtml::link(' <i class="fa fa-plus"></i>', "", array('onclick' => "{addDistributor(); $('#dialogAddDistributor').dialog('open');}")); ?>
                                     <?php
-                                    echo CHtml::link(' <i class="fa fa-plus"></i>', "", // the link for open the dialog
-                                            array(
-                                                    'onclick' => "{addDistributor(); $('#dialogAddDistributor').dialog('open');}"));
-                                    ?>
-                                    <?php
-                                    $this->beginWidget('zii.widgets.jui.CJuiDialog', array(// the dialog
+                                    $this->beginWidget('zii.widgets.jui.CJuiDialog', array(
                                             'id' => 'dialogAddDistributor',
                                             'options' => array(
                                                     'title' => 'Add Customer',
@@ -150,7 +146,6 @@ Yii::app()->clientScript->registerCoreScript("jquery.ui");
                                     <?php $this->endWidget(); ?>
 
                                     <script type="text/javascript">
-                                        // here is the magic
                                         function addDistributor() {
                                             <?php
                                             echo CHtml::ajax(array(
@@ -210,8 +205,6 @@ Yii::app()->clientScript->registerCoreScript("jquery.ui");
                                 select: function (event, ui) {
                                     $('#customer_id_text').val(ui.item.value);
                                     $('#SellOrder_customer_id').val(ui.item.id);
-                                    $('#SellOrder_city').val(ui.item.city);
-                                    $('#SellOrder_state').val(ui.item.state);
                                 }
                             }).data("ui-autocomplete")._renderItem = function (ul, item) {
                                 return $("<li></li>")
@@ -222,99 +215,6 @@ Yii::app()->clientScript->registerCoreScript("jquery.ui");
 
                         });
                     </script>
-                </div>
-
-                <div class="form-group row" style="display: none;">
-                    <?php echo $form->labelEx($model, 'city', ['class' => 'col-sm-4 col-form-label']); ?>
-                    <div class="col-sm-8">
-                        <?php echo $form->textField($model, 'city', array('maxlength' => 255, 'class' => 'form-control', 'readonly' => true, 'disabled' => true)); ?>
-                    </div>
-                    <span class="help-block"
-                          style="color: red; width: 100%"> <?php echo $form->error($model, 'qty'); ?></span>
-                </div>
-
-                <div class="form-group row">
-                    <?php echo $form->labelEx($model, 'total_amount', ['class' => 'col-sm-4 col-form-label']); ?>
-                    <div class="col-sm-8">
-                        <div class="input-group">
-                            <div class="input-group-prepend">
-                                <span class="input-group-text" id="basic-addon3"><i class="fa fa-money"></i> </span>
-                            </div>
-                            <?php echo $form->textField($model, 'total_amount', array('maxlength' => 255, 'class' => 'form-control', 'placeholder' => '0', "aria-label" => "0", "aria-describedby" => "basic-addon3", 'readonly' => true)); ?>
-                        </div>
-                    </div>
-                    <span class="help-block"
-                          style="color: red; width: 100%"> <?php echo $form->error($model, 'total_amount'); ?></span>
-                </div>
-
-                <div class="form-group row">
-                    <?php echo $form->labelEx($model, 'vat', ['class' => 'col-sm-4 col-form-label']); ?>
-                    <div class="col-sm-3">
-                        <div class="input-group">
-                            <div class="input-group-prepend">
-                                <span class="input-group-text" id="basic-addon1">%</span>
-                            </div>
-                            <?php echo $form->textField($model, 'vat_percentage', array('maxlength' => 255, 'class' => 'form-control', 'placeholder' => '%', "aria-label" => "%", "aria-describedby" => "basic-addon1")); ?>
-                        </div>
-                    </div>
-                    <div class="col-sm-5">
-                        <div class="input-group">
-                            <div class="input-group-prepend">
-                                <span class="input-group-text" id="basic-addon2"><i class="fa fa-money"></i> </span>
-                            </div>
-                            <?php echo $form->textField($model, 'vat_amount', array('maxlength' => 255, 'class' => 'form-control', 'placeholder' => '%', "aria-label" => "%", "aria-describedby" => "basic-addon2", 'readonly' => true)); ?>
-                        </div>
-                    </div>
-                    <span class="help-block"
-                          style="color: red; width: 100%"> <?php echo $form->error($model, 'vat_percentage'); ?></span>
-                </div>
-            </div>
-
-
-            <div class="col-xs-12 col-sm-12 col-md-4 col-lg-4">
-                <div class="form-group row" style="display: none">
-                    <?php echo $form->labelEx($model, 'item_count', ['class' => 'col-sm-4 col-form-label']); ?>
-                    <div class="col-sm-8">
-                        <?php echo $form->textField($model, 'item_count', array('maxlength' => 255, 'class' => 'form-control', 'readonly' => true, 'disabled' => true)); ?>
-                    </div>
-                    <span class="help-block"
-                          style="color: red; width: 100%"> <?php echo $form->error($model, 'item_count'); ?></span>
-                </div>
-
-
-                <div class="form-group row">
-                    <?php echo $form->labelEx($model, 'delivery_charge', ['class' => 'col-sm-4 col-form-label']); ?>
-                    <div class="col-sm-8">
-                        <?php echo $form->textField($model, 'delivery_charge', array('maxlength' => 255, 'class' => 'form-control', 'onkeyup' => 'addDeliveryCharge();')); ?>
-                    </div>
-                    <span class="help-block"
-                          style="color: red; width: 100%"> <?php echo $form->error($model, 'delivery_charge'); ?></span>
-                </div>
-
-                <div class="form-group row">
-                    <?php echo $form->labelEx($model, 'discount_amount', ['class' => 'col-sm-4 col-form-label']); ?>
-                    <div class="col-sm-8">
-                        <?php echo $form->textField($model, 'discount_amount', array('maxlength' => 255, 'class' => 'form-control', 'onkeyup' => 'addDiscount();')); ?>
-                    </div>
-                    <span class="help-block"
-                          style="color: red; width: 100%"> <?php echo $form->error($model, 'discount_amount'); ?></span>
-                </div>
-
-                <div class="form-group row">
-                    <?php echo $form->labelEx($model, 'grand_total', ['class' => 'col-sm-4 col-form-label']); ?>
-                    <div class="col-sm-8">
-                        <div class="input-group">
-                            <div class="input-group-prepend">
-                                <span class="input-group-text" id="basic-addon4"><i class="fa fa-money"></i> </span>
-                            </div>
-                            <?php echo $form->textField($model, 'grand_total', array('maxlength' => 255, 'class' => 'form-control', 'placeholder' => '0', "aria-label" => "0", "aria-describedby" => "basic-addon4", 'readonly' => true)); ?>
-                        </div>
-                        <span class="help-block current-costing-amount"
-                              style="font-size: 12px; color: #333; margin: 0; padding: 0; width: 100%"></span>
-                        <i class="fa fa-eye eye-icon" style="cursor: pointer;"></i>
-                    </div>
-                    <span class="help-block"
-                          style="color: red; width: 100%"> <?php echo $form->error($model, 'grand_total'); ?></span>
                 </div>
             </div>
         </div>
@@ -331,8 +231,9 @@ Yii::app()->clientScript->registerCoreScript("jquery.ui");
             </div>
             <div class="card-body">
                 <div class="row">
-                    <div class="table table-responsive">
-                        <table class="table table-bordered table-sm table-valign-middle table-sticky table-compact" id="list">
+                    <div class="table-responsive">
+                        <table class="table table-bordered table-sm table-valign-middle table-sticky table-compact"
+                               id="list">
                             <tbody>
                             <?php
                             $criteria = new CDbCriteria();
@@ -369,11 +270,10 @@ Yii::app()->clientScript->registerCoreScript("jquery.ui");
                                             <span class="toggle-icon">▼</span>
                                         </td>
                                     </tr>
-                                    <tr class="company-<?= $groupIndex ?>" style="display:none;">
-                                        <th>SL</th>
-                                        <th>Product Name</th>
-                                        <th>Code</th>
-                                        <th>Stock</th>
+                                    <tr class="company-<?= $groupIndex ?> hidden">
+                                        <th style="width: 5px;">SL</th>
+                                        <th style="max-width: 150px;">Product Name</th>
+                                        <th style="width: 10px;">Stock</th>
                                         <th style="width: 10%;" class="text-center">Qty</th>
                                         <th style="width: 10%;" class="text-center">Unit Price</th>
                                         <th style="width: 10%;" class="text-center">Row Total</th>
@@ -383,53 +283,129 @@ Yii::app()->clientScript->registerCoreScript("jquery.ui");
                                 ?>
 
                                 <!-- Product Row (collapsed by default) -->
-                                <tr class="company-<?= $groupIndex ?> item" style="display:none;">
+                                <tr class="company-<?= $groupIndex ?> item hidden">
                                     <td class="serial text-center"><?= $sl++ ?></td>
-                                    <td>
+                                    <td data-label="Product">
                                         <?php echo $item->model_name; ?>
+                                        <br>
+                                        <small>
+                                            <i><?php echo $item->code; ?></i>
+                                        </small>
                                         <input type="hidden" class="form-control temp_model_id"
                                                value="<?php echo $item->id; ?>"
                                                name="SellOrderDetails[temp_model_id][]">
                                     </td>
-                                    <td>
-                                        <?php echo $item->code; ?>
-                                    </td>
-                                    <td class="text-center">
-                                        <?php
-                                        echo $item->current_stock;
-                                        ?>
+                                    <td class="text-center" data-label="Stock">
+                                        <?php echo $item->current_stock; ?>
                                     </td>
 
-                                    <td class="text-center">
-                                        <input type="text"
-                                               class="form-control text-center temp_qty"
-                                               value=""
-                                               name="SellOrderDetails[temp_qty][]">
+                                    <td class="text-center" data-label="Qty">
+                                        <label>
+                                            <input type="text"
+                                                   class="form-control text-center temp_qty"
+                                                   value=""
+                                                   name="SellOrderDetails[temp_qty][]">
+                                        </label>
                                     </td>
 
-                                    <td class="text-center">
-                                        <input type="text"
-                                               class="form-control temp_unit_price text-right"
-                                               value="<?php echo $item->sell_price; ?>"
-                                               name="SellOrderDetails[temp_unit_price][]">
+                                    <td class="text-center" data-label="Unit Price">
+                                        <label>
+                                            <input type="text"
+                                                   class="form-control temp_unit_price text-right"
+                                                   autocomplete="off"
+                                                   inputmode="decimal"
+                                                   value="<?php echo $item->sell_price; ?>"
+                                                   name="SellOrderDetails[temp_unit_price][]">
+                                        </label>
                                         <input type="hidden"
                                                class="form-control temp-costing"
                                                value="<?php echo $item->purchase_price; ?>"
                                                name="SellOrderDetails[temp_pp][]">
                                     </td>
 
-                                    <td class="text-center">
-                                        <input type="text"
-                                               readonly
-                                               class="form-control row-total text-right"
-                                               value=""
-                                               name="SellOrderDetails[temp_row_total][]">
+                                    <td class="text-center" data-label="Row Total">
+                                        <label>
+                                            <input type="text"
+                                                   class="form-control row-total text-right"
+                                                   value=""
+                                                   inputmode="decimal"
+                                                   name="SellOrderDetails[temp_row_total][]">
+                                        </label>
                                     </td>
                                 </tr>
                                 <?php
                             }
                             ?>
                             </tbody>
+                            <tfoot style="text-align: right;">
+                            <tr>
+                                <td colspan="3"><?php echo $form->labelEx($model, 'total_amount', ['value' => '']); ?></td>
+                                <td><?php echo $form->textField($model, 'total_qty', array('maxlength' => 255, 'class' => 'form-control text-center', 'placeholder' => '0', "aria-label" => "0", "aria-describedby" => "basic-addon3", 'readonly' => true)); ?></td>
+                                <td><?php echo $form->textField($model, 'avg_sp', array('maxlength' => 255, 'class' => 'form-control text-center', 'placeholder' => '0', "aria-label" => "0", "aria-describedby" => "basic-addon3", 'readonly' => true)); ?></td>
+                                <td>
+                                    <?php echo $form->textField($model, 'total_amount', array('maxlength' => 255, 'class' => 'form-control text-center', 'placeholder' => '0', "aria-label" => "0", "aria-describedby" => "basic-addon3", 'readonly' => true)); ?>
+                                </td>
+                            </tr>
+                            <tr>
+                                <td colspan="3">
+                                    <?php echo $form->labelEx($model, 'vat', ['class' => '']); ?> (+)
+                                </td>
+                                <td>
+                                    <?php echo $form->textField($model, 'vat_percentage', array('maxlength' => 255, 'class' => 'form-control', 'placeholder' => '%', "aria-label" => "%", "aria-describedby" => "basic-addon1", 'value' => '0')); ?>
+                                </td>
+                                <td colspan="2">
+                                    <?php echo $form->textField($model, 'vat_amount', array('maxlength' => 255, 'class' => 'form-control', 'placeholder' => '%', "aria-label" => "%", "aria-describedby" => "basic-addon2", 'readonly' => true, 'value' => 0)); ?>
+                                </td>
+                            </tr>
+                            <tr>
+                                <td colspan="3">
+                                    <?php echo $form->labelEx($model, 'delivery_charge', ['class' => '']); ?> (+)
+                                </td>
+                                <td colspan="3">
+                                    <?php echo $form->textField($model, 'delivery_charge', array('maxlength' => 255, 'class' => 'form-control', 'onkeyup' => 'addDeliveryCharge();', 'value' => '0', 'placeholder' => '0.00')); ?>
+                                </td>
+                            </tr>
+                            <tr>
+                                <td colspan="3">
+                                    <?php echo $form->labelEx($model, 'discount_amount', ['class' => '']); ?> (-)
+                                </td>
+                                <td colspan="3">
+                                    <?php echo $form->textField($model, 'discount_amount', array('maxlength' => 255, 'class' => 'form-control', 'onkeyup' => 'addDiscount();', 'value' => '0', 'placeholder' => '0.00')); ?>
+                                </td>
+                            </tr>
+                            <tr>
+                                <td colspan="3">
+                                    <?php echo $form->labelEx($model, 'road_fee', ['class' => '']); ?> (-)
+                                </td>
+                                <td colspan="3">
+                                    <?php echo $form->textField($model, 'road_fee', array('maxlength' => 255, 'class' => 'form-control', 'value' => '0', 'placeholder' => '0.00')); ?>
+                                </td>
+                            </tr>
+                            <tr>
+                                <td colspan="3">
+                                    <?php echo $form->labelEx($model, 'damage_value', ['class' => '']); ?> (-)
+                                </td>
+                                <td colspan="3">
+                                    <?php echo $form->textField($model, 'damage_value', array('maxlength' => 255, 'class' => 'form-control', 'value' => '0', 'placeholder' => '0.00')); ?>
+                                </td>
+                            </tr>
+                            <tr>
+                                <td colspan="3">
+                                    <?php echo $form->labelEx($model, 'sr_commission', ['class' => '']); ?> (-)
+                                </td>
+                                <td colspan="3">
+                                    <?php echo $form->textField($model, 'sr_commission', array('maxlength' => 255, 'class' => 'form-control', 'value' => '0', 'placeholder' => '0.00')); ?>
+                                </td>
+                            </tr>
+                            <tr>
+                                <td colspan="3">
+                                    <?php echo $form->labelEx($model, 'grand_total', ['class' => '']); ?>
+                                </td>
+                                <td colspan="3">
+                                    <?php echo $form->textField($model, 'grand_total', array('maxlength' => 255, 'class' => 'form-control', 'placeholder' => '0', "aria-label" => "0", "aria-describedby" => "basic-addon4", 'readonly' => true)); ?>
+                                </td>
+                            </tr>
+                            </tfoot>
                         </table>
                     </div>
                 </div>
@@ -473,22 +449,14 @@ Yii::app()->clientScript->registerCoreScript("jquery.ui");
                         }       
                     }',
                     'beforeSend' => 'function(){  
-                        let count_item =  $(".item").length; 
-                        let cash_due = $("#SellOrder_cash_due").val();  
                         let date = $("#SellOrder_date").val();  
                         let customer_id = $("#SellOrder_customer_id").val();  
                         let grand_total = $("#SellOrder_grand_total").val();  
-                        if(cash_due == ""){
-                            toastr.error("Please select Cash/Due.");
-                            return false;
-                        }else if(date == ""){
+                        if(date == ""){
                             toastr.error("Please insert date.");
                             return false;
                         }else if(customer_id == ""){
                             toastr.error("Please select customer from the list!");
-                            return false;
-                        }else if(count_item <= 0){
-                            toastr.error("Please add products to list.");
                             return false;
                         }else if(grand_total == "" || grand_total <= 0){
                             toastr.error("Grand total amount is 0");
@@ -531,6 +499,10 @@ Yii::app()->clientScript->registerCoreScript("jquery.ui");
     </div>
 </div>
 <script>
+    $('input').on('click', function () {
+        $(this).select();
+    });
+
     $(function () {
 
         $('.company-header').on('click', function () {
@@ -544,9 +516,8 @@ Yii::app()->clientScript->registerCoreScript("jquery.ui");
             $(this).toggleClass('open', !isOpen);
             icon.html(isOpen ? '▼' : '▲');
         });
-
     });
-    let company_products = [];
+
     var picker = new Lightpick({
         field: document.getElementById('entry_date'),
         minDate: moment(),
@@ -555,18 +526,15 @@ Yii::app()->clientScript->registerCoreScript("jquery.ui");
         }
     });
 
-    function safeNumber(val) {
-        val = parseFloat(val);
-        return isNaN(val) ? 0 : val;
-    }
-
     $(document).ready(function () {
-        $(".qty-amount").keyup(function () {
-            var $this = $(this);
-            $this.val($this.val().replace(/[^\d.]/g, ''));
-        });
+        $("#SellOrder_vat_percentage, #SellOrder_delivery_charge, #SellOrder_discount_amount")
+            .on("input", function () {
+                sanitizeDecimalInput(this, 4);
+            });
 
         $(".qty-amount").on("keydown keyup", function () {
+            sanitizeDecimalInput(this, 4);
+
             let amount = safeNumber($("#SellOrderDetails_amount").val());
             let qty = safeNumber($("#SellOrderDetails_qty").val());
             amount = amount > 0 ? amount : 0;
@@ -574,55 +542,94 @@ Yii::app()->clientScript->registerCoreScript("jquery.ui");
 
             $("#SellOrderDetails_row_total").val((amount * qty).toFixed(2));
         });
+
+        // on temp_qty change or keyup event calculate row total
+        $("#list").on("keyup", ".temp_qty", function () {
+
+            sanitizeDecimalInput(this, 4);
+
+            let qty = safeNumber($(this).val());
+            let unit_price = safeNumber($(this).closest("tr").find(".temp_unit_price").val());
+            qty = qty > 0 ? qty : 0;
+            unit_price = unit_price > 0 ? unit_price : 0;
+            $(this).closest("tr").find(".row-total").val((qty * unit_price).toFixed(2));
+            calculateTotal();
+        });
+
+
+        // on temp_unit_price change or keyup event calculate row total
+        $("#list").on("keyup", ".temp_unit_price", function () {
+            sanitizeDecimalInput(this, 4);
+            let unit_price = safeNumber($(this).val());
+            let qty = safeNumber($(this).closest("tr").find(".temp_qty").val());
+            qty = qty > 0 ? qty : 0;
+            unit_price = unit_price > 0 ? unit_price : 0;
+            $(this).closest("tr").find(".row-total").val((qty * unit_price).toFixed(2));
+            calculateTotal();
+        });
+
+        $(".row-total").on("keydown keyup", function () {
+
+            sanitizeDecimalInput(this, 4);
+
+            let qty = safeNumber($(this).closest("tr").find(".temp_qty").val());
+            // calculate unit price row total / qty
+            let row_total = safeNumber($(this).val());
+            qty = qty > 0 ? qty : 0;
+            let unit_price = qty > 0 ? (row_total / qty) : 0;
+            $(this).closest("tr").find(".temp_unit_price").val(unit_price.toFixed(4));
+
+            calculateTotal();
+        });
+
+
         $("#SellOrder_vat_percentage").on("keydown keyup", function () {
             calculateVat();
-            addDeliveryCharge();
-            addDiscount();
+            calculateTotal();
+        });
+
+        $("#SellOrder_road_fee").on("keydown keyup", function () {
+            calculateTotal();
+        });
+
+        $("#SellOrder_damage_value").on("keydown keyup", function () {
+            calculateTotal();
+        });
+
+        $("#SellOrder_sr_commission").on("keydown keyup", function () {
+            calculateTotal();
         });
     });
 
 
-    $("#list").on("click", ".dlt", function () {
-        $(this).closest("tr").remove();
-        calculateTotal();
-    });
-
-    // on temp_qty change or keyup event calculate row total
-    $("#list").on("keyup", ".temp_qty", function () {
-        let qty = safeNumber($(this).val());
-        let unit_price = safeNumber($(this).closest("tr").find(".temp_unit_price").val());
-        qty = qty > 0 ? qty : 0;
-        unit_price = unit_price > 0 ? unit_price : 0;
-        $(this).closest("tr").find(".row-total").val((qty * unit_price).toFixed(2));
-        calculateTotal();
-    });
-
-
-    // on temp_unit_price change or keyup event calculate row total
-    $("#list").on("keyup", ".temp_unit_price", function () {
-        let unit_price = safeNumber($(this).val());
-        let qty = safeNumber($(this).closest("tr").find(".temp_qty").val());
-        qty = qty > 0 ? qty : 0;
-        unit_price = unit_price > 0 ? unit_price : 0;
-        $(this).closest("tr").find(".row-total").val((qty * unit_price).toFixed(2));
-        changeUnitPriceForSameModel($(this).closest("tr").find(".temp_model_id").val(), unit_price);
-        calculateTotal();
-    });
-
-    function changeUnitPriceForSameModel(model_id, price) {
-        // find all same model id and change the price except the current row
-        $(".temp_qty").each(function () {
-            if ($(this).closest("tr").find(".temp_model_id").val() == model_id) {
-                if ($(this).closest("tr").find(".temp_unit_price").val() != price) {
-                    $(this).closest("tr").find(".temp_unit_price").val(price);
-                    let qty = safeNumber($(this).val());
-                    qty = qty > 0 ? qty : 0;
-                    $(this).closest("tr").find(".row-total").val((qty * price).toFixed(2));
-                }
-            }
-        });
+    function safeNumber(val) {
+        val = parseFloat(val);
+        return isNaN(val) ? 0 : val;
     }
 
+    function sanitizeDecimalInput(el, decimals = null) {
+        if (!el) return; // guard: undefined / null
+
+        const $el = $(el);
+
+        // ensure it's an input or textarea
+        if (!$el.is('input, textarea')) return;
+
+        let value = $el.val();
+
+        if (typeof value !== 'string') return;
+
+        value = value
+            .replace(/[^0-9.]/g, '')
+            .replace(/(\..*)\./g, '$1');
+
+        if (decimals !== null) {
+            const regex = new RegExp(`(\\.\\d{${decimals}}).+`);
+            value = value.replace(regex, '$1');
+        }
+
+        $el.val(value);
+    }
 
     function calculateVat() {
         let total_amount = safeNumber($("#SellOrder_total_amount").val());
@@ -630,87 +637,50 @@ Yii::app()->clientScript->registerCoreScript("jquery.ui");
         total_amount = total_amount > 0 ? total_amount : 0;
         vat_p = vat_p > 0 ? vat_p : 0;
         let vat = safeNumber(((vat_p / 100) * total_amount));
-        let grand_total = safeNumber(total_amount + vat);
         $("#SellOrder_vat_amount").val(vat.toFixed(2));
-        $("#SellOrder_grand_total").val(grand_total.toFixed(2));
+
+        calculateTotal();
     }
 
-
-    function resetProduct() {
-        $("#model_id_text").val('');
-        $("#SellOrderDetails_model_id").val('');
-        resetProductSlNo();
-        showPurchasePrice(0);
-    }
-
-    function resetProductSlNo() {
-        $("#product_sl_no").val('');
-    }
-
-    function clearDynamicItem() {
-        $("#SellOrderDetails_model_id").val('');
-        $("#product_sl_no").val('');
-        $("#model_id_text").val('');
-        $("#SellOrderDetails_amount").val('');
-        $("#SellOrderDetails_row_total").val('');
-        $("#SellOrderDetails_qty").val('');
-    }
-
-    function resetDynamicItem() {
-        $("#SellOrderDetails_model_id").val('');
-        $("#model_id_text").val('');
-        $("#SellOrderDetails_amount").val('');
-        $("#SellOrderDetails_row_total").val('');
-        $("#SellOrderDetails_qty").val('');
-        showPurchasePrice(0);
-    }
-
-    function calculateTotal() {
-        let item_count = $(".item").length;
-
-        let total = 0;
-        $('.row-total').each(function () {
-            total += safeNumber($(this).val());
-        });
-
-
-        $("#SellOrder_total_amount").val(total.toFixed(2)).change();
-        $("#SellOrder_item_count").val(item_count);
-
-        calculateVat();
-        addDeliveryCharge();
-
-        tableSerial();
-    }
 
     function addDeliveryCharge() {
-        let delivery_charge = safeNumber($("#SellOrder_delivery_charge").val());
-        let total_amount = safeNumber($("#SellOrder_total_amount").val());
-        let vat_amount = safeNumber($("#SellOrder_vat_amount").val());
-
-        delivery_charge = isNaN(delivery_charge) ? 0 : delivery_charge;
-        vat_amount = isNaN(vat_amount) ? 0 : vat_amount;
-        total_amount = isNaN(total_amount) ? 0 : total_amount;
-
-        $("#SellOrder_grand_total").val((delivery_charge + total_amount + vat_amount).toFixed(2));
-        addDiscount();
+        sanitizeDecimalInput(this, 4);
+        calculateTotal();
     }
 
     function addDiscount() {
-        let delivery_charge = safeNumber($("#SellOrder_delivery_charge").val());
-        let total_amount = safeNumber($("#SellOrder_total_amount").val());
+        sanitizeDecimalInput(this, 4);
+        calculateTotal();
+    }
+
+    function calculateTotal() {
+
+        let qtyTotal = 0;
+        let rowTotal = 0;
+        $('.temp_qty').each(function () {
+            let qty = safeNumber($(this).val());
+            let row_total = safeNumber($(this).closest("tr").find(".row-total").val());
+            qtyTotal += qty;
+            rowTotal += row_total;
+        });
+        $("#SellOrder_total_qty").val(qtyTotal);
+        $("#SellOrder_total_amount").val(rowTotal.toFixed(4)).change();
+
+
+        let road_fee = safeNumber($("#SellOrder_road_fee").val());
+        let damage_value = safeNumber($("#SellOrder_damage_value").val());
         let vat_amount = safeNumber($("#SellOrder_vat_amount").val());
         let discount_amount = safeNumber($("#SellOrder_discount_amount").val());
+        let total_amount = safeNumber($("#SellOrder_total_amount").val());
+        let delivery_charge = safeNumber($("#SellOrder_delivery_charge").val());
+        let sr_commission = safeNumber($("#SellOrder_sr_commission").val());
 
-        delivery_charge = isNaN(delivery_charge) ? 0 : delivery_charge;
-        vat_amount = isNaN(vat_amount) ? 0 : vat_amount;
-        total_amount = isNaN(total_amount) ? 0 : total_amount;
-        discount_amount = isNaN(discount_amount) ? 0 : discount_amount;
-
-        let grand_total = (delivery_charge + total_amount + vat_amount) - discount_amount;
-
-        $("#SellOrder_grand_total").val((grand_total).toFixed(2));
-
+        let grand_total = (total_amount + vat_amount + delivery_charge) - (discount_amount + road_fee + damage_value + sr_commission);
+        $("#SellOrder_grand_total").val(grand_total.toFixed(2));
+        let avg_sp = qtyTotal > 0
+            ? total_amount / qtyTotal
+            : 0;
+        $("#SellOrder_avg_sp").val(avg_sp.toFixed(4));
         lossAlert();
     }
 
@@ -723,7 +693,6 @@ Yii::app()->clientScript->registerCoreScript("jquery.ui");
                 qty = isNaN(qty) ? 0 : qty;
                 pp = isNaN(pp) ? 0 : pp;
 
-                // console.log(`Qty: ${qty}, PP: ${pp}`);
                 total_costing += qty * pp;
             });
         }
@@ -751,7 +720,7 @@ Yii::app()->clientScript->registerCoreScript("jquery.ui");
 
     }
 
-    document.addEventListener('DOMContentLoaded', function () {
+    /*document.addEventListener('DOMContentLoaded', function () {
         var eyeIcon = document.querySelector('.eye-icon');
         var helpBlock = document.querySelector('.current-costing-amount');
 
@@ -765,7 +734,7 @@ Yii::app()->clientScript->registerCoreScript("jquery.ui");
                 helpBlock.style.display = 'none';
             }
         });
-    });
+    });*/
 
     $(document).keypress(function (event) {
         let keycode = (event.keyCode ? event.keyCode : event.which);
@@ -788,16 +757,6 @@ Yii::app()->clientScript->registerCoreScript("jquery.ui");
             $('.current-stock').html('<span style="color: green;">Stock: <b>' + safeNumber(stock).toFixed(2) + '</b></span>');
         else
             $('.current-stock').html('<span style="color: red;">Stock: <b>' + safeNumber(stock).toFixed(2) + '</b></span>');
-    }
-
-
-    function tableSerial() {
-        //  get the table tbody tr length
-        var i = $('#list tbody tr').length;
-        $('#list tbody tr').each(function () {
-            $(this).find('.serial').text(i);
-            i--;
-        });
     }
 </script>
 
@@ -833,7 +792,7 @@ $this->beginWidget('zii.widgets.jui.CJuiDialog', array(
                 </button>
             </div>
             <div class="modal-body text-center">
-                <p>Loading...</p> <!-- this will be replaced by the response from the server -->
+                <p>Loading...</p>
             </div>
             <div class="modal-footer">
                 <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
