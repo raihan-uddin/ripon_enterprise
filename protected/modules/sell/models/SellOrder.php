@@ -83,7 +83,7 @@ class SellOrder extends CActiveRecord
         // NOTE: you should only define rules for those attributes that
         // will receive user inputs.
         return array(
-            array('max_sl_no, cash_due, so_no, date, customer_id, discount_percentage, discount_amount, grand_total, order_type', 'required'),
+            array('max_sl_no, cash_due, so_no, date, customer_id, discount_percentage, discount_amount, grand_total', 'required'),
             array('grand_total, discount_amount, discount_percentage, vat_percentage, vat_amount, is_opening, total_return, road_fee, damage_value, sr_commission,
             total_amount, is_paid, total_paid, total_due, delivery_charge, costing', 'numerical'),
             array('max_sl_no, cash_due, customer_id, created_by, updated_by', 'numerical', 'integerOnly' => true),
