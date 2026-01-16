@@ -7,20 +7,6 @@ $this->widget('application.components.BreadCrumb', array(
     ),
 ));
 ?>
-<?php
-Yii::app()->clientScript->registerScript('search', "
-$('.search-button').click(function(){
-	$('.search-form').toggle();
-	return false;
-});
-$('.search-form form').submit(function(){
-	$.fn.yiiGridView.update('prod-items-grid', {
-		data: $(this).serialize()
-	});
-	return false;
-});
-");
-?>
 
 <?php
 $user = Yii::app()->getUser();
@@ -221,7 +207,7 @@ if (Yii::app()->user->checkAccess('Sell.SellOrderQuotation.VoucherPreview')) {
                 array
                 (
                     'header' => 'Options',
-                    'template' => '{delete}', //{update}
+                    'template' => '{update}{delete}',
                     'class' => 'CButtonColumn',
                     'htmlOptions' => ['style' => 'width: 200px', 'class' => 'text-center'],
                     'buttons' => array(
