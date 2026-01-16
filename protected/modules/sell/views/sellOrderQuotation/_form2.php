@@ -1,22 +1,74 @@
 <?php
 $this->widget('application.components.BreadCrumb', array(
-    'crumbs' => array(
-        array('name' => 'Sales', 'url' => array('admin')),
-        array('name' => 'Draft', 'url' => array('admin')),
-        array('name' => 'Update Quotation: ' . $model->so_no),
-    ),
+        'crumbs' => array(
+                array('name' => 'Sales', 'url' => array('admin')),
+                array('name' => 'Draft', 'url' => array('admin')),
+                array('name' => 'Update Quotation: ' . $model->so_no),
+        ),
 ));
 ?>
 <?php
 $form = $this->beginWidget('CActiveForm', array(
-    'id' => 'bom-form',
-    'enableAjaxValidation' => false,
-    'enableClientValidation' => true,
-    'clientOptions' => array('validateOnSubmit' => true),
+        'id' => 'bom-form',
+        'enableAjaxValidation' => false,
+        'enableClientValidation' => true,
+        'clientOptions' => array('validateOnSubmit' => true),
 ));
 Yii::app()->clientScript->registerCoreScript("jquery.ui");
 
 ?>
+
+
+<style>
+    /* Company card */
+    .company-card {
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        background: #f8f9fb;
+        padding: 10px 14px;
+        border-radius: 6px;
+        border-left: 4px solid #4c6ef5;
+    }
+
+    .company-name {
+        font-weight: 600;
+        font-size: 14px;
+        color: #212529;
+    }
+
+    .toggle {
+        cursor: pointer;
+        font-size: 14px;
+        margin-right: 8px;
+    }
+
+    .company-meta {
+        display: flex;
+        gap: 16px;
+        font-size: 13px;
+        color: #495057;
+    }
+
+    .company-subtotal {
+        font-weight: 600;
+        color: #2b8a3e;
+    }
+
+    /* Product rows */
+    .product-row td {
+        background: #ffffff;
+    }
+
+    .indent {
+        color: #adb5bd;
+        text-align: center;
+    }
+
+    .product-row:hover td {
+        background: #f8f9fa;
+    }
+</style>
 
 <script>
     $(".alert").animate({opacity: 1.0}, 3000).fadeOut("slow");
@@ -34,9 +86,9 @@ Yii::app()->clientScript->registerCoreScript("jquery.ui");
     </div>
     <div class="card-body">
         <?php
-            $customer = Customers::model()->findByPk($model->customer_id);
+        $customer = Customers::model()->findByPk($model->customer_id);
         ?>
-         <div class="row">
+        <div class="row">
             <div class="form-group col-sm-12 col-md-2">
                 <?php echo $form->labelEx($model, 'entry_date'); ?>
                 <div class="input-group" id="entry_date" data-target-input="nearest">
@@ -46,32 +98,33 @@ Yii::app()->clientScript->registerCoreScript("jquery.ui");
                     </div>
                 </div>
                 <span class="help-block"
-                        style="color: red; width: 100%"> <?php echo $form->error($model, 'entry_date'); ?></span>
+                      style="color: red; width: 100%"> <?php echo $form->error($model, 'entry_date'); ?></span>
             </div>
 
             <div class="form-group col-sm-12 col-md-2">
                 <?php echo $form->labelEx($model, 'customer_id'); ?>
                 <div class="input-group" id="customer_id" data-target-input="nearest">
-                    <input type="text" id="customer_id_text" class="form-control" value="<?= $customer ? $customer->company_name : '' ?>">
+                    <input type="text" id="customer_id_text" class="form-control"
+                           value="<?= $customer ? $customer->company_name : '' ?>">
                     <?php echo $form->hiddenField($model, 'customer_id', array('maxlength' => 255, 'class' => 'form-control')); ?>
                     <div class="input-group-append">
                         <div class="input-group-text">
                             <?php
                             echo CHtml::link(' <i class="fa fa-plus"></i>', "", // the link for open the dialog
-                                array(
-                                    'onclick' => "{addDistributor(); $('#dialogAddDistributor').dialog('open');}"));
+                                    array(
+                                            'onclick' => "{addDistributor(); $('#dialogAddDistributor').dialog('open');}"));
                             ?>
                             <?php
                             $this->beginWidget('zii.widgets.jui.CJuiDialog', array(// the dialog
-                                'id' => 'dialogAddDistributor',
-                                'options' => array(
-                                    'title' => 'Add Customer',
-                                    'autoOpen' => false,
-                                    'modal' => true,
-                                    'width' => '1288px',
-                                    'left' => '30px',
-                                    'resizable' => false,
-                                ),
+                                    'id' => 'dialogAddDistributor',
+                                    'options' => array(
+                                            'title' => 'Add Customer',
+                                            'autoOpen' => false,
+                                            'modal' => true,
+                                            'width' => '1288px',
+                                            'left' => '30px',
+                                            'resizable' => false,
+                                    ),
                             ));
                             ?>
                             <div class="divForForm">
@@ -85,17 +138,17 @@ Yii::app()->clientScript->registerCoreScript("jquery.ui");
                                 function addDistributor() {
                                     <?php
                                     echo CHtml::ajax(array(
-                                        'url' => array('/sell/customers/createCustomerFromOutSide'),
-                                        'data' => "js:$(this).serialize()",
-                                        'type' => 'post',
-                                        'dataType' => 'json',
-                                        'beforeSend' => "function(){
+                                            'url' => array('/sell/customers/createCustomerFromOutSide'),
+                                            'data' => "js:$(this).serialize()",
+                                            'type' => 'post',
+                                            'dataType' => 'json',
+                                            'beforeSend' => "function(){
                                     $('.ajaxLoaderFormLoad').show();
                                 }",
-                                        'complete' => "function(){
+                                            'complete' => "function(){
                                     $('.ajaxLoaderFormLoad').hide();
                                 }",
-                                        'success' => "function(data){
+                                            'success' => "function(data){
                                     if (data.status == 'failure')
                                     {
                                         $('#dialogAddDistributor div.divForForm').html(data.div);
@@ -146,50 +199,50 @@ Yii::app()->clientScript->registerCoreScript("jquery.ui");
                     </script>
                 </div>
                 <span class="help-block"
-                        style="color: red; width: 100%"> <?php echo $form->error($model, 'customer_id'); ?></span>
+                      style="color: red; width: 100%"> <?php echo $form->error($model, 'customer_id'); ?></span>
             </div>
 
             <div class="form-group col-sm-12 col-md-2">
                 <?php echo $form->labelEx($model2, 'total_amount'); ?>
                 <div class="input-group" id="total_amount" data-target-input="nearest">
                     <div class="input-group-prepend">
-                            <span class="input-group-text" id="basic-addon3"><i class="fa fa-money"></i> </span>
+                        <span class="input-group-text" id="basic-addon3"><i class="fa fa-money"></i> </span>
                     </div>
                     <?php echo $form->textField($model, 'total_amount', array('maxlength' => 255, 'class' => 'form-control', 'placeholder' => '0', "aria-label" => "0", "aria-describedby" => "basic-addon3", 'readonly' => true)); ?>
                 </div>
                 <span class="help-block"
-                        style="color: red; width: 100%"> <?php echo $form->error($model, 'total_amount'); ?></span>
+                      style="color: red; width: 100%"> <?php echo $form->error($model, 'total_amount'); ?></span>
             </div>
 
             <div class="form-group col-sm-12 col-md-2">
                 <?php echo $form->labelEx($model2, 'delivery_charge'); ?>
                 <div class="input-group" id="delivery_charge" data-target-input="nearest">
                     <div class="input-group-prepend">
-                            <span class="input-group-text" id="basic-addon3"><i class="fa fa-money"></i> </span>
+                        <span class="input-group-text" id="basic-addon3"><i class="fa fa-money"></i> </span>
                     </div>
                     <?php echo $form->textField($model, 'delivery_charge', array('maxlength' => 255, 'class' => 'form-control', 'onkeyup' => 'addDeliveryCharge();')); ?>
                 </div>
                 <span class="help-block"
-                        style="color: red; width: 100%"> <?php echo $form->error($model, 'delivery_charge'); ?></span>
+                      style="color: red; width: 100%"> <?php echo $form->error($model, 'delivery_charge'); ?></span>
             </div>
 
             <div class="form-group col-sm-12 col-md-2">
                 <?php echo $form->labelEx($model2, 'discount_amount'); ?>
                 <div class="input-group" id="discount_amount" data-target-input="nearest">
                     <div class="input-group-prepend">
-                            <span class="input-group-text" id="basic-addon3"><i class="fa fa-money"></i> </span>
+                        <span class="input-group-text" id="basic-addon3"><i class="fa fa-money"></i> </span>
                     </div>
                     <?php echo $form->textField($model, 'discount_amount', array('maxlength' => 255, 'class' => 'form-control', 'onkeyup' => 'addDiscount();')); ?>
                 </div>
                 <span class="help-block"
-                        style="color: red; width: 100%"> <?php echo $form->error($model, 'discount_amount'); ?></span>
+                      style="color: red; width: 100%"> <?php echo $form->error($model, 'discount_amount'); ?></span>
             </div>
-            
+
             <div class="form-group col-sm-12 col-md-2">
                 <?php echo $form->labelEx($model2, 'grand_total'); ?>
                 <div class="input-group" id="grand_total" data-target-input="nearest">
                     <div class="input-group-prepend">
-                            <span class="input-group-text" id="basic-addon3"><i class="fa fa-money"></i> </span>
+                        <span class="input-group-text" id="basic-addon3"><i class="fa fa-money"></i> </span>
                     </div>
                     <?php echo $form->textField($model, 'grand_total', array('maxlength' => 255, 'class' => 'form-control', 'placeholder' => '0', "aria-label" => "0", "aria-describedby" => "basic-addon4", 'readonly' => true)); ?>
                     <div class="input-group-append">
@@ -200,7 +253,7 @@ Yii::app()->clientScript->registerCoreScript("jquery.ui");
                 </div>
                 <span class="current-costing-amount" style="display: none;"></span>
                 <span class="help-block"
-                        style="color: red; width: 100%"> <?php echo $form->error($model, 'grand_total'); ?></span>
+                      style="color: red; width: 100%"> <?php echo $form->error($model, 'grand_total'); ?></span>
             </div>
         </div>
 
@@ -222,22 +275,22 @@ Yii::app()->clientScript->registerCoreScript("jquery.ui");
                             <div class="input-group-prepend">
                                 <div class="input-group-text">
                                     <?php
-                                    echo CHtml::link(' <i class="fa fa-plus"></i>', "", // the link for open the dialog
-                                        array(
-                                            'onclick' => "{addProdModel(); $('#dialogAddProdModel').dialog('open');}"));
+                                    echo CHtml::link(' <i class="fa fa-plus"></i>', "",
+                                            array(
+                                                    'onclick' => "{addProdModel(); $('#dialogAddProdModel').dialog('open');}"));
                                     ?>
 
                                     <?php
                                     $this->beginWidget('zii.widgets.jui.CJuiDialog', array(// the dialog
-                                        'id' => 'dialogAddProdModel',
-                                        'options' => array(
-                                            'title' => 'Add Product',
-                                            'autoOpen' => false,
-                                            'modal' => true,
-                                            'width' => '1288px',
-                                            'left' => '30px',
-                                            'resizable' => false,
-                                        ),
+                                            'id' => 'dialogAddProdModel',
+                                            'options' => array(
+                                                    'title' => 'Add Product',
+                                                    'autoOpen' => false,
+                                                    'modal' => true,
+                                                    'width' => '1288px',
+                                                    'left' => '30px',
+                                                    'resizable' => false,
+                                            ),
                                     ));
                                     ?>
                                     <div class="divForForm">
@@ -253,17 +306,17 @@ Yii::app()->clientScript->registerCoreScript("jquery.ui");
                                         function addProdModel() {
                                             <?php
                                             echo CHtml::ajax(array(
-                                                'url' => array('/prodModels/createProdModelsFromOutSide'),
-                                                'data' => "js:$(this).serialize()",
-                                                'type' => 'post',
-                                                'dataType' => 'json',
-                                                'beforeSend' => "function(){
+                                                    'url' => array('/prodModels/createProdModelsFromOutSide'),
+                                                    'data' => "js:$(this).serialize()",
+                                                    'type' => 'post',
+                                                    'dataType' => 'json',
+                                                    'beforeSend' => "function(){
                                                         $('.ajaxLoaderFormLoad').show();
                                                     }",
-                                                'complete' => "function(){
+                                                    'complete' => "function(){
                                                         $('.ajaxLoaderFormLoad').hide();
                                                     }",
-                                                'success' => "function(data){
+                                                    'success' => "function(data){
                                                     if (data.status == 'failure')
                                                     {
                                                         $('#dialogAddProdModel div.divForForm').html(data.div);
@@ -294,7 +347,7 @@ Yii::app()->clientScript->registerCoreScript("jquery.ui");
                             </div>
                         </div>
                         <span class="help-block"
-                                style="color: red; width: 100%"> <?php echo $form->error($model, 'model_id'); ?></span>
+                              style="color: red; width: 100%"> <?php echo $form->error($model, 'model_id'); ?></span>
 
                         <script>
                             $(document).ready(function () {
@@ -364,9 +417,9 @@ Yii::app()->clientScript->registerCoreScript("jquery.ui");
                         <?php echo $form->textField($model2, 'qty', array('maxlength' => 255, 'class' => 'form-control qty-amount')); ?>
                         <!-- Display Stock without margin and padding -->
                         <span class="help-block current-stock"
-                                style="font-size: 12px; color: #333; margin: 0; padding: 0; width: 100%"></span>
+                              style="font-size: 12px; color: #333; margin: 0; padding: 0; width: 100%"></span>
                         <span class="help-block"
-                                style="color: red; width: 100%"> <?php echo $form->error($model2, 'qty'); ?></span>
+                              style="color: red; width: 100%"> <?php echo $form->error($model2, 'qty'); ?></span>
                     </div>
                     <div class="form-group col-xs-12 col-md-2">
                         <?php echo $form->labelEx($model2, 'amount'); ?>
@@ -374,9 +427,9 @@ Yii::app()->clientScript->registerCoreScript("jquery.ui");
                         <!-- Display Costing Amount without margin and padding -->
                         <?php echo $form->hiddenField($model2, 'pp', array('maxlength' => 255, 'class' => 'form-control pp')); ?>
                         <span class="help-block costing-amount"
-                                style="font-size: 12px; color: #333; margin: 0; padding: 0; width: 100%"></span>
+                              style="font-size: 12px; color: #333; margin: 0; padding: 0; width: 100%"></span>
                         <span class="help-block"
-                                style="color: red; width: 100%"> <?php echo $form->error($model2, 'amount'); ?></span>
+                              style="color: red; width: 100%"> <?php echo $form->error($model2, 'amount'); ?></span>
                     </div>
 
 
@@ -384,7 +437,7 @@ Yii::app()->clientScript->registerCoreScript("jquery.ui");
                         <?php echo $form->labelEx($model2, 'row_total'); ?>
                         <?php echo $form->textField($model2, 'row_total', array('maxlength' => 255, 'class' => 'form-control', 'readonly' => true)); ?>
                         <span class="help-block"
-                                style="color: red; width: 100%"> <?php echo $form->error($model2, 'row_total'); ?></span>
+                              style="color: red; width: 100%"> <?php echo $form->error($model2, 'row_total'); ?></span>
                     </div>
                     <div class="form-group col-xs-12 col-md-1">
                         <button class="btn  btn-success mt-4" onclick="addToList()" type="button" title="ADD TO LIST"><i
@@ -418,28 +471,35 @@ Yii::app()->clientScript->registerCoreScript("jquery.ui");
                                     <td class="serial"></td>
                                     <td>
                                         <?= $m3->model_name . " || " . $m3->code ?>
-                                        <input type="hidden" class="form-control temp_model_id" value="<?= $m3->model_id ?>"
-                                            name="SellOrderQuotationDetails[temp_model_id][]">
+                                        <input type="hidden" class="form-control temp_model_id"
+                                               value="<?= $m3->model_id ?>"
+                                               name="SellOrderQuotationDetails[temp_model_id][]">
                                     </td>
                                     <td class="text-center">
-                                        <input type="text" class="form-control text-center temp_qty"
-                                            value="<?= $m3->qty ?>"
-                                            name=SellOrderQuotationDetails[temp_qty][]">
+                                        <label>
+                                            <input type="text" class="form-control text-center temp_qty"
+                                                   value="<?= $m3->qty ?>"
+                                                   name=SellOrderQuotationDetails[temp_qty][]">
+                                        </label>
 
                                     </td>
                                     <td class="text-center">
-                                        <input type="text" class="form-control temp_unit_price text-right"
-                                            value="<?= $m3->amount ?>"
-                                            name="SellOrderQuotationDetails[temp_unit_price][]">
+                                        <label>
+                                            <input type="text" class="form-control temp_unit_price text-right"
+                                                   value="<?= $m3->amount ?>"
+                                                   name="SellOrderQuotationDetails[temp_unit_price][]">
+                                        </label>
 
                                         <input type="hidden" class="form-control text-center temp-costing"
-                                            value="<?= round(($m3->costing / $m3->qty), 2) ?>"
-                                            name=SellOrderQuotationDetails[temp_pp][]">
+                                               value="<?= $m3->costing != 0 ? round(($m3->costing / $m3->qty), 2) : 0 ?>"
+                                               name=SellOrderQuotationDetails[temp_pp][]">
                                     </td>
                                     <td class="text-center">
-                                        <input type="text" class="form-control row-total text-right" readonly
-                                            value="<?= $m3->row_total ?>"
-                                            name="SellOrderQuotationDetails[temp_row_total][]">
+                                        <label>
+                                            <input type="text" class="form-control row-total text-right" readonly
+                                                   value="<?= $m3->row_total ?>"
+                                                   name="SellOrderQuotationDetails[temp_row_total][]">
+                                        </label>
                                     </td>
                                     <td>
                                         <button type="button" class="btn btn-danger dlt"><i class="fa fa-trash-o"></i>
@@ -470,17 +530,15 @@ Yii::app()->clientScript->registerCoreScript("jquery.ui");
             <div class="col-md-12">
                 <?php
                 echo CHtml::ajaxSubmitButton('Update ', CHtml::normalizeUrl(array('/sell/sellOrderQuotation/update/id/' . $model->id, 'render' => true)), array(
-                    'dataType' => 'json',
-                    'type' => 'post',
-                    'success' => 'function(data) {
+                        'dataType' => 'json',
+                        'type' => 'post',
+                        'success' => 'function(data) {
                         $("#ajaxLoader").hide();  
                         if(data.status=="success"){
                             $("#formResult").fadeIn();
                             $("#formResult").html("Data saved successfully.");
                             toastr.success("Data saved successfully.");
                             $("#formResult").animate({opacity:1.0},1000).fadeOut("slow");
-                            //$("#soReportDialogBox").dialog("open");
-                            //$("#AjFlashReportSo").html(data.soReportInfo).show();
                             $("#information-modal").modal("show");
                             $("#information-modal .modal-body").html(data.soReportInfo); 
                         }else{
@@ -491,7 +549,7 @@ Yii::app()->clientScript->registerCoreScript("jquery.ui");
                             });
                         }       
                     }',
-                    'beforeSend' => 'function(){  
+                        'beforeSend' => 'function(){  
                         let count_item =  $(".item").length; 
                         let date = $("#SellOrderQuotation_date").val();  
                         let customer_id = $("#SellOrderQuotation_customer_id").val();  
@@ -505,15 +563,12 @@ Yii::app()->clientScript->registerCoreScript("jquery.ui");
                         }else if(count_item <= 0){
                             toastr.error("Please add materials to list.");
                             return false;
-                        }else if(grand_total == "" || grand_total <= 0){
-                            toastr.error("Grand total amount is 0");
-                            return false;
                         }else {                
                             $("#overlay").fadeIn(300);
                             $("#ajaxLoader").show();
                         }
                     }',
-                    'error' => 'function(xhr, status, error) { 
+                        'error' => 'function(xhr, status, error) { 
                         // Code to handle errors
                         toastr.error(xhr.responseText); // Displaying error message using Toastr
                         // Optionally, you can display additional error details
@@ -522,7 +577,7 @@ Yii::app()->clientScript->registerCoreScript("jquery.ui");
                         console.error(xhr.responseText);
                         $("#overlay").fadeOut(300);
                     }',
-                    'complete' => 'function() {
+                        'complete' => 'function() {
                         $("#overlay").fadeOut(300);
                         $("#ajaxLoaderReport").hide(); 
                     }',
@@ -671,13 +726,13 @@ Yii::app()->clientScript->registerCoreScript("jquery.ui");
         calculateTotal();
     });
 
-    function changeUnitPriceForSameModel(model_id, price){
-         // find all same model id and change the price except the current row
-        $(".temp_qty").each(function(){
+    function changeUnitPriceForSameModel(model_id, price) {
+        // find all same model id and change the price except the current row
+        $(".temp_qty").each(function () {
             console.log($(this).closest("tr").find(".temp_model_id").val());
             console.log(model_id);
-            if($(this).closest("tr").find(".temp_model_id").val() == model_id){
-                if($(this).closest("tr").find(".temp_unit_price").val() != price){
+            if ($(this).closest("tr").find(".temp_model_id").val() == model_id) {
+                if ($(this).closest("tr").find(".temp_unit_price").val() != price) {
                     $(this).closest("tr").find(".temp_unit_price").val(price);
                     let qty = parseFloat($(this).val());
                     qty = qty > 0 ? qty : 0;
@@ -843,14 +898,14 @@ Yii::app()->clientScript->registerCoreScript("jquery.ui");
 
 <?php
 $this->beginWidget('zii.widgets.jui.CJuiDialog', array(
-    'id' => 'soReportDialogBox',
-    'options' => array(
-        'title' => 'ORDER QUOTATION PREVIEW',
-        'autoOpen' => false,
-        'modal' => true,
-        'width' => 1030,
-        'resizable' => false,
-    ),
+        'id' => 'soReportDialogBox',
+        'options' => array(
+                'title' => 'ORDER QUOTATION PREVIEW',
+                'autoOpen' => false,
+                'modal' => true,
+                'width' => 1030,
+                'resizable' => false,
+        ),
 ));
 ?>
 <div id='AjFlashReportSo' style="display:none;"></div>

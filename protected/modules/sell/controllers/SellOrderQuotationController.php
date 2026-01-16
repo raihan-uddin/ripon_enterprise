@@ -149,7 +149,7 @@ class SellOrderQuotationController extends RController
                 Yii::app()->end();
             }
         }
-        $this->pageTitle = 'CREATE ORDER';
+        $this->pageTitle = 'CREATE DRAFT';
         $this->render('create', array(
             'model' => $model,
             'model2' => $model2,
@@ -200,8 +200,12 @@ class SellOrderQuotationController extends RController
                     SellOrderQuotationDetails::model()->deleteAll($criteriaDel);
 
                     foreach ($_POST['SellOrderQuotationDetails']['temp_model_id'] as $key => $model_id) {
+                        if ($_POST['SellOrderQuotationDetails']['temp_qty'][$key] <= 0) {
+                            continue;
+                        }
+
                         $purchasePrice = $_POST['SellOrderQuotationDetails']['temp_pp'][$key];
-                        $percentage_discount = ($per_item_discount / $_POST['SellOrderQuotationDetails']['temp_unit_price'][$key]) * 100;
+                        $percentage_discount =  $per_item_discount != 0 ? ($per_item_discount / $_POST['SellOrderQuotationDetails']['temp_unit_price'][$key]) * 100 : 0;
 
                         $model2 = new SellOrderQuotationDetails();
                         $model2->sell_order_id = $model->id;
@@ -246,7 +250,7 @@ class SellOrderQuotationController extends RController
             $criteria->addColumnCondition(['sell_order_id' => $id]);
             $criteria->join = " INNER JOIN prod_models pm on t.model_id = pm.id ";
             $criteria->order = "pm.model_name ASC";
-            $this->pageTitle = 'UPDATE QUOTATION';
+            $this->pageTitle = 'UPDATE DRAFT';
             $this->render('update', array(
                 'model' => $model,
                 'model2' => $model2,
