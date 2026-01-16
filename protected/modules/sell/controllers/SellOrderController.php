@@ -72,6 +72,7 @@ class SellOrderController extends RController
         $costing = 0;
         if (isset($_POST['SellOrder'], $_POST['SellOrderDetails'])) {
             $model->attributes = $_POST['SellOrder'];
+            $model->cash_due = SellOrder::DUE;
             $model->max_sl_no = SellOrder::maxSlNo();
             $model->discount_percentage = 0;
             $model->total_due = $_POST['SellOrder']['grand_total'];

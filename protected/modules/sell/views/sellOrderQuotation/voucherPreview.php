@@ -156,7 +156,7 @@
                             <td style="text-align: center;  width: 10%; border: 1px solid black;">Qty</td>
                             <td style="text-align: center;  width: 10%; border: 1px solid black;">Return Qty</td>
                             <td style="text-align: center;  width: 10%; border: 1px solid black;">Unit Price</td>
-                            <td style="text-align: center;  width: 10%; border: 1px solid black;">Sell Qty</td>
+                            <td style="text-align: center;  width: 10%; border: 1px solid black;">Sold Qty</td>
                             <td style="text-align: center; width: 10%; border: 1px solid black;">Total</td>
                         </tr>
                         </thead>

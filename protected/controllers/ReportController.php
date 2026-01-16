@@ -584,68 +584,148 @@ class ReportController extends RController
         }
 
         date_default_timezone_set("Asia/Dhaka");
-        $dateFrom = $_POST['Inventory']['date_from'];
-        $dateTo = $_POST['Inventory']['date_to'];
-        $customer_id = $_POST['Inventory']['customer_id'];
-        $order_type = $_POST['Inventory']['order_type'];
-        $group_by = $_POST['Inventory']['group_by'];
-        $sort_by = $_POST['Inventory']['sort_by'];
-        $sort_order = $_POST['Inventory']['sort_order'];
-        $created_by = isset($_POST['Inventory']['created_by']) ? $_POST['Inventory']['created_by'] : 0;
 
-        $message = "";
-        $data = NULL;
+        // ==========================
+        // SAFE INPUT
+        // ==========================
+        $inv = Yii::app()->request->getPost('Inventory', []);
 
-        $companyName = Yii::app()->params['company']['name'];
+        $dateFrom  = isset($inv['date_from']) ? trim($inv['date_from']) : null;
+        $dateTo    = isset($inv['date_to']) ? trim($inv['date_to']) : null;
+        $customer  = isset($inv['customer_id']) ? (int)$inv['customer_id'] : 0;
+        $createdBy = isset($inv['created_by']) ? (int)$inv['created_by'] : 0;
+
+        $groupBy   = isset($inv['group_by']) ? trim($inv['group_by']) : 't.id';
+        $sortBy    = isset($inv['sort_by']) ? trim($inv['sort_by']) : 't.date';
+        $sortOrder= isset($inv['sort_order']) ? strtoupper(trim($inv['sort_order'])) : 'ASC';
+
+        // ==========================
+        // WHITELIST (ANTI-INJECTION)
+        // ==========================
+        $allowedGroup = [
+            't.id',
+            't.date',
+            'YEAR(t.date)',
+            'YEAR(t.date), MONTH(t.date)',
+            't.customer_id'
+        ];
+
+        $allowedSort = [
+            't.date',
+            't.total_amount',
+            't.grand_total',
+            't.customer_id'
+        ];
+
+        if (!in_array($groupBy, $allowedGroup)) {
+            $groupBy = 't.id';
+        }
+
+        if (!in_array($sortBy, $allowedSort)) {
+            $sortBy = 't.date';
+        }
+
+        if (!in_array($sortOrder, ['ASC', 'DESC'])) {
+            $sortOrder = 'ASC';
+        }
+
+        // ==========================
+        // HEADER MESSAGE
+        // ==========================
+        $companyName = CHtml::encode(Yii::app()->params['company']['name']);
         $message = $companyName;
-        if ($dateFrom != "" && $dateTo != '') {
-            $message .= "<br>  Date: " . date('d/m/Y', strtotime($dateFrom)) . "-" . date('d/m/Y', strtotime($dateTo));
+
+        if ($dateFrom && $dateTo) {
+            $message .= "<br>Date: " .
+                date('d/m/Y', strtotime($dateFrom)) .
+                " - " .
+                date('d/m/Y', strtotime($dateTo));
+        }
+
+        $data = [];
+
+        // ==========================
+        // VALIDATE DATES
+        // ==========================
+        if ($dateFrom && $dateTo) {
 
             $criteria = new CDbCriteria();
             $criteria->addBetweenCondition('t.date', $dateFrom, $dateTo);
-            $criteria->addColumnCondition(['t.is_deleted' => 0]);
-            if ($customer_id > 0) {
-                $criteria->addColumnCondition(['t.customer_id' => $customer_id]);
+            $criteria->addCondition('t.is_deleted = 0');
+
+            if ($customer > 0) {
+                $criteria->addCondition('t.customer_id = :customer');
+                $criteria->params[':customer'] = $customer;
             }
-            if ($created_by > 0) {
-                $criteria->addColumnCondition(['t.created_by' => $created_by]);
+
+            if ($createdBy > 0) {
+                $criteria->addCondition('t.created_by = :creator');
+                $criteria->params[':creator'] = $createdBy;
             }
-            if ($order_type > 0) {
-                $criteria->addColumnCondition(['t.order_type' => $order_type]);
-            }
-            $criteria->join .= " LEFT JOIN customers c on t.customer_id = c.id ";
-            $criteria->select = "SUM(t.total_amount) as total_amount, 
-                                SUM(t.total_return) as return_amount, 
-                                SUM(t.delivery_charge) as delivery_charge, 
-                                SUM(t.discount_amount) as discount_amount, 
-                                SUM(t.grand_total) as grand_total, 
-                                SUM(t.costing) as costing, 
-                                SUM(t.total_amount) as total_amount, 
-                                SUM(t.total_due) as total_due,
-                                t.date,
-                                t.customer_id,
-                                t.id,
-                                c.company_name as customer_name, 
-                                c.owner_mobile_no as contact_no";
-            if ($group_by) {
-                $criteria->group = $group_by;
-            } else {
-                $criteria->group = 't.id';
-            }
-            if ($sort_by && $sort_order) {
-                $criteria->order = "$sort_by $sort_order";
-            } else {
-                $criteria->order = 't.date asc';
-            }
+
+            // ==========================
+            // JOIN
+            // ==========================
+            $criteria->join = "
+            LEFT JOIN customers c 
+                ON c.id = t.customer_id
+        ";
+
+            // ==========================
+            // SELECT (GROUP SAFE)
+            // ==========================
+            $criteria->select = "
+            SUM(t.total_amount)     AS total_amount,
+            SUM(t.total_return)     AS total_return,
+            SUM(t.delivery_charge) AS delivery_charge,
+            SUM(t.discount_amount) AS discount_amount,
+            SUM(t.vat_amount)      AS vat_amount,
+            SUM(t.road_fee)        AS road_fee,
+            SUM(t.damage_value)    AS damage_value,
+            SUM(t.sr_commission)  AS sr_commission,
+            SUM(t.grand_total)    AS grand_total,
+            SUM(t.costing)        AS costing,
+
+            MIN(t.date)           AS date,
+            t.customer_id,
+            MIN(t.id)            AS id,
+            c.company_name      AS customer_name,
+            c.owner_mobile_no  AS contact_no
+        ";
+
+            // ==========================
+            // GROUP + ORDER
+            // ==========================
+            $criteria->group = $groupBy;
+            $criteria->order = "$sortBy $sortOrder";
+
             $data = SellOrder::model()->findAll($criteria);
         }
-        echo $this->renderPartial('salesReportView', array(
-            'data' => $data,
-            'message' => $message,
-            'group_by' => $group_by,
-        ), true, true);
+
+        // ==========================
+        // RENDER
+        // ==========================
+        echo $this->renderPartial(
+            'salesReportView',
+            [
+                'data'      => $data,
+                'message'  => $message,
+                'group_by'=> $groupBy,
+                'sort_by' => $sortBy,
+                'sort_order' => $sortOrder,
+                'dateFrom' => $dateFrom,
+                'dateTo'   => $dateTo,
+                'customer_id' => $customer,
+                'created_by' => $createdBy,
+
+            ],
+            true,
+            true
+        );
+
         Yii::app()->end();
     }
+
 
     public function actionSaleDetailsReport()
     {

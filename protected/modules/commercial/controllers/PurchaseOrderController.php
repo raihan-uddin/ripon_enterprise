@@ -55,7 +55,7 @@ class PurchaseOrderController extends RController
             $model->attributes = $_POST['PurchaseOrder'];
             $model->max_sl_no = PurchaseOrder::maxSlNo();
             $model->discount_percentage = 0;
-            $model->po_no = date('y') . "-" . date('m') . str_pad($model->max_sl_no, 5, "0", STR_PAD_LEFT);
+            $model->po_no = date('y') . date('m') . str_pad($model->max_sl_no, 5, "0", STR_PAD_LEFT);
             $model->is_all_received = PurchaseOrder::ALL_RECEIVED;
             try {
                 if (!$model->save()) {
