@@ -11,7 +11,6 @@ $this->widget('application.components.BreadCrumb', array(
         array('name' => 'Sales', 'url' => array('')),
         array('name' => 'Sales Report',),
     ),
-//    'delimiter' => ' &rarr; ',
 ));
 ?>
 <?php
@@ -51,18 +50,6 @@ $form = $this->beginWidget('CActiveForm', array(
                     </div>
                     <span class="help-block"
                           style="color: red; width: 100%"> <?php echo $form->error($model, 'date_to'); ?></span>
-                </div>
-            </div>
-
-            <div class="col-sm-12 col-md-1">
-                <div class="form-group row">
-                    <?php echo $form->labelEx($model, 'order_type', ['class' => 'col-form-label']); ?>
-                    <div class="col-sm-12">
-                        <?php echo $form->dropDownList($model, 'order_type',[SellOrder::NEW_ORDER => 'NEW', SellOrder::REPAIR_ORDER => 'QUOTATION'], [
-                                'prompt' => 'All',
-                                'class' => 'form-control'
-                            ]); ?>
-                    </div>
                 </div>
             </div>
 
