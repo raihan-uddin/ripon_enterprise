@@ -854,7 +854,7 @@ Yii::app()->clientScript->registerCoreScript("jquery.ui");
                                     <td class="text-center" data-label="Row Total">
                                         <label>
                                             <input type="text"
-                                                   class="form-control row-total text-right" readonly
+                                                   class="form-control row-total text-right"
                                                    value="<?= $soldQty != 0 ? $rowTotal : '' ?>"
                                                    name="SellOrderDetails[temp_row_total][]">
                                         </label>
@@ -916,7 +916,7 @@ Yii::app()->clientScript->registerCoreScript("jquery.ui");
                                             <div></div> <!-- spacer column -->
 
                                             <div class="summary-fields">
-                                                <div class="field">
+                                                <div class="field" title="VAT Percentage">
                                                     <div class="input-group input-group-custom">
                                                         <?php echo $form->textField($model, 'vat_percentage', [
                                                                 'class' => 'form-control text-center',
@@ -945,7 +945,7 @@ Yii::app()->clientScript->registerCoreScript("jquery.ui");
                                             </div>
                                             <div></div> <!-- spacer column -->
                                             <div class="summary-fields">
-                                                <div class="field wide">
+                                                <div class="field wide" title="Delivery Charge">
                                                     <?php echo $form->textField($model, 'delivery_charge', [
                                                             'class' => 'form-control text-center',
                                                             'placeholder' => '0.00',
@@ -961,7 +961,7 @@ Yii::app()->clientScript->registerCoreScript("jquery.ui");
                                             </div>
                                             <div></div> <!-- spacer column -->
                                             <div class="summary-fields">
-                                                <div class="field wide">
+                                                <div class="field wide" title="Discount Amount"
                                                     <?php echo $form->textField($model, 'discount_amount', [
                                                             'class' => 'form-control text-center',
                                                             'placeholder' => '0.00',
@@ -976,7 +976,7 @@ Yii::app()->clientScript->registerCoreScript("jquery.ui");
                                             </div>
                                             <div></div> <!-- spacer column -->
                                             <div class="summary-fields">
-                                                <div class="field wide">
+                                                <div class="field wide" title="Road Fee">
                                                     <?php echo $form->textField($model, 'road_fee', [
                                                             'class' => 'form-control text-center',
                                                             'placeholder' => '0.00',
@@ -991,7 +991,7 @@ Yii::app()->clientScript->registerCoreScript("jquery.ui");
                                             </div>
                                             <div></div> <!-- spacer column -->
                                             <div class="summary-fields">
-                                                <div class="field wide">
+                                                <div class="field wide" title="Damage Value">
                                                     <?php echo $form->textField($model, 'damage_value', [
                                                             'class' => 'form-control text-center',
                                                             'placeholder' => '0.00',
@@ -1007,7 +1007,7 @@ Yii::app()->clientScript->registerCoreScript("jquery.ui");
                                             </div>
                                             <div></div> <!-- spacer column -->
                                             <div class="summary-fields">
-                                                <div class="field wide">
+                                                <div class="field wide" title="Sales Rep Commission">
                                                     <?php echo $form->textField($model, 'sr_commission', [
                                                             'class' => 'form-control text-center',
                                                             'placeholder' => '0.00',
@@ -1023,7 +1023,7 @@ Yii::app()->clientScript->registerCoreScript("jquery.ui");
                                             </div>
                                             <div></div> <!-- spacer column -->
                                             <div class="summary-fields">
-                                                <div class="field wide">
+                                                <div class="field wide" title="Grand Total">
                                                     <?php echo $form->textField($model, 'grand_total', [
                                                             'class' => 'form-control text-center grand-input',
                                                             'placeholder' => '0.00',
@@ -1232,15 +1232,20 @@ Yii::app()->clientScript->registerCoreScript("jquery.ui");
          * ROW LOGIC
          * ========================== */
         function updateRow($row) {
+            const lastEdited = $row.data('lastEdited');
+
             const qty = safeNumber($row.find(CFG.SELECTORS.QTY).val());
             const price = safeNumber($row.find(CFG.SELECTORS.PRICE).val());
             const stock = safeNumber(
                 $row.find(CFG.SELECTORS.STOCK).data('stock')
             );
 
-            const total = qty * price;
-            $row.find(CFG.SELECTORS.ROW_TOTAL)
-                .val(total > 0 ? total.toFixed(2) : '');
+            // Only recalc ROW TOTAL if user is NOT editing row total
+            if (lastEdited !== 'row_total') {
+                const total = qty * price;
+                $row.find(CFG.SELECTORS.ROW_TOTAL)
+                    .val(total > 0 ? total.toFixed(2) : '');
+            }
 
             // Validation states
             $row.removeClass('error ok table-danger');
@@ -1474,11 +1479,12 @@ Yii::app()->clientScript->registerCoreScript("jquery.ui");
             }
         );
 
-        // Live row + company update
         $(document).on('input',
             `${CFG.SELECTORS.QTY}, ${CFG.SELECTORS.PRICE}`,
             function () {
                 const $row = $(this).closest('tr');
+                $row.data('lastEdited', 'price_qty');
+
                 const group = $row.attr('class')
                     .split(/\s+/)
                     .find(c => c.startsWith('company-'));
@@ -1495,6 +1501,37 @@ Yii::app()->clientScript->registerCoreScript("jquery.ui");
                 }
             }
         );
+
+        $(document).on('input',
+            `${CFG.SELECTORS.ROW_TOTAL}`,
+            function () {
+                const $row = $(this).closest('tr');
+
+                $row.data('lastEdited', 'row_total');
+                const qty = safeNumber($row.find(CFG.SELECTORS.QTY).val());
+                const rowTotal = safeNumber($(this).val());
+
+                if (qty > 0) {
+                    const price = rowTotal / qty;
+                    $row.find(CFG.SELECTORS.PRICE)
+                        .val(price.toFixed(CFG.DECIMALS));
+                }
+
+                const group = $row.attr('class')
+                    .split(/\s+/)
+                    .find(c => c.startsWith('company-'));
+
+                calculateVat();
+                const totals = calculateTotals();
+                calculateGrandTotal();
+                calculateAvgSP(totals.qtyTotal, totals.rowTotal);
+
+                if (group) {
+                    updateCompanySummary(group);
+                }
+            }
+        );
+
 
         // Live financial-only update (VAT, Road, Damage, Discount, Delivery, Commission)
         $(document).on('input keyup change',
@@ -1546,8 +1583,8 @@ Yii::app()->clientScript->registerCoreScript("jquery.ui");
         });
 
         /* ==========================
- * INIT CALCULATION ON LOAD
- * ========================== */
+         * INIT CALCULATION ON LOAD
+         * ========================== */
         setTimeout(function () {
 
             // Calculate all rows
@@ -1572,8 +1609,6 @@ Yii::app()->clientScript->registerCoreScript("jquery.ui");
 
             // Final global bar update
             updateGlobalBar();
-
-            console.log("Sales form initialized");
 
         }, 100);
 
