@@ -1257,15 +1257,20 @@ Yii::app()->clientScript->registerCoreScript("jquery.ui");
          * ROW LOGIC
          * ========================== */
         function updateRow($row) {
+            const lastEdited = $row.data('lastEdited');
+
             const qty = safeNumber($row.find(CFG.SELECTORS.QTY).val());
             const price = safeNumber($row.find(CFG.SELECTORS.PRICE).val());
             const stock = safeNumber(
                 $row.find(CFG.SELECTORS.STOCK).data('stock')
             );
 
-            const total = qty * price;
-            $row.find(CFG.SELECTORS.ROW_TOTAL)
-                .val(total > 0 ? total.toFixed(2) : '');
+            // Only recalc ROW TOTAL if user is NOT editing row total
+            if (lastEdited !== 'row_total') {
+                const total = qty * price;
+                $row.find(CFG.SELECTORS.ROW_TOTAL)
+                    .val(total > 0 ? total.toFixed(2) : '');
+            }
 
             // Validation states
             $row.removeClass('error ok table-danger');
@@ -1278,6 +1283,7 @@ Yii::app()->clientScript->registerCoreScript("jquery.ui");
                 $row.addClass('ok');
             }
         }
+
 
         /* ==========================
          * TOTALS
@@ -1504,6 +1510,8 @@ Yii::app()->clientScript->registerCoreScript("jquery.ui");
             `${CFG.SELECTORS.QTY}, ${CFG.SELECTORS.PRICE}`,
             function () {
                 const $row = $(this).closest('tr');
+                $row.data('lastEdited', 'price_qty');
+
                 const group = $row.attr('class')
                     .split(/\s+/)
                     .find(c => c.startsWith('company-'));
@@ -1520,6 +1528,37 @@ Yii::app()->clientScript->registerCoreScript("jquery.ui");
                 }
             }
         );
+
+        $(document).on('input',
+            `${CFG.SELECTORS.ROW_TOTAL}`,
+            function () {
+                const $row = $(this).closest('tr');
+
+                $row.data('lastEdited', 'row_total');
+                const qty = safeNumber($row.find(CFG.SELECTORS.QTY).val());
+                const rowTotal = safeNumber($(this).val());
+
+                if (qty > 0) {
+                    const price = rowTotal / qty;
+                    $row.find(CFG.SELECTORS.PRICE)
+                        .val(price.toFixed(CFG.DECIMALS));
+                }
+
+                const group = $row.attr('class')
+                    .split(/\s+/)
+                    .find(c => c.startsWith('company-'));
+
+                calculateVat();
+                const totals = calculateTotals();
+                calculateGrandTotal();
+                calculateAvgSP(totals.qtyTotal, totals.rowTotal);
+
+                if (group) {
+                    updateCompanySummary(group);
+                }
+            }
+        );
+
 
         // Live financial-only update (VAT, Road, Damage, Discount, Delivery, Commission)
         $(document).on('input keyup change',
