@@ -7,6 +7,11 @@
 
     /* override styles when printing */
     @media print {
+        /* Set A5 paper size and minimum margins */
+        @page {
+            size: A5;
+            margin: 8mm 5mm 15mm 5mm; /* bottom space for footer */
+        }
         body {
             margin: 0;
             padding: 0;
