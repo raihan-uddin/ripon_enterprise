@@ -185,7 +185,7 @@
                             </div>
                         </div>
                     </div>
-                    <table style="width: 100%; border-collapse: collapse; font-size: 12px;" class="item-list">
+                    <table style="width: 100%; border-collapse: collapse; font-size: 14px;" class="item-list">
                         <thead>
                         <tr>
                             <td style="text-align: center; width: 2%; border: 1px solid black;">#</td>

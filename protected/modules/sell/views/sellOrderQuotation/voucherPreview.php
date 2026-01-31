@@ -10,7 +10,7 @@
         /* Set A4 paper size and minimum margins */
         @page {
             size: A4;
-            margin: 8mm 5mm 15mm 5mm; /* bottom space for footer */
+            margin: 8mm 5mm 5mm 5mm; /* bottom space for footer */
         }
         body {
             margin: 0;
@@ -153,7 +153,7 @@
                             </div>
                         </div>
                     </div>
-                    <table style="width: 100%; border-collapse: collapse; font-size: 12px;" class="item-list">
+                    <table style="width: 100%; border-collapse: collapse; font-size: 14px;" class="item-list">
                         <thead>
                         <tr>
                             <td style="text-align: center; width: 2%; border: 1px solid black;">#</td>
