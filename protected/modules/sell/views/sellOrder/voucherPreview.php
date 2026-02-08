@@ -233,7 +233,7 @@
                                     <td style="text-align: left; border: 1px solid black;">
                                         <?= $dt->model_name ?>
                                     </td>
-                                    <td style="text-align: center;"><?= number_format($dt->qty) ?></td>
+                                    <td style="text-align: center;"><?= number_format($dt->qty, 2) ?></td>
                                     <td style="text-align: right;"> TK <?= number_format($dt->amount, 4) ?></td>
                                     <td style="text-align: right;">
                                         TK <?= number_format($dt->row_total, 4) ?></td>
