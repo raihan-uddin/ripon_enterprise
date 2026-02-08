@@ -2,14 +2,13 @@
 ini_set('display_errors', '1');
 ini_set('display_startup_errors', '1');
 error_reporting(E_ALL);
-// Yii::setPathOfAlias('local','path/to/local-folder');
 date_default_timezone_set('Asia/Dhaka');
 return array(
     'basePath' => dirname(__FILE__) . DIRECTORY_SEPARATOR . '..',
     'theme' => 'erp',
     'name' => 'INVENTORY MANAGEMENT',
     'defaultController' => 'site',
-// preloading 'log' component
+    // preloading 'log' component
     'preload' => array('log'),
     'language' => 'en',
     'import' => array(
@@ -87,9 +86,10 @@ return array(
         'inventory',
         'commercial',
         'sell',
+        'loan',
         'cal' => array('debug' => FALSE),
     ),
-// application components
+    // application components
     'components' => array(
         'cache' => array(
             'class' => 'CDbCache',

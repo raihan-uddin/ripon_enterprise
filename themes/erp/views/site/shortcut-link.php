@@ -136,6 +136,27 @@ $endDate = date('Y-m-t');
         <?php
     }
     ?>
+    <?php
+    if (Yii::app()->user->checkAccess('Loan.LoanTransactions.Admin')) {
+        ?>
+        <a class="btn btn-app bg-gradient-danger"
+           href="<?= Yii::app()->createUrl("/loan/loanTransactions/admin") ?>">
+            <span class="badge bg-teal"><?=
+                Yii::app()->db->createCommand()
+                        ->select('FORMAT(ROUND(SUM(amount)), 0) as amount')
+                        ->from('loan_transactions')
+                        ->where(' transaction_date BETWEEN :start_date AND :end_date',
+                                array(
+                                        ':start_date' => $startDate,
+                                        ':end_date' => $endDate,
+                                ))
+                        ->queryScalar();
+                ?></span>
+            <i class="fa fa-money"></i> Loan
+        </a>
+        <?php
+    }
+    ?>
 
     <?php
     if (Yii::app()->user->checkAccess('Accounting.MoneyReceipt.AdminMoneyReceipt')) {

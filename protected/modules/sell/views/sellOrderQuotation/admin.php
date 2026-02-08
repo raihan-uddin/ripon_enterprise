@@ -217,9 +217,34 @@ if (Yii::app()->user->checkAccess('Sell.SellOrderQuotation.VoucherPreview')) {
                             'options' => array('rel' => 'tooltip', 'data-toggle' => 'tooltip', 'title' => Yii::t('app', 'Edit')),
                         ),
                         'delete' => array(
-                            'label' => '<i class="fa fa-trash fa-2x" style="color: red;"></i>&nbsp;&nbsp;',
-                            'imageUrl' => false,
-                            'options' => array('rel' => 'tooltip', 'data-toggle' => 'tooltip', 'title' => Yii::t('app', 'Delete')),
+                                'label' => '<i class="fa fa-trash fa-2x" style="color:red;"></i>&nbsp;&nbsp;',
+                                'imageUrl' => false,
+                                'click' => 'function(e){
+                                    e.preventDefault();
+                        
+                                    var pin = prompt("Enter PIN to confirm delete:");
+                        
+                                    if (pin === null) {
+                                        return false; // cancel clicked
+                                    }
+                        
+                                    if (pin !== "0000") {
+                                        alert("❌ Wrong PIN");
+                                        return false;
+                                    }
+                        
+                                    // PIN matched → proceed with default delete
+                                    if (confirm("Are you sure you want to delete?")) {
+                                        window.location.href = $(this).attr("href");
+                                    }
+                        
+                                    return false;
+                                }',
+                                'options' => array(
+                                        'rel' => 'tooltip',
+                                        'data-toggle' => 'tooltip',
+                                        'title' => Yii::t('app', 'Delete'),
+                                ),
                         ),
                     )
                 ),

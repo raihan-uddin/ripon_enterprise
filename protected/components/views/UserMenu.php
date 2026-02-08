@@ -2,174 +2,191 @@
 $loggedUser = Yii::app()->user->getState('user_id');
 $developerUserIds = [1];
 $this->widget('application.extensions.mbmenu.MbMenu', array(
-    'items' => array(
-        array('label' => 'DASHBOARD', 'url' => array('/site/index')),
+        'items' => array(
+                array('label' => 'DASHBOARD', 'url' => array('/site/index')),
 
-        array('label' => 'COMMON',
-            'items' => array(
-                array('label' => 'USER',
-                    'items' => array(
-                        ['label' => Yii::t('app', 'MANAGE USERS'), 'url' => ['/users/admin'], 'visible' => Yii::app()->user->checkAccess('Users.Admin')],
-                        ['label' => Yii::t('app', 'MANAGE PERMISSION'), 'url' => ['/rights'], 'visible' => Yii::app()->user->checkAccess('rights')],
-                        ['label' => Yii::t('app', 'BUSINESS'), 'url' => ['/business'], 'visible' => in_array($loggedUser, $developerUserIds)],
-                        ['label' => Yii::t('app', 'BRANCH'), 'url' => ['/branch'], 'visible' => in_array($loggedUser, $developerUserIds)],
-                    ),
-                ),
-                array('label' => 'EXPENSE',
-                    'items' => array(
-                        ['label' => Yii::t('app', 'ENTRY'), 'url' => ['/accounting/expense/create'], 'visible' => Yii::app()->user->checkAccess('Accounting.Expense.Create')],
-                        ['label' => Yii::t('app', 'MANAGE'), 'url' => ['/accounting/expense/admin'], 'visible' => Yii::app()->user->checkAccess('Accounting.Expense.Admin')],
-                        ['label' => Yii::t('app', 'EXPENSE HEAD'), 'url' => ['/accounting/expenseHead/admin'], 'visible' => Yii::app()->user->checkAccess('Accounting.ExpenseHead.Admin')],
+                array('label' => 'COMMON',
+                        'items' => array(
+                                array('label' => 'USER',
+                                        'items' => array(
+                                                ['label' => Yii::t('app', 'MANAGE USERS'), 'url' => ['/users/admin'], 'visible' => Yii::app()->user->checkAccess('Users.Admin')],
+                                                ['label' => Yii::t('app', 'MANAGE PERMISSION'), 'url' => ['/rights'], 'visible' => Yii::app()->user->checkAccess('rights')],
+                                                ['label' => Yii::t('app', 'BUSINESS'), 'url' => ['/business'], 'visible' => in_array($loggedUser, $developerUserIds)],
+                                                ['label' => Yii::t('app', 'BRANCH'), 'url' => ['/branch'], 'visible' => in_array($loggedUser, $developerUserIds)],
+                                        ),
+                                ),
+                                array('label' => 'EXPENSE',
+                                        'items' => array(
+                                                ['label' => Yii::t('app', 'ENTRY'), 'url' => ['/accounting/expense/create'], 'visible' => Yii::app()->user->checkAccess('Accounting.Expense.Create')],
+                                                ['label' => Yii::t('app', 'MANAGE'), 'url' => ['/accounting/expense/admin'], 'visible' => Yii::app()->user->checkAccess('Accounting.Expense.Admin')],
+                                                ['label' => Yii::t('app', 'EXPENSE HEAD'), 'url' => ['/accounting/expenseHead/admin'], 'visible' => Yii::app()->user->checkAccess('Accounting.ExpenseHead.Admin')],
 
-                    ),
-                ),
-            ),
-        ),
-
-        array('label' => 'INVENTORY',
-            'items' => array(
-                array('label' => 'CONFIG',
-                    'items' => array(
-                        ['label' => Yii::t('app', 'CATEGORY'), 'url' => ['/prodItems/admin'], 'visible' => Yii::app()->user->checkAccess('ProdItems.Admin')],
-                        ['label' => Yii::t('app', 'SUB-CATEGORY'), 'url' => ['/prodBrands/admin'], 'visible' => Yii::app()->user->checkAccess('ProdBrands.Admin')],
-                        array('label' => 'PRODUCT SETUP',
-                            'items' => array(
-                                ['label' => Yii::t('app', 'CREATE'), 'url' => ['/prodModels/create'], 'visible' => Yii::app()->user->checkAccess('ProdModels.Create')],
-                                ['label' => Yii::t('app', 'MANAGE'), 'url' => ['/prodModels/admin'], 'visible' => Yii::app()->user->checkAccess('ProdModels.Admin')],
-                            ),
+                                        ),
+                                ),
                         ),
+                ),
 
-                        ['label' => Yii::t('app', 'UNIT'), 'url' => ['/units/admin'], 'visible' => Yii::app()->user->checkAccess('Units.Admin')],
-                        ['label' => Yii::t('app', 'COMPANY'), 'url' => ['/companies/admin'], 'visible' => Yii::app()->user->checkAccess('Companies.Admin')],
+                array('label' => 'INVENTORY',
+                        'items' => array(
+                                array('label' => 'CONFIG',
+                                        'items' => array(
+                                                ['label' => Yii::t('app', 'CATEGORY'), 'url' => ['/prodItems/admin'], 'visible' => Yii::app()->user->checkAccess('ProdItems.Admin')],
+                                                ['label' => Yii::t('app', 'SUB-CATEGORY'), 'url' => ['/prodBrands/admin'], 'visible' => Yii::app()->user->checkAccess('ProdBrands.Admin')],
+                                                array('label' => 'PRODUCT SETUP',
+                                                        'items' => array(
+                                                                ['label' => Yii::t('app', 'CREATE'), 'url' => ['/prodModels/create'], 'visible' => Yii::app()->user->checkAccess('ProdModels.Create')],
+                                                                ['label' => Yii::t('app', 'MANAGE'), 'url' => ['/prodModels/admin'], 'visible' => Yii::app()->user->checkAccess('ProdModels.Admin')],
+                                                        ),
+                                                ),
+
+                                                ['label' => Yii::t('app', 'UNIT'), 'url' => ['/units/admin'], 'visible' => Yii::app()->user->checkAccess('Units.Admin')],
+                                                ['label' => Yii::t('app', 'COMPANY'), 'url' => ['/companies/admin'], 'visible' => Yii::app()->user->checkAccess('Companies.Admin')],
 //                        ['label' => Yii::t('app', 'COUNTRY'), 'url' => ['/countries/admin'], 'visible' => Yii::app()->user->checkAccess('Countries.Admin')],
 //                        ['label' => Yii::t('app', 'SHIP BY'), 'url' => ['/shipBy/admin'], 'visible' => Yii::app()->user->checkAccess('ShipBy.Admin')],
 //                        ['label' => Yii::t('app', 'COMPANY'), 'url' => ['/yourCompany/admin'], 'visible' => Yii::app()->user->checkAccess('YourCompany.Admin')],
 //                        ['label' => Yii::t('app', 'DB BACKUP'), 'url' => ['/users/dbBackup'], 'visible' => Yii::app()->user->checkAccess('Users.DbBackup')],
 
-                    ),
+                                        ),
+                                ),
+
+                                array('label' => 'STOCK',
+                                        'items' => array(
+                                                ['label' => Yii::t('app', 'MANAGE'), 'url' => ['/inventory/inventory/admin'], 'visible' => Yii::app()->user->checkAccess('Inventory.Inventory.Admin')],
+                                                ['label' => Yii::t('app', 'VERIFY PRODUCT'), 'url' => ['/inventory/inventory/verifyProduct'], 'visible' => Yii::app()->user->checkAccess('Inventory.Inventory.VerifyProduct')],
+                                        ),
+                                ),
+                        ),
                 ),
 
-                array('label' => 'STOCK',
-                    'items' => array(
-                        ['label' => Yii::t('app', 'MANAGE'), 'url' => ['/inventory/inventory/admin'], 'visible' => Yii::app()->user->checkAccess('Inventory.Inventory.Admin')],
-                        ['label' => Yii::t('app', 'VERIFY PRODUCT'), 'url' => ['/inventory/inventory/verifyProduct'], 'visible' => Yii::app()->user->checkAccess('Inventory.Inventory.VerifyProduct')],
-                    ),
-                ),
-            ),
-        ),
-
-        array('label' => 'SALES',
-            'items' => array(
-                array('label' => 'CONFIG',
-                    'items' => array(
-                        ['label' => Yii::t('app', 'CUSTOMER'), 'url' => ['/sell/customers/admin'], 'visible' => Yii::app()->user->checkAccess('Sell.Customers.Admin')],
-                        ['label' => Yii::t('app', 'BANK'), 'url' => ['/sell/crmBank/admin'], 'visible' => Yii::app()->user->checkAccess('Sell.CrmBank.Admin')],
-                    ),
-                ),
-                array('label' => 'ORDER',
-                    'items' => array(
-                        ['label' => Yii::t('app', 'CREATE'), 'url' => ['/sell/sellOrder/create'], 'visible' => Yii::app()->user->checkAccess('Sell.SellOrder.Create')],
-                        ['label' => Yii::t('app', 'MANAGE'), 'url' => ['/sell/sellOrder/admin'], 'visible' => Yii::app()->user->checkAccess('Sell.SellOrder.Admin')],
-
-                    ),
-                ),
-                array('label' => 'RETURN/WARRANTY',
-                    'items' => array(
-                        ['label' => Yii::t('app', 'RETURN'), 'url' => ['/sell/sellReturn/createProductReturn'], 'visible' => Yii::app()->user->checkAccess('Sell.SellReturn.CreateProductReturn')],
-                        ['label' => Yii::t('app', 'RETURN MANAGE'), 'url' => ['/sell/sellReturn/admin'], 'visible' => Yii::app()->user->checkAccess('Sell.SellReturn.Admin')],
-
-                    ),
-                ),
-                array('label' => 'DRAFT',
-                    'items' => array(
-                        ['label' => Yii::t('app', 'CREATE'), 'url' => ['/sell/sellOrderQuotation/create'], 'visible' => Yii::app()->user->checkAccess('Sell.SellOrderQuotation.Create')],
-                        ['label' => Yii::t('app', 'MANAGE'), 'url' => ['/sell/sellOrderQuotation/admin'], 'visible' => Yii::app()->user->checkAccess('Sell.SellOrderQuotation.Admin')],
-
-                    ),
-                ),
-                array('label' => 'COLLECTION',
-                    'items' => array(
-                        ['label' => Yii::t('app', 'MR CREATE'), 'url' => ['/accounting/moneyReceipt/adminMoneyReceipt'], 'visible' => Yii::app()->user->checkAccess('Accounting.MoneyReceipt.AdminMoneyReceipt')],
-                        ['label' => Yii::t('app', 'MR MANAGE'), 'url' => ['/accounting/moneyReceipt/admin'], 'visible' => Yii::app()->user->checkAccess('Accounting.MoneyReceipt.Admin')],
-                    ),
-                ),
-            ),
-        ),
-
-        array('label' => 'PURCHASE',
-            'items' => array(
-                array('label' => 'CONFIG',
-                    'items' => array(
-                        ['label' => Yii::t('app', 'BANK'), 'url' => ['/commercial/comBank/admin'], 'visible' => Yii::app()->user->checkAccess('Commercial.ComBank.Admin')],
-                        ['label' => Yii::t('app', 'SUPPLIER'), 'url' => ['/commercial/suppliers/admin'], 'visible' => Yii::app()->user->checkAccess('Commercial.Suppliers.Admin')],
-                    ),
-                ),
-                array('label' => 'ORDER',
-                    'items' => array(
-                        ['label' => Yii::t('app', 'CREATE'), 'url' => ['/commercial/purchaseOrder/create'], 'visible' => Yii::app()->user->checkAccess('Commercial.PurchaseOrder.Create')],
-                        ['label' => Yii::t('app', 'MANAGE'), 'url' => ['/commercial/purchaseOrder/admin'], 'visible' => Yii::app()->user->checkAccess('Commercial.PurchaseOrder.Admin')],
-
-                    ),
-                ),
-                array('label' => 'PAYMENT',
-                    'items' => array(
-                        ['label' => Yii::t('app', 'CREATE'), 'url' => ['/accounting/paymentReceipt/adminPaymentReceipt'], 'visible' => Yii::app()->user->checkAccess('Accounting.PaymentReceipt.AdminPaymentReceipt')],
-                        ['label' => Yii::t('app', 'MANAGE'), 'url' => ['/accounting/paymentReceipt/admin'], 'visible' => Yii::app()->user->checkAccess('Accounting.PaymentReceipt.Create')],
-
-                    ),
-                ),
-
-            ),
-        ),
-
-        array('label' => 'REPORT',
-            'items' => array(
-                array('label' => 'INVENTORY',
-                    'items' => array(
-                        ['label' => Yii::t('app', 'STOCK REPORT'), 'url' => ['/inventory/inventory/stockReport'], 'visible' => Yii::app()->user->checkAccess('Inventory.Inventory.StockReport')],
-                        ['label' => Yii::t('app', 'STOCK REPORT SUPPLIER'), 'url' => ['/inventory/inventory/stockReportSupplierWise'], 'visible' => Yii::app()->user->checkAccess('Inventory.Inventory.StockReportSupplierWise')],
-                        // price-list
-                        ['label' => Yii::t('app', 'PRICE LIST'), 'url' => ['/Report/priceListView'], 'visible' => Yii::app()->user->checkAccess('Report.PriceListView')],
-                        // ['label' => Yii::t('app', 'STOCK ALERT'), 'url' => ['/inventory/inventory/stockAlert'], 'visible' => Yii::app()->user->checkAccess('Inventory.Inventory.StockAlert')],
-                        // ['label' => Yii::t('app', 'STOCK MOVEMENT'), 'url' => ['/inventory/inventory/stockMovement'], 'visible' => Yii::app()->user->checkAccess('Inventory.Inventory.StockMovement')],
-                        // ['label' => Yii::t('app', 'STOCK LEDGER'), 'url' => ['/inventory/inventory/stockLedger'], 'visible' => Yii::app()->user->checkAccess('Inventory.Inventory.StockLedger')],
-                        // ['label' => Yii::t('app', 'STOCK SUMMARY'), 'url' => ['/inventory/inventory/stockSummary'], 'visible' => Yii::app()->user->checkAccess('Inventory.Inventory.StockSummary')],
-                    ),
-                ),
                 array('label' => 'SALES',
-                    'items' => array(
-                        ['label' => Yii::t('app', 'SALES REPORT'), 'url' => ['/report/salesReport'], 'visible' => Yii::app()->user->checkAccess('Report.SalesReport')],
-                        ['label' => Yii::t('app', 'SALES DETAILS REPORT'), 'url' => ['/report/saleDetailsReport'], 'visible' => Yii::app()->user->checkAccess('Report.SaleDetailsReport')],
-                        ['label' => Yii::t('app', 'CUSTOMER DUE REPORT'), 'url' => ['/report/customerDueReport'], 'visible' => Yii::app()->user->checkAccess('Report.CustomerDueReport')],
-                        ['label' => Yii::t('app', 'CUSTOMER LEDGER'), 'url' => ['/report/customerLedger'], 'visible' => Yii::app()->user->checkAccess('Report.CustomerLedger')],
-                        ['label' => Yii::t('app', 'COLLECTION REPORT'), 'url' => ['/report/collectionReport'], 'visible' => Yii::app()->user->checkAccess('Report.CollectionReport')],
-                    ),
-                ),
-                array('label' => 'PURCHASE',
-                    'items' => array(
-                        ['label' => Yii::t('app', 'PURCHASE REPORT'), 'url' => ['/report/purchaseReport'], 'visible' => Yii::app()->user->checkAccess('Report.PurchaseReport')],
-                        ['label' => Yii::t('app', 'PURCHASE DETAILS REPORT'), 'url' => ['/report/purchaseDetailsReport'], 'visible' => Yii::app()->user->checkAccess('Report.PurchaseDetailsReport')],
-                        ['label' => Yii::t('app', 'SUPPLIER DUE REPORT'), 'url' => ['/report/supplierDueReport'], 'visible' => Yii::app()->user->checkAccess('Report.SupplierDueReport')],
-                        ['label' => Yii::t('app', 'SUPPLIER LEDGER'), 'url' => ['/report/supplierLedger'], 'visible' => Yii::app()->user->checkAccess('Report.SupplierLedger')],
-                        ['label' => Yii::t('app', 'PAYMENT REPORT'), 'url' => ['/report/paymentReport'], 'visible' => Yii::app()->user->checkAccess('Report.PaymentReport')],
-                    ),
-                ),
-                array('label' => 'EXPENSE',
-                    'items' => array(
-                        ['label' => Yii::t('app', 'EXPENSE SUMMARY (DAY WISE)'), 'url' => ['/report/expenseSummaryReport'], 'visible' => Yii::app()->user->checkAccess('Report.ExpenseSummaryReport')],
-                        ['label' => Yii::t('app', 'EXPENSE DETAILS (DAY WISE)'), 'url' => ['/report/expenseDetailsReport'], 'visible' => Yii::app()->user->checkAccess('Report.ExpenseDetailsReport')],
-                    ),
-                ),
-                array('label' => 'ACCOUNTS',
-                    'items' => array(
-                        ['label' => Yii::t('app', 'Day In/Out Report'), 'url' => ['/report/dayInOutReport'], 'visible' => Yii::app()->user->checkAccess('Report.DayInOutReport')],
-                    ),
-                ),
-            ),
-        ),
+                        'items' => array(
+                                array('label' => 'CONFIG',
+                                        'items' => array(
+                                                ['label' => Yii::t('app', 'CUSTOMER'), 'url' => ['/sell/customers/admin'], 'visible' => Yii::app()->user->checkAccess('Sell.Customers.Admin')],
+                                                ['label' => Yii::t('app', 'BANK'), 'url' => ['/sell/crmBank/admin'], 'visible' => Yii::app()->user->checkAccess('Sell.CrmBank.Admin')],
+                                        ),
+                                ),
+                                array('label' => 'ORDER',
+                                        'items' => array(
+                                                ['label' => Yii::t('app', 'CREATE'), 'url' => ['/sell/sellOrder/create'], 'visible' => Yii::app()->user->checkAccess('Sell.SellOrder.Create')],
+                                                ['label' => Yii::t('app', 'MANAGE'), 'url' => ['/sell/sellOrder/admin'], 'visible' => Yii::app()->user->checkAccess('Sell.SellOrder.Admin')],
 
-        array('label' => 'LOGOUT (' . strtoupper(Yii::app()->user->name) . ')', 'url' => array('/site/logout')),
-    ),
+                                        ),
+                                ),
+                                array('label' => 'RETURN/WARRANTY',
+                                        'items' => array(
+                                                ['label' => Yii::t('app', 'RETURN'), 'url' => ['/sell/sellReturn/createProductReturn'], 'visible' => Yii::app()->user->checkAccess('Sell.SellReturn.CreateProductReturn')],
+                                                ['label' => Yii::t('app', 'RETURN MANAGE'), 'url' => ['/sell/sellReturn/admin'], 'visible' => Yii::app()->user->checkAccess('Sell.SellReturn.Admin')],
+
+                                        ),
+                                ),
+                                array('label' => 'DRAFT',
+                                        'items' => array(
+                                                ['label' => Yii::t('app', 'CREATE'), 'url' => ['/sell/sellOrderQuotation/create'], 'visible' => Yii::app()->user->checkAccess('Sell.SellOrderQuotation.Create')],
+                                                ['label' => Yii::t('app', 'MANAGE'), 'url' => ['/sell/sellOrderQuotation/admin'], 'visible' => Yii::app()->user->checkAccess('Sell.SellOrderQuotation.Admin')],
+
+                                        ),
+                                ),
+                                array('label' => 'COLLECTION',
+                                        'items' => array(
+                                                ['label' => Yii::t('app', 'MR CREATE'), 'url' => ['/accounting/moneyReceipt/adminMoneyReceipt'], 'visible' => Yii::app()->user->checkAccess('Accounting.MoneyReceipt.AdminMoneyReceipt')],
+                                                ['label' => Yii::t('app', 'MR MANAGE'), 'url' => ['/accounting/moneyReceipt/admin'], 'visible' => Yii::app()->user->checkAccess('Accounting.MoneyReceipt.Admin')],
+                                        ),
+                                ),
+                        ),
+                ),
+
+                array('label' => 'PURCHASE',
+                        'items' => array(
+                                array('label' => 'CONFIG',
+                                        'items' => array(
+                                                ['label' => Yii::t('app', 'BANK'), 'url' => ['/commercial/comBank/admin'], 'visible' => Yii::app()->user->checkAccess('Commercial.ComBank.Admin')],
+                                                ['label' => Yii::t('app', 'SUPPLIER'), 'url' => ['/commercial/suppliers/admin'], 'visible' => Yii::app()->user->checkAccess('Commercial.Suppliers.Admin')],
+                                        ),
+                                ),
+                                array('label' => 'ORDER',
+                                        'items' => array(
+                                                ['label' => Yii::t('app', 'CREATE'), 'url' => ['/commercial/purchaseOrder/create'], 'visible' => Yii::app()->user->checkAccess('Commercial.PurchaseOrder.Create')],
+                                                ['label' => Yii::t('app', 'MANAGE'), 'url' => ['/commercial/purchaseOrder/admin'], 'visible' => Yii::app()->user->checkAccess('Commercial.PurchaseOrder.Admin')],
+
+                                        ),
+                                ),
+                                array('label' => 'PAYMENT',
+                                        'items' => array(
+                                                ['label' => Yii::t('app', 'CREATE'), 'url' => ['/accounting/paymentReceipt/adminPaymentReceipt'], 'visible' => Yii::app()->user->checkAccess('Accounting.PaymentReceipt.AdminPaymentReceipt')],
+                                                ['label' => Yii::t('app', 'MANAGE'), 'url' => ['/accounting/paymentReceipt/admin'], 'visible' => Yii::app()->user->checkAccess('Accounting.PaymentReceipt.Create')],
+
+                                        ),
+                                ),
+
+                        ),
+                ),
+
+                array(
+                        'label' => 'LOAN',
+                        'items' => array(
+                                ['label' => 'ADD PERSON',    'url' => ['/loan/loanPersons/admin']],
+                                ['label' => 'TRANSACTION',     'url' => ['/loan/loanTransactions/admin']],
+
+                                array(
+                                        'label' => 'REPORTS',
+                                        'items' => array(
+                                                ['label' => 'DUE SUMMARY',   'url' => ['/loan/report/summary']],
+                                                ['label' => 'PERSON LEDGER','url' => ['/loan/report/ledger']],
+                                        ),
+                                ),
+
+                        ),
+                ),
+
+                array('label' => 'REPORT',
+                        'items' => array(
+                                array('label' => 'INVENTORY',
+                                        'items' => array(
+                                                ['label' => Yii::t('app', 'STOCK REPORT'), 'url' => ['/inventory/inventory/stockReport'], 'visible' => Yii::app()->user->checkAccess('Inventory.Inventory.StockReport')],
+                                                ['label' => Yii::t('app', 'STOCK REPORT SUPPLIER'), 'url' => ['/inventory/inventory/stockReportSupplierWise'], 'visible' => Yii::app()->user->checkAccess('Inventory.Inventory.StockReportSupplierWise')],
+                                            // price-list
+                                                ['label' => Yii::t('app', 'PRICE LIST'), 'url' => ['/Report/priceListView'], 'visible' => Yii::app()->user->checkAccess('Report.PriceListView')],
+                                            // ['label' => Yii::t('app', 'STOCK ALERT'), 'url' => ['/inventory/inventory/stockAlert'], 'visible' => Yii::app()->user->checkAccess('Inventory.Inventory.StockAlert')],
+                                            // ['label' => Yii::t('app', 'STOCK MOVEMENT'), 'url' => ['/inventory/inventory/stockMovement'], 'visible' => Yii::app()->user->checkAccess('Inventory.Inventory.StockMovement')],
+                                            // ['label' => Yii::t('app', 'STOCK LEDGER'), 'url' => ['/inventory/inventory/stockLedger'], 'visible' => Yii::app()->user->checkAccess('Inventory.Inventory.StockLedger')],
+                                            // ['label' => Yii::t('app', 'STOCK SUMMARY'), 'url' => ['/inventory/inventory/stockSummary'], 'visible' => Yii::app()->user->checkAccess('Inventory.Inventory.StockSummary')],
+                                        ),
+                                ),
+                                array('label' => 'SALES',
+                                        'items' => array(
+                                                ['label' => Yii::t('app', 'SALES REPORT'), 'url' => ['/report/salesReport'], 'visible' => Yii::app()->user->checkAccess('Report.SalesReport')],
+                                                ['label' => Yii::t('app', 'SALES DETAILS REPORT'), 'url' => ['/report/saleDetailsReport'], 'visible' => Yii::app()->user->checkAccess('Report.SaleDetailsReport')],
+                                                ['label' => Yii::t('app', 'CUSTOMER DUE REPORT'), 'url' => ['/report/customerDueReport'], 'visible' => Yii::app()->user->checkAccess('Report.CustomerDueReport')],
+                                                ['label' => Yii::t('app', 'CUSTOMER LEDGER'), 'url' => ['/report/customerLedger'], 'visible' => Yii::app()->user->checkAccess('Report.CustomerLedger')],
+                                                ['label' => Yii::t('app', 'COLLECTION REPORT'), 'url' => ['/report/collectionReport'], 'visible' => Yii::app()->user->checkAccess('Report.CollectionReport')],
+                                        ),
+                                ),
+                                array('label' => 'PURCHASE',
+                                        'items' => array(
+                                                ['label' => Yii::t('app', 'PURCHASE REPORT'), 'url' => ['/report/purchaseReport'], 'visible' => Yii::app()->user->checkAccess('Report.PurchaseReport')],
+                                                ['label' => Yii::t('app', 'PURCHASE DETAILS REPORT'), 'url' => ['/report/purchaseDetailsReport'], 'visible' => Yii::app()->user->checkAccess('Report.PurchaseDetailsReport')],
+                                                ['label' => Yii::t('app', 'SUPPLIER DUE REPORT'), 'url' => ['/report/supplierDueReport'], 'visible' => Yii::app()->user->checkAccess('Report.SupplierDueReport')],
+                                                ['label' => Yii::t('app', 'SUPPLIER LEDGER'), 'url' => ['/report/supplierLedger'], 'visible' => Yii::app()->user->checkAccess('Report.SupplierLedger')],
+                                                ['label' => Yii::t('app', 'PAYMENT REPORT'), 'url' => ['/report/paymentReport'], 'visible' => Yii::app()->user->checkAccess('Report.PaymentReport')],
+                                        ),
+                                ),
+                                array('label' => 'EXPENSE',
+                                        'items' => array(
+                                                ['label' => Yii::t('app', 'EXPENSE SUMMARY (DAY WISE)'), 'url' => ['/report/expenseSummaryReport'], 'visible' => Yii::app()->user->checkAccess('Report.ExpenseSummaryReport')],
+                                                ['label' => Yii::t('app', 'EXPENSE DETAILS (DAY WISE)'), 'url' => ['/report/expenseDetailsReport'], 'visible' => Yii::app()->user->checkAccess('Report.ExpenseDetailsReport')],
+                                        ),
+                                ),
+                                array('label' => 'ACCOUNTS',
+                                        'items' => array(
+                                                ['label' => Yii::t('app', 'Day In/Out Report'), 'url' => ['/report/dayInOutReport'], 'visible' => Yii::app()->user->checkAccess('Report.DayInOutReport')],
+                                        ),
+                                ),
+                        ),
+                ),
+
+                array('label' => 'LOGOUT (' . strtoupper(Yii::app()->user->name) . ')', 'url' => array('/site/logout')),
+        ),
 ));
 ?>
 <style>
