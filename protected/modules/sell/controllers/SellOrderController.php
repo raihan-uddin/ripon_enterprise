@@ -84,7 +84,7 @@ class SellOrderController extends RController
                     $qtyList = $_POST['SellOrderDetails']['temp_qty'] ?? [];
 
                     $total_item = count(array_filter($qtyList, function ($qty) {
-                        return (int)$qty > 0;
+                        return (float)$qty > 0;
                     }));
                     $modelIds = $_POST['SellOrderDetails']['temp_model_id'] ?? [];
                     $qtys = $_POST['SellOrderDetails']['temp_qty'] ?? [];
@@ -95,7 +95,7 @@ class SellOrderController extends RController
                     $per_item_discount = $model->discount_amount / $total_item;
 
                     foreach ($modelIds as $key => $model_id) {
-                        $qty = isset($qtys[$key]) ? (int)$qtys[$key] : 0;
+                        $qty = isset($qtys[$key]) ? (float)$qtys[$key] : 0;
 
                         // ✅ Skip rows with no quantity
                         if ($qty <= 0) {
@@ -248,7 +248,7 @@ class SellOrderController extends RController
                     $qtyList = $_POST['SellOrderDetails']['temp_qty'] ?? [];
 
                     $total_item = count(array_filter($qtyList, function ($qty) {
-                        return (int)$qty > 0;
+                        return (float)$qty > 0;
                     }));
                     $modelIds = $_POST['SellOrderDetails']['temp_model_id'] ?? [];
                     $qtys = $_POST['SellOrderDetails']['temp_qty'] ?? [];
@@ -297,7 +297,7 @@ class SellOrderController extends RController
                     SellOrderDetails::model()->deleteAll($criteriaDel);
 
                     foreach ($modelIds as $key => $model_id) {
-                        $qty = isset($qtys[$key]) ? (int)$qtys[$key] : 0;
+                        $qty = isset($qtys[$key]) ? (float)$qtys[$key] : 0;
                         // ✅ Skip rows with no quantity
                         if ($qty <= 0) {
                             continue;
