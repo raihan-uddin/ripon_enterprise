@@ -666,11 +666,11 @@ Yii::app()->clientScript->registerCoreScript("jquery.ui");
                                                     'type' => 'post',
                                                     'dataType' => 'json',
                                                     'beforeSend' => "function(){
-                                                    $('.ajaxLoaderFormLoad').show();
-                                                }",
+                                                        $('.ajaxLoaderFormLoad').show();
+                                                    }",
                                                     'complete' => "function(){
-                                                    $('.ajaxLoaderFormLoad').hide();
-                                                }",
+                                                        $('.ajaxLoaderFormLoad').hide();
+                                                    }",
                                                     'success' => "function(data){
                                                     if (data.status == 'failure')
                                                     {
@@ -1156,7 +1156,6 @@ Yii::app()->clientScript->registerCoreScript("jquery.ui");
                             toastr.success("Data saved successfully.");
                             $("#bom-form")[0].reset();
                             $("#formResult").animate({opacity:1.0},1000).fadeOut("slow");
-                            $("#list tbody").empty();
                             // $("#soReportDialogBox").dialog("open");
                             //$("#AjFlashReportSo").html(data.soReportInfo).show();
                             $("#information-modal").modal("show");
@@ -1198,9 +1197,9 @@ Yii::app()->clientScript->registerCoreScript("jquery.ui");
                         $("#overlay").fadeOut(300);
                   }',
                     'complete' => 'function() {
-                    $("#overlay").fadeOut(300);
-                 $("#ajaxLoaderReport").hide(); 
-              }',
+                        $("#overlay").fadeOut(300);
+                        $("#ajaxLoaderReport").hide(); 
+                  }',
             ), array('class' => 'btn btn-primary btn-md'));
             ?>
         </div>

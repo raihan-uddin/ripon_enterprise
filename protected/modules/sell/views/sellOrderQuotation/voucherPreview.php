@@ -255,7 +255,7 @@
                             <td style="text-align: right; border-left: none; "></td>
                         </tr>
                         <tr>
-                            <td colspan="2" style=" background: white; text-align: left; border-right: none;">S.R Commission (-)</td>
+                            <td colspan="2" style=" background: white; text-align: left; border-right: none;">S.R Commission (+)</td>
                             <td style="text-align: right; border-left: none; ">
                             </td>
                         </tr>
