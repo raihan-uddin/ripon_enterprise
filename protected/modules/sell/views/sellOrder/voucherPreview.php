@@ -333,33 +333,26 @@
                         <tr style="<?= $discountDisplay ?>">
                             <td colspan="2" style="border: none; background: white;">Discount (-)</td>
                             <td style="text-align: right; border: none;">
-                                (
-                                -<?= rtrim(rtrim(number_format($discount_amount, 4, '.', ','), '0'), '.') ?>
-                                )
+                                (-<?= rtrim(rtrim(number_format($discount_amount, 4, '.', ','), '0'), '.') ?>)
                             </td>
                         </tr>
                         <tr style="<?= $roadFeeDisplay ?>">
                             <td colspan="2" style="border: none; background: white;">Road Fee (-)</td>
                             <td style="text-align: right; border: none;">
-                                (
-                                -<?= rtrim(rtrim(number_format($road_fee, 4, '.', ','), '0'), '.') ?>
-                                )
+                                (-<?= rtrim(rtrim(number_format($road_fee, 4, '.', ','), '0'), '.') ?>)
                             </td>
                         </tr>
 
                         <tr style="<?= $damageDisplay ?>">
                             <td colspan="2" style="border: none; background: white;">Damage (-)</td>
                             <td style="text-align: right; border: none;">
-                                (
-                                -<?= rtrim(rtrim(number_format($damage, 4, '.', ','), '0'), '.') ?>
-                                )
+                                (-<?= rtrim(rtrim(number_format($damage, 4, '.', ','), '0'), '.') ?>)
                             </td>
                         </tr>
                         <tr style="<?= $srCommissionDisplay ?>">
                             <td colspan="2" style="border: none; background: white;">SR Commission (-)</td>
                             <td style="text-align: right; border: none;">
-                                (+<?= rtrim(rtrim(number_format($sr_commission, 4, '.', ','), '0'), '.') ?>
-                                )
+                                (+<?= rtrim(rtrim(number_format($sr_commission, 4, '.', ','), '0'), '.') ?>)
                             </td>
                         </tr>
 
