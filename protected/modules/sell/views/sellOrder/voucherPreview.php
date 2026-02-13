@@ -276,12 +276,12 @@
                             $item->total_due = $actualGrandTotal;
                             $item->save();
                         }
-                        $vatDisplay = $vat != 0 ? "display:block;" : "display: none;" ;
-                        $deliveryChargeDisplay = $delivery_charge != 0 ? "display:block;" : "display: none;";
-                        $discountDisplay = $discount_amount != 0 ? "display:block;" : "display: none;";
-                        $roadFeeDisplay = $road_fee != 0 ? "display:block;" : "display: none;";
-                        $damageDisplay = $damage != 0 ? "display:block;" : "display: none;";
-                        $srCommissionDisplay = $sr_commission != 0 ? "display:block;" : "display: none;";
+                        $vatDisplay = $vat != 0 ? "" : "display: none;" ;
+                        $deliveryChargeDisplay = $delivery_charge != 0 ? "" : "display: none;";
+                        $discountDisplay = $discount_amount != 0 ? "" : "display: none;";
+                        $roadFeeDisplay = $road_fee != 0 ? "" : "display: none;";
+                        $damageDisplay = $damage != 0 ? "" : "display: none;";
+                        $srCommissionDisplay = $sr_commission != 0 ? "" : "display: none;";
 
                         if ((float)$vat == 0) $footerRowSpan--;
                         if ((float)$delivery_charge == 0) $footerRowSpan--;
@@ -289,7 +289,6 @@
                         if ((float)$road_fee == 0) $footerRowSpan--;
                         if ((float)$damage == 0) $footerRowSpan--;
                         if ((float)$sr_commission == 0) $footerRowSpan--;
-
                         ?>
                         <tr>
                             <td rowspan="<?= $footerRowSpan ?>>" colspan="2"
