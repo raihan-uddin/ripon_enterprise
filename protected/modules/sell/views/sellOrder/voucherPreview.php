@@ -358,7 +358,7 @@
                         <tr style="<?= $srCommissionDisplay ?>">
                             <td colspan="2" style="border: none; background: white;">SR Commission (-)</td>
                             <td style="text-align: right; border: none;">
-                                (-<?= rtrim(rtrim(number_format($sr_commission, 4, '.', ','), '0'), '.') ?>
+                                (+<?= rtrim(rtrim(number_format($sr_commission, 4, '.', ','), '0'), '.') ?>
                                 )
                             </td>
                         </tr>
