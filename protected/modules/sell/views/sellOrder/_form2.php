@@ -1051,7 +1051,7 @@ Yii::app()->clientScript->registerCoreScript("jquery.ui");
                                         <div class="summary-row">
                                             <div class="summary-label">
                                                 <label><?php echo $form->labelEx($model, 'sr_commission'); ?>
-                                                    (-)</label>
+                                                    (+)</label>
                                             </div>
                                             <div></div> <!-- spacer column -->
                                             <div class="summary-fields">
@@ -1359,8 +1359,8 @@ Yii::app()->clientScript->registerCoreScript("jquery.ui");
             const commission = safeNumber($(f.COMMISSION).val());
 
             const grand =
-                (total + vat + delivery) -
-                (discount + road + damage + commission);
+                (total + vat + delivery + commission) -
+                (discount + road + damage);
 
             $(f.GRAND_TOTAL).val(grand.toFixed(2));
         }
