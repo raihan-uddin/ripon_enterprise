@@ -96,7 +96,7 @@
                     'debug' => true, //enable the debugger to see what you will get
                     'id' => 'print-div'         //id of the print link
             ));
-            echo "</div><br><br><br>";
+            echo "</div>";
             ?>
         </h3>
 
@@ -185,13 +185,13 @@
                             </div>
                         </div>
                     </div>
-                    <table style="width: 100%; border-collapse: collapse; font-size: 14px;" class="item-list">
+                    <table style="width: 100%; border-collapse: collapse; font-size: 15px;" class="item-list">
                         <thead>
                         <tr>
                             <td style="text-align: center; width: 2%; border: 1px solid black;">#</td>
                             <td style="text-align: center; border: 1px solid black;">Description</td>
-                            <td style="text-align: center;  width: 10%; border: 1px solid black;">Qty</td>
-                            <td style="text-align: center;  width: 10%; border: 1px solid black;">Price</td>
+                            <td style="text-align: center;  width: 15%; border: 1px solid black;">Qty</td>
+                            <td style="text-align: center;  width: 15%; border: 1px solid black;">Price</td>
                             <td style="text-align: center; width: 15%; border: 1px solid black;">Total</td>
                             <?php
                             if ($showProfitLossSummary) {
@@ -214,8 +214,6 @@
                         $criteria = new CDbCriteria();
                         $criteria->select = "pm.model_name, pm.code, pm.image, sum(t.qty) as qty, t.amount, t.discount_amount,
                                             t.note, sum(t.row_total) as row_total,  sum(costing) as costing,
-                                            GROUP_CONCAT(product_sl_no ORDER BY product_sl_no SEPARATOR ', ') as product_sl_no, 
-                                            GROUP_CONCAT(t.warranty ORDER BY t.warranty SEPARATOR ', ') as warranty,
                                             pm.description";
                         $criteria->join = " INNER JOIN prod_models pm on t.model_id = pm.id ";
                         $criteria->addColumnCondition(['t.sell_order_id' => $item->id]);
@@ -230,18 +228,24 @@
                                 ?>
                                 <tr>
                                     <td style="text-align: center;"><?= $i++ ?></td>
-                                    <td style="text-align: left; border: 1px solid black;">
+                                    <td style="text-align: left; padding-left: 10px; border: 1px solid black;">
                                         <?= $dt->model_name ?>
                                     </td>
-                                    <td style="text-align: center;"><?= number_format($dt->qty, 2) ?></td>
-                                    <td style="text-align: right;"> TK <?= number_format($dt->amount, 4) ?></td>
-                                    <td style="text-align: right;">
-                                        TK <?= number_format($dt->row_total, 4) ?></td>
+                                    <td style="text-align: center;">
+                                        <?= rtrim(rtrim(number_format($dt->qty, 4, '.', ','), '0'), '.') ?>
+                                    </td>
+                                    <td style="text-align: right; padding-right: 5px;">
+                                        <?= rtrim(rtrim(number_format($dt->amount, 4, '.', ','), '0'), '.') ?>
+                                    </td>
+                                    <td style="text-align: right; padding-right: 5px;">
+                                         <?= rtrim(rtrim(number_format($dt->row_total, 4, '.', ','), '0'), '.') ?>
+                                    </td>
                                     <?php
                                     if ($showProfitLossSummary) {
                                         $netIncome = $dt->row_total - ($dt->costing + $dt->discount_amount);
                                         ?>
-                                        <td style="text-align: right;"> TK <?= number_format($netIncome, 4) ?>
+                                        <td style="text-align: right; padding-right: 5px;">
+                                            <?= rtrim(rtrim(number_format($netIncome, 4, '.', ','), '0'), '.') ?>
                                         </td>
                                         <?php
                                     }
@@ -272,6 +276,20 @@
                             $item->total_due = $actualGrandTotal;
                             $item->save();
                         }
+                        $vatDisplay = $vat != 0 ? "display:block;" : "display: none;" ;
+                        $deliveryChargeDisplay = $delivery_charge != 0 ? "display:block;" : "display: none;";
+                        $discountDisplay = $discount_amount != 0 ? "display:block;" : "display: none;";
+                        $roadFeeDisplay = $road_fee != 0 ? "display:block;" : "display: none;";
+                        $damageDisplay = $damage != 0 ? "display:block;" : "display: none;";
+                        $srCommissionDisplay = $sr_commission != 0 ? "display:block;" : "display: none;";
+
+                        if ((float)$vat == 0) $footerRowSpan--;
+                        if ((float)$delivery_charge == 0) $footerRowSpan--;
+                        if ((float)$discount_amount == 0) $footerRowSpan--;
+                        if ((float)$road_fee == 0) $footerRowSpan--;
+                        if ((float)$damage == 0) $footerRowSpan--;
+                        if ((float)$sr_commission == 0) $footerRowSpan--;
+
                         ?>
                         <tr>
                             <td rowspan="<?= $footerRowSpan ?>>" colspan="2"
@@ -296,45 +314,52 @@
                             </td>
                             <td colspan="2" style="border: none; background: white;">Sub Total</td>
                             <td style="text-align: right; border: none;">
-                                TK <?= number_format($row_total, 4) ?></td>
+                                <?= rtrim(rtrim(number_format($row_total, 4, '.', ','), '0'), '.') ?>
+                            </td>
                         </tr>
-                        <tr>
-                            <td colspan="2" style="border: none; background: white;">Vat
+                        <tr style="<?= $vatDisplay ?>">
+                            <td colspan="2" style="border: none; background: white; <?=$vatDisplay?>">Vat
                                 (<?= number_format($vat_percentage, 2) ?>%) (+)
                             </td>
-                            <td style="text-align: right; border: none;">TK <?= number_format($vat, 4) ?></td>
+                            <td style="text-align: right; border: none;  <?=$vatDisplay?>">
+                                <?= rtrim(rtrim(number_format($vat, 4, '.', ','), '0'), '.') ?>
+                            </td>
                         </tr>
-                        <tr>
+                        <tr style="<?= $deliveryChargeDisplay ?>">
                             <td colspan="2" style="border: none; background: white;">Delivery Charge (+)</td>
                             <td style="text-align: right; border: none;">
-                                TK <?= number_format($delivery_charge, 4) ?></td>
+                                <?= rtrim(rtrim(number_format($delivery_charge, 4, '.', ','), '0'), '.') ?>
+                            </td>
                         </tr>
-                        <tr>
+                        <tr style="<?= $discountDisplay ?>">
                             <td colspan="2" style="border: none; background: white;">Discount (-)</td>
-                            <td style="text-align: right; border: none;">TK
-                                (-<?= number_format($discount_amount, 4) ?>
+                            <td style="text-align: right; border: none;">
+                                (
+                                -<?= rtrim(rtrim(number_format($discount_amount, 4, '.', ','), '0'), '.') ?>
                                 )
                             </td>
                         </tr>
-                        <tr>
+                        <tr style="<?= $roadFeeDisplay ?>">
                             <td colspan="2" style="border: none; background: white;">Road Fee (-)</td>
-                            <td style="text-align: right; border: none;">TK
-                                (-<?= number_format($road_fee, 4) ?>
+                            <td style="text-align: right; border: none;">
+                                (
+                                -<?= rtrim(rtrim(number_format($road_fee, 4, '.', ','), '0'), '.') ?>
                                 )
                             </td>
                         </tr>
 
-                        <tr>
+                        <tr style="<?= $damageDisplay ?>">
                             <td colspan="2" style="border: none; background: white;">Damage (-)</td>
-                            <td style="text-align: right; border: none;">TK
-                                (-<?= number_format($damage, 4) ?>
+                            <td style="text-align: right; border: none;">
+                                (
+                                -<?= rtrim(rtrim(number_format($damage, 4, '.', ','), '0'), '.') ?>
                                 )
                             </td>
                         </tr>
-                        <tr>
-                            <td colspan="2" style="border: none; background: white;">SR Commision (-)</td>
-                            <td style="text-align: right; border: none;">TK
-                                (-<?= number_format($sr_commission, 4) ?>
+                        <tr style="<?= $srCommissionDisplay ?>">
+                            <td colspan="2" style="border: none; background: white;">SR Commission (-)</td>
+                            <td style="text-align: right; border: none;">
+                                (-<?= rtrim(rtrim(number_format($sr_commission, 4, '.', ','), '0'), '.') ?>
                                 )
                             </td>
                         </tr>
@@ -346,7 +371,8 @@
                             </td>
                             <td style="text-align: right; border: none;">
                                 <div style="height: 1px; width: 100%; border: 1px solid black;"></div>
-                                TK <?= number_format($item->grand_total, 4) ?></td>
+                                <?= rtrim(rtrim(number_format($item->grand_total, 4, '.', ','), '0'), '.') ?>
+                            </td>
                         </tr>
                         <?php
                         $specialCustomeIdArr = [0];
@@ -411,7 +437,8 @@
                                     Current Paid Amount
                                 </td>
                                 <td style="text-align: right; border: none;">
-                                    TK <?= number_format($current_collection, 2) ?></td>
+                                    <?= rtrim(rtrim(number_format($current_collection, 4, '.', ','), '0'), '.') ?>
+                                </td>
                             </tr>
                             <?php
                             if ($current_return > 0) {
@@ -422,7 +449,8 @@
                                         Current Return Amount
                                     </td>
                                     <td style="text-align: right; border: none;">
-                                        TK <?= number_format($current_return, 2) ?></td>
+                                         <?= rtrim(rtrim(number_format($current_return, 4, '.', ','), '0'), '.') ?>
+                                    </td>
                                 </tr>
                                 <?php
                             }
@@ -433,8 +461,7 @@
                                     Cash Discount
                                 </td>
                                 <td style="text-align: right; border: none;">
-                                    TK
-                                    (-<?= number_format($current_collection_discount > 0 ? $current_collection_discount : 0, 2) ?>
+                                    (-<?= rtrim(rtrim(number_format($current_collection_discount > 0 ? $current_collection_discount : 0, 2), '0'), '.') ?>
                                     )
                                 </td>
                             </tr>
@@ -446,7 +473,8 @@
                                 </td>
                                 <td style="text-align: right; border: none;">
                                     <div style="height: 1px; width: 100%; border: 1px solid black;"></div>
-                                    TK <?= number_format($current_due_amount, 2) ?></td>
+                                    <?= rtrim(rtrim(number_format($current_due_amount, 4, '.', ','), '0'), '.') ?>
+                                </td>
                             </tr>
                             <?php
                         }
