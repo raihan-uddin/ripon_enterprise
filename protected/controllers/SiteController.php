@@ -132,6 +132,15 @@ class SiteController extends Controller
             ])
             ->queryRow();
 
+        $prevCashDiscount = Yii::app()->db->createCommand()
+            ->select('ROUND(SUM(discount)) as discount')
+            ->from('money_receipt')
+            ->where('date BETWEEN :start_date AND :end_date', [
+                ':start_date' => $prevStartDate,
+                ':end_date' => $prevEndDate,
+            ])
+            ->queryRow();
+
         $prevReturnSummary = Yii::app()->db->createCommand()
             ->select('ROUND(SUM(return_amount)) as return_amount, ROUND(SUM(costing)) as costing')
             ->from('sell_return')
@@ -154,7 +163,7 @@ class SiteController extends Controller
         $prevProfit = (
             $prevSalesSummary['total_amount']
             - ($prevSalesSummary['cogs'] + ($prevReturnSummary['return_amount'] - $prevReturnSummary['costing']))
-            - $prevSalesSummary['discount_amount']
+            - $prevCashDiscount['discount']
             - $prevExpense
         );
 
@@ -170,7 +179,6 @@ class SiteController extends Controller
                 ))
             ->queryRow();
         $totalCogsValue = $totalSalesSummary['cogs'];
-        $totalSaleDiscountValue = $totalSalesSummary['discount_amount'];
         $totalSalesValue = $totalSalesSummary['total_amount'];
 
         //calculate return
@@ -209,14 +217,16 @@ class SiteController extends Controller
 
         // total money receipt amount
         $totalMoneyReceiptSummary = Yii::app()->db->createCommand()
-            ->select('ROUND(SUM(amount)) as total_amount')
+            ->select('ROUND(SUM(amount)) as total_amount, ROUND(SUM(discount)) as discount')
             ->from('money_receipt')
             ->where(' date BETWEEN :start_date AND :end_date',
                 array(
                     ':start_date' => $startDate,
                     ':end_date' => $endDate,
                 ))
-            ->queryScalar();
+            ->queryRow();
+        $totalMoneyReceiptValue = $totalMoneyReceiptSummary['total_amount'];
+        $totalCashDiscountValue = $totalMoneyReceiptSummary['discount'];
 
         // total payment amount
         $totalPaymentSummary = Yii::app()->db->createCommand()
@@ -232,11 +242,11 @@ class SiteController extends Controller
 
         $this->renderPartial('profitLossSummary', array(
             'totalSalesValue' => $totalSalesValue,
-            'totalSaleDiscountValue' => $totalSaleDiscountValue,
+            'totalSaleDiscountValue' => $totalCashDiscountValue,
             'totalCogsValue' => $totalCogsValue,
             'totalPurchaseValue' => $totalPurchaseSummary,
             'totalExpenseValue' => $totalExpenseSummary,
-            'totalMoneyReceiptValue' => $totalMoneyReceiptSummary,
+            'totalMoneyReceiptValue' => $totalMoneyReceiptValue,
             'totalPaymentValue' => $totalPaymentSummary,
             'totalReturnValue' => $totalReturnAmount,
             'totalReturnCosting' => $totalReturnCosting,
