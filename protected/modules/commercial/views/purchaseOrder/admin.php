@@ -1,10 +1,10 @@
 <?php
 $this->widget('application.components.BreadCrumb', array(
-    'crumbs' => array(
-        array('name' => 'Purchase', 'url' => array('admin')),
-        array('name' => 'Order', 'url' => array('admin')),
-        array('name' => 'Manage'),
-    ),
+        'crumbs' => array(
+                array('name' => 'Purchase', 'url' => array('admin')),
+                array('name' => 'Order', 'url' => array('admin')),
+                array('name' => 'Manage'),
+        ),
 //    'delimiter' => ' &rarr; ',
 ));
 ?>
@@ -54,8 +54,8 @@ endforeach;
     <div class="card-body">
 
         <?php $form = $this->beginWidget('CActiveForm', array(
-            'action' => Yii::app()->createUrl($this->route),
-            'method' => 'get',
+                'action' => Yii::app()->createUrl($this->route),
+                'method' => 'get',
         )); ?>
         <div class="row">
             <div class="col-md-2">
@@ -74,9 +74,9 @@ endforeach;
             <div class="col-md-3">
                 <?php
                 echo CHtml::ajaxLink(
-                    "Print", Yii::app()->createUrl('/commercial/purchaseOrder/voucherPreview'), array(
-                    'type' => 'POST',
-                    'beforeSend' => "function(){
+                        "Print", Yii::app()->createUrl('/commercial/purchaseOrder/voucherPreview'), array(
+                        'type' => 'POST',
+                        'beforeSend' => "function(){
                         let po_no = $('#PurchaseOrder_po_no').val();
                         if(po_no == ''){
                         toastr.error('Please insert po no!');
@@ -84,7 +84,7 @@ endforeach;
                         }
                         $('#overlay').fadeIn(300);　 
                      }",
-                    'success' => "function( data ){
+                        'success' => "function( data ){
                         if(data.status=='error'){
                             toastr.error('No data found!');
                         } else {
@@ -95,16 +95,16 @@ endforeach;
                         }      
                         $('#overlay').fadeOut(300);　                                                         
                     }",
-                    'complete' => "function(){
+                        'complete' => "function(){
                         $('#overlay').fadeOut(300);　      
                     }",
-                    'data' => array(
-                        'po_no' => 'js:jQuery("#PurchaseOrder_po_no").val()',
-                        'printOrPreview' => 'print',
-                    )
+                        'data' => array(
+                                'po_no' => 'js:jQuery("#PurchaseOrder_po_no").val()',
+                                'printOrPreview' => 'print',
+                        )
                 ), array(
-                        'class' => 'btn btn-info',
-                    )
+                                'class' => 'btn btn-info',
+                        )
                 );
                 ?>
             </div>
@@ -120,91 +120,111 @@ endforeach;
             <button type="button" class="btn btn-tool" data-card-widget="collapse">
                 <i class="fa fa-minus"></i>
             </button>
-            <!--<button type="button" class="btn btn-tool" data-card-widget="remove">
-                <i class="fa fa-times"></i>
-            </button>-->
         </div>
     </div>
     <div class="card-body">
         <?php $this->widget('ext.groupgridview.GroupGridView', array(
-            'id' => 'sell-order-grid',
-            'dataProvider' => $model->search(),
-            'filter' => $model,
-            'cssFile' => Yii::app()->theme->baseUrl . '/css/gridview/styles.css',
-            'htmlOptions' => array('class' => 'table-responsive grid-view'),
-            'itemsCssClass' => 'table table-sm table-hover table-striped table-condensed table-bordered dataTable dtr-inline',
-
-            'mergeColumns' => array('date', 'cash_due'),
-            'template' => "{pager}{summary}{items}{summary}{pager}",
-            'columns' => array(
-                array(
-                    'name' => 'id',
-                    'htmlOptions' => [
-                        'class' => 'text-center',
-                        'style' => 'width: 80px;'
-                    ]
-                ),
-
-                    array(
-                            'name' => 'cash_due',
-                            'type' => 'raw',
-                            'value' => ' Lookup::item("cash_due", $data->cash_due)',
-                            'filter' => Lookup::items('cash_due'),
-                            'htmlOptions' => ['class' => 'text-center']
-                    ),
-                array(
-                    'name' => 'date',
-                    'htmlOptions' => ['class' => 'text-center']
-                ),
-                array(
-                    'name' => 'po_no',
-                    'htmlOptions' => ['class' => 'text-center']
-                ),
-                array(
-                    'name' => 'supplier_id',
-                    'value' => 'Suppliers::model()->nameOfThis($data->supplier_id)',
-                    'htmlOptions' => ['class' => 'text-center']
-                ),
-                array(
-                    'name' => 'grand_total',
-                    'htmlOptions' => ['class' => 'text-center']
-                ),
-
-                array(
-                    'name' => 'created_by',
-                    'value' => 'Users::model()->nameOfThis($data->created_by)',
-                    'htmlOptions' => ['class' => 'text-center']
-                ),
-                array(
-                    'name' => 'created_at',
-                    'htmlOptions' => ['class' => 'text-center']
-                ),
-                array
-                (
-                    'header' => 'Options',
-                    'template' => '{createPr}{update}{delete}', // {delete}
-                    'class' => 'CButtonColumn',
-                    'htmlOptions' => ['style' => 'width: 120px;', 'class' => 'text-center'],
-                    'buttons' => array(
-                        'createPr' => array(
-                            'label' => '<i class="fa fa-money fa-2x" style="color: green;"></i>&nbsp;&nbsp;',
-                            'imageUrl' => false,
-                            'options' => array('rel' => 'tooltip', 'data-toggle' => 'tooltip', 'title' => Yii::t('app', 'Create PR')),
-                            'url' => 'Yii::app()->controller->createUrl("/accounting/paymentReceipt/create",array("id"=>$data->supplier_id,))',
+                'id' => 'sell-order-grid',
+                'dataProvider' => $model->search(),
+                'filter' => $model,
+                'cssFile' => Yii::app()->theme->baseUrl . '/css/gridview/styles.css',
+                'htmlOptions' => array('class' => 'table-responsive grid-view'),
+                'itemsCssClass' => 'table table-sm table-hover table-striped table-condensed table-bordered dataTable dtr-inline',
+                'mergeColumns' => array('date', 'supplier_id'),
+                'mergeType' => 'nested',
+                'template' => "{pager}{summary}{items}{summary}{pager}",
+                'columns' => array(
+                        array(
+                                'name' => 'id',
+                                'htmlOptions' => [
+                                        'class' => 'text-center',
+                                        'style' => 'width: 80px;'
+                                ]
                         ),
-                        'update' => array(
-                            'label' => '<i class="fa fa-pencil-square-o fa-2x" style="color: black;"></i>&nbsp;&nbsp;',
-                            'imageUrl' => false,
-                            'options' => array('rel' => 'tooltip', 'data-toggle' => 'tooltip', 'title' => Yii::t('app', 'Edit')),
+
+                        array(
+                                'name' => 'cash_due',
+                                'type' => 'raw',
+                                'value' => ' Lookup::item("cash_due", $data->cash_due)',
+                                'filter' => Lookup::items('cash_due'),
+                                'htmlOptions' => ['class' => 'text-center']
                         ),
-                        'delete' => array(
-                            'label' => '<i class="fa fa-trash fa-2x" style="color: red;"></i>&nbsp;&nbsp;',
-                            'imageUrl' => false,
-                            'options' => array('rel' => 'tooltip', 'data-toggle' => 'tooltip', 'title' => Yii::t('app', 'Delete')),
+                        array(
+                                'name' => 'date',
+                                'htmlOptions' => ['class' => 'text-center']
                         ),
-                    )
+
+                        array(
+                                'name' => 'supplier_id',
+                                'value' => 'Suppliers::model()->nameOfThis($data->supplier_id)',
+                                'htmlOptions' => ['class' => 'text-center']
+                        ),
+                        array(
+                                'name' => 'po_no',
+                                'htmlOptions' => ['class' => 'text-center']
+                        ),
+                        array(
+                                'name' => 'grand_total',
+                                'htmlOptions' => ['class' => 'text-center']
+                        ),
+
+                        array(
+                                'name' => 'created_by',
+                                'value' => 'Users::model()->nameOfThis($data->created_by)',
+                                'htmlOptions' => ['class' => 'text-center']
+                        ),
+                        array(
+                                'name' => 'created_at',
+                                'htmlOptions' => ['class' => 'text-center']
+                        ),
+                        array
+                        (
+                                'header' => 'Options',
+                                'template' => '{createPr}{update}{delete}', // {delete}
+                                'class' => 'CButtonColumn',
+                                'htmlOptions' => ['style' => 'width: 120px;', 'class' => 'text-center'],
+                                'buttons' => array(
+                                        'createPr' => array(
+                                                'label' => '<i class="fa fa-money fa-2x" style="color: green;"></i>&nbsp;&nbsp;',
+                                                'imageUrl' => false,
+                                                'options' => array('rel' => 'tooltip', 'data-toggle' => 'tooltip', 'title' => Yii::t('app', 'Create PR')),
+                                                'url' => 'Yii::app()->controller->createUrl("/accounting/paymentReceipt/create",array("id"=>$data->supplier_id,))',
+                                        ),
+                                        'update' => array(
+                                                'label' => '<i class="fa fa-pencil-square-o fa-2x" style="color: black;"></i>&nbsp;&nbsp;',
+                                                'imageUrl' => false,
+                                                'options' => array('rel' => 'tooltip', 'data-toggle' => 'tooltip', 'title' => Yii::t('app', 'Edit')),
+                                        ),
+                                        'delete' => array(
+                                                'label' => '<i class="fa fa-trash fa-2x" style="color: red;"></i>&nbsp;&nbsp;',
+                                                'imageUrl' => false,
+                                                'url' => 'Yii::app()->controller->createUrl("delete", array("id"=>$data->id))',
+                                                'click' => 'function(e){
+                                                    e.preventDefault();
+                                            
+                                                    var pin = prompt("Enter PIN to delete:");
+                                            
+                                                    if(pin !== "3083"){
+                                                        alert("Invalid PIN!");
+                                                        return false;
+                                                    }
+                                            
+                                                    if(confirm("Are you sure you want to delete?")){
+                                                        $.fn.yiiGridView.update("sell-order-grid", {
+                                                            type:"POST",
+                                                            url:$(this).attr("href"),
+                                                            success:function(){
+                                                                $.fn.yiiGridView.update("sell-order-grid");
+                                                            }
+                                                        });
+                                                    }
+                                            
+                                                    return false;
+                                                }',
+                                        ),
+                                )
+                        ),
                 ),
-            ),
         )); ?>
 
     </div>
@@ -217,14 +237,14 @@ endforeach;
 </div>
 <?php
 $this->beginWidget('zii.widgets.jui.CJuiDialog', array(
-    'id' => 'update-dialog',
-    'options' => array(
-        'title' => 'Update Category',
-        'autoOpen' => false,
-        'modal' => true,
-        'width' => 'auto',
-        'resizable' => false,
-    ),
+        'id' => 'update-dialog',
+        'options' => array(
+                'title' => 'Update Category',
+                'autoOpen' => false,
+                'modal' => true,
+                'width' => 'auto',
+                'resizable' => false,
+        ),
 ));
 ?>
 <div class="update-dialog-content"></div>
@@ -232,11 +252,11 @@ $this->beginWidget('zii.widgets.jui.CJuiDialog', array(
 
 <?php
 $updateJS = CHtml::ajax(array(
-    'url' => "js:url",
-    'data' => "js:form.serialize() + action",
-    'type' => 'post',
-    'dataType' => 'json',
-    'success' => "function( data )
+        'url' => "js:url",
+        'data' => "js:form.serialize() + action",
+        'type' => 'post',
+        'dataType' => 'json',
+        'success' => "function( data )
   {
     if( data.status == 'failure' )
     {
@@ -293,14 +313,14 @@ jQuery( function($){
 
 <?php
 $this->beginWidget('zii.widgets.jui.CJuiDialog', array(
-    'id' => 'viewDialog',
-    'options' => array(
-        'title' => Yii::t('user', 'Viewing Single Data'),
-        'autoOpen' => false,
-        'modal' => true,
-        'width' => 'auto',
-        'resizable' => false,
-    ),
+        'id' => 'viewDialog',
+        'options' => array(
+                'title' => Yii::t('user', 'Viewing Single Data'),
+                'autoOpen' => false,
+                'modal' => true,
+                'width' => 'auto',
+                'resizable' => false,
+        ),
 ));
 ?>
 <div id="ajaxLoaderView" style="display: none;"><img

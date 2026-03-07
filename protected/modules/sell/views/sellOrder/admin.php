@@ -181,10 +181,6 @@ if (Yii::app()->user->checkAccess('Sell.Order.VoucherPreview')) {
                                 'name' => 'grand_total',
                                 'htmlOptions' => ['class' => 'text-center', 'style' => 'width: 100px;'],
                         ),
-//                        array(
-//                                'name' => 'total_due',
-//                                'htmlOptions' => ['class' => 'text-center', 'style' => 'width: 100px;'],
-//                        ),
                         array(
                                 'name' => 'created_by',
                                 'filter' => false,
@@ -202,11 +198,6 @@ if (Yii::app()->user->checkAccess('Sell.Order.VoucherPreview')) {
                                 'name' => 'created_at',
                                 'htmlOptions' => ['class' => 'text-center', 'style' => 'width: 150px; text-transform: capitalize;'],
                         ),
-                    /*array(
-                        'name' => 'updated_by',
-                        'value' => 'Users::model()->nameOfThis($data->updated_by)',
-                        'htmlOptions' => ['class' => 'text-center', 'style' => 'width: 150px;'],
-                    ),*/
                         array(
                                 'name' => 'updated_at',
                                 'htmlOptions' => ['class' => 'text-center', 'style' => 'width: 150px;'],
@@ -225,23 +216,23 @@ if (Yii::app()->user->checkAccess('Sell.Order.VoucherPreview')) {
                                                 'options' => array('rel' => 'tooltip', 'data-toggle' => 'tooltip', 'title' => Yii::t('app', 'Preview Invoice')),
                                             // Remove the 'url' attribute
                                                 'click' => "function() {
-                                // Get the invoice ID
-                                var invoiceId = $(this).closest('tr').find('td:first').text();
-                                // Send a POST request to the controller action
-                                $.post('" . Yii::app()->controller->createUrl('voucherPreview') . "', { invoiceId: invoiceId })
-                                    .done(function(data) {
-                                        $('#ajaxLoaderView').hide();  
-                                         $('#information-modal').modal('show');
-                                              $('#information-modal .modal-body').html(data);   
-                                    })
-                                    .fail(function(xhr) {
-                                         // Parse the error message from the server response
-                                        var errorMessage = xhr.responseText;
-                                        // Show toaster message with the error
-                                        toastr.error('Error: ' + errorMessage);
-                                    });
-                                return false; // Prevent the default link behavior
-                            }",
+                                                    // Get the invoice ID
+                                                    var invoiceId = $(this).closest('tr').find('td:first').text();
+                                                    // Send a POST request to the controller action
+                                                    $.post('" . Yii::app()->controller->createUrl('voucherPreview') . "', { invoiceId: invoiceId })
+                                                        .done(function(data) {
+                                                            $('#ajaxLoaderView').hide();  
+                                                             $('#information-modal').modal('show');
+                                                                  $('#information-modal .modal-body').html(data);   
+                                                        })
+                                                        .fail(function(xhr) {
+                                                             // Parse the error message from the server response
+                                                            var errorMessage = xhr.responseText;
+                                                            // Show toaster message with the error
+                                                            toastr.error('Error: ' + errorMessage);
+                                                        });
+                                                    return false; // Prevent the default link behavior
+                                                }",
                                         ),
                                 )
                         ),
@@ -263,13 +254,33 @@ if (Yii::app()->user->checkAccess('Sell.Order.VoucherPreview')) {
                                                 'label' => '<i class="fa fa-pencil-square-o fa-2x" style="color: black;"></i>&nbsp;&nbsp;',
                                                 'imageUrl' => false,
                                                 'options' => array('rel' => 'tooltip', 'data-toggle' => 'tooltip', 'title' => Yii::t('app', 'Edit')),
-//                            'visible' => '$data->is_paid == 0 ? TRUE : FALSE',
                                         ),
                                         'delete' => array(
                                                 'label' => '<i class="fa fa-trash fa-2x" style="color: red;"></i>&nbsp;&nbsp;',
                                                 'imageUrl' => false,
-                                                'options' => array('rel' => 'tooltip', 'data-toggle' => 'tooltip', 'title' => Yii::t('app', 'Delete')),
-//                            'visible' => '($data->total_paid == 0) ? TRUE : FALSE',
+                                                'url' => 'Yii::app()->controller->createUrl("delete", array("id"=>$data->id))',
+                                                'click' => 'function(e){
+                                                    e.preventDefault();
+                                            
+                                                    var pin = prompt("Enter PIN to delete:");
+                                            
+                                                    if(pin !== "3083"){
+                                                        alert("Invalid PIN!");
+                                                        return false;
+                                                    }
+                                            
+                                                    if(confirm("Are you sure you want to delete?")){
+                                                        $.fn.yiiGridView.update("sell-order-grid", {
+                                                            type:"POST",
+                                                            url:$(this).attr("href"),
+                                                            success:function(){
+                                                                $.fn.yiiGridView.update("sell-order-grid");
+                                                            }
+                                                        });
+                                                    }
+                                            
+                                                    return false;
+                                                }',
                                         ),
                                 )
                         ),

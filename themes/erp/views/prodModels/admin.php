@@ -105,7 +105,7 @@ endforeach;
                         array
                         (
                                 'header' => 'Options',
-                                'template' => '{view}{update}', //{addSellPrice}{sellPriceHistory}{delete}
+                                'template' => '{view}{update}{delete}', //{addSellPrice}{sellPriceHistory}{delete}
                                 'class' => 'CButtonColumn',
 
                                 'htmlOptions' => ['style' => 'width: 120px'],
@@ -114,15 +114,33 @@ endforeach;
                                                 'label' => '<i class="fa fa-pencil-square-o fa-2x" style="color: black;"></i>&nbsp;&nbsp;',
                                                 'imageUrl' => false,
                                                 'options' => array('rel' => 'tooltip', 'data-toggle' => 'tooltip', 'title' => Yii::t('app', 'Edit')),
-//                            'visible' => '$data->account_type=="1"?TRUE:FALSE',
-//                            'visible'=>'$data->account_type=="2"?TRUE:FALSE',
                                         ),
                                         'delete' => array(
                                                 'label' => '<i class="fa fa-trash fa-2x" style="color: red;"></i>&nbsp;&nbsp;',
                                                 'imageUrl' => false,
-                                                'options' => array('rel' => 'tooltip', 'data-toggle' => 'tooltip', 'title' => Yii::t('app', 'Delete')),
-//                            'visible' => '$data->account_type=="1"?TRUE:FALSE',
-//                            'visible'=>'$data->account_type=="2"?TRUE:FALSE',
+                                                'url' => 'Yii::app()->controller->createUrl("delete", array("id"=>$data->id))',
+                                                'click' => 'function(e){
+                                                    e.preventDefault();
+                                            
+                                                    var pin = prompt("Enter PIN to delete:");
+                                            
+                                                    if(pin !== "3083"){
+                                                        alert("Invalid PIN!");
+                                                        return false;
+                                                    }
+                                            
+                                                    if(confirm("Are you sure you want to delete?")){
+                                                        $.fn.yiiGridView.update("prod-models-grid", {
+                                                            type:"POST",
+                                                            url:$(this).attr("href"),
+                                                            success:function(){
+                                                                $.fn.yiiGridView.update("sell-order-grid");
+                                                            }
+                                                        });
+                                                    }
+                                            
+                                                    return false;
+                                                }',
                                         ),
                                         'sellPriceHistory' => array(
                                                 'label' => '<i class="fa fa-eye-slash fa-2x" style="color: black;"></i>&nbsp;&nbsp;',
@@ -130,35 +148,35 @@ endforeach;
                                                 'options' => array('rel' => 'tooltip', 'data-toggle' => 'tooltip', 'title' => Yii::t('app', 'Sell Price History')),
                                                 'url' => 'Yii::app()->controller->createUrl("sellPrice/priceHistory",array("model_id"=>$data->id))',
                                                 'click' => "function(){
-                                    $('#viewDialog').dialog('open');
-                                    $.fn.yiiGridView.update('prod-models-grid', {
-                                        type:'POST',
-                                        url:$(this).attr('href'),
-                                        success:function(data) {
-                                             $('#ajaxLoaderView').hide();  
-                                              //$('#AjFlash').html(data).fadeIn().animate({opacity: 1.0}, 3000).fadeOut('slow');
-                                              $('#AjFlash').html(data).show();
-                                              $.fn.yiiGridView.update('prod-models-grid');
-                                        },
-                                        beforeSend: function(){
-                                            $('#ajaxLoaderView').show();
-                                        }
-                                    })
-                                    return false;
-                              }
-                     ",
+                                                    $('#viewDialog').dialog('open');
+                                                    $.fn.yiiGridView.update('prod-models-grid', {
+                                                                type:'POST',
+                                                                url:$(this).attr('href'),
+                                                                success:function(data) {
+                                                                     $('#ajaxLoaderView').hide();  
+                                                                      //$('#AjFlash').html(data).fadeIn().animate({opacity: 1.0}, 3000).fadeOut('slow');
+                                                                      $('#AjFlash').html(data).show();
+                                                                      $.fn.yiiGridView.update('prod-models-grid');
+                                                                },
+                                                                beforeSend: function(){
+                                                                    $('#ajaxLoaderView').show();
+                                                                }
+                                                            })
+                                                            return false;
+                                                   }
+                                                ",
                                         ),
                                         'addSellPrice' => array(
                                                 'label' => 'Add Sell Price',
                                                 'imageUrl' => Yii::app()->theme->baseUrl . '/images/sell_price.ico',
                                                 'url' => 'Yii::app()->controller->createUrl("sellPrice/addSellPrice",array("model_id"=>$data->id))',
                                                 'click' => "function( e ){
-                                e.preventDefault();
-                                $( '#addSellPrice-dialog' ).children( ':eq(0)' ).empty(); // Stop auto POST
-                                addSellPriceDialog( $( this ).attr( 'href' ) );
-                                $( '#addSellPrice-dialog' )
-                                  .dialog( { title: 'Sell Price Form' } )
-                                  .dialog( 'open' ); }",
+                                                    e.preventDefault();
+                                                    $( '#addSellPrice-dialog' ).children( ':eq(0)' ).empty(); // Stop auto POST
+                                                    addSellPriceDialog( $( this ).attr( 'href' ) );
+                                                    $( '#addSellPrice-dialog' )
+                                                      .dialog( { title: 'Sell Price Form' } )
+                                                      .dialog( 'open' ); }",
                                         ),
                                         'view' => array(
                                                 'label' => '<i class="fa fa-eye-slash fa-2x" style="color: black;"></i>&nbsp;&nbsp;',
@@ -166,23 +184,23 @@ endforeach;
                                                 'options' => array('rel' => 'tooltip', 'data-toggle' => 'tooltip', 'title' => Yii::t('app', 'View')),
                                                 'url' => 'Yii::app()->controller->createUrl("view",array("id"=>$data->id))',
                                                 'click' => "function(){
-                                    $('#viewDialog').dialog('open');
-                                    $.fn.yiiGridView.update('prod-models-grid', {
-                                        type:'POST',
-                                        url:$(this).attr('href'),
-                                        success:function(data) {
-                                             $('#ajaxLoaderView').hide();  
-                                              //$('#AjFlash').html(data).fadeIn().animate({opacity: 1.0}, 3000).fadeOut('slow');
-                                              $('#AjFlash').html(data).show();
-                                              $.fn.yiiGridView.update('prod-models-grid');
-                                        },
-                                        beforeSend: function(){
-                                            $('#ajaxLoaderView').show();
-                                        }
-                                    })
-                                    return false;
-                              }
-                     ",
+                                                        $('#viewDialog').dialog('open');
+                                                        $.fn.yiiGridView.update('prod-models-grid', {
+                                                            type:'POST',
+                                                            url:$(this).attr('href'),
+                                                            success:function(data) {
+                                                                 $('#ajaxLoaderView').hide();  
+                                                                  //$('#AjFlash').html(data).fadeIn().animate({opacity: 1.0}, 3000).fadeOut('slow');
+                                                                  $('#AjFlash').html(data).show();
+                                                                  $.fn.yiiGridView.update('prod-models-grid');
+                                                            },
+                                                            beforeSend: function(){
+                                                                $('#ajaxLoaderView').show();
+                                                            }
+                                                        })
+                                                        return false;
+                                                  }
+                                                ",
                                         ),
                                 )
                         ),
