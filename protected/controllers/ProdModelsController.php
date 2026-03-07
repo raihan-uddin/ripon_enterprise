@@ -454,6 +454,35 @@ class ProdModelsController extends RController
     public function actionDelete($id)
     {
         if (Yii::app()->request->isPostRequest) {
+            // check in inventory if this model_id present or not,
+            $usedIn = [];
+
+            $usedIn = [];
+
+            if (Inventory::model()->exists('model_id=:id', [':id'=>$id])) {
+                $usedIn[] = "📦 Inventory";
+            }
+
+            if (SellOrderDetails::model()->exists('model_id=:id', [':id'=>$id])) {
+                $usedIn[] = "🧾 Sales";
+            }
+
+            if (PurchaseOrderDetails::model()->exists('model_id=:id', [':id'=>$id])) {
+                $usedIn[] = "📥 Purchase";
+            }
+
+            if (SellOrderQuotationDetails::model()->exists('model_id=:id', [':id'=>$id])) {
+                $usedIn[] = "📑 Quotations";
+            }
+
+            if (!empty($usedIn)) {
+
+                $message = "This product cannot be deleted because it is used in:\n\n";
+                $message .= implode("\n", $usedIn);
+
+                throw new CHttpException(400, $message);
+            }
+
             // we only allow deletion via POST request
             $this->loadModel($id)->delete();
 
