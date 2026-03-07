@@ -217,34 +217,31 @@ if (Yii::app()->user->checkAccess('Sell.SellOrderQuotation.VoucherPreview')) {
                             'options' => array('rel' => 'tooltip', 'data-toggle' => 'tooltip', 'title' => Yii::t('app', 'Edit')),
                         ),
                         'delete' => array(
-                                'label' => '<i class="fa fa-trash fa-2x" style="color:red;"></i>&nbsp;&nbsp;',
+                                'label' => '<i class="fa fa-trash fa-2x" style="color: red;"></i>&nbsp;&nbsp;',
                                 'imageUrl' => false,
+                                'url' => 'Yii::app()->controller->createUrl("delete", array("id"=>$data->id))',
                                 'click' => 'function(e){
-                                    e.preventDefault();
-                        
-                                    var pin = prompt("Enter PIN to confirm delete:");
-                        
-                                    if (pin === null) {
-                                        return false; // cancel clicked
-                                    }
-                        
-                                    if (pin !== "0000") {
-                                        alert("❌ Wrong PIN");
-                                        return false;
-                                    }
-                        
-                                    // PIN matched → proceed with default delete
-                                    if (confirm("Are you sure you want to delete?")) {
-                                        window.location.href = $(this).attr("href");
-                                    }
-                        
-                                    return false;
-                                }',
-                                'options' => array(
-                                        'rel' => 'tooltip',
-                                        'data-toggle' => 'tooltip',
-                                        'title' => Yii::t('app', 'Delete'),
-                                ),
+                                                e.preventDefault();
+                                        
+                                                var pin = prompt("Enter PIN to delete:");
+                                        
+                                                if(pin !== "3083"){
+                                                    alert("Invalid PIN!");
+                                                    return false;
+                                                }
+                                        
+                                                if(confirm("Are you sure you want to delete?")){
+                                                    $.fn.yiiGridView.update("sell-order-grid", {
+                                                        type:"POST",
+                                                        url:$(this).attr("href"),
+                                                        success:function(){
+                                                            $.fn.yiiGridView.update("sell-order-grid");
+                                                        }
+                                                    });
+                                                }
+                                        
+                                                return false;
+                                            }',
                         ),
                     )
                 ),
