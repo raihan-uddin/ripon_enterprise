@@ -181,10 +181,10 @@ if (Yii::app()->user->checkAccess('Sell.Order.VoucherPreview')) {
                                 'name' => 'grand_total',
                                 'htmlOptions' => ['class' => 'text-center', 'style' => 'width: 100px;'],
                         ),
-                        array(
-                                'name' => 'total_return',
-                                'htmlOptions' => ['class' => 'text-center', 'style' => 'width: 100px;'],
-                        ),
+//                        array(
+//                                'name' => 'total_due',
+//                                'htmlOptions' => ['class' => 'text-center', 'style' => 'width: 100px;'],
+//                        ),
                         array(
                                 'name' => 'created_by',
                                 'filter' => false,
