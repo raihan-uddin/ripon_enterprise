@@ -1184,6 +1184,13 @@ Yii::app()->clientScript->registerCoreScript("jquery.ui");
                         }else {                
                             $("#overlay").fadeIn(300);
                             $("#ajaxLoader").show();
+                            // Disable all inputs in rows where qty is empty or 0
+                            $(".item").each(function(){
+                                var qty = $(this).find(".temp_qty").val();
+                                if(qty === "" || parseFloat(qty) <= 0){
+                                    $(this).find("input").prop("disabled", true);
+                                }
+                            });
                         }
                      }',
                     'error' => 'function(xhr, status, error) { 
@@ -1195,10 +1202,12 @@ Yii::app()->clientScript->registerCoreScript("jquery.ui");
                         console.error(xhr.responseText);
                     
                         $("#overlay").fadeOut(300);
+                        $(".item input").prop("disabled", false);
                   }',
                     'complete' => 'function() {
                         $("#overlay").fadeOut(300);
                         $("#ajaxLoaderReport").hide(); 
+                        $(".item input").prop("disabled", false);
                   }',
             ), array('class' => 'btn btn-primary btn-md'));
             ?>

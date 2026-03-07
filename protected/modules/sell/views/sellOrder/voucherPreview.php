@@ -270,12 +270,7 @@
                             </tr>
                             <?php
                         }
-                        $actualGrandTotal = ROUND((($row_total + $vat + $delivery_charge) - $discount_amount), 2);
-                        if ($actualGrandTotal != $item->grand_total) {
-                            $item->grand_total = $actualGrandTotal;
-                            $item->total_due = $actualGrandTotal;
-                            $item->save();
-                        }
+
                         $vatDisplay = $vat != 0 ? "" : "display: none;" ;
                         $deliveryChargeDisplay = $delivery_charge != 0 ? "" : "display: none;";
                         $discountDisplay = $discount_amount != 0 ? "" : "display: none;";

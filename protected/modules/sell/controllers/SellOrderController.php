@@ -78,6 +78,7 @@ class SellOrderController extends RController
             $model->total_due = $_POST['SellOrder']['grand_total'];
             $model->so_no = date('y') . date('m') . str_pad($model->max_sl_no, 5, "0", STR_PAD_LEFT);
             $inv_sl = Inventory::maxSlNo();
+
             $transaction = Yii::app()->db->beginTransaction();
             try {
                 if ($model->save()) {
