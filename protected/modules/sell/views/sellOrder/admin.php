@@ -190,9 +190,9 @@ if (Yii::app()->user->checkAccess('Sell.Order.VoucherPreview')) {
                                 'filter' => false,
                                 'type' => 'raw',
                                 'value' => 'CHtml::tag("span", array(
-                        "class" => "badge badge-info text-capitalize"),
-                        Users::model()->nameOfThis($data->created_by)
-                    )',
+                                    "class" => "badge badge-info text-capitalize"),
+                                    Users::model()->nameOfThis($data->created_by)
+                                )',
                                 'htmlOptions' => array(
                                         'class' => 'text-center',
                                         'style' => 'width: 150px;',

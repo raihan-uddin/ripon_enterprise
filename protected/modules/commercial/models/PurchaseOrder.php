@@ -159,7 +159,7 @@ class PurchaseOrder extends CActiveRecord
      * - Execute this method to get CActiveDataProvider instance which will filter
      * models according to data in model fields.
      * - Pass data provider to CGridView, CListView or any similar widget.
-     *
+     * 3083 paasword
      * @return CActiveDataProvider the data provider that can return the models
      * based on the search/filter conditions.
      */
@@ -170,7 +170,7 @@ class PurchaseOrder extends CActiveRecord
         $criteria->select = "t.*";
         $criteria->join = " ";
 
-        $criteria->addColumnCondition(['is_deleted' => 0]);
+        $criteria->addColumnCondition(['t.is_deleted' => 0]);
 
         if (!Yii::app()->user->checkAccess('Admin')) {
             $criteria->addColumnCondition(['t.created_by' => Yii::app()->user->getState('user_id')]);
@@ -217,7 +217,7 @@ class PurchaseOrder extends CActiveRecord
                 'pageSize' => 50,
             ),
             'sort' => array(
-                'defaultOrder' => 'id DESC',
+                'defaultOrder' => 't.date desc, t.id DESC',
             ),
         ));
     }
