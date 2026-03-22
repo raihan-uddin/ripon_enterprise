@@ -10,7 +10,7 @@
         /* Set A5 paper size and minimum margins */
         @page {
             size: A5;
-            margin: 8mm 5mm 15mm 5mm; /* bottom space for footer */
+            margin: 6mm 5mm 8mm 5mm; /* bottom space for footer */
         }
         body {
             margin: 0;
@@ -20,7 +20,7 @@
 
         .printAllTableForThisReport {
             font-family: Helvetica Neue, Helvetica, Arial, sans-serif;
-            font-size: 12px;
+            font-size: 14px;
             font-weight: bold;
         }
 
