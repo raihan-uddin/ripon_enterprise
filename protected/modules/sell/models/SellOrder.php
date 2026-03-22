@@ -235,7 +235,7 @@ class SellOrder extends CActiveRecord
                 'pageSize' => 50,
             ),
             'sort' => array(
-                'defaultOrder' => 'id DESC',
+                'defaultOrder' => 'date DESC',
             ),
         ));
     }

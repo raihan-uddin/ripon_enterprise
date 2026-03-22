@@ -228,7 +228,7 @@
                                 ?>
                                 <tr>
                                     <td style="text-align: center;"><?= $i++ ?></td>
-                                    <td style="text-align: left; padding-left: 10px; border: 1px solid black;">
+                                    <td style="text-align: left; padding-left: 10px; border: 1px solid black; font-weight: ">
                                         <?= $dt->model_name ?>
                                     </td>
                                     <td style="text-align: center;">
