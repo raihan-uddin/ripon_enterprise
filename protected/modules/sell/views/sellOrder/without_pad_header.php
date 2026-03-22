@@ -19,7 +19,7 @@
     }
 </style>
 
-<div class="invoice-header-wrapper">
+<div class="invoice-header-wrapper" style="font-weight: bold;">
     <b style="font-size: 25px;"><?= strtoupper(Yii::app()->params['company']['name']) ?></b>
     <br>
     <?php echo Yii::app()->params['company']['address_line_1']; ?><br>
