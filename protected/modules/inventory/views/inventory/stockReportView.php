@@ -202,8 +202,9 @@ echo "</div>";
         } else {
             ?>
             <tr>
-                <th style="text-align: right;" colspan="9">Ground Total</th>
+                <th style="text-align: right;" colspan="8">Ground Total</th>
                 <th style="text-align: right;"><?= number_format($groundTotalSaleValue, 2) ?></th>
+                <th> </th>
                 <th style="text-align: right;"><?= number_format($groundTotalStockValue, 2) ?></th>
             </tr>
             <?php
