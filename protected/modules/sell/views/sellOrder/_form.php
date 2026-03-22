@@ -1228,6 +1228,14 @@ Yii::app()->clientScript->registerCoreScript("jquery.ui");
     </div>
 </div>
 <script>
+
+    var picker = new Lightpick({
+        field: document.getElementById('entry_date'),
+        // minDate: moment(),
+        onSelect: function (date) {
+            document.getElementById('SellOrder_date').value = date.format('YYYY-MM-DD');
+        }
+    });
     $(function () {
 
         /* ==========================
