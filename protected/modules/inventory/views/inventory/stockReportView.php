@@ -111,17 +111,18 @@ echo "</div>";
             <th style="box-shadow: 0px 0px 0px 1px black inset;  width: 10%; min-width: 60px;">
                 Closing Stock
             </th>
-            <th style="box-shadow: 0px 0px 0px 1px black inset;">S.P</th>
-            <th style="box-shadow: 0px 0px 0px 1px black inset;  width: 10%; min-width: 60px;">
-                Sell Value
-            </th>
-
             <th style="box-shadow: 0px 0px 0px 1px black inset;  width: 10%; min-width: 60px;">
                 AVG P.P
             </th>
             <th style="box-shadow: 0px 0px 0px 1px black inset;  width: 10%; min-width: 50px;">
                 Stock Value
             </th>
+
+            <th style="box-shadow: 0px 0px 0px 1px black inset;">S.P</th>
+            <th style="box-shadow: 0px 0px 0px 1px black inset;  width: 10%; min-width: 60px;">
+                Sell Value
+            </th>
+
 
         </tr>
         </thead>
