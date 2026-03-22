@@ -180,10 +180,10 @@ echo "</div>";
                             <?php echo $closing; ?>
                         </a>
                     </td>
-                    <td style="text-align: center;"><?php echo is_numeric($dmr->sell_price) ? number_format($dmr->sell_price, 2) : ''; ?></td>
-                    <td style="text-align: right;"><?php echo is_numeric($stockSaleValue) ? number_format($stockSaleValue, 2) : ''; ?></td>
                     <td style="text-align: right;"><?php echo is_numeric($avg_purchase_price) ? number_format($avg_purchase_price, 2) : ''; ?></td>
                     <td style="text-align: right;"><?php echo is_numeric($row_stock_closing_value) ? number_format($row_stock_closing_value, 2) : ''; ?></td>
+                    <td style="text-align: center;"><?php echo is_numeric($dmr->sell_price) ? number_format($dmr->sell_price, 2) : ''; ?></td>
+                    <td style="text-align: right;"><?php echo is_numeric($stockSaleValue) ? number_format($stockSaleValue, 2) : ''; ?></td>
                 </tr>
                 <?php
             }
@@ -203,9 +203,9 @@ echo "</div>";
             ?>
             <tr>
                 <th style="text-align: right;" colspan="8">Ground Total</th>
-                <th style="text-align: right;"><?= number_format($groundTotalSaleValue, 2) ?></th>
-                <th> </th>
                 <th style="text-align: right;"><?= number_format($groundTotalStockValue, 2) ?></th>
+                <th> </th>
+                <th style="text-align: right;"><?= number_format($groundTotalSaleValue, 2) ?></th>
             </tr>
             <?php
         }
