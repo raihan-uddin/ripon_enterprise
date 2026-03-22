@@ -811,7 +811,7 @@ Yii::app()->clientScript->registerCoreScript("jquery.ui");
                                 LEFT JOIN inventory ON inventory.model_id = t.id
                             ";
                             $criteria->group = "t.id";
-                            $criteria->order = "companies.name ASC, t.model_name ASC";
+                            $criteria->order = "companies.name ASC, t.code ASC";
                             $data = ProdModels::model()->findAll($criteria);
 
                             $sl = 1;
