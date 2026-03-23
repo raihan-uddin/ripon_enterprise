@@ -45,6 +45,7 @@ or <b>=</b>) at the beginning of each of your search values to specify how the c
 	'dataProvider'=>$model->search(),
 	'filter'=>$model,
 	'pager' => array(
+		'class'          => 'CLinkPager',
 		'cssFile'        => false,
 		'header'         => '',
 		'firstPageLabel' => '<i class="fa fa-angle-double-left"></i>',
@@ -113,13 +114,13 @@ or <b>=</b>) at the beginning of each of your search values to specify how the c
 )); ?>
 
 <script>
-function goToPage(gridId) {
-    var page = parseInt($('#goto-page-input-' + gridId).val(), 10);
+function goToPage() {
+    var page = parseInt($('#goto-page-input').val(), 10);
     if (!page || page < 1) return;
-    $.fn.yiiGridView.update(gridId, { data: { [gridId + '_page']: page } });
-    $('#goto-page-input-' + gridId).val('');
+    $.fn.yiiGridView.update('warranty-claims-grid', { data: { 'warranty-claims-grid_page': page } });
+    $('#goto-page-input').val('');
 }
-$(document).on('keypress', '[id^="goto-page-input-"]', function(e) {
-    if (e.which === 13) goToPage($(this).attr('id').replace('goto-page-input-', ''));
+$(document).on('keypress', '#goto-page-input', function(e) {
+    if (e.which === 13) goToPage();
 });
 </script>

@@ -127,6 +127,7 @@ if (Yii::app()->user->checkAccess('Accounting.PaymentReceipt.VoucherPreview')) {
             'mergeColumns' => array('date', 'pr_no', 'payment_type', 'order_id', 'supplier_id'),
 //            'loadingCssClass' => 'fa fa-spinner fa-spin fa-2x',
             'pager' => array(
+                'class'          => 'CLinkPager',
                 'cssFile'        => false,
                 'header'         => '',
                 'firstPageLabel' => '<i class="fa fa-angle-double-left"></i>',
@@ -228,8 +229,8 @@ if (Yii::app()->user->checkAccess('Accounting.PaymentReceipt.VoucherPreview')) {
             <div class="col-sm-12 col-md-6 text-right">
                 <div class="goto-page-wrap" style="justify-content:flex-end;">
                     <span>Go to page</span>
-                    <input type="number" id="goto-page-input-payment-receipt-grid" class="form-control" min="1" placeholder="Page #"/>
-                    <button onclick="goToPage('payment-receipt-grid')"><i class="fa fa-arrow-right"></i> Go</button>
+                    <input type="number" id="goto-page-input" class="form-control" min="1" placeholder="Page #"/>
+                    <button onclick="goToPage()"><i class="fa fa-arrow-right"></i> Go</button>
                 </div>
             </div>
         </div>
@@ -257,13 +258,13 @@ $this->beginWidget('zii.widgets.jui.CJuiDialog', array(
 <?php $this->endWidget('zii.widgets.jui.CJuiDialog'); ?>
 
 <script>
-function goToPage(gridId) {
-    var page = parseInt($('#goto-page-input-' + gridId).val(), 10);
+function goToPage() {
+    var page = parseInt($('#goto-page-input').val(), 10);
     if (!page || page < 1) return;
-    $.fn.yiiGridView.update(gridId, { data: { [gridId + '_page']: page } });
-    $('#goto-page-input-' + gridId).val('');
+    $.fn.yiiGridView.update('payment-receipt-grid', { data: { 'payment-receipt-grid_page': page } });
+    $('#goto-page-input').val('');
 }
-$(document).on('keypress', '[id^="goto-page-input-"]', function(e) {
-    if (e.which === 13) goToPage($(this).attr('id').replace('goto-page-input-', ''));
+$(document).on('keypress', '#goto-page-input', function(e) {
+    if (e.which === 13) goToPage();
 });
 </script>
