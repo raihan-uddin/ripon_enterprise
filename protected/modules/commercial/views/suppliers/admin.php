@@ -101,15 +101,15 @@ endforeach;
                     array
                     (
                         'header' => 'Options',
-                        'htmlOptions' => array('style' => 'width:120px'),
+                        'htmlOptions' => array('style' => 'width:120px', 'class' => 'actions-cell'),
                         //'template' => '{view}{update}{addContactPerson}{contactPersons}{delete}',
                         'template' => '{createPr}{update}{customDelete}',
                         'class' => 'CButtonColumn',
                         'buttons' => array(
                             'customDelete' => array(
-                                'label' => '<i class="fa fa-trash fa-2x" style="color: red;"></i>&nbsp;&nbsp;',
+                                'label' => '<i class="fa fa-trash"></i>',
                                 'imageUrl' => false,
-                                'options' => array('rel' => 'tooltip', 'data-toggle' => 'tooltip', 'title' => Yii::t('app', 'Delete')),
+                                'options' => array('class' => 'action-btn btn-delete', 'rel' => 'tooltip', 'data-toggle' => 'tooltip', 'title' => Yii::t('app', 'Delete')),
                                 'url' => 'Yii::app()->controller->createUrl("suppliers/delete",array("id"=>$data->id))',
                                 'click' => "function(){
                                     //$('#viewDialog').dialog('open');
@@ -132,9 +132,9 @@ endforeach;
 
                             ),
                             'update' => array(
-                                'label' => '<i class="fa fa-pencil-square-o fa-2x" style="color: black;"></i>&nbsp;&nbsp;',
+                                'label' => '<i class="fa fa-pencil-square-o"></i>',
                                 'imageUrl' => false,
-                                'options' => array('rel' => 'tooltip', 'data-toggle' => 'tooltip', 'title' => Yii::t('app', 'Edit')),
+                                'options' => array('class' => 'action-btn btn-edit', 'rel' => 'tooltip', 'data-toggle' => 'tooltip', 'title' => Yii::t('app', 'Edit')),
                                 'click' => "function( e ){
                             e.preventDefault();
                             $( '#update-dialog' ).children( ':eq(0)' ).empty(); // Stop auto POST
@@ -144,9 +144,9 @@ endforeach;
                               .dialog( 'open' ); }",
                             ),
                                 'createPr' => array(
-                                        'label' => '<i class="fa fa-money fa-2x" style="color: green;"></i>&nbsp;&nbsp;',
+                                        'label' => '<i class="fa fa-money"></i>',
                                         'imageUrl' => false,
-                                        'options' => array('rel' => 'tooltip', 'data-toggle' => 'tooltip', 'title' => Yii::t('app', 'Create PR')),
+                                        'options' => array('class' => 'action-btn btn-payment', 'rel' => 'tooltip', 'data-toggle' => 'tooltip', 'title' => Yii::t('app', 'Create PR')),
                                         'url' => 'Yii::app()->controller->createUrl("/accounting/paymentReceipt/create",array("id"=>$data->id,))',
                                 ),
                         )
@@ -252,15 +252,6 @@ jQuery( function($){
 });
 ");
 ?>
-
-    <style>
-
-
-        /* disable selected for merged cells */
-        .grid-view td.merge {
-            background: none repeat scroll 0 0 #F8F8F8;
-        }
-    </style>
 
     <!--Contact person dialog box---------------------------------------------------------------------->
 

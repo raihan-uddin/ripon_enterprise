@@ -173,15 +173,15 @@ if (Yii::app()->user->checkAccess('Sell.SellOrderQuotation.VoucherPreview')) {
                 array
                 (
                     'header' => '',
-                    'htmlOptions' => array('style' => 'width:20px; text-align: center;', 'class' => 'text-center'),
+                    'htmlOptions' => array('style' => 'width:20px; text-align: center;', 'class' => 'actions-cell'),
                     'template' => '{singleInvoice}',
                     'class' => 'CButtonColumn',
                     'afterDelete' => 'function(link,success,data){ if(success) $("#statusMsg").html(data); }',
                     'buttons' => array(
                         'singleInvoice' => array(
-                            'label' => '<i class="fa fa-file-pdf-o fa-2x" style="color: green; cursor: pointer; "></i>&nbsp;&nbsp;',
+                            'label' => '<i class="fa fa-file-pdf-o"></i>',
                             'imageUrl' => false,
-                            'options' => array('rel' => 'tooltip', 'data-toggle' => 'tooltip', 'title' => Yii::t('app', 'Preview Invoice')),
+                            'options' => array('class' => 'action-btn btn-preview', 'rel' => 'tooltip', 'data-toggle' => 'tooltip', 'title' => Yii::t('app', 'Preview Invoice')),
                             // Remove the 'url' attribute
                             'click' => "function() {
                                 // Get the invoice ID
@@ -209,16 +209,17 @@ if (Yii::app()->user->checkAccess('Sell.SellOrderQuotation.VoucherPreview')) {
                     'header' => 'Options',
                     'template' => '{update}{delete}',
                     'class' => 'CButtonColumn',
-                    'htmlOptions' => ['style' => 'width: 200px', 'class' => 'text-center'],
+                    'htmlOptions' => ['style' => 'width: 200px', 'class' => 'actions-cell'],
                     'buttons' => array(
                         'update' => array(
-                            'label' => '<i class="fa fa-pencil-square-o fa-2x" style="color: black;"></i>&nbsp;&nbsp;',
+                            'label' => '<i class="fa fa-pencil-square-o"></i>',
                             'imageUrl' => false,
-                            'options' => array('rel' => 'tooltip', 'data-toggle' => 'tooltip', 'title' => Yii::t('app', 'Edit')),
+                            'options' => array('class' => 'action-btn btn-edit', 'rel' => 'tooltip', 'data-toggle' => 'tooltip', 'title' => Yii::t('app', 'Edit')),
                         ),
                         'delete' => array(
-                                'label' => '<i class="fa fa-trash fa-2x" style="color: red;"></i>&nbsp;&nbsp;',
+                                'label' => '<i class="fa fa-trash"></i>',
                                 'imageUrl' => false,
+                                'options' => array('class' => 'action-btn btn-delete', 'rel' => 'tooltip', 'data-toggle' => 'tooltip', 'title' => Yii::t('app', 'Delete')),
                                 'url' => 'Yii::app()->controller->createUrl("delete", array("id"=>$data->id))',
                                 'click' => 'function(e){
                                                 e.preventDefault();

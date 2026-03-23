@@ -105,11 +105,12 @@ endforeach;
                     'header' => 'Options',
                     'template' => '{update}', //{delete}
                     'class' => 'CButtonColumn',
+                    'htmlOptions' => ['class' => 'actions-cell'],
                     'buttons' => array(
                         'update' => array(
-                            'label' => '<i class="fa fa-pencil-square-o fa-2x" style="color: black;"></i>&nbsp;&nbsp;',
+                            'label' => '<i class="fa fa-pencil-square-o"></i>',
                             'imageUrl' => false,
-                            'options' => array('rel' => 'tooltip', 'data-toggle' => 'tooltip', 'title' => Yii::t('app', 'Edit')),
+                            'options' => array('class' => 'action-btn btn-edit', 'rel' => 'tooltip', 'data-toggle' => 'tooltip', 'title' => Yii::t('app', 'Edit')),
                             'click' => "function( e ){
                                 e.preventDefault();
                                 $( '#update-dialog' ).children( ':eq(0)' ).empty(); // Stop auto POST
@@ -140,9 +141,9 @@ endforeach;
                      ",
                         ),
                         'delete' => array(
-                            'label' => '<i class="fa fa-trash fa-2x" style="color: red;"></i>&nbsp;&nbsp;',
+                            'label' => '<i class="fa fa-trash"></i>',
                             'imageUrl' => false,
-                            'options' => array('rel' => 'tooltip', 'data-toggle' => 'tooltip', 'title' => Yii::t('app', 'Delete')),
+                            'options' => array('class' => 'action-btn btn-delete', 'rel' => 'tooltip', 'data-toggle' => 'tooltip', 'title' => Yii::t('app', 'Delete')),
                             'url' => 'Yii::app()->controller->createUrl("suppliers/delete",array("id"=>$data->id))',
                         )
                     )
@@ -249,11 +250,3 @@ jQuery( function($){
 ");
 ?>
 
-<style>
-
-
-    /* disable selected for merged cells */
-    .grid-view td.merge {
-        background: none repeat scroll 0 0 #F8F8F8;
-    }
-</style>

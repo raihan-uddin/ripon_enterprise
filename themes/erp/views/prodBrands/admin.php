@@ -101,25 +101,25 @@ endforeach;
                     'header' => 'Options',
                     'template' => '{update}{delete}', //
                     'class' => 'CButtonColumn',
-                    'htmlOptions' => ['style' => 'width: 100px'],
+                    'htmlOptions' => ['style' => 'width: 100px', 'class' => 'actions-cell'],
                     'buttons' => array(
                         'update' => array(
-                            'label' => '<i class="fa fa-pencil-square-o fa-2x" style="color: black;"></i>&nbsp;&nbsp;',
+                            'label' => '<i class="fa fa-pencil-square-o"></i>',
                             'imageUrl' => false,
-                            'options' => array('rel' => 'tooltip', 'data-toggle' => 'tooltip', 'title' => Yii::t('app', 'Edit')),
+                            'options' => array('class' => 'action-btn btn-edit', 'rel' => 'tooltip', 'data-toggle' => 'tooltip', 'title' => Yii::t('app', 'Edit')),
                             'click' => "function( e ){
                                     e.preventDefault();
                                     $( '#update-dialog' ).children( ':eq(0)' ).empty(); // Stop auto POST
                                     updateDialog( $( this ).attr( 'href' ) );
                                     $( '#update-dialog' )
                                       .dialog( { title: 'Update Sub-Category' } )
-                                      .dialog( 'open' ); 
+                                      .dialog( 'open' );
                                    }",
                         ),
                         'delete' => array(
-                            'label' => '<i class="fa fa-trash fa-2x" style="color: red;"></i>&nbsp;&nbsp;',
+                            'label' => '<i class="fa fa-trash"></i>',
                             'imageUrl' => false,
-                            'options' => array('rel' => 'tooltip', 'data-toggle' => 'tooltip', 'title' => Yii::t('app', 'Delete')),
+                            'options' => array('class' => 'action-btn btn-delete', 'rel' => 'tooltip', 'data-toggle' => 'tooltip', 'title' => Yii::t('app', 'Delete')),
 //                            'visible' => '$data->account_type=="1"?TRUE:FALSE',
 //                            'visible'=>'$data->account_type=="2"?TRUE:FALSE',
                         ),
@@ -204,12 +204,4 @@ jQuery( function($){
 ");
 ?>
 
-<style>
-
-
-    /* disable selected for merged cells */
-    .grid-view td.merge {
-        background: none repeat scroll 0 0 #F8F8F8;
-    }
-</style>
 

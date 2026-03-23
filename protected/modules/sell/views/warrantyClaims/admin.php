@@ -66,6 +66,24 @@ or <b>=</b>) at the beginning of each of your search values to specify how the c
 		*/
 		array(
 			'class'=>'CButtonColumn',
+			'htmlOptions' => ['class' => 'actions-cell'],
+			'buttons' => array(
+				'view' => array(
+					'label' => '<i class="fa fa-eye"></i>',
+					'imageUrl' => false,
+					'options' => array('class' => 'action-btn btn-view', 'rel' => 'tooltip', 'data-toggle' => 'tooltip', 'title' => 'View'),
+				),
+				'update' => array(
+					'label' => '<i class="fa fa-pencil-square-o"></i>',
+					'imageUrl' => false,
+					'options' => array('class' => 'action-btn btn-edit', 'rel' => 'tooltip', 'data-toggle' => 'tooltip', 'title' => 'Edit'),
+				),
+				'delete' => array(
+					'label' => '<i class="fa fa-trash"></i>',
+					'imageUrl' => false,
+					'options' => array('class' => 'action-btn btn-delete', 'rel' => 'tooltip', 'data-toggle' => 'tooltip', 'title' => 'Delete'),
+				),
+			),
 		),
 	),
 )); ?>
