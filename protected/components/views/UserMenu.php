@@ -131,8 +131,7 @@ $this->widget('application.extensions.mbmenu.MbMenu', array(
                                 array(
                                         'label' => 'REPORTS',
                                         'items' => array(
-                                                ['label' => 'DUE SUMMARY',   'url' => ['/loan/report/summary']],
-                                                ['label' => 'PERSON LEDGER','url' => ['/loan/report/ledger']],
+                                                        ['label' => 'PERSON LEDGER', 'url' => ['/report/loanLedger']],
                                         ),
                                 ),
 

@@ -28,10 +28,10 @@
         mac = $.extend({}, $.fn.print.defaults, options);
         // NOTE: We are trimming the jQuery collection down to the
         // first element in the collection.
-        if (this.size() > 1){
+        if (this.length > 1){
             this.eq( 0 ).print();
             return;
-        } else if (!this.size()){
+        } else if (!this.length){
             return;
         }
  

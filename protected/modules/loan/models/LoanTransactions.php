@@ -36,8 +36,9 @@ class LoanTransactions extends CActiveRecord
 		return array(
 			array('person_id, transaction_type, amount, transaction_date', 'required'),
 			array('person_id, created_by', 'numerical', 'integerOnly'=>true),
-			array('transaction_type', 'length', 'max'=>6),
-			array('amount', 'length', 'max'=>12),
+			array('transaction_type', 'in', 'range'=>array('lend','borrow')),
+			array('amount', 'numerical', 'min'=>0.01, 'message'=>'Amount must be a valid number greater than 0.'),
+			array('transaction_date', 'date', 'format'=>'yyyy-MM-dd', 'message'=>'Date must be in YYYY-MM-DD format.'),
 			array('note, created_at', 'safe'),
 			// The following rule is used by search().
 			// @todo Please remove those attributes that should not be searched.

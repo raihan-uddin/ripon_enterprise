@@ -1415,4 +1415,72 @@ class ReportController extends RController
 
         Yii::app()->end();
     }
+
+    public function actionLoanLedger()
+    {
+        Yii::import('application.modules.loan.models.*');
+        $this->pageTitle = 'LOAN LEDGER';
+        $persons = LoanPersons::model()->findAll(array('order' => 'name ASC', 'condition' => 'status=1'));
+        $this->render('loanLedger', array('persons' => $persons));
+    }
+
+    public function actionLoanLedgerView()
+    {
+        Yii::import('application.modules.loan.models.*');
+        if (Yii::app()->request->isAjaxRequest) {
+            Yii::app()->clientScript->scriptMap['jquery.js'] = false;
+        }
+
+        $dateFrom = isset($_POST['date_from']) ? trim($_POST['date_from']) : '';
+        $dateTo   = isset($_POST['date_to'])   ? trim($_POST['date_to'])   : '';
+        $personId = isset($_POST['person_id']) ? (int)$_POST['person_id'] : 0;
+
+        $data    = null;
+        $opening = 0;
+        $message = '';
+
+        if ($dateFrom && $dateTo) {
+            $personCond = $personId > 0 ? " AND t.person_id = $personId" : '';
+
+            // Opening balance (all transactions before the date range)
+            $openSql = "SELECT SUM(CASE WHEN transaction_type = 'lend' THEN amount ELSE -amount END) AS balance
+                        FROM loan_transactions t
+                        WHERE t.transaction_date < :dateFrom" . ($personId > 0 ? " AND t.person_id = :personId" : "");
+            $openCmd = Yii::app()->db->createCommand($openSql);
+            $openCmd->bindValue(':dateFrom', $dateFrom);
+            if ($personId > 0) $openCmd->bindValue(':personId', $personId);
+            $openRow = $openCmd->queryRow();
+            $opening = $openRow ? (float)$openRow['balance'] : 0;
+
+            // Transactions in range
+            $sql = "SELECT t.id, t.person_id, t.transaction_type, t.amount, t.transaction_date, t.note, t.created_at,
+                           p.name AS person_name
+                    FROM loan_transactions t
+                    LEFT JOIN loan_persons p ON t.person_id = p.id
+                    WHERE t.transaction_date BETWEEN :dateFrom AND :dateTo
+                    $personCond
+                    ORDER BY t.transaction_date ASC, t.id ASC";
+            $cmd = Yii::app()->db->createCommand($sql);
+            $cmd->bindValue(':dateFrom', $dateFrom);
+            $cmd->bindValue(':dateTo', $dateTo);
+            $data = $cmd->queryAll();
+
+            if ($personId > 0) {
+                $person = LoanPersons::model()->findByPk($personId);
+                $personName = $person ? $person->name : 'Unknown';
+            } else {
+                $personName = 'সকল ব্যক্তি';
+            }
+            $message = "ব্যক্তি: <strong>$personName</strong> &nbsp;|&nbsp; তারিখ: "
+                     . date('d M Y', strtotime($dateFrom)) . ' – ' . date('d M Y', strtotime($dateTo));
+        }
+
+        echo $this->renderPartial('loanLedgerView', array(
+            'data'      => $data,
+            'opening'   => $opening,
+            'personId'  => $personId,
+            'message'   => $message,
+        ), true, true);
+        Yii::app()->end();
+    }
 }

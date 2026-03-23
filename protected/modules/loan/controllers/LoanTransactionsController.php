@@ -62,9 +62,9 @@ class LoanTransactionsController extends Controller
 
             if ($model->validate()) {
                 $model->save(false);
-                echo CJSON::encode(['status'=>'success']);
+                echo CJSON::encode(['status' => 'success']);
             } else {
-                echo CActiveForm::validate($model);
+                echo CJSON::encode(['status' => 'error', 'errors' => $model->getErrors()]);
             }
             Yii::app()->end();
         }

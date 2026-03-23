@@ -7,21 +7,39 @@
 
     /* override styles when printing */
     @media print {
-        /* Set A5 paper size and minimum margins */
         @page {
             size: A5;
-            margin: 6mm 5mm 8mm 5mm; /* bottom space for footer */
+            margin: 5mm 5mm 5mm 5mm;
         }
+
+        * {
+            -webkit-print-color-adjust: exact !important;
+            print-color-adjust: exact !important;
+            color-adjust: exact !important;
+        }
+
         body {
             margin: 0;
             padding: 0;
             font-family: Helvetica Neue, Helvetica, Arial, sans-serif;
+            color: #000 !important;
         }
 
         .printAllTableForThisReport {
             font-family: Helvetica Neue, Helvetica, Arial, sans-serif;
             font-size: 14px;
             font-weight: bold;
+            color: #000 !important;
+        }
+
+        .printAllTableForThisReport td,
+        .printAllTableForThisReport th,
+        .printAllTableForThisReport span,
+        .printAllTableForThisReport div,
+        .printAllTableForThisReport p {
+            color: #000 !important;
+            font-weight: 600 !important;
+            -webkit-text-stroke: 0.2px #000;
         }
 
         .page-break-div {
@@ -72,6 +90,118 @@
         width: 100%;
         text-align: center;
     }
+
+    /* ── Invoice info block ── */
+    .invoice-info-block {
+        width: 100%;
+        border-collapse: collapse;
+        margin-bottom: 8px;
+        margin-top: 4px;
+    }
+
+    .invoice-info-block td {
+        vertical-align: top;
+        padding: 0;
+        border: none;
+    }
+
+    .invoice-bill-to {
+        width: 55%;
+        padding-right: 16px;
+    }
+
+    .invoice-bill-to {
+        background: #f5f8fb;
+        border: 1px solid #d0dae6;
+        border-left: 4px solid #1a2c3d;
+        border-radius: 3px;
+        padding: 8px 12px !important;
+    }
+
+    .invoice-bill-to .section-label {
+        font-size: 9px;
+        font-weight: 700;
+        letter-spacing: 1.8px;
+        text-transform: uppercase;
+        color: #1a2c3d;
+        display: block;
+        margin-bottom: 5px;
+        opacity: 0.6;
+    }
+
+    .invoice-bill-to .customer-name {
+        font-size: 13px;
+        font-weight: 700;
+        color: #1a2c3d;
+        margin-bottom: 4px;
+        line-height: 1.3;
+    }
+
+    .invoice-bill-to .customer-detail {
+        font-size: 11px;
+        color: #555;
+        line-height: 1.7;
+    }
+
+    .invoice-bill-to .customer-detail .detail-row {
+        display: flex;
+        align-items: baseline;
+        gap: 4px;
+    }
+
+    .invoice-bill-to .customer-detail .detail-label {
+        font-size: 9px;
+        font-weight: 700;
+        text-transform: uppercase;
+        color: #888;
+        min-width: 30px;
+        letter-spacing: 0.5px;
+    }
+
+    .invoice-meta {
+        width: 40%;
+        vertical-align: top;
+    }
+
+    .invoice-meta-table {
+        width: 100%;
+        border-collapse: collapse;
+        border: 1px solid #d0dae6;
+        border-radius: 4px;
+        overflow: hidden;
+    }
+
+    .invoice-meta-table tr td {
+        padding: 5px 10px;
+        font-size: 12px;
+        border-bottom: 1px solid #e8ecf0;
+    }
+
+    .invoice-meta-table tr:nth-child(odd) {
+        background: #f5f8fb;
+    }
+
+    .invoice-meta-table tr:nth-child(even) {
+        background: #fff;
+    }
+
+    .invoice-meta-table tr td:first-child {
+        color: #6c757d;
+        font-weight: 600;
+        white-space: nowrap;
+        width: 42%;
+        border-right: 1px solid #d0dae6;
+    }
+
+    .invoice-meta-table tr td:last-child {
+        font-weight: 700;
+        color: #1a2c3d;
+        text-align: right;
+    }
+
+    .invoice-meta-table tr:last-child td {
+        border-bottom: none;
+    }
 </style>
 
 <div class="card card-primary  table-responsive">
@@ -119,71 +249,66 @@
                 if ($item) {
                     $customer = Customers::model()->findByPk($item->customer_id);
                     ?>
-                    <div style="width: 100%; min-height: 80px;">
+                    <div style="width: 100%;">
                         <?php
-                        if (isset($preview_type)) {
-                            if ($preview_type == SellOrder::NORMAL_PAD_PRINT) {
-                                $this->renderPartial('application.modules.sell.views.sellOrder.pad_header');
-                            } else {
-                                $this->renderPartial('application.modules.sell.views.sellOrder.without_pad_header');
-                            }
+                        if (isset($preview_type) && $preview_type == SellOrder::NORMAL_PAD_PRINT) {
+                            $this->renderPartial('application.modules.sell.views.sellOrder.pad_header');
                         } else {
-                            $this->renderPartial('application.modules.sell.views.sellOrder.without_pad_header');
+                            $this->renderPartial('application.modules.sell.views.sellOrder.without_pad_header', ['id' => $item->id, 'so_no' => $item->so_no]);
                         }
                         ?>
-                        <div style="width: 100%; float: left; clear: right; margin-bottom: 10px; text-align: left">
-                            <div style="width: 50%; float: left; clear: right; font-size: 13px;">
-                                <h5 style="margin-bottom: 5px; font-size: 14px; font-weight: bold;">Customer
-                                    Details</h5>
-                                <?php
-                                $customer_name = $customer ? $customer->company_name : 'N/A';
-                                if ($customer) {
-                                    $details = [];
-
-                                    if (!empty($customer->company_name)) {
-                                        $details[] = $customer->company_name;
-                                    }
-
-                                    if (!empty($customer->company_address)) {
-                                        $details[] = $customer->company_address;
-                                    }
-
-                                    if (!empty($customer->owner_mobile_no)) {
-                                        $details[] = 'Phone: ' . $customer->owner_mobile_no;
-                                    }
-
-                                    if (!empty($customer->trn_no)) {
-                                        $details[] = 'TRN: ' . $customer->trn_no;
-                                    }
-
-                                    echo implode('<br>', $details);
-                                } else {
-                                    echo 'N/A';
-                                }
-                                ?>
-                            </div>
-
-                            <div style="width: 50%; float: left; text-align: right; vertical-align: bottom; margin-top: 20px;">
-                                <b>Date:</b>
-                                <?= date('d.m.Y', strtotime($item->date)) ?>
-                                <br>
-                                <b>Invoice ID:</b>
-                                #<?= "$item->id" ?>
-                                <br>
-                                <b>Invoice No:</b>
-                                #<?= "$item->so_no" ?>
-                                <br>
-                                <?php
-                                if ($showProfitLossSummary) {
-                                    ?>
-                                    <span style="border: 1px solid black; padding: 8px;">
-                                    <b style="font-size: 20px;">P/L: <span id="profitLossText_<?= $item->id ?>"></span></b>
-                                            </span>
-                                    <?php
-                                }
-                                ?>
-                            </div>
-                        </div>
+                        <!-- customer & invoice info -->
+                        <?php $customer_name = $customer ? $customer->company_name : 'N/A'; ?>
+                        <table class="invoice-info-block">
+                            <tr>
+                                <td class="invoice-bill-to">
+                                    <div class="section-label">Bill To</div>
+                                    <?php if ($customer): ?>
+                                        <div class="customer-name"><?= htmlspecialchars($customer->company_name) ?></div>
+                                        <div class="customer-detail">
+                                            <?php if (!empty($customer->company_address)): ?>
+                                                <div class="detail-row">
+                                                    <span class="detail-label">Addr</span>
+                                                    <span><?= htmlspecialchars($customer->company_address) ?></span>
+                                                </div>
+                                            <?php endif; ?>
+                                            <?php if (!empty($customer->owner_mobile_no)): ?>
+                                                <div class="detail-row">
+                                                    <span class="detail-label">Tel</span>
+                                                    <span><?= htmlspecialchars($customer->owner_mobile_no) ?></span>
+                                                </div>
+                                            <?php endif; ?>
+                                            <?php if (!empty($customer->trn_no)): ?>
+                                                <div class="detail-row">
+                                                    <span class="detail-label">TRN</span>
+                                                    <span><?= htmlspecialchars($customer->trn_no) ?></span>
+                                                </div>
+                                            <?php endif; ?>
+                                        </div>
+                                    <?php else: ?>
+                                        <div class="customer-name" style="color:#aaa;">N/A</div>
+                                    <?php endif; ?>
+                                </td>
+                                <td class="invoice-meta">
+                                    <table class="invoice-meta-table">
+                                        <tr>
+                                            <td>Invoice No / ID</td>
+                                            <td>#<?= htmlspecialchars($item->so_no) ?> &nbsp;<span style="color:#aaa;">|</span>&nbsp; #<?= $item->id ?></td>
+                                        </tr>
+                                        <tr>
+                                            <td>Date</td>
+                                            <td><?= date('d M Y', strtotime($item->date)) ?></td>
+                                        </tr>
+                                        <?php if ($showProfitLossSummary): ?>
+                                        <tr>
+                                            <td>P / L</td>
+                                            <td><span id="profitLossText_<?= $item->id ?>" style="font-size:15px;"></span></td>
+                                        </tr>
+                                        <?php endif; ?>
+                                    </table>
+                                </td>
+                            </tr>
+                        </table>
                     </div>
                     <table style="width: 100%; border-collapse: collapse; font-size: 15px;" class="item-list">
                         <thead>

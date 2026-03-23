@@ -231,5 +231,17 @@
         }
         ?>
 
+        <div class="btn-group pr-2 pb-2">
+            <button type="button" class="btn btn-secondary dropdown-toggle" data-toggle="dropdown"
+                    aria-haspopup="true" aria-expanded="false">
+                <i class="fa fa-handshake-o"></i> Loan Report
+            </button>
+            <div class="dropdown-menu" role="menu">
+                <a class="dropdown-item" href="<?= Yii::app()->createUrl("report/loanLedger") ?>">
+                    <i class="fa fa-book mr-2 text-primary"></i> Person Ledger
+                </a>
+            </div>
+        </div>
+
     </div>
 </div>

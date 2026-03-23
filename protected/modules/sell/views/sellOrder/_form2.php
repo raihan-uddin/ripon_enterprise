@@ -221,25 +221,24 @@ Yii::app()->clientScript->registerCoreScript("jquery.ui");
 
     .company-sub-header th {
         position: sticky;
-        top: 92px; /* GLOBAL BAR + COMPANY BAR height */
-        z-index: 6;
-        background: #ffffff;
-        border-bottom: 2px solid #dee2e6;
-        font-size: 12px;
-        font-weight: 600;
-        color: #495057;
-        padding: 6px 8px;
+        top: var(--sub-header-top, 0px);
+        z-index: 15;
+        background: #1a2c3d;
+        border-bottom: 3px solid #17a2b8;
+        border-top: none;
+        font-size: 11px;
+        font-weight: 700;
+        color: #ffffff;
+        padding: 8px 10px;
         white-space: nowrap;
+        text-transform: uppercase;
+        letter-spacing: 0.8px;
+        box-shadow: 0 2px 6px rgba(0,0,0,0.25);
     }
 
     /* Accent stripe */
     .company-sub-header th:first-child {
-        border-left: 3px solid #17a2b8;
-    }
-
-    /* Active company highlight */
-    .company-header.active + .company-sub-header th {
-        background: #f0fbff;
+        border-left: 4px solid #17a2b8;
     }
 
 
@@ -292,7 +291,8 @@ Yii::app()->clientScript->registerCoreScript("jquery.ui");
 
     /* Valid state */
     .item.ok {
-        background: #f3fff5;
+        background: #c8f0ce;
+        color: #ffffff !important;
     }
 
     /* Inline hint text */
@@ -395,12 +395,56 @@ Yii::app()->clientScript->registerCoreScript("jquery.ui");
         min-width: 220px;
     }
 
-    /* Accounting-style inputs */
+    /* ===== ALL SUMMARY INPUTS ===== */
     .summary-card input {
-        font-family: "JetBrains Mono", monospace;
-        letter-spacing: 0.4px;
-        height: 30px;
-        padding: 4px 6px;
+        font-size: 13px;
+        font-weight: 600;
+        height: 32px;
+        padding: 4px 8px;
+        border-radius: 5px;
+        text-align: right;
+        transition: border-color 0.15s;
+    }
+
+    /* Readonly — calculated, not editable */
+    .summary-card input[readonly] {
+        background: #f0f4f8;
+        border: 1px solid #c8d8e8;
+        color: #4a6278;
+        cursor: default;
+    }
+
+    /* Editable — user input */
+    .summary-card input:not([readonly]) {
+        background: #ffffff;
+        border: 2px solid #c8d8e8;
+        color: #212529;
+    }
+
+    .summary-card input:not([readonly]):focus {
+        border-color: #17a2b8;
+        box-shadow: 0 0 0 2px rgba(23, 162, 184, 0.15);
+        outline: none;
+    }
+
+    /* Addition inputs (+) */
+    .summary-card input.input-addition {
+        border-color: #28a745;
+        color: #155724;
+    }
+    .summary-card input.input-addition:focus {
+        border-color: #28a745;
+        box-shadow: 0 0 0 2px rgba(40, 167, 69, 0.15);
+    }
+
+    /* Deduction inputs (-) */
+    .summary-card input.input-deduction {
+        border-color: #dc3545;
+        color: #721c24;
+    }
+    .summary-card input.input-deduction:focus {
+        border-color: #dc3545;
+        box-shadow: 0 0 0 2px rgba(220, 53, 69, 0.15);
     }
 
     /* ===== PRIMARY TOTALS (Top Section) ===== */
@@ -420,16 +464,13 @@ Yii::app()->clientScript->registerCoreScript("jquery.ui");
     }
 
     .grand-input {
-        font-size: 18px;
-        font-weight: 700;
-        color: #28a745;
-        border: 2px solid #28a745;
-        background: #ffffff;
-    }
-
-    /* Subtle focus glow */
-    .grand-input:focus {
-        box-shadow: 0 0 0 2px rgba(40, 167, 69, 0.15);
+        font-size: 18px !important;
+        font-weight: 700 !important;
+        color: #28a745 !important;
+        border: 2px solid #28a745 !important;
+        background: #ffffff !important;
+        height: 40px !important;
+        letter-spacing: 0.5px;
     }
 
     /* ===== HOVER POLISH ===== */
@@ -726,7 +767,7 @@ Yii::app()->clientScript->registerCoreScript("jquery.ui");
             </div>
             <div class="card-body">
                 <div class="row">
-                    <div class="table table-responsive">
+                    <div class="table-responsive" style="max-height:60vh; overflow-y:auto; overflow-x:auto;">
                         <div id="global-bar">
                             <div class="global-left">
                                 <b>📊 ALL COMPANIES</b>
@@ -762,6 +803,7 @@ Yii::app()->clientScript->registerCoreScript("jquery.ui");
                             $totalCosting = 0;
                             $currentCompany = '';
                             $groupIndex = 0;
+                            $sl = 1;
 
                             foreach ($dataProducts as $product) {
 
@@ -797,7 +839,7 @@ Yii::app()->clientScript->registerCoreScript("jquery.ui");
                                     <!-- Company Header -->
                                     <tr class="company-header"
                                         data-target="company-<?= $groupIndex ?>">
-                                        <td colspan="8" class="p-0">
+                                        <td colspan="8" class="p-0" style="position:sticky; top:0; z-index:20; background:#fff;">
 
                                             <div class="company-bar">
 
@@ -846,25 +888,27 @@ Yii::app()->clientScript->registerCoreScript("jquery.ui");
 
                                     <!-- Company Sub-Header -->
                                     <tr class="company-<?= $groupIndex ?> company-sub-header hidden">
-                                        <th style="width: 5px;">SL</th>
-                                        <th style="max-width: 150px;">Product Name</th>
-                                        <th style="width: 10px;" class="text-center">Stock</th>
-                                        <th style="width: 10%;" class="text-center">Qty</th>
-                                        <th style="width: 10%;" class="text-center">Unit Price</th>
-                                        <th style="width: 10%;" class="text-center">Row Total</th>
+                                        <th style="width:5px; color:#fff; font-size:11px; font-weight:700; text-transform:uppercase; letter-spacing:1px;">#</th>
+                                        <th style="max-width:150px; color:#fff; font-size:12px; font-weight:700; text-transform:uppercase; letter-spacing:1px;">Product</th>
+                                        <th style="width:10px; color:#fff; font-size:12px; font-weight:700; text-transform:uppercase; letter-spacing:1px;" class="text-center">Stock</th>
+                                        <th style="width:10%; color:#fff; font-size:12px; font-weight:700; text-transform:uppercase; letter-spacing:1px;" class="text-center">Qty</th>
+                                        <th style="width:10%; color:#fff; font-size:12px; font-weight:700; text-transform:uppercase; letter-spacing:1px;" class="text-center">Unit Price</th>
+                                        <th style="width:10%; color:#fff; font-size:12px; font-weight:700; text-transform:uppercase; letter-spacing:1px;" class="text-center">Row Total</th>
                                     </tr>
                                     <?php
                                 }
                                 ?>
-                                <tr class="company-<?= $groupIndex ?> item" style="display:none;">
-                                    <td class="serial"></td>
+                                <tr class="company-<?= $groupIndex ?> item hidden">
+                                    <td class="serial text-center" style="color:#aaa; font-size:11px; font-weight:600; letter-spacing:1px; vertical-align:middle;">
+                                        <span style="color:#aaa; font-size:11px; font-weight:600; letter-spacing:1px;">#<?= $sl++ ?></span>
+                                    </td>
 
                                     <td data-label="Product">
-                                        <?php echo $product->model_name; ?>
+                                        <span style="font-weight:600; font-size:13px;"><?php echo $product->model_name; ?></span>
                                         <br>
-                                        <small>
-                                            <i><?php echo $product->code; ?></i>
-                                        </small>
+                                        <span style="font-size:11px; color:#fff;">
+                                            <span style="background:#e8f4fd; color:#1a6fa3; padding:1px 5px; border-radius:3px; font-family:monospace;"><?php echo $product->code; ?></span>
+                                        </span>
                                         <input type="hidden" class="form-control temp_model_id"
                                                value="<?php echo $product->id; ?>"
                                                name="SellOrderDetails[temp_model_id][]">
@@ -872,40 +916,52 @@ Yii::app()->clientScript->registerCoreScript("jquery.ui");
 
                                     <td class="text-center stock-cell"
                                         data-stock="<?= $product->current_stock ?>">
-                                        <?= $product->current_stock ?>
+                                        <?php
+                                            $stock = $product->current_stock ?? 0;
+                                            if ($stock <= 0) {
+                                                $badgeStyle = 'background:#fdecea; color:#c0392b; border:1px solid #e74c3c;';
+                                            } elseif ($stock <= 5) {
+                                                $badgeStyle = 'background:#fff4e0; color:#b7640a; border:1px solid #f0a500;';
+                                            } else {
+                                                $badgeStyle = 'background:#e6f9ee; color:#1a7a40; border:1px solid #2ecc71;';
+                                            }
+                                        ?>
+                                        <span style="<?= $badgeStyle ?> font-weight:600; font-size:13px; padding:2px 10px; border-radius:12px; display:inline-block; min-width:36px;">
+                                            <?= $stock ?>
+                                        </span>
                                         <div class="row-hint text-danger small d-none"></div>
                                     </td>
 
                                     <td class="text-center" data-label="Qty">
-                                        <label>
-                                            <input type="text"
-                                                   class="form-control text-center temp_qty"
-                                                   value="<?= $soldQty != 0 ? $soldQty : '' ?>"
-                                                   name=SellOrderDetails[temp_qty][]">
-                                        </label>
+                                        <input type="text"
+                                               class="form-control text-center temp_qty"
+                                               value="<?= $soldQty != 0 ? $soldQty : '' ?>"
+                                               name="SellOrderDetails[temp_qty][]"
+                                               placeholder="0"
+                                               style="width:70px; margin:0 auto; font-weight:600; font-size:14px; border:2px solid #c8d8e8; border-radius:6px; padding:4px 6px;">
                                     </td>
 
                                     <td class="text-center" data-label="Unit Price">
-                                        <label>
-                                            <input type="text"
-                                                   class="form-control temp_unit_price text-right"
-                                                   value="<?= $soldQty != 0 ? $salePrice : $product->sell_price ?>"
-                                                   name="SellOrderDetails[temp_unit_price][]">
-                                        </label>
-
+                                        <input type="text"
+                                               class="form-control temp_unit_price"
+                                               autocomplete="off"
+                                               inputmode="decimal"
+                                               value="<?= $soldQty != 0 ? $salePrice : $product->sell_price ?>"
+                                               name="SellOrderDetails[temp_unit_price][]"
+                                               style="width:90px; margin:0 auto; text-align:right; font-weight:600; font-size:14px; border:2px solid #c8d8e8; border-radius:6px; padding:4px 6px;">
                                         <input type="hidden"
-                                               class="form-control text-center temp-costing"
+                                               class="form-control temp-costing"
                                                value="<?= $purchasePrice ?>"
-                                               name=SellOrderDetails[temp_pp][]">
+                                               name="SellOrderDetails[temp_pp][]">
                                     </td>
 
                                     <td class="text-center" data-label="Row Total">
-                                        <label>
-                                            <input type="text"
-                                                   class="form-control row-total text-right"
-                                                   value="<?= $soldQty != 0 ? $rowTotal : '' ?>"
-                                                   name="SellOrderDetails[temp_row_total][]">
-                                        </label>
+                                        <input type="text"
+                                               class="form-control row-total"
+                                               value="<?= $soldQty != 0 ? $rowTotal : '' ?>"
+                                               inputmode="decimal"
+                                               name="SellOrderDetails[temp_row_total][]"
+                                               style="width:100px; margin:0 auto; text-align:right; font-weight:700; font-size:14px; border:2px solid #c8d8e8; border-radius:6px; padding:4px 8px;">
                                     </td>
                                 </tr>
                                 <?php
@@ -913,11 +969,11 @@ Yii::app()->clientScript->registerCoreScript("jquery.ui");
                             ?>
                             </tbody>
 
-                            <tfoot>
-                            <tr>
-                                <td colspan="6" class="p-0">
+                        </table>
+                    </div><!-- /.table-responsive -->
+                </div><!-- /.row -->
 
-                                    <div class="summary-card">
+                <div class="summary-card" style="margin-top: 8px;">
 
                                         <!-- Top Totals -->
                                         <div class="summary-row summary-primary ">
@@ -967,7 +1023,7 @@ Yii::app()->clientScript->registerCoreScript("jquery.ui");
                                                 <div class="field" data-tooltip="VAT Percentage">
                                                     <div class="input-group input-group-custom">
                                                         <?php echo $form->textField($model, 'vat_percentage', [
-                                                                'class' => 'form-control text-center tooltip-input',
+                                                                'class' => 'form-control text-center input-addition tooltip-input',
                                                                 'placeholder' => '0',
                                                         ]); ?>
                                                         <div class="input-group-append" style="height: 28px;">
@@ -995,7 +1051,7 @@ Yii::app()->clientScript->registerCoreScript("jquery.ui");
                                             <div class="summary-fields">
                                                 <div class="field wide" data-tooltip="Delivery Charge (Added to Grand Total)">
                                                     <?php echo $form->textField($model, 'delivery_charge', [
-                                                            'class' => 'form-control text-center tooltip-input',
+                                                            'class' => 'form-control text-center input-addition tooltip-input',
                                                             'placeholder' => '0.00',
                                                     ]); ?>
                                                 </div>
@@ -1011,7 +1067,7 @@ Yii::app()->clientScript->registerCoreScript("jquery.ui");
                                             <div class="summary-fields">
                                                 <div class="field wide" data-tooltip="Discount Amount (Deducted from Grand Total)">
                                                     <?php echo $form->textField($model, 'discount_amount', [
-                                                            'class' => 'form-control text-center tooltip-input',
+                                                            'class' => 'form-control text-center input-deduction tooltip-input',
                                                             'placeholder' => '0.00',
                                                     ]); ?>
                                                 </div>
@@ -1026,7 +1082,7 @@ Yii::app()->clientScript->registerCoreScript("jquery.ui");
                                             <div class="summary-fields">
                                                 <div class="field wide" data-tooltip="Road Fee (Deducted from Grand Total)">
                                                     <?php echo $form->textField($model, 'road_fee', [
-                                                            'class' => 'form-control text-center tooltip-input',
+                                                            'class' => 'form-control text-center input-deduction tooltip-input',
                                                             'placeholder' => '0.00',
                                                     ]); ?>
                                                 </div>
@@ -1041,7 +1097,7 @@ Yii::app()->clientScript->registerCoreScript("jquery.ui");
                                             <div class="summary-fields">
                                                 <div class="field wide" data-tooltip="Damage Value (Deducted from Grand Total)">
                                                     <?php echo $form->textField($model, 'damage_value', [
-                                                            'class' => 'form-control text-center tooltip-input',
+                                                            'class' => 'form-control text-center input-deduction tooltip-input',
                                                             'placeholder' => '0.00',
                                                     ]); ?>
                                                 </div>
@@ -1051,13 +1107,13 @@ Yii::app()->clientScript->registerCoreScript("jquery.ui");
                                         <div class="summary-row">
                                             <div class="summary-label">
                                                 <label><?php echo $form->labelEx($model, 'sr_commission'); ?>
-                                                    (+)</label>
+                                                    (-)</label>
                                             </div>
                                             <div></div> <!-- spacer column -->
                                             <div class="summary-fields">
                                                 <div class="field wide has-tooltip" data-tooltip="Sales Rep Commission (Deducted from Grand Total)">
                                                     <?php echo $form->textField($model, 'sr_commission', [
-                                                            'class' => 'form-control text-center tooltip-input',
+                                                            'class' => 'form-control text-center input-deduction tooltip-input',
                                                             'placeholder' => '0.00',
                                                     ]); ?>
                                                 </div>
@@ -1081,16 +1137,9 @@ Yii::app()->clientScript->registerCoreScript("jquery.ui");
                                             </div>
                                         </div>
 
-                                    </div>
-
-                                </td>
-                            </tr>
-                            </tfoot>
-                        </table>
-                    </div>
-                </div>
-            </div>
-        </div>
+                    </div><!-- /.summary-card -->
+            </div><!-- /.card-body -->
+        </div><!-- /.card-info -->
 
         <div class="row">
             <div class="col-md-12">
@@ -1359,8 +1408,8 @@ Yii::app()->clientScript->registerCoreScript("jquery.ui");
             const commission = safeNumber($(f.COMMISSION).val());
 
             const grand =
-                (total + vat + delivery + commission) -
-                (discount + road + damage);
+                (total + vat + delivery) -
+                (discount + road + damage - commission);
 
             $(f.GRAND_TOTAL).val(grand.toFixed(2));
         }
@@ -1620,7 +1669,12 @@ Yii::app()->clientScript->registerCoreScript("jquery.ui");
             $rows.stop(true, true).fadeToggle(150);
             $clicked.find('.toggle-icon').text(open ? '▼' : '▲');
 
-            if (!open) scrollTo($clicked);
+            if (!open) {
+                // Set sub-header top = company header height so it sticks just below
+                const companyHeaderH = $clicked.outerHeight();
+                document.documentElement.style.setProperty('--sub-header-top', companyHeaderH + 'px');
+                scrollTo($clicked);
+            }
         });
 
         // Prevent global Enter submit
@@ -1679,7 +1733,7 @@ $this->beginWidget('zii.widgets.jui.CJuiDialog', array(
         ),
 ));
 ?>
-<div id='AjFlashReportSo' style="display:none;"></div>
+<div id="AjFlashReportSo" style="display:none;"></div>
 <?php $this->endWidget(); ?>
 
 

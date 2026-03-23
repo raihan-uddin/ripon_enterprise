@@ -24,9 +24,7 @@
                      role="status" aria-hidden="true"></div>
             </div>
         </div>
-        <div class="invalid-feedback d-block">
-            <?= $form->error($model, 'person_id'); ?>
-        </div>
+        <span class="field-error text-danger small" id="err_person_id" style="display:none;"></span>
     </div>
 
     <div class="col-12 col-md-6">
@@ -40,17 +38,13 @@
                 ['class' => 'form-control']
         ); ?>
         <small id="txn-hint" class="text-muted mt-1 d-block"></small>
-        <div class="invalid-feedback d-block">
-            <?= $form->error($model, 'transaction_type'); ?>
-        </div>
+        <span class="field-error text-danger small" id="err_transaction_type" style="display:none;"></span>
     </div>
 
     <div class="col-12 col-md-6">
         <?= $form->labelEx($model, 'amount'); ?>
         <?= $form->textField($model, 'amount', ['class' => 'form-control', 'placeholder' => '0.00']); ?>
-        <div class="invalid-feedback d-block">
-            <?= $form->error($model, 'amount'); ?>
-        </div>
+        <span class="field-error text-danger small" id="err_amount" style="display:none;"></span>
     </div>
 
     <div class="col-12 col-md-6">
@@ -58,17 +52,13 @@
         <div class="input-group" id="entry_date" data-target-input="nearest">
             <?php echo $form->textField($model, 'transaction_date', array('class' => 'form-control datetimepicker-input', 'placeholder' => 'YYYY-MM-DD', 'value' => date('Y-m-d'))); ?>
         </div>
-        <div class="invalid-feedback d-block">
-            <?= $form->error($model, 'transaction_date'); ?>
-        </div>
+        <span class="field-error text-danger small" id="err_transaction_date" style="display:none;"></span>
     </div>
 
     <div class="col-12">
         <?= $form->label($model, 'note'); ?>
         <?= $form->textArea($model, 'note', ['class' => 'form-control', 'rows' => 2]); ?>
-        <div class="invalid-feedback d-block">
-            <?= $form->error($model, 'note'); ?>
-        </div>
+        <span class="field-error text-danger small" id="err_note" style="display:none;"></span>
     </div>
 
 </div>
@@ -96,6 +86,8 @@
                 // reset form only on create
                 if($("#loan-transaction-form").length){
                     $("#loan-transaction-form")[0].reset();
+                    $("#loan-transaction-form .form-control").removeClass("is-invalid");
+                    $("#loan-transaction-form .field-error").html("").hide();
                 }
 
                 // hide balance box
@@ -105,12 +97,28 @@
                 if($.fn.yiiGridView){
                     $.fn.yiiGridView.update("loan-transactions-grid");
                 }
-            } else {
-                $.each(data, function(key, val){
-                    $("#loan-transaction-form #"+key+"_em_")
-                        .html(val)
-                        .show();
+            } else if(data.status === "error" && data.errors){
+                // clear previous errors
+                $("#loan-transaction-form .field-error").html("").hide();
+                $("#loan-transaction-form .form-control").removeClass("is-invalid");
+
+                $.each(data.errors, function(attr, messages){
+                    var msg = $.isArray(messages) ? messages[0] : messages;
+                    var $err   = $("#err_" + attr);
+                    var $field = $("#LoanTransactions_" + attr);
+                    if($err.length){
+                        $err.html(msg).show();
+                    }
+                    if($field.length){
+                        $field.addClass("is-invalid");
+                        $field.one("change input", function(){
+                            $(this).removeClass("is-invalid");
+                            $err.html("").hide();
+                        });
+                    }
                 });
+            } else {
+                toastr.error("Something went wrong. Please try again.");
             }
         }',
 
