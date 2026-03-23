@@ -201,12 +201,12 @@ if (Yii::app()->user->checkAccess('Accounting.PaymentReceipt.VoucherPreview')) {
                     'header' => 'Options',
                     'template' => '{delete}',
                     'class' => 'CButtonColumn',
-                    'htmlOptions' => ['style' => 'width: 200px', 'class' => 'text-center'],
+                    'htmlOptions' => ['style' => 'width: 200px', 'class' => 'actions-cell'],
                     'buttons' => array(
                         'delete' => array(
-                            'label' => '<i class="fa fa-trash fa-2x" style="color: red;"></i>&nbsp;&nbsp;',
+                            'label' => '<i class="fa fa-trash"></i>',
                             'imageUrl' => false,
-                            'options' => array('rel' => 'tooltip', 'data-toggle' => 'tooltip', 'title' => Yii::t('app', 'Delete')),
+                            'options' => array('class' => 'action-btn btn-delete', 'rel' => 'tooltip', 'data-toggle' => 'tooltip', 'title' => Yii::t('app', 'Delete')),
                         ),
                     )
                 ),

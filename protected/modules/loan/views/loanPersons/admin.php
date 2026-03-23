@@ -64,10 +64,12 @@ endforeach;
                                     'header' => 'Options',
                                     'class' => 'CButtonColumn',
                                     'template' => '{update} {delete}',
+                                    'htmlOptions' => ['class' => 'actions-cell'],
                                     'buttons' => [
                                             'update' => [
-                                                    'label' => '<i class="fa fa-pencil-square-o fa-2x"></i>',
+                                                    'label' => '<i class="fa fa-pencil-square-o"></i>',
                                                     'imageUrl' => false,
+                                                    'options' => ['class' => 'action-btn btn-edit', 'rel' => 'tooltip', 'data-toggle' => 'tooltip', 'title' => 'Edit'],
                                                     'click' => "function(e){
                                         e.preventDefault();
                                         $('#update-dialog').children(':eq(0)').empty();
@@ -76,8 +78,9 @@ endforeach;
                                     }",
                                             ],
                                             'delete' => [
-                                                    'label' => '<i class="fa fa-trash fa-2x text-danger"></i>',
+                                                    'label' => '<i class="fa fa-trash"></i>',
                                                     'imageUrl' => false,
+                                                    'options' => ['class' => 'action-btn btn-delete', 'rel' => 'tooltip', 'data-toggle' => 'tooltip', 'title' => 'Delete'],
                                             ],
                                     ]
                             ]

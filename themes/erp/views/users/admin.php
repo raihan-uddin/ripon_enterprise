@@ -121,12 +121,13 @@ endforeach;
                     'template' => '{makeSuperAdmin}{revokeSuperAdmin}', //{delete}
                     'afterDelete' => 'function(link,success,data){ if(success) $("#statusMsg").html(data); }',
                     'class' => 'CButtonColumn',
+                    'htmlOptions' => ['class' => 'actions-cell'],
                     'visible' => Users::superuserStatus(Yii::app()->user->getState('user_id')) == true,
                     'buttons' => array(
                         'makeSuperAdmin' => array(
                             'label' => '<span class="badge badge-danger">Make SuperAdmin</span>&nbsp;&nbsp;',
                             'imageUrl' => false,
-                            'options' => array('rel' => 'tooltip', 'data-toggle' => 'tooltip', 'title' => Yii::t('app', 'Make Superadmin')),
+                            'options' => array('class' => 'action-btn btn-create', 'rel' => 'tooltip', 'data-toggle' => 'tooltip', 'title' => Yii::t('app', 'Make Superadmin')),
                             'visible' => 'Users::superuserStatus($data->id) == false',
                             'url' => 'Yii::app()->controller->createUrl("makeSuperAdmin",array("id"=>$data->id))',
                             'click' => "function(){
@@ -148,7 +149,7 @@ endforeach;
                         'revokeSuperAdmin' => array(
                             'label' => '<span class="badge badge-success">Revoke SuperAdmin</span>&nbsp;&nbsp;',
                             'imageUrl' => false,
-                            'options' => array('rel' => 'tooltip', 'data-toggle' => 'tooltip', 'title' => Yii::t('app', 'Revoke Superadmin')),
+                            'options' => array('class' => 'action-btn btn-delete', 'rel' => 'tooltip', 'data-toggle' => 'tooltip', 'title' => Yii::t('app', 'Revoke Superadmin')),
                             'visible' => 'Users::superuserStatus($data->id) == true',
                             'url' => 'Yii::app()->controller->createUrl("revokeSuperAdmin",array("id"=>$data->id))',
                             'click' => "function(){
@@ -175,11 +176,12 @@ endforeach;
                     'template' => '{update}', //{delete}
                     'afterDelete' => 'function(link,success,data){ if(success) $("#statusMsg").html(data); }',
                     'class' => 'CButtonColumn',
+                    'htmlOptions' => ['class' => 'actions-cell'],
                     'buttons' => array(
                         'update' => array(
-                            'label' => '<i class="fa fa-pencil-square-o fa-3x"></i>&nbsp;&nbsp;',
+                            'label' => '<i class="fa fa-pencil-square-o"></i>',
                             'imageUrl' => false,
-                            'options' => array('rel' => 'tooltip', 'data-toggle' => 'tooltip', 'title' => Yii::t('app', 'Edit')),
+                            'options' => array('class' => 'action-btn btn-edit', 'rel' => 'tooltip', 'data-toggle' => 'tooltip', 'title' => Yii::t('app', 'Edit')),
 //                            'visible' => '$data->id !=1',
                             'click' => "function( e ){
                             e.preventDefault();
@@ -277,10 +279,5 @@ jQuery( function($){
     .grid-view table.items th, .grid-view table.items td {
         border: 1px solid gray !important;
         text-align: center;
-    }
-
-    /* disable selected for merged cells */
-    .grid-view td.merge {
-        background: none repeat scroll 0 0 #F8F8F8;
     }
 </style>

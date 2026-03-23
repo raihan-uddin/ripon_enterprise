@@ -71,12 +71,4 @@ $('.search-form form').submit(function(){
     ?>
 </fieldset>
 
-<style>
-
-
-    /* disable selected for merged cells */     
-    .grid-view td.merge {
-        background: none repeat scroll 0 0 #F8F8F8; 
-    }
-</style>
 

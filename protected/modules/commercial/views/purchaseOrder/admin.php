@@ -182,22 +182,23 @@ endforeach;
                                 'header' => 'Options',
                                 'template' => '{createPr}{update}{delete}', // {delete}
                                 'class' => 'CButtonColumn',
-                                'htmlOptions' => ['style' => 'width: 120px;', 'class' => 'text-center'],
+                                'htmlOptions' => ['style' => 'width: 120px;', 'class' => 'actions-cell'],
                                 'buttons' => array(
                                         'createPr' => array(
-                                                'label' => '<i class="fa fa-money fa-2x" style="color: green;"></i>&nbsp;&nbsp;',
+                                                'label' => '<i class="fa fa-money"></i>',
                                                 'imageUrl' => false,
-                                                'options' => array('rel' => 'tooltip', 'data-toggle' => 'tooltip', 'title' => Yii::t('app', 'Create PR')),
+                                                'options' => array('class' => 'action-btn btn-payment', 'rel' => 'tooltip', 'data-toggle' => 'tooltip', 'title' => Yii::t('app', 'Create PR')),
                                                 'url' => 'Yii::app()->controller->createUrl("/accounting/paymentReceipt/create",array("id"=>$data->supplier_id,))',
                                         ),
                                         'update' => array(
-                                                'label' => '<i class="fa fa-pencil-square-o fa-2x" style="color: black;"></i>&nbsp;&nbsp;',
+                                                'label' => '<i class="fa fa-pencil-square-o"></i>',
                                                 'imageUrl' => false,
-                                                'options' => array('rel' => 'tooltip', 'data-toggle' => 'tooltip', 'title' => Yii::t('app', 'Edit')),
+                                                'options' => array('class' => 'action-btn btn-edit', 'rel' => 'tooltip', 'data-toggle' => 'tooltip', 'title' => Yii::t('app', 'Edit')),
                                         ),
                                         'delete' => array(
-                                                'label' => '<i class="fa fa-trash fa-2x" style="color: red;"></i>&nbsp;&nbsp;',
+                                                'label' => '<i class="fa fa-trash"></i>',
                                                 'imageUrl' => false,
+                                                'options' => array('class' => 'action-btn btn-delete', 'rel' => 'tooltip', 'data-toggle' => 'tooltip', 'title' => Yii::t('app', 'Delete')),
                                                 'url' => 'Yii::app()->controller->createUrl("delete", array("id"=>$data->id))',
                                                 'click' => 'function(e){
                                                     e.preventDefault();
@@ -352,10 +353,4 @@ $this->beginWidget('zii.widgets.jui.CJuiDialog', array(
     </div>
 </div>
 
-<style>
-    /* disable selected for merged cells */
-    .grid-view td.merge {
-        background: none repeat scroll 0 0 #F8F8F8;
-    }
-</style>
 

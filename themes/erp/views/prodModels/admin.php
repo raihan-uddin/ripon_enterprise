@@ -108,16 +108,17 @@ endforeach;
                                 'template' => '{view}{update}{delete}', //{addSellPrice}{sellPriceHistory}{delete}
                                 'class' => 'CButtonColumn',
 
-                                'htmlOptions' => ['style' => 'width: 120px'],
+                                'htmlOptions' => ['style' => 'width: 120px', 'class' => 'actions-cell'],
                                 'buttons' => array(
                                         'update' => array(
-                                                'label' => '<i class="fa fa-pencil-square-o fa-2x" style="color: black;"></i>&nbsp;&nbsp;',
+                                                'label' => '<i class="fa fa-pencil-square-o"></i>',
                                                 'imageUrl' => false,
-                                                'options' => array('rel' => 'tooltip', 'data-toggle' => 'tooltip', 'title' => Yii::t('app', 'Edit')),
+                                                'options' => array('class' => 'action-btn btn-edit', 'rel' => 'tooltip', 'data-toggle' => 'tooltip', 'title' => Yii::t('app', 'Edit')),
                                         ),
                                         'delete' => array(
-                                                'label' => '<i class="fa fa-trash fa-2x" style="color: red;"></i>&nbsp;&nbsp;',
+                                                'label' => '<i class="fa fa-trash"></i>',
                                                 'imageUrl' => false,
+                                                'options' => array('class' => 'action-btn btn-delete', 'rel' => 'tooltip', 'data-toggle' => 'tooltip', 'title' => Yii::t('app', 'Delete')),
                                                 'url' => 'Yii::app()->controller->createUrl("delete", array("id"=>$data->id))',
                                                 'click' => 'function(e){
                                                     e.preventDefault();
@@ -143,9 +144,9 @@ endforeach;
                                                 }',
                                         ),
                                         'sellPriceHistory' => array(
-                                                'label' => '<i class="fa fa-eye-slash fa-2x" style="color: black;"></i>&nbsp;&nbsp;',
+                                                'label' => '<i class="fa fa-history"></i>',
                                                 'imageUrl' => false,
-                                                'options' => array('rel' => 'tooltip', 'data-toggle' => 'tooltip', 'title' => Yii::t('app', 'Sell Price History')),
+                                                'options' => array('class' => 'action-btn btn-view', 'rel' => 'tooltip', 'data-toggle' => 'tooltip', 'title' => Yii::t('app', 'Sell Price History')),
                                                 'url' => 'Yii::app()->controller->createUrl("sellPrice/priceHistory",array("model_id"=>$data->id))',
                                                 'click' => "function(){
                                                     $('#viewDialog').dialog('open');
@@ -179,9 +180,9 @@ endforeach;
                                                       .dialog( 'open' ); }",
                                         ),
                                         'view' => array(
-                                                'label' => '<i class="fa fa-eye-slash fa-2x" style="color: black;"></i>&nbsp;&nbsp;',
+                                                'label' => '<i class="fa fa-eye"></i>',
                                                 'imageUrl' => false,
-                                                'options' => array('rel' => 'tooltip', 'data-toggle' => 'tooltip', 'title' => Yii::t('app', 'View')),
+                                                'options' => array('class' => 'action-btn btn-view', 'rel' => 'tooltip', 'data-toggle' => 'tooltip', 'title' => Yii::t('app', 'View')),
                                                 'url' => 'Yii::app()->controller->createUrl("view",array("id"=>$data->id))',
                                                 'click' => "function(){
                                                         $('#viewDialog').dialog('open');
