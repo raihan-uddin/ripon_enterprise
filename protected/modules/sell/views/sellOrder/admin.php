@@ -11,51 +11,6 @@ $this->widget('application.components.BreadCrumb', array(
 ?>
 
 <style>
-    /* ── Grid header ── */
-    #sell-order-grid th {
-        background: #f0f4f8;
-        color: #1a2c3d;
-        font-size: 11px;
-        font-weight: 700;
-        text-transform: uppercase;
-        letter-spacing: 0.6px;
-        white-space: nowrap;
-        padding: 8px 10px;
-        border: 1px solid #c8d8e8;
-        border-bottom: 2px solid #2c3e50;
-    }
-
-    /* ── Filter row inputs ── */
-    #sell-order-grid .filters input,
-    #sell-order-grid .filters select {
-        width: 100%;
-        font-size: 12px;
-        height: 28px;
-        padding: 2px 6px;
-        border: 1px solid #c8d8e8;
-        border-radius: 4px;
-        background: #fff;
-        color: #212529;
-    }
-
-    #sell-order-grid .filters input:focus,
-    #sell-order-grid .filters select:focus {
-        border-color: #17a2b8;
-        box-shadow: 0 0 0 2px rgba(23,162,184,0.15);
-        outline: none;
-    }
-
-    /* ── Grid rows ── */
-    #sell-order-grid td {
-        vertical-align: middle;
-        font-size: 13px;
-        padding: 7px 10px;
-    }
-
-    #sell-order-grid tr:hover td {
-        background: #f0f7ff !important;
-    }
-
     /* ── SO number pill ── */
     .so-pill {
         display: inline-block;
