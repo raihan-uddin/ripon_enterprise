@@ -126,21 +126,30 @@ if (Yii::app()->user->checkAccess('Accounting.PaymentReceipt.VoucherPreview')) {
             'itemsCssClass' => 'table table-sm table-hover table-striped table-condensed table-bordered dataTable dtr-inline',
             'mergeColumns' => array('date', 'pr_no', 'payment_type', 'order_id', 'supplier_id'),
 //            'loadingCssClass' => 'fa fa-spinner fa-spin fa-2x',
-//            'pager' => array(            //  pager like twitter bootstrap
-//                'htmlOptions' => array('class' => 'pagination  justify-content-end'),
-////                'header'=>'',
-////                'cssFile'=>false,
-////                'maxButtonCount'=>24,
-////                'selectedPageCssClass'=>'active',
-////                'hiddenPageCssClass'=>'disabled',
-////                'firstPageCssClass'=>'previous',
-////                'lastPageCssClass'=>'next',
-////                'firstPageLabel'=>'<<',
-////                'lastPageLabel'=>'>>',
-////                'prevPageLabel'=>'<',
-////                'nextPageLabel'=>'>',
-//            ),
-            'template' => "{pager}{summary}{items}{summary}{pager}",
+            'pager' => array(
+                'cssFile'        => false,
+                'header'         => '',
+                'firstPageLabel' => '<i class="fa fa-angle-double-left"></i>',
+                'lastPageLabel'  => '<i class="fa fa-angle-double-right"></i>',
+                'prevPageLabel'  => '<i class="fa fa-angle-left"></i>',
+                'nextPageLabel'  => '<i class="fa fa-angle-right"></i>',
+                'maxButtonCount' => 7,
+                'htmlOptions'    => array('class' => 'pagination pagination-sm', 'style' => 'float:right; margin:4px 0;'),
+                'selectedPageCssClass' => 'active',
+                'hiddenPageCssClass'   => 'disabled',
+            ),
+            'template' => "<div class='row' style='text-align:right; margin-bottom:6px;'>{pager}</div>\n{summary}{items}{summary}\n{pager}",
+            'summaryText' => "
+    <div style='display:inline-flex; align-items:center; gap:8px; font-size:12px; color:#6c757d; padding:4px 0; flex-wrap:wrap;'>
+        <span style='background:#e8f4fd; color:#1a6fa3; font-weight:700; font-size:11px; padding:2px 10px; border-radius:10px; border:1px solid #b0cfe8; font-family:monospace;'>{start}–{end}</span>
+        <span>of <strong style='color:#1a2c3d;'>{count}</strong> records</span>
+        <span style='color:#dee2e6;'>|</span>
+        <span style='background:#f0f4f8; color:#4a6278; font-size:11px; font-weight:600; padding:2px 8px; border-radius:8px; border:1px solid #c8d8e8;'>
+            Page {page} of {pages}
+        </span>
+    </div>",
+            'summaryCssClass' => 'col-sm-12 col-md-6',
+            'pagerCssClass'   => 'col-xs-12 text-right',
             'columns' => array(
 //                'id',
                 array(
@@ -213,6 +222,18 @@ if (Yii::app()->user->checkAccess('Accounting.PaymentReceipt.VoucherPreview')) {
             ),
         )); ?>
     </div>
+    <div class="card-footer" style="background:#f8f9fa; padding:8px 16px;">
+        <div class="row" style="align-items:center;">
+            <div class="col-sm-12 col-md-6"></div>
+            <div class="col-sm-12 col-md-6 text-right">
+                <div class="goto-page-wrap" style="justify-content:flex-end;">
+                    <span>Go to page</span>
+                    <input type="number" id="goto-page-input-payment-receipt-grid" class="form-control" min="1" placeholder="Page #"/>
+                    <button onclick="goToPage('payment-receipt-grid')"><i class="fa fa-arrow-right"></i> Go</button>
+                </div>
+            </div>
+        </div>
+    </div>
 </div>
 
 
@@ -235,4 +256,14 @@ $this->beginWidget('zii.widgets.jui.CJuiDialog', array(
 </div>
 <?php $this->endWidget('zii.widgets.jui.CJuiDialog'); ?>
 
-
+<script>
+function goToPage(gridId) {
+    var page = parseInt($('#goto-page-input-' + gridId).val(), 10);
+    if (!page || page < 1) return;
+    $.fn.yiiGridView.update(gridId, { data: { [gridId + '_page']: page } });
+    $('#goto-page-input-' + gridId).val('');
+}
+$(document).on('keypress', '[id^="goto-page-input-"]', function(e) {
+    if (e.which === 13) goToPage($(this).attr('id').replace('goto-page-input-', ''));
+});
+</script>

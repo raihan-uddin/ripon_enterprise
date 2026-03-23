@@ -112,50 +112,6 @@ $this->widget('application.components.BreadCrumb', array(
         font-size: 12px;
     }
 
-    /* ── Go to page ── */
-    .goto-page-wrap {
-        display: inline-flex;
-        align-items: center;
-        gap: 5px;
-        font-size: 12px;
-        color: #6c757d;
-    }
-
-    .goto-page-wrap input {
-        width: 90px;
-        height: 30px;
-        text-align: center;
-        font-size: 13px;
-        font-weight: 600;
-        border: 1px solid #c8d8e8;
-        border-radius: 5px;
-        padding: 0 6px;
-        color: #1a2c3d;
-    }
-
-    .goto-page-wrap input:focus {
-        border-color: #17a2b8;
-        outline: none;
-        box-shadow: 0 0 0 2px rgba(23,162,184,0.15);
-    }
-
-    .goto-page-wrap button {
-        height: 30px;
-        padding: 0 10px;
-        font-size: 12px;
-        font-weight: 600;
-        background: #1a2c3d;
-        color: #fff;
-        border: none;
-        border-radius: 5px;
-        cursor: pointer;
-        transition: background 0.15s;
-    }
-
-    .goto-page-wrap button:hover {
-        background: #2c3e50;
-    }
-
     /* ── Grid footer totals ── */
     #sell-order-grid tfoot td {
         background: #f0f4f8;
@@ -347,18 +303,18 @@ if (Yii::app()->user->checkAccess('Sell.Order.VoucherPreview')) {
                 'summaryCssClass' => 'col-sm-12 col-md-6',
                 'pagerCssClass' => 'col-xs-12 text-right',
                 'pager' => array(
-                    'class'          => 'CLinkPager',
-                    'cssFile'        => false,
-                    'header'         => '',
-                    'firstPageLabel' => '<i class="fa fa-angle-double-left"></i>',
-                    'lastPageLabel'  => '<i class="fa fa-angle-double-right"></i>',
-                    'prevPageLabel'  => '<i class="fa fa-angle-left"></i>',
-                    'nextPageLabel'  => '<i class="fa fa-angle-right"></i>',
-                    'maxButtonCount' => 7,
-                    'htmlOptions'    => array('class' => 'pagination pagination-sm', 'style' => 'float:right; margin:4px 0;'),
-                    'selectedPageCssClass' => 'active',
-                    'hiddenPageCssClass'   => 'disabled',
-                    'pageSize' => 20,
+                        'class'          => 'CLinkPager',
+                        'cssFile'        => false,
+                        'header'         => '',
+                        'firstPageLabel' => '<i class="fa fa-angle-double-left"></i>',
+                        'lastPageLabel'  => '<i class="fa fa-angle-double-right"></i>',
+                        'prevPageLabel'  => '<i class="fa fa-angle-left"></i>',
+                        'nextPageLabel'  => '<i class="fa fa-angle-right"></i>',
+                        'maxButtonCount' => 7,
+                        'htmlOptions'    => array('class' => 'pagination pagination-sm', 'style' => 'float:right; margin:4px 0;'),
+                        'selectedPageCssClass' => 'active',
+                        'hiddenPageCssClass'   => 'disabled',
+                        'pageSize' => 20,
                 ),
                 'columns' => array(
                         array(
@@ -606,51 +562,51 @@ $this->beginWidget('zii.widgets.jui.CJuiDialog', array(
 <?php $this->endWidget('zii.widgets.jui.CJuiDialog'); ?>
 
 <script>
-function goToPage() {
-    var page = parseInt($('#goto-page-input').val(), 10);
-    if (!page || page < 1) return;
-    $.fn.yiiGridView.update('sell-order-grid', {
-        data: { 'sell-order-grid_page': page }
+    function goToPage() {
+        var page = parseInt($('#goto-page-input').val(), 10);
+        if (!page || page < 1) return;
+        $.fn.yiiGridView.update('sell-order-grid', {
+            data: { 'sell-order-grid_page': page }
+        });
+        $('#goto-page-input').val('');
+    }
+
+    $(document).on('keypress', '#goto-page-input', function (e) {
+        if (e.which === 13) goToPage();
     });
-    $('#goto-page-input').val('');
-}
 
-$(document).on('keypress', '#goto-page-input', function (e) {
-    if (e.which === 13) goToPage();
-});
+    function copySoNo(el) {
+        var text = el.innerText.trim();
 
-function copySoNo(el) {
-    var text = el.innerText.trim();
+        // Copy using execCommand (works on HTTP)
+        var tmp = document.createElement('textarea');
+        tmp.value = text;
+        tmp.style.position = 'fixed';
+        tmp.style.opacity = '0';
+        document.body.appendChild(tmp);
+        tmp.select();
+        document.execCommand('copy');
+        document.body.removeChild(tmp);
 
-    // Copy using execCommand (works on HTTP)
-    var tmp = document.createElement('textarea');
-    tmp.value = text;
-    tmp.style.position = 'fixed';
-    tmp.style.opacity = '0';
-    document.body.appendChild(tmp);
-    tmp.select();
-    document.execCommand('copy');
-    document.body.removeChild(tmp);
+        // Show tip above the pill
+        el.classList.add('copied');
+        var rect = el.getBoundingClientRect();
+        var tip = document.createElement('span');
+        tip.className = 'so-copy-tip';
+        tip.innerText = '✓ Copied';
+        tip.style.left    = (rect.left + rect.width / 2) + 'px';
+        tip.style.top     = (rect.top - 32) + 'px';
+        tip.style.opacity = '1';
+        document.body.appendChild(tip);
 
-    // Show tip above the pill
-    el.classList.add('copied');
-    var rect = el.getBoundingClientRect();
-    var tip = document.createElement('span');
-    tip.className = 'so-copy-tip';
-    tip.innerText = '✓ Copied';
-    tip.style.left    = (rect.left + rect.width / 2) + 'px';
-    tip.style.top     = (rect.top - 32) + 'px';
-    tip.style.opacity = '1';
-    document.body.appendChild(tip);
+        setTimeout(function () {
+            tip.style.opacity = '0';
+            tip.style.top = (rect.top - 42) + 'px';
+        }, 900);
 
-    setTimeout(function () {
-        tip.style.opacity = '0';
-        tip.style.top = (rect.top - 42) + 'px';
-    }, 900);
-
-    setTimeout(function () {
-        el.classList.remove('copied');
-        if (tip.parentNode) tip.parentNode.removeChild(tip);
-    }, 1300);
-}
+        setTimeout(function () {
+            el.classList.remove('copied');
+            if (tip.parentNode) tip.parentNode.removeChild(tip);
+        }, 1300);
+    }
 </script>
