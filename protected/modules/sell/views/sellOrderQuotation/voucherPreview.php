@@ -319,17 +319,9 @@
                             <?php
                         }
 
-                        $vatDisplay             = $vat != 0             ? '' : 'display:none;';
-                        $deliveryChargeDisplay  = $delivery_charge != 0 ? '' : 'display:none;';
-                        $discountDisplay        = $discount_amount != 0 ? '' : 'display:none;';
-
-                        $footerRowSpan = 4;
-                        if ((float)$vat != 0)             $footerRowSpan++;
-                        if ((float)$delivery_charge != 0) $footerRowSpan++;
-                        if ((float)$discount_amount != 0) $footerRowSpan++;
                         ?>
                         <tr>
-                            <td rowspan="<?= $footerRowSpan ?>" colspan="2"
+                            <td rowspan="6" colspan="2"
                                 style="border: none; background: white; text-align: left; letter-spacing: 1px; font-weight: bold;">
                                 <div>In Words: <i>BDT
                                     <?php
@@ -342,29 +334,33 @@
                                 <br><br>
                                 <div style="font-weight: normal;">Note: <?= $item->order_note ?></div>
                             </td>
-                            <td colspan="1" style="border: none; background: white;">Sub Total</td>
-                            <td style="text-align: right; border: none;"><?= rtrim(rtrim(number_format($row_total, 4, '.', ','), '0'), '.') ?></td>
+                            <td colspan="2" style="border: none; background: white; text-align: right; padding-right: 8px;">Sub Total</td>
+                            <td style="text-align: right; border: none; padding-right: 5px;"><?= rtrim(rtrim(number_format($row_total, 4, '.', ','), '0'), '.') ?></td>
                         </tr>
-                        <tr style="<?= $vatDisplay ?>">
-                            <td colspan="1" style="border: none; background: white; <?= $vatDisplay ?>">Vat (<?= number_format($vat_percentage, 2) ?>%) (+)</td>
-                            <td style="text-align: right; border: none; <?= $vatDisplay ?>"><?= rtrim(rtrim(number_format($vat, 4, '.', ','), '0'), '.') ?></td>
+                        <tr>
+                            <td colspan="2" style="border: none; background: white; text-align: right; padding-right: 8px;">Vat (+)</td>
+                            <td style="border: none;"></td>
                         </tr>
-                        <tr style="<?= $deliveryChargeDisplay ?>">
-                            <td colspan="1" style="border: none; background: white;">Delivery Charge (+)</td>
-                            <td style="text-align: right; border: none;"><?= rtrim(rtrim(number_format($delivery_charge, 4, '.', ','), '0'), '.') ?></td>
+                        <tr>
+                            <td colspan="2" style="border: none; background: white; text-align: right; padding-right: 8px;">Delivery Charge (+)</td>
+                            <td style="border: none;"></td>
                         </tr>
-                        <tr style="<?= $discountDisplay ?>">
-                            <td colspan="1" style="border: none; background: white;">Discount (-)</td>
-                            <td style="text-align: right; border: none;">(-<?= rtrim(rtrim(number_format($discount_amount, 4, '.', ','), '0'), '.') ?>)</td>
+                        <tr>
+                            <td colspan="2" style="border: none; background: white; text-align: right; padding-right: 8px;">S.R Commission (+)</td>
+                            <td style="border: none;"></td>
+                        </tr>
+                        <tr>
+                            <td colspan="2" style="border: none; background: white; text-align: right; padding-right: 8px;">Discount (-)</td>
+                            <td style="border: none;"></td>
                         </tr>
                         <tr style="font-weight: bold;">
-                            <td colspan="1" style="border: none; background: white;">
+                            <td colspan="2" style="border: none; background: white; text-align: right; padding-right: 8px;">
                                 <div style="height: 1px; width: 100%; border: 1px solid black;"></div>
-                                Net payable amount
+                                Net Payable Amount
                             </td>
-                            <td style="text-align: right; border: none;">
+                            <td style="text-align: right; border: none; padding-right: 5px;">
                                 <div style="height: 1px; width: 100%; border: 1px solid black;"></div>
-                                <?= rtrim(rtrim(number_format($item->grand_total, 4, '.', ','), '0'), '.') ?>
+                                &nbsp;
                             </td>
                         </tr>
                         </tbody>
