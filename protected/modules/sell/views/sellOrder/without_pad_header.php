@@ -149,9 +149,9 @@ if (is_file($logoPath)) {
                     $x += $bw;
                 }
                 echo '<svg xmlns="http://www.w3.org/2000/svg" width="' . $svgW . '" height="' . $svgH . '" style="display:block; overflow:visible;">'
-                   . $rects
-                   . '<text x="' . ($svgW / 2) . '" y="' . $textY . '" text-anchor="middle" font-size="11" font-family="monospace" fill="#000" style="-webkit-print-color-adjust:exact; print-color-adjust:exact;">' . htmlspecialchars($so_no) . '</text>'
-                   . '</svg>';
+                        . $rects
+                        . '<text x="' . ($svgW / 2) . '" y="' . $textY . '" text-anchor="middle" font-size="11" font-family="monospace" fill="#000" style="-webkit-print-color-adjust:exact; print-color-adjust:exact;">' . htmlspecialchars($so_no) . '</text>'
+                        . '</svg>';
             } catch (Exception $e) {
                 // barcode failed silently
             }

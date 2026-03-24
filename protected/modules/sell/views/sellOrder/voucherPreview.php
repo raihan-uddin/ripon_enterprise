@@ -77,14 +77,6 @@
         font-family: fangsong;
     }
 
-    .item-list tbody tr:nth-child(even) {
-        background: #f5f5f5;
-    }
-
-    .item-list tbody tr:nth-child(odd) {
-        background: white;
-    }
-
 
     .top-sheet-item-list tbody th,
     .top-sheet-item-list tbody td,
@@ -126,7 +118,6 @@
     }
 
     .invoice-bill-to {
-        background: #f5f8fb;
         border: 1px solid #d0dae6;
         border-left: 4px solid #1a2c3d;
         border-radius: 3px;
@@ -145,17 +136,19 @@
     }
 
     .invoice-bill-to .customer-name {
-        font-size: 13px;
+        font-size: 15px;
         font-weight: 700;
         color: #1a2c3d;
         margin-bottom: 4px;
         line-height: 1.3;
+        text-align: left;
     }
 
     .invoice-bill-to .customer-detail {
-        font-size: 11px;
+        font-size: 12px;
         color: #555;
         line-height: 1.7;
+        text-align: left;
     }
 
     .invoice-bill-to .customer-detail .detail-row {
@@ -248,15 +241,15 @@
         font-weight: bold;
     }
     .so-header-company .co-name {
-        font-size: 18px;
+        font-size: 22px;
         font-weight: 700;
         color: #111;
         letter-spacing: 0.5px;
     }
     .so-header-company .co-detail {
-        font-size: 10px;
+        font-size: 13px;
         color: #444;
-        line-height: 1.8;
+        line-height: 1.5;
         margin-top: 3px;
     }
     .so-header-barcode {
@@ -319,8 +312,8 @@
             <?php
             $logoPath   = Yii::app()->theme->basePath . '/images/logo.svg';
             $logoInline = is_file($logoPath)
-                ? 'data:image/svg+xml;base64,' . base64_encode(file_get_contents($logoPath))
-                : Yii::app()->theme->baseUrl . '/images/logo.png';
+                    ? 'data:image/svg+xml;base64,' . base64_encode(file_get_contents($logoPath))
+                    : Yii::app()->theme->baseUrl . '/images/logo.png';
             require_once(Yii::app()->basePath . '/vendors/html2pdf/_tcpdf_5.0.002/barcodes.php');
 
             $dataItems = is_array($data) ? $data : iterator_to_array($data);
@@ -355,9 +348,9 @@
                                 $x += $bw;
                             }
                             $bcSvg = '<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 '.$svgW.' '.$svgH.'" width="100%" style="display:block; max-width:'.$svgW.'px;">'
-                                   . $rects
-                                   . '<text x="'.($svgW/2).'" y="'.$textY.'" text-anchor="middle" font-size="10" font-family="monospace" fill="#000">'.htmlspecialchars($item->so_no).'</text>'
-                                   . '</svg>';
+                                    . $rects
+                                    . '<text x="'.($svgW/2).'" y="'.$textY.'" text-anchor="middle" font-size="10" font-family="monospace" fill="#000">'.htmlspecialchars($item->so_no).'</text>'
+                                    . '</svg>';
                         } catch (Exception $e) {}
                         ?>
                         <!-- PO-style header -->
@@ -368,17 +361,7 @@
                                 </div>
                                 <div class="so-header-company">
                                     <div class="co-name"><?= CHtml::encode(strtoupper(Yii::app()->params['company']['name'])) ?></div>
-                                    <div class="co-detail">
-                                        <?= CHtml::encode(Yii::app()->params['company']['address_line_1']) ?>
-                                        <?php if (!empty(Yii::app()->params['company']['address_line_2'])): ?>
-                                            &nbsp;&middot;&nbsp;<?= CHtml::encode(Yii::app()->params['company']['address_line_2']) ?>
-                                        <?php endif; ?>
-                                        <br>
-                                        অফিস: <?= CHtml::encode(Yii::app()->params['company']['phone_1']) ?>
-                                        <?php if (!empty(Yii::app()->params['company']['phone_2'])): ?>
-                                            &nbsp;&middot;&nbsp;<?= CHtml::encode(Yii::app()->params['company']['invoice_contact_person']) ?>: <?= CHtml::encode(Yii::app()->params['company']['phone_2']) ?>
-                                        <?php endif; ?>
-                                    </div>
+                                    <div class="co-detail"><?= CHtml::encode(Yii::app()->params['company']['address_line_1']) ?><?php if (!empty(Yii::app()->params['company']['address_line_2'])): ?> &middot; <?= CHtml::encode(Yii::app()->params['company']['address_line_2']) ?><?php endif; ?><br>অফিস: <?= CHtml::encode(Yii::app()->params['company']['phone_1']) ?><?php if (!empty(Yii::app()->params['company']['phone_2'])): ?> <br> <?= CHtml::encode(Yii::app()->params['company']['invoice_contact_person']) ?>: <?= CHtml::encode(Yii::app()->params['company']['phone_2']) ?><?php endif; ?></div>
                                 </div>
                                 <div class="so-header-barcode">
                                     <?= $bcSvg ?>
@@ -396,16 +379,10 @@
                                         <div class="customer-name"><?= htmlspecialchars($customer->company_name) ?></div>
                                         <div class="customer-detail">
                                             <?php if (!empty($customer->company_address)): ?>
-                                                <div class="detail-row">
-                                                    <span class="detail-label">Addr</span>
-                                                    <span><?= htmlspecialchars($customer->company_address) ?></span>
-                                                </div>
+                                                <div class="detail-row"><?= htmlspecialchars($customer->company_address) ?></div>
                                             <?php endif; ?>
                                             <?php if (!empty($customer->owner_mobile_no)): ?>
-                                                <div class="detail-row">
-                                                    <span class="detail-label">Tel</span>
-                                                    <span><?= htmlspecialchars($customer->owner_mobile_no) ?></span>
-                                                </div>
+                                                <div class="detail-row"><span style="font-weight:700;"><?= htmlspecialchars($customer->owner_mobile_no) ?></span></div>
                                             <?php endif; ?>
                                             <?php if (!empty($customer->trn_no)): ?>
                                                 <div class="detail-row">
@@ -429,10 +406,10 @@
                                             <td><?= date('d M Y', strtotime($item->date)) ?></td>
                                         </tr>
                                         <?php if ($showProfitLossSummary): ?>
-                                        <tr>
-                                            <td>P / L</td>
-                                            <td><span id="profitLossText_<?= $item->id ?>" style="font-size:15px;"></span></td>
-                                        </tr>
+                                            <tr>
+                                                <td>P / L</td>
+                                                <td><span id="profitLossText_<?= $item->id ?>" style="font-size:15px;"></span></td>
+                                            </tr>
                                         <?php endif; ?>
                                     </table>
                                 </td>
@@ -492,7 +469,7 @@
                                         <?= rtrim(rtrim(number_format($dt->amount, 4, '.', ','), '0'), '.') ?>
                                     </td>
                                     <td style="text-align: right; padding-right: 5px;">
-                                         <?= rtrim(rtrim(number_format($dt->row_total, 4, '.', ','), '0'), '.') ?>
+                                        <?= rtrim(rtrim(number_format($dt->row_total, 4, '.', ','), '0'), '.') ?>
                                     </td>
                                     <?php
                                     if ($showProfitLossSummary) {
@@ -691,7 +668,7 @@
                                         Current Return Amount
                                     </td>
                                     <td style="text-align: right; border: none;">
-                                         <?= rtrim(rtrim(number_format($current_return, 4, '.', ','), '0'), '.') ?>
+                                        <?= rtrim(rtrim(number_format($current_return, 4, '.', ','), '0'), '.') ?>
                                     </td>
                                 </tr>
                                 <?php
@@ -724,20 +701,40 @@
                         </tbody>
                     </table>
 
-                    <div style="width: 100%; font-size: 12px; margin-top: 16px; page-break-inside: avoid;">
-                        <div style="display: table; width: 100%; margin-top: 36px;">
-                            <div style="display: table-cell; width: 50%; text-align: center; padding-top: 4px; border-top: 1.5px solid #555; font-size: 10px; font-weight: 700; text-transform: uppercase; letter-spacing: 0.5px; color: #444;">
-                                <?= strtoupper(Yii::app()->params['company']['name']) ?>
+                    <div style="width: 100%; float: left; clear: right; height: 150px; font-size: 12px; margin-top: 20px;">
+                        <div style="height: 30px; text-align: left; width: 100%; float: left; clear: right;">
+                            By signing this document, the customer agrees to he services and conditions
+                            described in this document.
+                        </div>
+                        <br>
+                        <div style="width: 100%; float: left; clear:right;">
+
+                            <div style="width: 50%; float: left;clear:right; text-decoration: overline; margin: auto; display: flex;  justify-content: center;  align-items: center;">
+                                <span style="text-decoration: underline; font-weight: bold;"><?= strtoupper(Yii::app()->params['company']['name']) ?></span>
                             </div>
-                            <div style="display: table-cell; width: 50%; text-align: center; padding-top: 4px; border-top: 1.5px solid #555; font-size: 10px; font-weight: 700; text-transform: uppercase; letter-spacing: 0.5px; color: #444;">
-                                <?= $customer_name ?> &amp; Date
+                            <div style="width: 50%; float: left;clear:right; text-decoration: overline; margin: auto; display: flex;  justify-content: center;  align-items: center;">
+                                <span style="text-decoration: underline; font-weight: bold;"><?= $customer_name ?></span>
+                            </div>
+                        </div>
+                        <div style="height: 50px; width: 100%; float: left; clear: right; margin-top: 40px;">
+                            <div style="width: 50%; float: left; clear: right; margin: auto; display: flex; flex-direction: column; justify-content: center; align-items: center;">
+                                <div style="font-weight: bold; text-transform: uppercase;">
+                                    &nbsp;
+                                </div>
+                                <div style="text-decoration: overline;"><?= date('F d, Y') ?></div>
+                            </div>
+
+                            <div style="width: 50%; float: left;clear:right; text-decoration: overline; margin: auto; display: flex;  justify-content: center;  align-items: center;">
+                                <div>(&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;/&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;/&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+                                    )
+                                </div>
                             </div>
                         </div>
                     </div>
 
-                    <?php if ($itemIndex < $totalItems): ?>
+                <?php if ($itemIndex < $totalItems): ?>
                     <div class="page-break-div"></div>
-                    <?php endif; ?>
+                <?php endif; ?>
 
                     <script>
                         <?php
