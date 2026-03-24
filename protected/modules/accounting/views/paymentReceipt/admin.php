@@ -623,8 +623,10 @@ if (Yii::app()->user->checkAccess('Accounting.PaymentReceipt.VoucherPreview')) {
                     'htmlOptions' => ['class' => 'text-center']
                 ),
                 array(
-                    'name' => 'pr_no',
-                    'htmlOptions' => ['class' => 'text-center']
+                    'name'        => 'pr_no',
+                    'type'        => 'raw',
+                    'value'       => 'CHtml::tag("span", ["class"=>"so-pill", "onclick"=>"copySoNo(this)", "title"=>"Click to copy"], CHtml::encode($data->pr_no))',
+                    'htmlOptions' => ['class' => 'text-center', 'style' => 'width:120px;'],
                 ),
                 array(
                     'name' => 'payment_type',
@@ -732,4 +734,36 @@ function goToPage() {
 $(document).on('keypress', '#goto-page-input', function(e) {
     if (e.which === 13) goToPage();
 });
+
+function copySoNo(el) {
+    var text = el.innerText.trim();
+    var tmp = document.createElement('textarea');
+    tmp.value = text;
+    tmp.style.position = 'fixed';
+    tmp.style.opacity = '0';
+    document.body.appendChild(tmp);
+    tmp.select();
+    document.execCommand('copy');
+    document.body.removeChild(tmp);
+
+    el.classList.add('copied');
+    var rect = el.getBoundingClientRect();
+    var tip = document.createElement('span');
+    tip.className = 'so-copy-tip';
+    tip.innerText = '✓ Copied';
+    tip.style.left    = (rect.left + rect.width / 2) + 'px';
+    tip.style.top     = (rect.top - 32) + 'px';
+    tip.style.opacity = '1';
+    document.body.appendChild(tip);
+
+    setTimeout(function () {
+        tip.style.opacity = '0';
+        tip.style.top = (rect.top - 42) + 'px';
+    }, 900);
+
+    setTimeout(function () {
+        el.classList.remove('copied');
+        if (tip.parentNode) tip.parentNode.removeChild(tip);
+    }, 1300);
+}
 </script>
