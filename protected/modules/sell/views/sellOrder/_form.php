@@ -188,11 +188,13 @@ Yii::app()->clientScript->registerCoreScript("jquery.ui");
 
     /* Margin badges */
     .margin-badge.bad {
-        background: #dc3545 !important;
+        background: #f0a500 !important;
+        color: #fff !important;
     }
 
     .margin-badge.good {
         background: #28a745 !important;
+        color: #fff !important;
     }
 
     /* Progress animation */
