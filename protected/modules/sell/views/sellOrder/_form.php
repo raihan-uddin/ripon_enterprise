@@ -87,9 +87,6 @@ Yii::app()->clientScript->registerCoreScript("jquery.ui");
        ========================================================= */
 
     #global-bar {
-        position: sticky;
-        top: 0;
-        z-index: 10;
         background: #212529;
         color: #ffffff;
         padding: 6px 12px;
@@ -124,9 +121,6 @@ Yii::app()->clientScript->registerCoreScript("jquery.ui");
         background: #f8f9fa;
         border-bottom: 1px solid #dee2e6;
         padding: 8px 12px;
-        position: sticky;
-        top: 0;
-        z-index: 5;
         transition: box-shadow 0.2s ease, background 0.2s ease;
     }
 
@@ -215,9 +209,6 @@ Yii::app()->clientScript->registerCoreScript("jquery.ui");
        ========================================================= */
 
     .company-sub-header th {
-        position: sticky;
-        top: var(--sub-header-top, 0px);
-        z-index: 15;
         background: #1a2c3d;
         border-bottom: 3px solid #17a2b8;
         border-top: none;
@@ -869,7 +860,7 @@ Yii::app()->clientScript->registerCoreScript("jquery.ui");
                                     <!-- Company Header -->
                                     <tr class="company-header"
                                         data-target="company-<?= $groupIndex ?>">
-                                        <td colspan="8" class="p-0" style="position:sticky; top:0; z-index:20; background:#fff;">
+                                        <td colspan="8" class="p-0" style="background:#fff;">
 
                                             <div class="company-bar">
 
