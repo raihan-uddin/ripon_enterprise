@@ -45,25 +45,15 @@
     }
 
 
-    @media print {
-        .print-page-footer {
-            position: fixed;
-            bottom: 0;
-            left: 0;
-            width: 100%;
-            text-align: center;
+    @page {
+        @bottom-center {
+            content: "Page " counter(page) " of " counter(pages);
             font-size: 10px;
             color: #555;
-            padding: 3px 0;
-            border-top: 1px solid #ccc;
-        }
-        .print-page-footer::after {
-            content: "Page " counter(page) " of " counter(pages);
+            font-family: Arial, sans-serif;
         }
     }
-    @media screen {
-        .print-page-footer { display: none; }
-    }
+    .print-page-footer { display: none; }
 
     .item-list tbody th,
     .item-list tbody td {
