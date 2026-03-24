@@ -5,28 +5,480 @@ $this->widget('application.components.BreadCrumb', array(
         array('name' => 'Stock', 'url' => array('admin')),
         array('name' => 'Manage'),
     ),
-//    'delimiter' => ' &rarr; ',
 ));
 
-
-Yii::app()->clientScript->registerScript('search', "
-$('.search-button').click(function(){
-	$('.search-form').toggle();
-	return false;
-});
-$('.search-form form').submit(function(){
-	$('#inventory-grid').yiiGridView('update', {
-		data: $(this).serialize()
-	});
-	return false;
-});
-");
 if (Yii::app()->user->checkAccess('Inventory.Inventory.Create')) {
     echo $this->renderPartial('_form', array('model' => $model));
 }
 ?>
 
+<style>
+    /* ── Grid header ── */
+    #inventory-grid th {
+        background: #f0f4f8;
+        color: #1a2c3d;
+        font-size: 11px;
+        font-weight: 700;
+        text-transform: uppercase;
+        letter-spacing: 0.6px;
+        white-space: nowrap;
+        padding: 8px 10px;
+        border: 1px solid #c8d8e8;
+        border-bottom: 2px solid #2c3e50;
+    }
 
+    /* ── Filter row inputs ── */
+    #inventory-grid .filters input,
+    #inventory-grid .filters select {
+        width: 100%;
+        font-size: 12px;
+        height: 28px;
+        padding: 2px 6px;
+        border: 1px solid #c8d8e8;
+        border-radius: 4px;
+        background: #fff;
+        color: #212529;
+    }
+
+    #inventory-grid .filters input:focus,
+    #inventory-grid .filters select:focus {
+        border-color: #17a2b8;
+        box-shadow: 0 0 0 2px rgba(23,162,184,0.15);
+        outline: none;
+    }
+
+    /* ── Grid rows ── */
+    #inventory-grid td {
+        vertical-align: middle;
+        font-size: 13px;
+        padding: 7px 10px;
+    }
+
+    #inventory-grid tr:hover td {
+        background: #f0f7ff !important;
+    }
+
+    /* ── Action buttons ── */
+    .action-btn {
+        display: inline-flex;
+        align-items: center;
+        justify-content: center;
+        width: 34px;
+        height: 34px;
+        border-radius: 6px;
+        font-size: 14px;
+        margin: 2px;
+        text-decoration: none;
+        transition: background 0.15s, transform 0.1s, box-shadow 0.1s;
+        box-shadow: 0 1px 3px rgba(0,0,0,0.08);
+    }
+
+    .action-btn:hover {
+        text-decoration: none;
+        transform: translateY(-1px);
+        box-shadow: 0 3px 8px rgba(0,0,0,0.15);
+    }
+
+    .action-btn:active {
+        transform: translateY(0);
+        box-shadow: 0 1px 2px rgba(0,0,0,0.1);
+    }
+
+    .btn-preview  { background: #e6f4ea; color: #1a7a40; border: 1px solid #a8d5b5; }
+    .btn-payment  { background: #e8f4fd; color: #1a6fa3; border: 1px solid #a8cce8; }
+    .btn-edit     { background: #fff8e6; color: #8a6200; border: 1px solid #e0c870; }
+    .btn-delete   { background: #fdecea; color: #b71c1c; border: 1px solid #e8a8a8; }
+
+    .btn-preview:hover  { background: #c8ecd1; color: #155a2e; }
+    .btn-payment:hover  { background: #cce6f8; color: #114e7a; }
+    .btn-edit:hover     { background: #ffefc0; color: #6b4a00; }
+    .btn-delete:hover   { background: #fad4d0; color: #8b1111; }
+
+    /* ── Actions cell ── */
+    .actions-cell {
+        white-space: nowrap;
+        text-align: center;
+        padding: 6px 8px !important;
+    }
+
+    /* ── Pagination ── */
+    .col-xs-12 .pagination {
+        float: right;
+        margin: 4px 0;
+    }
+
+    .col-xs-12::after {
+        content: '';
+        display: table;
+        clear: both;
+    }
+
+    .pagination li a,
+    .pagination li span {
+        display: inline-flex;
+        align-items: center;
+        justify-content: center;
+        min-width: 32px;
+        height: 32px;
+        padding: 0 10px;
+        font-size: 13px;
+        border: 1px solid #c8d8e8;
+        border-radius: 5px !important;
+        margin: 2px;
+        color: #1a6fa3;
+        background: #fff;
+        text-decoration: none;
+        transition: background 0.15s, color 0.15s;
+    }
+
+    .pagination li a:hover {
+        background: #e8f4fd;
+        border-color: #1a6fa3;
+        color: #1a6fa3;
+    }
+
+    .pagination li.active a,
+    .pagination li.active span {
+        background: #1a2c3d;
+        border-color: #1a2c3d;
+        color: #fff;
+        font-weight: 700;
+    }
+
+    .pagination li.disabled a,
+    .pagination li.disabled span {
+        color: #aaa;
+        border-color: #e0e0e0;
+        background: #f8f9fa;
+        pointer-events: none;
+    }
+
+    /* ── Go to page ── */
+    .goto-page-wrap {
+        display: inline-flex;
+        align-items: center;
+        gap: 5px;
+        font-size: 12px;
+        color: #6c757d;
+    }
+
+    .goto-page-wrap input {
+        width: 90px;
+        height: 30px;
+        text-align: center;
+        font-size: 13px;
+        font-weight: 600;
+        border: 1px solid #c8d8e8;
+        border-radius: 5px;
+        padding: 0 6px;
+        color: #1a2c3d;
+    }
+
+    .goto-page-wrap input:focus {
+        border-color: #17a2b8;
+        outline: none;
+        box-shadow: 0 0 0 2px rgba(23,162,184,0.15);
+    }
+
+    .goto-page-wrap button {
+        height: 30px;
+        padding: 0 10px;
+        font-size: 12px;
+        font-weight: 600;
+        background: #1a2c3d;
+        color: #fff;
+        border: none;
+        border-radius: 5px;
+        cursor: pointer;
+        transition: background 0.15s;
+    }
+
+    .goto-page-wrap button:hover {
+        background: #2c3e50;
+    }
+</style>
+
+
+<style>
+    /* ── Grid header ── */
+    #sell-order-grid th {
+        background: #f0f4f8;
+        color: #1a2c3d;
+        font-size: 11px;
+        font-weight: 700;
+        text-transform: uppercase;
+        letter-spacing: 0.6px;
+        white-space: nowrap;
+        padding: 8px 10px;
+        border: 1px solid #c8d8e8;
+        border-bottom: 2px solid #2c3e50;
+    }
+
+    /* ── Filter row inputs ── */
+    #sell-order-grid .filters input,
+    #sell-order-grid .filters select {
+        width: 100%;
+        font-size: 12px;
+        height: 28px;
+        padding: 2px 6px;
+        border: 1px solid #c8d8e8;
+        border-radius: 4px;
+        background: #fff;
+        color: #212529;
+    }
+
+    #sell-order-grid .filters input:focus,
+    #sell-order-grid .filters select:focus {
+        border-color: #17a2b8;
+        box-shadow: 0 0 0 2px rgba(23,162,184,0.15);
+        outline: none;
+    }
+
+    /* ── Grid rows ── */
+    #sell-order-grid td {
+        vertical-align: middle;
+        font-size: 13px;
+        padding: 7px 10px;
+    }
+
+    #sell-order-grid tr:hover td {
+        background: #f0f7ff !important;
+    }
+
+    /* ── SO number pill ── */
+    .so-pill {
+        display: inline-block;
+        position: relative;
+        background: #e8f4fd;
+        color: #1a6fa3;
+        font-weight: 700;
+        font-size: 12px;
+        font-family: monospace;
+        padding: 3px 9px;
+        border-radius: 12px;
+        border: 1px solid #b0cfe8;
+        white-space: nowrap;
+        cursor: pointer;
+        user-select: none;
+        transition: background 0.15s;
+    }
+
+    .so-pill:hover {
+        background: #d0eaf8;
+    }
+
+    .so-pill.copied {
+        background: #e6f9ee;
+        color: #1a7a40;
+        border-color: #a8d5b5;
+    }
+
+    .so-copy-tip {
+        position: fixed;
+        background: #1a7a40;
+        color: #fff;
+        font-size: 11px;
+        font-weight: 600;
+        padding: 3px 10px;
+        border-radius: 4px;
+        white-space: nowrap;
+        pointer-events: none;
+        z-index: 99999;
+        transform: translateX(-50%);
+        transition: opacity 0.3s, top 0.3s;
+    }
+
+    /* ── Grand total ── */
+    .grand-cell {
+        font-weight: 700;
+        font-size: 13px;
+        color: #1a7a40;
+    }
+
+    /* ── Zero value ── */
+    .val-zero {
+        color: #bbb;
+        font-size: 12px;
+    }
+
+    /* ── Action buttons ── */
+    .action-btn {
+        display: inline-flex;
+        align-items: center;
+        justify-content: center;
+        width: 34px;
+        height: 34px;
+        border-radius: 6px;
+        font-size: 14px;
+        margin: 2px;
+        text-decoration: none;
+        transition: background 0.15s, transform 0.1s, box-shadow 0.1s;
+        box-shadow: 0 1px 3px rgba(0,0,0,0.08);
+    }
+
+    .action-btn:hover {
+        text-decoration: none;
+        transform: translateY(-1px);
+        box-shadow: 0 3px 8px rgba(0,0,0,0.15);
+    }
+
+    .action-btn:active {
+        transform: translateY(0);
+        box-shadow: 0 1px 2px rgba(0,0,0,0.1);
+    }
+
+    .btn-preview  { background: #e6f4ea; color: #1a7a40; border: 1px solid #a8d5b5; }
+    .btn-payment  { background: #e8f4fd; color: #1a6fa3; border: 1px solid #a8cce8; }
+    .btn-edit     { background: #fff8e6; color: #8a6200; border: 1px solid #e0c870; }
+    .btn-delete   { background: #fdecea; color: #b71c1c; border: 1px solid #e8a8a8; }
+
+    .btn-preview:hover  { background: #c8ecd1; color: #155a2e; }
+    .btn-payment:hover  { background: #cce6f8; color: #114e7a; }
+    .btn-edit:hover     { background: #ffefc0; color: #6b4a00; }
+    .btn-delete:hover   { background: #fad4d0; color: #8b1111; }
+
+    /* ── Actions cell ── */
+    .actions-cell {
+        white-space: nowrap;
+        text-align: center;
+        padding: 6px 8px !important;
+    }
+
+    /* ── Pagination ── */
+    .col-xs-12 .pagination {
+        float: right;
+        margin: 4px 0;
+    }
+
+    .col-xs-12::after {
+        content: '';
+        display: table;
+        clear: both;
+    }
+
+    .pagination li a,
+    .pagination li span {
+        display: inline-flex;
+        align-items: center;
+        justify-content: center;
+        min-width: 32px;
+        height: 32px;
+        padding: 0 10px;
+        font-size: 13px;
+        border: 1px solid #c8d8e8;
+        border-radius: 5px !important;
+        margin: 2px;
+        color: #1a6fa3;
+        background: #fff;
+        text-decoration: none;
+        transition: background 0.15s, color 0.15s;
+    }
+
+    .pagination li a:hover {
+        background: #e8f4fd;
+        border-color: #1a6fa3;
+        color: #1a6fa3;
+    }
+
+    .pagination li.active a,
+    .pagination li.active span {
+        background: #1a2c3d;
+        border-color: #1a2c3d;
+        color: #fff;
+        font-weight: 700;
+    }
+
+    .pagination li.disabled a,
+    .pagination li.disabled span {
+        color: #aaa;
+        border-color: #e0e0e0;
+        background: #f8f9fa;
+        pointer-events: none;
+    }
+
+    /* ── Go to page ── */
+    .goto-page-wrap {
+        display: inline-flex;
+        align-items: center;
+        gap: 5px;
+        font-size: 12px;
+        color: #6c757d;
+    }
+
+    .goto-page-wrap input {
+        width: 90px;
+        height: 30px;
+        text-align: center;
+        font-size: 13px;
+        font-weight: 600;
+        border: 1px solid #c8d8e8;
+        border-radius: 5px;
+        padding: 0 6px;
+        color: #1a2c3d;
+    }
+
+    .goto-page-wrap input:focus {
+        border-color: #17a2b8;
+        outline: none;
+        box-shadow: 0 0 0 2px rgba(23,162,184,0.15);
+    }
+
+    .goto-page-wrap button {
+        height: 30px;
+        padding: 0 10px;
+        font-size: 12px;
+        font-weight: 600;
+        background: #1a2c3d;
+        color: #fff;
+        border: none;
+        border-radius: 5px;
+        cursor: pointer;
+        transition: background 0.15s;
+    }
+
+    .goto-page-wrap button:hover {
+        background: #2c3e50;
+    }
+
+    /* ── Grid footer totals ── */
+    #sell-order-grid tfoot td {
+        background: #f0f4f8;
+        border-top: 2px solid #2c3e50;
+        padding: 7px 10px;
+        font-size: 12px;
+    }
+
+    .grid-footer-label {
+        font-weight: 700;
+        color: #4a6278;
+        font-size: 11px;
+        text-transform: uppercase;
+        letter-spacing: 0.5px;
+    }
+
+    .grid-footer-label-cell {
+        text-align: right !important;
+    }
+
+    .grid-footer-cell {
+        font-weight: 600;
+        color: #1a2c3d;
+        font-size: 12px;
+    }
+
+    .grid-footer-grand {
+        font-weight: 700;
+        color: #1a7a40;
+        font-size: 13px;
+    }
+
+    /* ── Preview card ── */
+    .preview-card-body .input-group-text {
+        background: #f8f9fa;
+        font-weight: 600;
+        font-size: 13px;
+    }
+</style>
 <?php
 $user = Yii::app()->getUser();
 foreach ($user->getFlashKeys() as $key):
