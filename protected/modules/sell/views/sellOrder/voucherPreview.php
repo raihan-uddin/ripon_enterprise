@@ -26,20 +26,9 @@
         }
 
         .printAllTableForThisReport {
-            font-family: Helvetica Neue, Helvetica, Arial, sans-serif;
-            font-size: 14px;
-            font-weight: bold;
-            color: #000 !important;
-        }
-
-        .printAllTableForThisReport td,
-        .printAllTableForThisReport th,
-        .printAllTableForThisReport span,
-        .printAllTableForThisReport div,
-        .printAllTableForThisReport p {
-            color: #000 !important;
-            font-weight: 600 !important;
-            -webkit-text-stroke: 0.2px #000;
+            font-family: Arial, sans-serif;
+            font-size: 13px;
+            color: #000;
         }
 
         .page-break-div {
