@@ -56,6 +56,64 @@ $this->widget('application.components.BreadCrumb', array(
         background: #f0f7ff !important;
     }
 
+    /* ── Date subtotal row ── */
+    td.extrarow {
+        background: #f0f4f8;
+        border-top: 1px dashed #b0c4d8;
+        border-bottom: 2px solid #2c3e50;
+        padding: 5px 12px;
+    }
+
+    .dst-wrap {
+        display: flex;
+        align-items: center;
+        gap: 0;
+        flex-wrap: wrap;
+        font-size: 12px;
+    }
+
+    .dst-orders {
+        background: #1a2c3d;
+        color: #fff;
+        font-size: 10px;
+        font-weight: 700;
+        padding: 2px 8px;
+        border-radius: 10px;
+        margin-right: 8px;
+        white-space: nowrap;
+    }
+
+    .dst-sep {
+        color: #c8d8e8;
+        margin: 0 6px;
+    }
+
+    .dst-item {
+        font-size: 11px;
+        color: #4a6278;
+        white-space: nowrap;
+    }
+
+    .dst-lbl {
+        font-weight: 700;
+        text-transform: uppercase;
+        font-size: 9px;
+        letter-spacing: 0.5px;
+        color: #7f8c9a;
+    }
+
+    .dst-total {
+        background: #e6f9ee;
+        color: #1a7a40;
+        font-weight: 700;
+        font-size: 12px;
+        padding: 2px 10px;
+        border-radius: 8px;
+        border: 1px solid #a8d5b5;
+        margin-left: 4px;
+        white-space: nowrap;
+    }
+
     /* ── SO number pill ── */
     .so-pill {
         display: inline-block;
@@ -417,8 +475,17 @@ if (Yii::app()->user->checkAccess('Sell.Order.VoucherPreview')) {
         $dataProvider = $model->search();
         $pageRows = $dataProvider->getData();
         $pageTotals = array('discount_amount' => 0, 'delivery_charge' => 0, 'road_fee' => 0, 'damage_value' => 0, 'sr_commission' => 0, 'grand_total' => 0);
+        $dateSubtotals = array();
         foreach ($pageRows as $_r) {
             foreach ($pageTotals as $_k => $_v) $pageTotals[$_k] += $_r->$_k;
+            $_d = $_r->date;
+            if (!isset($dateSubtotals[$_d])) {
+                $dateSubtotals[$_d] = array('count' => 0, 'discount_amount' => 0, 'delivery_charge' => 0, 'road_fee' => 0, 'damage_value' => 0, 'sr_commission' => 0, 'grand_total' => 0);
+            }
+            $dateSubtotals[$_d]['count']++;
+            foreach (array('discount_amount', 'delivery_charge', 'road_fee', 'damage_value', 'sr_commission', 'grand_total') as $_k) {
+                $dateSubtotals[$_d][$_k] += (float)$_r->$_k;
+            }
         }
         $this->widget('ext.groupgridview.GroupGridView', array(
                 'id' => 'sell-order-grid',
@@ -427,7 +494,26 @@ if (Yii::app()->user->checkAccess('Sell.Order.VoucherPreview')) {
                 'cssFile' => Yii::app()->theme->baseUrl . '/css/gridview/styles.css',
                 'htmlOptions' => array('class' => 'table-responsive grid-view'),
                 'itemsCssClass' => 'table table-sm table-hover table-bordered dataTable dtr-inline',
-                'mergeColumns' => array('order_type', 'date'),
+                'mergeColumns'       => array('order_type', 'date'),
+                'extraRowColumns'    => array('date'),
+                'extraRowPos'        => 'below',
+                'extraRowExpression' => function($data, $row, $totals, $grid) use ($dateSubtotals) {
+                    $d = $data->date;
+                    $t = isset($dateSubtotals[$d]) ? $dateSubtotals[$d] : array('count'=>0,'discount_amount'=>0,'delivery_charge'=>0,'road_fee'=>0,'damage_value'=>0,'sr_commission'=>0,'grand_total'=>0);
+                    $parts = array();
+                    if ($t['discount_amount'] > 0) $parts[] = '<span class="dst-item"><span class="dst-lbl">Disc</span> ' . number_format($t['discount_amount'], 2) . '</span>';
+                    if ($t['delivery_charge'] > 0) $parts[] = '<span class="dst-item"><span class="dst-lbl">Del</span> ' . number_format($t['delivery_charge'], 2) . '</span>';
+                    if ($t['road_fee']        > 0) $parts[] = '<span class="dst-item"><span class="dst-lbl">Road</span> ' . number_format($t['road_fee'], 2) . '</span>';
+                    if ($t['damage_value']    > 0) $parts[] = '<span class="dst-item"><span class="dst-lbl">Dmg</span> ' . number_format($t['damage_value'], 2) . '</span>';
+                    if ($t['sr_commission']   > 0) $parts[] = '<span class="dst-item"><span class="dst-lbl">Comm</span> ' . number_format($t['sr_commission'], 2) . '</span>';
+                    $sep = '<span class="dst-sep">·</span>';
+                    $body = count($parts) ? (implode($sep, $parts) . $sep) : '';
+                    return '<div class="dst-wrap">'
+                        . '<span class="dst-orders">' . $t['count'] . ' order' . ($t['count'] != 1 ? 's' : '') . '</span>'
+                        . $body
+                        . '<span class="dst-total"><i class="fa fa-calculator" style="margin-right:4px;"></i>' . number_format($t['grand_total'], 2) . '</span>'
+                        . '</div>';
+                },
                 'template' => "<div class='row' style='text-align:right; margin-bottom:6px;'>{pager}</div>\n{summary}{items}{summary}\n{pager}",
                 'summaryText' => "
                     <div style='display:inline-flex; align-items:center; gap:8px; font-size:12px; color:#6c757d; padding:4px 0; flex-wrap:wrap;'>
