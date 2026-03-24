@@ -46,6 +46,12 @@
 
 
     @page {
+        @bottom-left {
+            content: "<?= date('d M Y  h:i A') ?>";
+            font-size: 10px;
+            color: #555;
+            font-family: Arial, sans-serif;
+        }
         @bottom-right {
             content: "Page " counter(page) " of " counter(pages);
             font-size: 10px;
@@ -54,20 +60,7 @@
         }
     }
     .print-page-footer { display: none; }
-    @media print {
-        .print-date-stamp {
-            display: block !important;
-            position: fixed;
-            bottom: 3mm;
-            left: 5mm;
-            font-size: 10px;
-            color: #444;
-            font-family: Arial, sans-serif;
-        }
-    }
-    @media screen {
-        .print-date-stamp { display: none; }
-    }
+    .print-date-stamp { display: none; }
 
     .item-list tbody th,
     .item-list tbody td {
@@ -679,23 +672,3 @@
         </div>
     </div>
 </div>
-<script>
-function setPrintDate() {
-    var el = document.getElementById('print-date-stamp');
-    if (!el) return;
-    var now = new Date();
-    var months = ['Jan','Feb','Mar','Apr','May','Jun','Jul','Aug','Sep','Oct','Nov','Dec'];
-    var d = now.getDate();
-    var m = months[now.getMonth()];
-    var y = now.getFullYear();
-    var h = now.getHours();
-    var min = now.getMinutes() < 10 ? '0' + now.getMinutes() : now.getMinutes();
-    var ampm = h >= 12 ? 'PM' : 'AM';
-    h = h % 12; if (h === 0) h = 12;
-    el.textContent = 'Printed: ' + d + ' ' + m + ' ' + y + '  ' + h + ':' + min + ' ' + ampm;
-}
-window.onbeforeprint = setPrintDate;
-if (window.matchMedia) {
-    window.matchMedia('print').addListener(function(m){ if(m.matches) setPrintDate(); });
-}
-</script>
