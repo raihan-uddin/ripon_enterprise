@@ -78,6 +78,28 @@ Core controllers (site dashboard, reports, manufacturers, product catalog) live 
 - `AmountInWord.php` — Currency amount to words (used in vouchers/invoices)
 - `yii-pdf/` — PDF generation for vouchers and reports
 
+## Git Workflow
+
+**Always follow this branching strategy — no exceptions:**
+
+1. Create a new branch from `main` for every task:
+   ```bash
+   git checkout main && git pull origin main
+   git checkout -b <branch-name>
+   ```
+2. Make changes and commit on the branch.
+3. Push the branch and open a pull request (merge request) targeting `main`:
+   ```bash
+   git push origin <branch-name>
+   gh pr create --base main --head <branch-name>
+   ```
+4. Merge the PR into `main` (squash or merge commit):
+   ```bash
+   gh pr merge --merge
+   ```
+5. Never commit directly to `main`.
+6. Do **not** commit or push until the user explicitly says to.
+
 ### Frontend Stack
 
 - Bootstrap 3.3.7 + jQuery 3.2.1 (loaded from CDN in layouts)
