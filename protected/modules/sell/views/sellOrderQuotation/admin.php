@@ -453,7 +453,9 @@ if (Yii::app()->user->checkAccess('Sell.SellOrderQuotation.VoucherPreview')) {
                     'htmlOptions' => ['class' => 'text-center']
                 ),
                 array(
-                    'name' => 'so_no',
+                    'name'  => 'so_no',
+                    'type'  => 'raw',
+                    'value' => 'CHtml::tag("span", ["class"=>"so-pill", "onclick"=>"copySoNo(this)", "title"=>"Click to copy"], CHtml::encode($data->so_no))',
                     'htmlOptions' => ['class' => 'text-center']
                 ),
                 array(
@@ -613,6 +615,21 @@ $this->beginWidget('zii.widgets.jui.CJuiDialog', array(
 <?php $this->endWidget('zii.widgets.jui.CJuiDialog'); ?>
 
 <script>
+function copySoNo(el) {
+    var text = el.innerText.trim();
+    var tmp = document.createElement('textarea');
+    tmp.value = text;
+    document.body.appendChild(tmp);
+    tmp.select();
+    document.execCommand('copy');
+    document.body.removeChild(tmp);
+    el.classList.add('copied');
+    var tip = document.createElement('span');
+    tip.className = 'so-copy-tip';
+    tip.innerText = 'Copied!';
+    el.appendChild(tip);
+    setTimeout(function() { el.classList.remove('copied'); el.removeChild(tip); }, 1200);
+}
 function goToPage() {
     var page = parseInt($('#goto-page-input').val(), 10);
     if (!page || page < 1) return;
