@@ -52,6 +52,12 @@
             color: #555;
             font-family: Arial, sans-serif;
         }
+        @bottom-center {
+            content: "Developed by: raihan-uddin.github.io";
+            font-size: 10px;
+            color: #888;
+            font-family: Arial, sans-serif;
+        }
         @bottom-right {
             content: "Page " counter(page) " of " counter(pages);
             font-size: 10px;
