@@ -25,8 +25,8 @@
         max-width: 7.6in;
         margin: 0 auto;
         box-sizing: border-box;
-        border: 1.5px solid #c0cfe0;
-        border-radius: 6px;
+        border: 1.5px solid #999;
+        border-radius: 4px;
         overflow: hidden;
         padding-bottom: 12px;
     }
@@ -36,8 +36,8 @@
         display: table;
         width: 100%;
         table-layout: fixed;
-        background: #f5f9ff;
-        border-bottom: 3px solid #0077d9;
+        background: #f7f7f7;
+        border-bottom: 2px solid #333;
         padding: 10px 14px;
         box-sizing: border-box;
     }
@@ -47,10 +47,10 @@
         display: table-cell;
         vertical-align: middle;
     }
-    .pr-header-logo { width: 20%; }
+    .pr-header-logo { width: 18%; }
     .pr-header-logo img {
-        height: 80px;
-        max-width: 150px;
+        height: 72px;
+        max-width: 140px;
         object-fit: contain;
     }
     .pr-header-company {
@@ -59,9 +59,9 @@
         padding: 0 8px;
     }
     .pr-header-company .co-name {
-        font-size: 19px;
+        font-size: 18px;
         font-weight: 700;
-        color: #0a1a2e;
+        color: #111;
         letter-spacing: 0.5px;
         line-height: 1.2;
     }
@@ -72,7 +72,7 @@
         margin-top: 3px;
     }
     .pr-header-meta {
-        width: 28%;
+        width: 30%;
         text-align: right;
         vertical-align: middle;
         padding-right: 4px;
@@ -82,12 +82,12 @@
     .pr-no-badge {
         display: inline-block;
         background: #fff;
-        border: 1.5px solid #0077d9;
-        border-radius: 4px;
+        border: 1.5px solid #333;
+        border-radius: 3px;
         padding: 3px 12px;
         font-size: 13px;
         font-weight: 700;
-        color: #005bb5;
+        color: #111;
         font-family: 'Courier New', monospace;
         letter-spacing: 0.5px;
         white-space: nowrap;
@@ -99,28 +99,26 @@
     }
     .pr-date-row strong {
         font-size: 11px;
-        color: #0a1a2e;
+        color: #111;
     }
-    .pr-barcode { text-align: right; margin-top: 4px; }
-    .pr-barcode svg { display: inline-block; overflow: visible; }
 
     /* ── Title banner ── */
     .pr-title-banner {
-        background: linear-gradient(90deg, #005bb5 0%, #0077d9 60%, #2196f3 100%);
+        background: #333;
         color: #fff;
         text-align: center;
-        padding: 6px 0;
-        font-size: 12px;
+        padding: 5px 0;
+        font-size: 11px;
         font-weight: 700;
-        letter-spacing: 4px;
+        letter-spacing: 5px;
         text-transform: uppercase;
     }
 
     /* ── Body ── */
     .pr-body-wrap { padding: 10px 14px 0; }
     .pr-body {
-        border: 1px solid #d0dce8;
-        border-radius: 4px;
+        border: 1px solid #ccc;
+        border-radius: 3px;
         overflow: hidden;
         margin-bottom: 10px;
     }
@@ -128,7 +126,7 @@
         display: table;
         width: 100%;
         table-layout: fixed;
-        border-bottom: 1px solid #e8eef4;
+        border-bottom: 1px solid #e5e5e5;
         min-height: 28px;
         box-sizing: border-box;
     }
@@ -139,45 +137,45 @@
         padding: 6px 10px;
     }
     .pr-lbl {
-        width: 20%;
-        background: #f0f5fb;
+        width: 22%;
+        background: #f0f0f0;
         font-size: 9px;
         font-weight: 700;
         text-transform: uppercase;
         letter-spacing: 0.7px;
-        color: #5570a0;
-        border-right: 1px solid #d0dce8;
+        color: #444;
+        border-right: 1px solid #ccc;
         white-space: nowrap;
     }
     .pr-val {
         font-size: 12px;
         font-weight: 600;
-        color: #0a1a2e;
+        color: #111;
     }
 
-    /* ── Amount highlight ── */
+    /* ── Amount ── */
     .pr-amount-block {
-        background: #f0faf4;
-        border-left: 4px solid #1a9a50;
+        background: #f5f5f5;
+        border-left: 4px solid #555;
         padding: 7px 10px;
     }
     .pr-amount-figure {
         font-size: 16px;
         font-weight: 700;
-        color: #1a7a40;
+        color: #111;
         letter-spacing: 0.5px;
     }
     .pr-amount-words {
         font-size: 10px;
         font-style: italic;
-        color: #4a7060;
+        color: #555;
         margin-top: 2px;
     }
     .pr-discount-tag {
         display: inline-block;
-        background: #fff8e1;
-        border: 1px solid #f0c040;
-        color: #7a5000;
+        background: #eee;
+        border: 1px solid #bbb;
+        color: #333;
         font-size: 10px;
         font-weight: 700;
         padding: 1px 8px;
@@ -189,26 +187,26 @@
     /* ── Payment badge ── */
     .pr-pay-badge {
         display: inline-block;
+        background: #eee;
+        border: 1px solid #bbb;
+        color: #333;
         font-size: 10px;
         font-weight: 700;
         padding: 2px 10px;
         border-radius: 10px;
         letter-spacing: 0.5px;
     }
-    .pr-pay-badge.cash   { background: #e6f9ee; border: 1px solid #88cca0; color: #1a6a30; }
-    .pr-pay-badge.check  { background: #fff3e0; border: 1px solid #f0c060; color: #8a5000; }
-    .pr-pay-badge.online { background: #f3e8ff; border: 1px solid #c090e8; color: #6a20a8; }
 
     /* ── Order ref chip ── */
     .pr-inv-chip {
         display: inline-block;
-        background: #f0f4f8;
-        border: 1px solid #c0cce0;
-        border-radius: 4px;
+        background: #f5f5f5;
+        border: 1px solid #ccc;
+        border-radius: 3px;
         padding: 1px 8px;
         font-size: 11px;
         font-weight: 700;
-        color: #1a2c3d;
+        color: #111;
         font-family: 'Courier New', monospace;
     }
 
@@ -217,11 +215,11 @@
         display: table;
         width: 100%;
         table-layout: fixed;
-        border-bottom: 1px solid #e8eef4;
+        border-bottom: 1px solid #e5e5e5;
     }
     .pr-row-2col:last-child { border-bottom: none; }
     .pr-col { display: table-cell; }
-    .pr-col:first-child { border-right: 1px solid #e8eef4; }
+    .pr-col:first-child { border-right: 1px solid #e5e5e5; }
 
     /* ── Footer ── */
     .pr-footer {
@@ -247,8 +245,12 @@
         font-weight: 700;
         text-transform: uppercase;
         letter-spacing: 0.6px;
-        color: #555;
+        color: #444;
     }
+
+    /* ── Barcode ── */
+    .pr-barcode { text-align: right; margin-top: 4px; }
+    .pr-barcode svg { display: inline-block; overflow: visible; }
 </style>
 
 <div class="card card-primary">
@@ -295,7 +297,6 @@
         <?php foreach ($data as $dt):
             $paymentLabel = PaymentReceipt::model()->paymentTypeStringWithoutBedge($dt->payment_type);
             $isCheque     = ($paymentLabel === 'CHECK');
-            $badgeClass   = strtolower($paymentLabel);
             $amountInt    = (int) floor($dt->amount);
             $amountWords  = $amountInWord->convert((string) $amountInt);
 
@@ -304,7 +305,7 @@
             try {
                 $bc    = new TCPDFBarcode($dt->pr_no, 'C128B');
                 $bcArr = $bc->getBarcodeArray();
-                $barW  = 1.2; $barH = 30; $pad = 2; $textH = 12;
+                $barW  = 1.2; $barH = 28; $pad = 2; $textH = 12;
                 $svgW  = round($bcArr['maxw'] * $barW) + $pad * 2;
                 $svgH  = $barH + $pad + $textH;
                 $textY = $barH + $pad + 10;
@@ -360,7 +361,7 @@
             </div>
 
             <!-- TITLE BANNER -->
-            <div class="pr-title-banner">&#11036; &nbsp; Payment Receipt &nbsp; &#11036;</div>
+            <div class="pr-title-banner">Payment Receipt</div>
 
             <!-- BODY -->
             <div class="pr-body-wrap">
@@ -394,7 +395,7 @@
                         <div class="pr-row" style="border-bottom:none;">
                             <div class="pr-lbl">Payment</div>
                             <div class="pr-val">
-                                <span class="pr-pay-badge <?= $badgeClass ?>"><?= CHtml::encode($paymentLabel) ?></span>
+                                <span class="pr-pay-badge"><?= CHtml::encode($paymentLabel) ?></span>
                             </div>
                         </div>
                     </div>
