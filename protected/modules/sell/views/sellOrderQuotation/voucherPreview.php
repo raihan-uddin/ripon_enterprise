@@ -64,11 +64,12 @@
     .print-page-footer { display: none; }
     @media print {
         .print-date-stamp {
+            display: block !important;
             position: fixed;
-            bottom: 4mm;
-            left: 0;
+            bottom: 3mm;
+            left: 5mm;
             font-size: 10px;
-            color: #555;
+            color: #444;
             font-family: Arial, sans-serif;
         }
     }
@@ -249,7 +250,7 @@
     </div>
     <div class="card-body">
         <div class="print-page-footer"></div>
-        <div class="print-date-stamp">Printed: <?= date('d M Y  H:i') ?></div>
+        <div class="print-date-stamp" id="print-date-stamp"></div>
         <div class="printAllTableForThisReport">
             <?php
             foreach ($data as $item) {
@@ -465,3 +466,23 @@
         </div>
     </div>
 </div>
+<script>
+function setPrintDate() {
+    var el = document.getElementById('print-date-stamp');
+    if (!el) return;
+    var now = new Date();
+    var months = ['Jan','Feb','Mar','Apr','May','Jun','Jul','Aug','Sep','Oct','Nov','Dec'];
+    var d = now.getDate();
+    var m = months[now.getMonth()];
+    var y = now.getFullYear();
+    var h = now.getHours();
+    var min = now.getMinutes() < 10 ? '0' + now.getMinutes() : now.getMinutes();
+    var ampm = h >= 12 ? 'PM' : 'AM';
+    h = h % 12; if (h === 0) h = 12;
+    el.textContent = 'Printed: ' + d + ' ' + m + ' ' + y + '  ' + h + ':' + min + ' ' + ampm;
+}
+window.onbeforeprint = setPrintDate;
+if (window.matchMedia) {
+    window.matchMedia('print').addListener(function(m){ if(m.matches) setPrintDate(); });
+}
+</script>
