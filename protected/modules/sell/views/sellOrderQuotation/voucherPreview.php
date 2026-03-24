@@ -70,7 +70,7 @@
     .draft-wrap::before {
         content: 'DRAFT';
         position: absolute;
-        top: 68%;
+        top: 50%;
         left: 50%;
         transform: translate(-50%, -50%) rotate(-35deg);
         font-size: 110px;
