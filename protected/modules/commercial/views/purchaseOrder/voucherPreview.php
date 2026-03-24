@@ -88,13 +88,15 @@
             echo "</div>";
 
             $customer = Suppliers::model()->findByPk($data->supplier_id);
+            $logoPath   = Yii::app()->theme->basePath . '/images/logo.svg';
+            $logoInline = is_file($logoPath) ? 'data:image/svg+xml;base64,' . base64_encode(file_get_contents($logoPath)) : Yii::app()->theme->baseUrl . '/images/logo.png';
             ?>
         </div>
         <div class='printAllTableForThisReport' style="width: 100%;">
             <table style="width: 100%; border-collapse: collapse; font-size: 11px;" class="item-list">
                 <tr>
                     <td colspan="3" style="border: 1px solid white;">
-                        <img src="<?= Yii::app()->theme->baseUrl . "/images/logo.png" ?>"
+                        <img src="<?= $logoInline ?>"
                              style="width: 130px; height: 100px; float: left" alt="">
                     </td>
                     <td style="text-align: center; border: 1px solid white;" colspan="3"><h5>PURCHASE ORDER</h5></td>
