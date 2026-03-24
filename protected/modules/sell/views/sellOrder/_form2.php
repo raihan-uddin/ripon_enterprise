@@ -267,19 +267,25 @@ Yii::app()->clientScript->registerCoreScript("jquery.ui");
         transition: background 0.15s ease, box-shadow 0.15s ease;
     }
 
-    /* Focused row */
+    /* Focused row — active editing */
     .item.focused {
-        background: #fffbe6;
+        background: #eaf4ff;
+        outline: 1.5px solid #90c8f0;
+        outline-offset: -1px;
     }
 
-    /* Error state */
+    /* Error state — needs attention */
     .item.error {
-        background: #fff5f5;
+        background: #fff0f0;
+        outline: 1.5px solid #f5a0a0;
+        outline-offset: -1px;
     }
 
-    /* Valid state */
+    /* Valid state — row complete */
     .item.ok {
-        background: #e6f4ea;
+        background: #f0faf2;
+        outline: 1.5px solid #6dbb85;
+        outline-offset: -1px;
     }
 
     /* Inline hint text */
