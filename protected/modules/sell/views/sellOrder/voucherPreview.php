@@ -650,6 +650,9 @@
                                     TK <?= number_format($previous_due_amount, 2) ?>
                                 </td>
                             </tr>
+                        <?php
+                        if ($current_collection > 0) {
+                            ?>
                             <tr style="font-weight: bold;">
                                 <td colspan="2" style="border: none; background: white;"></td>
                                 <td colspan="2" style="border: none;">
@@ -660,6 +663,7 @@
                                 </td>
                             </tr>
                             <?php
+                        }
                             if ($current_return > 0) {
                                 ?>
                                 <tr style="">
@@ -674,6 +678,9 @@
                                 <?php
                             }
                             ?>
+                            <?php
+                            if($current_collection_discount > 0){
+                            ?>
                             <tr>
                                 <td colspan="2" style="border: none; background: white;"></td>
                                 <td colspan="2" style="border: none;">
@@ -684,6 +691,9 @@
                                     )
                                 </td>
                             </tr>
+                                <?php
+                            }
+                                ?>
                             <tr style="font-weight: bold;">
                                 <td colspan="2" style="border: none; background: white;"></td>
                                 <td colspan="2" style="border: none;">
