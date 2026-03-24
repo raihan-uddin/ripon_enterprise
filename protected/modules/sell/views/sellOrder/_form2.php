@@ -80,8 +80,6 @@ Yii::app()->clientScript->registerCoreScript("jquery.ui");
     }
 
     .input-group-custom .input-group-text {
-        height: 28px;
-        line-height: 26px;
         padding: 0 8px;
         white-space: nowrap;
     }
@@ -92,9 +90,6 @@ Yii::app()->clientScript->registerCoreScript("jquery.ui");
        ========================================================= */
 
     #global-bar {
-        position: sticky;
-        top: 0;
-        z-index: 10;
         background: #212529;
         color: #ffffff;
         padding: 6px 12px;
@@ -129,9 +124,6 @@ Yii::app()->clientScript->registerCoreScript("jquery.ui");
         background: #f8f9fa;
         border-bottom: 1px solid #dee2e6;
         padding: 8px 12px;
-        position: sticky;
-        top: 0;
-        z-index: 5;
         transition: box-shadow 0.2s ease, background 0.2s ease;
     }
 
@@ -220,9 +212,6 @@ Yii::app()->clientScript->registerCoreScript("jquery.ui");
        ========================================================= */
 
     .company-sub-header th {
-        position: sticky;
-        top: var(--sub-header-top, 0px);
-        z-index: 15;
         background: #1a2c3d;
         border-bottom: 3px solid #17a2b8;
         border-top: none;
@@ -255,7 +244,6 @@ Yii::app()->clientScript->registerCoreScript("jquery.ui");
 
     /* Inputs inside table cells */
     .table-compact input.form-control {
-        height: 28px;
         padding: 2px 6px;
         font-size: 13px;
     }
@@ -399,7 +387,6 @@ Yii::app()->clientScript->registerCoreScript("jquery.ui");
     .summary-card input {
         font-size: 13px;
         font-weight: 600;
-        height: 32px;
         padding: 4px 8px;
         border-radius: 5px;
         text-align: right;
@@ -469,7 +456,6 @@ Yii::app()->clientScript->registerCoreScript("jquery.ui");
         color: #28a745 !important;
         border: 2px solid #28a745 !important;
         background: #ffffff !important;
-        height: 40px !important;
         letter-spacing: 0.5px;
     }
 
@@ -767,7 +753,7 @@ Yii::app()->clientScript->registerCoreScript("jquery.ui");
             </div>
             <div class="card-body">
                 <div class="row">
-                    <div class="table-responsive" style="max-height:60vh; overflow-y:auto; overflow-x:auto;">
+                    <div class="table-responsive">
                         <div id="global-bar">
                             <div class="global-left">
                                 <b>📊 ALL COMPANIES</b>
@@ -839,7 +825,7 @@ Yii::app()->clientScript->registerCoreScript("jquery.ui");
                                     <!-- Company Header -->
                                     <tr class="company-header"
                                         data-target="company-<?= $groupIndex ?>">
-                                        <td colspan="8" class="p-0" style="position:sticky; top:0; z-index:20; background:#fff;">
+                                        <td colspan="8" class="p-0" style="background:#fff;">
 
                                             <div class="company-bar">
 
@@ -1026,7 +1012,7 @@ Yii::app()->clientScript->registerCoreScript("jquery.ui");
                                                                 'class' => 'form-control text-center input-addition tooltip-input',
                                                                 'placeholder' => '0',
                                                         ]); ?>
-                                                        <div class="input-group-append" style="height: 28px;">
+                                                        <div class="input-group-append">
                                                             <span class="input-group-text">%</span>
                                                         </div>
                                                     </div>
