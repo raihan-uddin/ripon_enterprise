@@ -111,7 +111,7 @@ endforeach;
                     'name'       => 'opening_amount',
                     'header'     => 'Opening',
                     'type'       => 'raw',
-                    'value'      => 'number_format($data->opening_amount, 2)',
+                    'value'      => 'number_format((float)$data->opening_amount, 2)',
                     'htmlOptions' => array('class' => 'text-right', 'style' => 'width:100px;'),
                 ),
                 array(
