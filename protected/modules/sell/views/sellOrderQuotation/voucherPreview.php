@@ -64,11 +64,10 @@
     .page-break-div { page-break-after: always !important; }
 
     /* ── DRAFT watermark ── */
-    .draft-wrap {
-        position: relative;
-    }
-    .draft-wrap::before {
-        content: 'DRAFT';
+    .draft-wrap { position: relative; }
+    .draft-wrap > * { position: relative; z-index: 1; }
+
+    .draft-watermark {
         position: absolute;
         top: 50%;
         left: 50%;
@@ -80,8 +79,17 @@
         pointer-events: none;
         z-index: 0;
         white-space: nowrap;
+        user-select: none;
     }
-    .draft-wrap > * { position: relative; z-index: 1; }
+
+    @media print {
+        .draft-watermark {
+            position: fixed;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%) rotate(-35deg);
+        }
+    }
 
     /* ── DRAFT badge in meta table ── */
     .draft-badge {
@@ -235,6 +243,7 @@
                     $customer = Customers::model()->findByPk($item->customer_id);
                     ?>
                     <div style="width: 100%;" class="draft-wrap">
+                        <div class="draft-watermark">DRAFT</div>
                         <?php
                         if (isset($preview_type) && $preview_type == SellOrder::NORMAL_PAD_PRINT) {
                             $this->renderPartial('application.modules.sell.views.sellOrderQuotation.pad_header');
