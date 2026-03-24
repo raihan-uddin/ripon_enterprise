@@ -54,7 +54,7 @@
 
     /* ── DRAFT watermark ── */
     @page {
-        @bottom-center {
+        @bottom-right {
             content: "Page " counter(page) " of " counter(pages);
             font-size: 10px;
             color: #555;
@@ -62,6 +62,19 @@
         }
     }
     .print-page-footer { display: none; }
+    @media print {
+        .print-date-stamp {
+            position: fixed;
+            bottom: 4mm;
+            left: 0;
+            font-size: 10px;
+            color: #555;
+            font-family: Arial, sans-serif;
+        }
+    }
+    @media screen {
+        .print-date-stamp { display: none; }
+    }
 
     .draft-wrap { position: relative; }
     .draft-wrap > * { position: relative; z-index: 1; }
@@ -236,6 +249,7 @@
     </div>
     <div class="card-body">
         <div class="print-page-footer"></div>
+        <div class="print-date-stamp">Printed: <?= date('d M Y  H:i') ?></div>
         <div class="printAllTableForThisReport">
             <?php
             foreach ($data as $item) {
