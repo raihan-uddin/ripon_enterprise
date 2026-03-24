@@ -3,7 +3,25 @@
 <style>
     @page {
         size: A5 landscape;
-        margin: 5mm 7mm;
+        margin: 5mm 7mm 10mm;
+        @bottom-left {
+            content: "<?= date('d M Y  h:i A') ?>";
+            font-size: 9px;
+            color: #888;
+            font-family: Arial, sans-serif;
+        }
+        @bottom-center {
+            content: "Developed by: raihan-uddin.github.io";
+            font-size: 9px;
+            color: #aaa;
+            font-family: Arial, sans-serif;
+        }
+        @bottom-right {
+            content: "Page " counter(page) " of " counter(pages);
+            font-size: 9px;
+            color: #888;
+            font-family: Arial, sans-serif;
+        }
     }
 
     @media print {
