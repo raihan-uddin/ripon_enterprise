@@ -449,11 +449,11 @@
             <div class="pr-footer">
                 <div class="pr-footer-cell">
                     <div class="pr-sig-space"></div>
-                    <div class="pr-sig-line">Prepared By</div>
+                    <div class="pr-sig-line">Received By</div>
                 </div>
                 <div class="pr-footer-cell">
                     <div class="pr-sig-space"></div>
-                    <div class="pr-sig-line">Approved By</div>
+                    <div class="pr-sig-line">Checked By</div>
                 </div>
                 <div class="pr-footer-cell">
                     <div class="pr-sig-space"></div>
