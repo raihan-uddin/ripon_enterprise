@@ -269,7 +269,7 @@ Yii::app()->clientScript->registerCoreScript("jquery.ui");
 
     /* Focused row */
     .item.focused {
-        background: #f0fbff;
+        background: #fffbe6;
     }
 
     /* Error state */
@@ -279,8 +279,7 @@ Yii::app()->clientScript->registerCoreScript("jquery.ui");
 
     /* Valid state */
     .item.ok {
-        background: #c8f0ce;
-        color: #ffffff !important;
+        background: #e6f4ea;
     }
 
     /* Inline hint text */
