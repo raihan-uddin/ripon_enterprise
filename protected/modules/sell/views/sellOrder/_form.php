@@ -75,8 +75,6 @@ Yii::app()->clientScript->registerCoreScript("jquery.ui");
     }
 
     .input-group-custom .input-group-text {
-        height: 28px;
-        line-height: 26px;
         padding: 0 8px;
         white-space: nowrap;
     }
@@ -241,7 +239,6 @@ Yii::app()->clientScript->registerCoreScript("jquery.ui");
 
     /* Inputs inside table cells */
     .table-compact input.form-control {
-        height: 28px;
         padding: 2px 6px;
         font-size: 13px;
     }
@@ -385,7 +382,6 @@ Yii::app()->clientScript->registerCoreScript("jquery.ui");
     .summary-card input {
         font-size: 13px;
         font-weight: 600;
-        height: 32px;
         padding: 4px 8px;
         border-radius: 5px;
         text-align: right;
@@ -455,7 +451,6 @@ Yii::app()->clientScript->registerCoreScript("jquery.ui");
         color: #28a745 !important;
         border: 2px solid #28a745 !important;
         background: #ffffff !important;
-        height: 40px !important;
         letter-spacing: 0.5px;
     }
 
@@ -816,7 +811,7 @@ Yii::app()->clientScript->registerCoreScript("jquery.ui");
             </div>
             <div class="card-body">
                 <div class="row">
-                    <div class="table-responsive" style="max-height:60vh; overflow-y:auto; overflow-x:auto;">
+                    <div class="table-responsive">
                         <div id="global-bar">
                             <div class="global-left">
                                 <b>📊 ALL COMPANIES</b>
@@ -1051,7 +1046,7 @@ Yii::app()->clientScript->registerCoreScript("jquery.ui");
                                                                 'placeholder' => '0',
                                                                 'value' => '0'
                                                         ]); ?>
-                                                        <div class="input-group-append" style="height: 28px;">
+                                                        <div class="input-group-append">
                                                             <span class="input-group-text">%</span>
                                                         </div>
                                                     </div>
