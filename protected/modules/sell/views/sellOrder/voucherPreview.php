@@ -724,33 +724,13 @@
                         </tbody>
                     </table>
 
-                    <div style="width: 100%; float: left; clear: right; height: 150px; font-size: 12px; margin-top: 20px;">
-                        <div style="height: 30px; text-align: left; width: 100%; float: left; clear: right;">
-                            By signing this document, the customer agrees to he services and conditions
-                            described in this document.
-                        </div>
-                        <br>
-                        <div style="width: 100%; float: left; clear:right;">
-
-                            <div style="width: 50%; float: left;clear:right; text-decoration: overline; margin: auto; display: flex;  justify-content: center;  align-items: center;">
-                                <span style="text-decoration: underline; font-weight: bold;"><?= strtoupper(Yii::app()->params['company']['name']) ?></span>
+                    <div style="width: 100%; font-size: 12px; margin-top: 16px; page-break-inside: avoid;">
+                        <div style="display: table; width: 100%; margin-top: 36px;">
+                            <div style="display: table-cell; width: 50%; text-align: center; padding-top: 4px; border-top: 1.5px solid #555; font-size: 10px; font-weight: 700; text-transform: uppercase; letter-spacing: 0.5px; color: #444;">
+                                <?= strtoupper(Yii::app()->params['company']['name']) ?>
                             </div>
-                            <div style="width: 50%; float: left;clear:right; text-decoration: overline; margin: auto; display: flex;  justify-content: center;  align-items: center;">
-                                <span style="text-decoration: underline; font-weight: bold;"><?= $customer_name ?></span>
-                            </div>
-                        </div>
-                        <div style="height: 50px; width: 100%; float: left; clear: right; margin-top: 40px;">
-                            <div style="width: 50%; float: left; clear: right; margin: auto; display: flex; flex-direction: column; justify-content: center; align-items: center;">
-                                <div style="font-weight: bold; text-transform: uppercase;">
-                                    &nbsp;
-                                </div>
-                                <div style="text-decoration: overline;"><?= date('F d, Y') ?></div>
-                            </div>
-
-                            <div style="width: 50%; float: left;clear:right; text-decoration: overline; margin: auto; display: flex;  justify-content: center;  align-items: center;">
-                                <div>(&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;/&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;/&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
-                                    )
-                                </div>
+                            <div style="display: table-cell; width: 50%; text-align: center; padding-top: 4px; border-top: 1.5px solid #555; font-size: 10px; font-weight: 700; text-transform: uppercase; letter-spacing: 0.5px; color: #444;">
+                                <?= $customer_name ?> &amp; Date
                             </div>
                         </div>
                     </div>
