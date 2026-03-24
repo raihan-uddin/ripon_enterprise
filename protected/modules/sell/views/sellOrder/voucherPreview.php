@@ -430,12 +430,13 @@
                                 <div>In Words: <i>BDT
                                         <?php
                                         $amountInWord = new AmountInWord();
-                                        $inword = $amountInWord->convert(intval($row_total));
-                                        if ($amountInWord->convertFloat($row_total)) {
-                                            $inword .= $amountInWord->convertFloat($row_total) . ' Taka Only';
-                                        } else {
-                                            $inword .= ' Only';
+                                        $grandTotal   = $item->grand_total;
+                                        $inword       = $amountInWord->convert(intval($grandTotal)) . ' Taka';
+                                        $paisaPart    = $amountInWord->convertFloat($grandTotal);
+                                        if ($paisaPart) {
+                                            $inword .= ' and ' . $paisaPart . ' Paisa';
                                         }
+                                        $inword .= ' Only';
                                         echo $inword;
                                         ?>
                                     </i>
