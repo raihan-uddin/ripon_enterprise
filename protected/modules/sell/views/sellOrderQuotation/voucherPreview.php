@@ -321,7 +321,7 @@
 
                         ?>
                         <tr>
-                            <td rowspan="6" colspan="2"
+                            <td rowspan="7" colspan="2"
                                 style="border: none; background: white; text-align: left; letter-spacing: 1px; font-weight: bold;">
                                 <div>In Words: <i>BDT
                                     <?php
@@ -346,11 +346,15 @@
                             <td style="border: none;"></td>
                         </tr>
                         <tr>
-                            <td colspan="2" style="border: none; background: white; text-align: right; padding-right: 8px;">S.R Commission (+)</td>
+                            <td colspan="2" style="border: none; background: white; text-align: right; padding-right: 8px;">S.R Commission (-)</td>
                             <td style="border: none;"></td>
                         </tr>
                         <tr>
                             <td colspan="2" style="border: none; background: white; text-align: right; padding-right: 8px;">Discount (-)</td>
+                            <td style="border: none;"></td>
+                        </tr>
+                        <tr>
+                            <td colspan="2" style="border: none; background: white; text-align: right; padding-right: 8px;">Damage (-)</td>
                             <td style="border: none;"></td>
                         </tr>
                         <tr style="font-weight: bold;">
