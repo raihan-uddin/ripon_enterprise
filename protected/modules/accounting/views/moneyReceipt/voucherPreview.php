@@ -74,8 +74,9 @@
     }
 
     .header-left img {
-        max-height: 100%;
-        width: auto;
+        height: 120px;
+        max-width: 220px;
+        object-fit: contain;
     }
 
     .header-center {
@@ -157,11 +158,20 @@
                     <tr>
                         <td>
 
+                            <?php
+                            $mrLogoPath   = Yii::app()->theme->basePath . '/images/logo.svg';
+                            $mrLogoInline = '';
+                            if (is_file($mrLogoPath)) {
+                                $mrLogoInline = 'data:image/svg+xml;base64,' . base64_encode(file_get_contents($mrLogoPath));
+                            }
+                            ?>
                             <div class="invoice-header-wrapper">
                                 <div class="header-left">
-                                    <img
-                                            style="width: 250px;"
-                                            src="<?= Yii::app()->theme->baseUrl ?>/images/voucher-logo.png" alt="Logo">
+                                    <?php if ($mrLogoInline): ?>
+                                        <img src="<?= $mrLogoInline ?>" alt="Logo">
+                                    <?php else: ?>
+                                        <img src="<?= Yii::app()->theme->baseUrl ?>/images/voucher-logo.png" alt="Logo">
+                                    <?php endif; ?>
                                 </div>
 
                                 <div class="header-center">
