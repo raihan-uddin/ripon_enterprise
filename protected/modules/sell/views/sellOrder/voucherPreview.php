@@ -9,7 +9,7 @@
     @media print {
         @page {
             size: A5;
-            margin: 5mm 5mm 5mm 5mm;
+            margin: 1mm 3mm 12mm 3mm;
         }
 
         * {
@@ -34,6 +34,9 @@
         .page-break-div {
             page-break-after: always !important;
         }
+
+        .card-header { display: none !important; }
+        .card, .card-body { padding: 0 !important; margin: 0 !important; border: none !important; box-shadow: none !important; }
     }
 
 
@@ -214,6 +217,67 @@
     .invoice-meta-table tr:last-child td {
         border-bottom: none;
     }
+
+    /* ── PO-style header ── */
+    .so-header-wrapper {
+        border-bottom: 3px solid #333;
+        margin-bottom: 2px;
+        padding-bottom: 0px;
+    }
+    .so-header-inner {
+        display: table;
+        width: 100%;
+        table-layout: fixed;
+    }
+    .so-header-logo,
+    .so-header-company,
+    .so-header-barcode {
+        display: table-cell;
+        vertical-align: middle;
+    }
+    .so-header-logo { width: 20%; }
+    .so-header-logo img {
+        display: block;
+        width: 100%;
+        height: auto;
+        object-fit: contain;
+    }
+    .so-header-company {
+        width: 60%;
+        text-align: center;
+        font-weight: bold;
+    }
+    .so-header-company .co-name {
+        font-size: 18px;
+        font-weight: 700;
+        color: #111;
+        letter-spacing: 0.5px;
+    }
+    .so-header-company .co-detail {
+        font-size: 10px;
+        color: #444;
+        line-height: 1.8;
+        margin-top: 3px;
+    }
+    .so-header-barcode {
+        width: 20%;
+        text-align: right;
+        overflow: hidden;
+    }
+    .so-header-barcode svg { display: block; margin-left: auto; }
+
+    /* ── Title banner ── */
+    .so-title-banner {
+        background: #222;
+        color: #fff;
+        text-align: center;
+        padding: 4px 0;
+        font-size: 11px;
+        font-weight: 700;
+        letter-spacing: 6px;
+        text-transform: uppercase;
+        margin-bottom: 8px;
+    }
 </style>
 
 <div class="card card-primary  table-responsive">
@@ -253,7 +317,17 @@
         <div class="print-date-stamp" id="print-date-stamp"></div>
         <div class="printAllTableForThisReport">
             <?php
-            foreach ($data as $item) {
+            $logoPath   = Yii::app()->theme->basePath . '/images/logo.svg';
+            $logoInline = is_file($logoPath)
+                ? 'data:image/svg+xml;base64,' . base64_encode(file_get_contents($logoPath))
+                : Yii::app()->theme->baseUrl . '/images/logo.png';
+            require_once(Yii::app()->basePath . '/vendors/html2pdf/_tcpdf_5.0.002/barcodes.php');
+
+            $dataItems = is_array($data) ? $data : iterator_to_array($data);
+            $totalItems = count($dataItems);
+            $itemIndex  = 0;
+            foreach ($dataItems as $item) {
+                $itemIndex++;
                 $showProfitLossSummary = isset($show_profit) ? $show_profit : false;
                 $footerRowSpan = 9;
                 $footerColspan = 5;
@@ -265,18 +339,59 @@
                     ?>
                     <div style="width: 100%;">
                         <?php
-                        if (isset($preview_type) && $preview_type == SellOrder::NORMAL_PAD_PRINT) {
-                            $this->renderPartial('application.modules.sell.views.sellOrder.pad_header');
-                        } else {
-                            $this->renderPartial('application.modules.sell.views.sellOrder.without_pad_header', ['id' => $item->id, 'so_no' => $item->so_no]);
-                        }
+                        // Barcode for this order
+                        $bcSvg = '';
+                        try {
+                            $bc    = new TCPDFBarcode($item->so_no, 'C128B');
+                            $bcArr = $bc->getBarcodeArray();
+                            $barW  = 1.0; $barH = 36; $pad = 3; $textH = 14;
+                            $svgW  = round($bcArr['maxw'] * $barW) + $pad * 2;
+                            $svgH  = $barH + $pad + $textH;
+                            $textY = $barH + $pad + 11;
+                            $x     = $pad; $rects = '';
+                            foreach ($bcArr['bcode'] as $bar) {
+                                $bw = $bar['w'] * $barW;
+                                if ($bar['t']) $rects .= '<rect x="'.$x.'" y="0" width="'.$bw.'" height="'.$barH.'" fill="#000"/>';
+                                $x += $bw;
+                            }
+                            $bcSvg = '<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 '.$svgW.' '.$svgH.'" width="100%" style="display:block; max-width:'.$svgW.'px;">'
+                                   . $rects
+                                   . '<text x="'.($svgW/2).'" y="'.$textY.'" text-anchor="middle" font-size="10" font-family="monospace" fill="#000">'.htmlspecialchars($item->so_no).'</text>'
+                                   . '</svg>';
+                        } catch (Exception $e) {}
                         ?>
+                        <!-- PO-style header -->
+                        <div class="so-header-wrapper">
+                            <div class="so-header-inner">
+                                <div class="so-header-logo">
+                                    <img src="<?= $logoInline ?>" alt="Logo">
+                                </div>
+                                <div class="so-header-company">
+                                    <div class="co-name"><?= CHtml::encode(strtoupper(Yii::app()->params['company']['name'])) ?></div>
+                                    <div class="co-detail">
+                                        <?= CHtml::encode(Yii::app()->params['company']['address_line_1']) ?>
+                                        <?php if (!empty(Yii::app()->params['company']['address_line_2'])): ?>
+                                            &nbsp;&middot;&nbsp;<?= CHtml::encode(Yii::app()->params['company']['address_line_2']) ?>
+                                        <?php endif; ?>
+                                        <br>
+                                        অফিস: <?= CHtml::encode(Yii::app()->params['company']['phone_1']) ?>
+                                        <?php if (!empty(Yii::app()->params['company']['phone_2'])): ?>
+                                            &nbsp;&middot;&nbsp;<?= CHtml::encode(Yii::app()->params['company']['invoice_contact_person']) ?>: <?= CHtml::encode(Yii::app()->params['company']['phone_2']) ?>
+                                        <?php endif; ?>
+                                    </div>
+                                </div>
+                                <div class="so-header-barcode">
+                                    <?= $bcSvg ?>
+                                </div>
+                            </div>
+                        </div>
+                        <!-- Title banner -->
+                        <div class="so-title-banner">Sales Order</div>
                         <!-- customer & invoice info -->
                         <?php $customer_name = $customer ? $customer->company_name : 'N/A'; ?>
                         <table class="invoice-info-block">
                             <tr>
                                 <td class="invoice-bill-to">
-                                    <div class="section-label">Bill To</div>
                                     <?php if ($customer): ?>
                                         <div class="customer-name"><?= htmlspecialchars($customer->company_name) ?></div>
                                         <div class="customer-detail">
@@ -306,8 +421,8 @@
                                 <td class="invoice-meta">
                                     <table class="invoice-meta-table">
                                         <tr>
-                                            <td>Invoice No / ID</td>
-                                            <td>#<?= htmlspecialchars($item->so_no) ?> &nbsp;<span style="color:#aaa;">|</span>&nbsp; #<?= $item->id ?></td>
+                                            <td>Invoice No</td>
+                                            <td>#<?= htmlspecialchars($item->so_no) ?></td>
                                         </tr>
                                         <tr>
                                             <td>Date</td>
@@ -640,7 +755,9 @@
                         </div>
                     </div>
 
+                    <?php if ($itemIndex < $totalItems): ?>
                     <div class="page-break-div"></div>
+                    <?php endif; ?>
 
                     <script>
                         <?php
