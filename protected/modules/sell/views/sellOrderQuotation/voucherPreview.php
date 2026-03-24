@@ -63,6 +63,42 @@
 
     .page-break-div { page-break-after: always !important; }
 
+    /* ── DRAFT watermark ── */
+    .draft-wrap {
+        position: relative;
+    }
+    .draft-wrap::before {
+        content: 'DRAFT';
+        position: absolute;
+        top: 40%;
+        left: 50%;
+        transform: translate(-50%, -50%) rotate(-35deg);
+        font-size: 100px;
+        font-weight: 900;
+        color: rgba(0, 0, 0, 0.06);
+        letter-spacing: 12px;
+        pointer-events: none;
+        z-index: 0;
+        white-space: nowrap;
+    }
+    .draft-wrap > * { position: relative; z-index: 1; }
+
+    /* ── DRAFT badge in meta table ── */
+    .draft-badge {
+        display: inline-block;
+        background: #fff3cd;
+        border: 1.5px solid #ffc107;
+        color: #856404;
+        font-size: 10px;
+        font-weight: 700;
+        padding: 1px 8px;
+        border-radius: 3px;
+        letter-spacing: 1.5px;
+        text-transform: uppercase;
+        vertical-align: middle;
+        margin-left: 6px;
+    }
+
     /* ── Invoice info block ── */
     .invoice-info-block {
         width: 100%;
@@ -198,7 +234,7 @@
                 if ($item) {
                     $customer = Customers::model()->findByPk($item->customer_id);
                     ?>
-                    <div style="width: 100%;">
+                    <div style="width: 100%;" class="draft-wrap">
                         <?php
                         if (isset($preview_type) && $preview_type == SellOrder::NORMAL_PAD_PRINT) {
                             $this->renderPartial('application.modules.sell.views.sellOrderQuotation.pad_header');
@@ -242,7 +278,7 @@
                                     <table class="invoice-meta-table">
                                         <tr>
                                             <td>Draft No / ID</td>
-                                            <td>#<?= htmlspecialchars($item->so_no) ?> &nbsp;<span style="color:#aaa;">|</span>&nbsp; #<?= $item->id ?></td>
+                                            <td>#<?= htmlspecialchars($item->so_no) ?> &nbsp;<span style="color:#aaa;">|</span>&nbsp; #<?= $item->id ?> <span class="draft-badge">Draft</span></td>
                                         </tr>
                                         <tr>
                                             <td>Date</td>
