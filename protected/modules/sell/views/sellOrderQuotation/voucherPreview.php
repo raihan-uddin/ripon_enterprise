@@ -53,6 +53,26 @@
     .page-break-div { page-break-after: always !important; }
 
     /* ── DRAFT watermark ── */
+    @media print {
+        .print-page-footer {
+            position: fixed;
+            bottom: 0;
+            left: 0;
+            width: 100%;
+            text-align: center;
+            font-size: 10px;
+            color: #555;
+            padding: 3px 0;
+            border-top: 1px solid #ccc;
+        }
+        .print-page-footer::after {
+            content: "Page " counter(page) " of " counter(pages);
+        }
+    }
+    @media screen {
+        .print-page-footer { display: none; }
+    }
+
     .draft-wrap { position: relative; }
     .draft-wrap > * { position: relative; z-index: 1; }
 
@@ -225,6 +245,7 @@
         </div>
     </div>
     <div class="card-body">
+        <div class="print-page-footer"></div>
         <div class="printAllTableForThisReport">
             <?php
             foreach ($data as $item) {

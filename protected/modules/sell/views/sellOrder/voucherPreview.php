@@ -45,6 +45,26 @@
     }
 
 
+    @media print {
+        .print-page-footer {
+            position: fixed;
+            bottom: 0;
+            left: 0;
+            width: 100%;
+            text-align: center;
+            font-size: 10px;
+            color: #555;
+            padding: 3px 0;
+            border-top: 1px solid #ccc;
+        }
+        .print-page-footer::after {
+            content: "Page " counter(page) " of " counter(pages);
+        }
+    }
+    @media screen {
+        .print-page-footer { display: none; }
+    }
+
     .item-list tbody th,
     .item-list tbody td {
         border: 1px solid black;
@@ -226,6 +246,7 @@
         </div>
     </div>
     <div class="card-body">
+        <div class="print-page-footer"></div>
         <div class="printAllTableForThisReport">
             <?php
             foreach ($data as $item) {
