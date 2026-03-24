@@ -287,6 +287,17 @@ $this->widget('application.components.BreadCrumb', array(
         font-weight: 600;
         font-size: 13px;
     }
+
+    /* ── Date subtotal row ── */
+    td.extrarow {
+        background: #f0f4f8;
+        border-top: 1px dashed #b0c4d8;
+        border-bottom: 2px solid #2c3e50;
+        padding: 5px 12px;
+    }
+    .dst-wrap    { display:flex; align-items:center; gap:0; flex-wrap:wrap; font-size:12px; }
+    .dst-orders  { background:#1a2c3d; color:#fff; font-size:10px; font-weight:700; padding:2px 8px; border-radius:10px; margin-right:8px; }
+    .dst-total   { background:#e6f9ee; color:#1a7a40; font-weight:700; font-size:12px; padding:2px 10px; border-radius:8px; border:1px solid #a8d5b5; margin-left:4px; }
 </style>
 
 <?php
@@ -389,15 +400,40 @@ endforeach;
         </div>
     </div>
     <div class="card-body">
+        <?php
+        $dataProvider = $model->search();
+        $pageRows = $dataProvider->getData();
+        $pageTotals = array('grand_total' => 0);
+        $dateSubtotals = array();
+        foreach ($pageRows as $_r) {
+            $pageTotals['grand_total'] += (float)$_r->grand_total;
+            $_d = $_r->date;
+            if (!isset($dateSubtotals[$_d])) {
+                $dateSubtotals[$_d] = array('count' => 0, 'grand_total' => 0);
+            }
+            $dateSubtotals[$_d]['count']++;
+            $dateSubtotals[$_d]['grand_total'] += (float)$_r->grand_total;
+        }
+        ?>
         <?php $this->widget('ext.groupgridview.GroupGridView', array(
                 'id' => 'sell-order-grid',
-                'dataProvider' => $model->search(),
+                'dataProvider' => $dataProvider,
                 'filter' => $model,
                 'cssFile' => Yii::app()->theme->baseUrl . '/css/gridview/styles.css',
                 'htmlOptions' => array('class' => 'table-responsive grid-view'),
                 'itemsCssClass' => 'table table-sm table-hover table-striped table-condensed table-bordered dataTable dtr-inline',
-                'mergeColumns' => array('date', 'supplier_id'),
-                'mergeType' => 'nested',
+                'mergeColumns'       => array('date', 'supplier_id'),
+                'mergeType'          => 'nested',
+                'extraRowColumns'    => array('date'),
+                'extraRowPos'        => 'below',
+                'extraRowExpression' => function($data, $row, $totals, $grid) use ($dateSubtotals) {
+                    $d = $data->date;
+                    $t = isset($dateSubtotals[$d]) ? $dateSubtotals[$d] : array('count' => 0, 'grand_total' => 0);
+                    return '<div class="dst-wrap">'
+                        . '<span class="dst-orders">' . $t['count'] . ' order' . ($t['count'] != 1 ? 's' : '') . '</span>'
+                        . '<span class="dst-total"><i class="fa fa-calculator" style="margin-right:4px;"></i>' . number_format($t['grand_total'], 2) . '</span>'
+                        . '</div>';
+                },
                 'pager' => array(
                     'class'          => 'CLinkPager',
                     'cssFile'        => false,
@@ -425,47 +461,60 @@ endforeach;
                 'pagerCssClass'   => 'col-xs-12 text-right',
                 'columns' => array(
                         array(
-                                'name' => 'id',
-                                'htmlOptions' => [
-                                        'class' => 'text-center',
-                                        'style' => 'width: 80px;'
-                                ]
-                        ),
-
-                        array(
-                                'name' => 'cash_due',
-                                'type' => 'raw',
-                                'value' => ' Lookup::item("cash_due", $data->cash_due)',
-                                'filter' => Lookup::items('cash_due'),
-                                'htmlOptions' => ['class' => 'text-center']
+                                'name'              => 'id',
+                                'footer'            => '',
+                                'htmlOptions'       => ['class' => 'text-center', 'style' => 'width:80px;'],
                         ),
                         array(
-                                'name' => 'date',
-                                'htmlOptions' => ['class' => 'text-center']
-                        ),
-
-                        array(
-                                'name' => 'supplier_id',
-                                'value' => 'Suppliers::model()->nameOfThis($data->supplier_id)',
-                                'htmlOptions' => ['class' => 'text-center']
+                                'name'              => 'cash_due',
+                                'type'              => 'raw',
+                                'value'             => 'Lookup::item("cash_due", $data->cash_due)',
+                                'filter'            => Lookup::items('cash_due'),
+                                'footer'            => '',
+                                'htmlOptions'       => ['class' => 'text-center'],
                         ),
                         array(
-                                'name' => 'po_no',
-                                'htmlOptions' => ['class' => 'text-center']
+                                'name'              => 'date',
+                                'footer'            => '<span class="grid-footer-label">Page Total</span>',
+                                'footerHtmlOptions' => ['class' => 'text-right grid-footer-label-cell'],
+                                'htmlOptions'       => ['class' => 'text-center', 'style' => 'width:100px;'],
                         ),
                         array(
-                                'name' => 'grand_total',
-                                'htmlOptions' => ['class' => 'text-center']
-                        ),
-
-                        array(
-                                'name' => 'created_by',
-                                'value' => 'Users::model()->nameOfThis($data->created_by)',
-                                'htmlOptions' => ['class' => 'text-center']
+                                'name'              => 'supplier_id',
+                                'value'             => 'Suppliers::model()->nameOfThis($data->supplier_id)',
+                                'footer'            => '',
+                                'htmlOptions'       => ['class' => 'text-left'],
                         ),
                         array(
-                                'name' => 'created_at',
-                                'htmlOptions' => ['class' => 'text-center']
+                                'name'              => 'po_no',
+                                'footer'            => '',
+                                'htmlOptions'       => ['class' => 'text-center'],
+                        ),
+                        array(
+                                'name'              => 'grand_total',
+                                'header'            => 'Total',
+                                'headerHtmlOptions' => ['title' => 'Grand Total', 'style' => 'cursor:help;'],
+                                'footer'            => number_format($pageTotals['grand_total'], 2),
+                                'footerHtmlOptions' => ['class' => 'text-right grid-footer-grand'],
+                                'type'              => 'raw',
+                                'value'             => 'CHtml::tag("span", ["class"=>"grand-cell"], number_format($data->grand_total, 2))',
+                                'htmlOptions'       => ['class' => 'text-right', 'style' => 'width:95px;'],
+                        ),
+                        array(
+                                'name'              => 'created_by',
+                                'header'            => 'By',
+                                'headerHtmlOptions' => ['title' => 'Created By', 'style' => 'cursor:help;'],
+                                'footer'            => '',
+                                'value'             => 'CHtml::tag("span", ["class"=>"badge badge-info text-capitalize"], Users::model()->nameOfThis($data->created_by))',
+                                'type'              => 'raw',
+                                'htmlOptions'       => ['class' => 'text-center', 'style' => 'width:100px;'],
+                        ),
+                        array(
+                                'name'              => 'created_at',
+                                'header'            => 'At',
+                                'headerHtmlOptions' => ['title' => 'Created At', 'style' => 'cursor:help;'],
+                                'footer'            => '',
+                                'htmlOptions'       => ['class' => 'text-center', 'style' => 'width:130px;'],
                         ),
                         array
                         (
