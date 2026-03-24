@@ -250,7 +250,7 @@
         font-size: 13px;
         color: #444;
         line-height: 1.5;
-        margin-top: 3px;
+        margin-top: 0;
     }
     .so-header-barcode {
         width: 20%;
