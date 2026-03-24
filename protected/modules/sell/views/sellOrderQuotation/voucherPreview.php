@@ -70,12 +70,12 @@
     .draft-wrap::before {
         content: 'DRAFT';
         position: absolute;
-        top: 40%;
+        top: 68%;
         left: 50%;
         transform: translate(-50%, -50%) rotate(-35deg);
-        font-size: 100px;
+        font-size: 110px;
         font-weight: 900;
-        color: rgba(0, 0, 0, 0.06);
+        color: rgba(0, 0, 0, 0.07);
         letter-spacing: 12px;
         pointer-events: none;
         z-index: 0;

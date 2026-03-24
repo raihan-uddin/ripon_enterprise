@@ -65,15 +65,15 @@
             vertical-align: middle;
         }
 
-        .invoice-header-logo { width: 25%; }
+        .invoice-header-logo { width: 20%; }
 
         .invoice-header-company {
-            width: 55%;
+            width: 60%;
             text-align: center;
         }
 
         .invoice-header-barcode {
-            width: 25%;
+            width: 20%;
             text-align: right;
             max-width: none;
             overflow: visible;
@@ -127,8 +127,8 @@ if (is_file($logoPath)) {
         <div class="invoice-header-barcode">
             <?php
             require_once(Yii::app()->basePath . '/vendors/html2pdf/_tcpdf_5.0.002/barcodes.php');
-            $barW  = 1.5;
-            $barH  = 45;
+            $barW  = 1.0;
+            $barH  = 38;
             $pad   = 4;
             $textH = 16;
             try {
