@@ -28,11 +28,40 @@
     }
 
 
-    .final-result .sticky {
-        position: sticky;
-        position: -webkit-sticky;
-        top: 0;
-        background: white;
+    .final-result thead tr.titlesTr th {
+        background: #1a2c3d !important;
+        color: #ffffff !important;
+        font-size: 11px;
+        font-weight: 700;
+        text-transform: uppercase;
+        letter-spacing: 0.8px;
+        border: 1px solid #243d54;
+        border-bottom: 3px solid #17a2b8;
+        text-align: center;
+        padding: 7px 6px;
+        white-space: nowrap;
+    }
+
+    #sticky-header-clone-cdr {
+        display: none;
+        position: fixed;
+        z-index: 1000;
+        background: #1a2c3d;
+        border-collapse: collapse;
+    }
+
+    #sticky-header-clone-cdr th {
+        background: #1a2c3d !important;
+        color: #ffffff !important;
+        font-size: 11px;
+        font-weight: 700;
+        text-transform: uppercase;
+        letter-spacing: 0.8px;
+        border: 1px solid #243d54;
+        border-bottom: 3px solid #17a2b8;
+        text-align: center;
+        padding: 7px 6px;
+        white-space: nowrap;
     }
 
     .final-result tbody tr:hover {
@@ -101,9 +130,10 @@ echo "</div>";
 </div>
 
 
-<div class='printAllTableForThisReport table-responsive p-0"'>
+<div class='printAllTableForThisReport'>
+<div class="stock-table-wrapper" style="overflow-x: auto;">
     <table class="summaryTab final-result table2excel table2excel_with_colors table table-bordered table-sm"
-           id="table-1">
+           id="table-cdr">
         <thead>
         <tr>
             <td colspan="12" style="font-size:16px; font-weight:bold; text-align:center">
@@ -116,19 +146,19 @@ echo "</div>";
                 </div>
             </td>
         </tr>
-        <tr class="titlesTr sticky">
-            <th style="width: 2%; box-shadow: 0px 0px 0px 1px black inset;">SL</th>
-            <th style="width: 5%; box-shadow: 0px 0px 0px 1px black inset;">Customer ID</th>
-            <th style="width: 15%; box-shadow: 0px 0px 0px 1px black inset;">Name</th>
-            <th style="width: 10%; box-shadow: 0px 0px 0px 1px black inset;">Phone</th>
-            <th style="width: 5%; box-shadow: 0px 0px 0px 1px black inset;">Last Activity Date</th>
-            <th style="width: 5%; box-shadow: 0px 0px 0px 1px black inset;">Aging (Days)</th>
-            <th style="width: 10%;box-shadow: 0px 0px 0px 1px black inset;">Sale</th>
-            <th style="width: 10%;box-shadow: 0px 0px 0px 1px black inset;">Return</th>
-            <th style="width: 10%;box-shadow: 0px 0px 0px 1px black inset;">Collection</th>
-            <th style="width: 10%;box-shadow: 0px 0px 0px 1px black inset;">Due</th>
-            <th style="width: 5%; box-shadow: 0px 0px 0px 1px black inset;">Status</th>
-            <th style="width: 5%; box-shadow: 0px 0px 0px 1px black inset;">Payment Ratio</th>
+        <tr class="titlesTr">
+            <th style="width: 2%;">SL</th>
+            <th style="width: 5%;">Customer ID</th>
+            <th style="width: 15%;">Name</th>
+            <th style="width: 10%;">Phone</th>
+            <th style="width: 5%;">Last Activity Date</th>
+            <th style="width: 5%;">Aging (Days)</th>
+            <th style="width: 10%;">Sale</th>
+            <th style="width: 10%;">Return</th>
+            <th style="width: 10%;">Collection</th>
+            <th style="width: 10%;">Due</th>
+            <th style="width: 5%;">Status</th>
+            <th style="width: 5%;">Payment Ratio</th>
         </tr>
         </thead>
         <tbody>
@@ -209,6 +239,7 @@ echo "</div>";
         ?>
         </tbody>
     </table>
+</div>
 </div>
 
 <style>
@@ -299,6 +330,46 @@ echo "</div>";
 
     });
 
+    // JS sticky header
+    (function () {
+        var $table   = $('#table-cdr');
+        var $origRow = $table.find('thead tr.titlesTr');
+        var $clone   = null;
+
+        function buildClone() {
+            var $c = $('<table id="sticky-header-clone-cdr"><thead><tr></tr></thead></table>');
+            $origRow.find('th').each(function () {
+                var w = $(this).outerWidth();
+                $c.find('tr').append(
+                    $('<th>').text($(this).text()).css('width', w + 'px').css('min-width', w + 'px')
+                );
+            });
+            $c.css('width', $table.outerWidth() + 'px');
+            $('body').append($c);
+            $clone = $c;
+        }
+
+        function updateClonePosition() {
+            if (!$clone) return;
+            var left = $table.offset().left - $(window).scrollLeft();
+            $clone.css({ top: 0, left: left + 'px' });
+        }
+
+        $(window).on('scroll resize', function () {
+            var tableTop    = $table.offset().top;
+            var tableBottom = tableTop + $table.outerHeight();
+            var scrollTop   = $(window).scrollTop();
+
+            if (scrollTop > tableTop && scrollTop < tableBottom) {
+                if (!$clone) buildClone();
+                $clone.show();
+                updateClonePosition();
+            } else {
+                if ($clone) $clone.hide();
+            }
+        });
+    })();
+
     $(document).on("click", ".aging-filter-btn", function () {
 
         $(".aging-filter-btn").removeClass("active");
@@ -307,12 +378,12 @@ echo "</div>";
         const filter = $(this).data("filter");
 
         if (filter === "all") {
-            $("#table-1 tbody tr").show();
+            $("#table-cdr tbody tr").show();
             return;
         }
 
         // Hide all rows
-        $("#table-1 tbody tr").hide();
+        $("#table-cdr tbody tr").hide();
 
         // Show rows matching selected aging class
         $("#table-1 tbody tr." + "legend-" + filter).show();
