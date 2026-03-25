@@ -94,6 +94,11 @@ class SellOrderQuotationController extends RController
                     }
                     foreach ($_POST['SellOrderQuotationDetails']['temp_model_id'] as $key => $model_id) {
 
+                        if (empty($_POST['SellOrderQuotationDetails']['temp_qty'][$key]) ||
+                            (float)$_POST['SellOrderQuotationDetails']['temp_qty'][$key] <= 0) {
+                            continue;
+                        }
+
                         $percentage_discount = 0;
                         if ($_POST['SellOrderQuotationDetails']['temp_unit_price'][$key] > 0) {
                             $percentage_discount = ($per_item_discount / $_POST['SellOrderQuotationDetails']['temp_unit_price'][$key]) * 100;

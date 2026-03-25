@@ -52,72 +52,8 @@
 
     .page-break-div { page-break-after: always !important; }
 
-    /* ── DRAFT watermark ── */
-    @page {
-        @bottom-left {
-            content: "<?= date('d M Y  h:i A') ?>";
-            font-size: 10px;
-            color: #555;
-            font-family: Arial, sans-serif;
-        }
-        @bottom-center {
-            content: "Developed by: raihan-uddin.github.io";
-            font-size: 10px;
-            color: #888;
-            font-family: Arial, sans-serif;
-        }
-        @bottom-right {
-            content: "Page " counter(page) " of " counter(pages);
-            font-size: 10px;
-            color: #555;
-            font-family: Arial, sans-serif;
-        }
-    }
     .print-page-footer { display: none; }
     .print-date-stamp { display: none; }
-
-    .draft-wrap { position: relative; }
-    .draft-wrap > * { position: relative; z-index: 1; }
-
-    .draft-watermark {
-        position: absolute;
-        top: 50%;
-        left: 50%;
-        transform: translate(-50%, -50%) rotate(-35deg);
-        font-size: 110px;
-        font-weight: 900;
-        color: rgba(0, 0, 0, 0.07);
-        letter-spacing: 12px;
-        pointer-events: none;
-        z-index: 0;
-        white-space: nowrap;
-        user-select: none;
-    }
-
-    @media print {
-        .draft-watermark {
-            position: fixed;
-            top: 50%;
-            left: 50%;
-            transform: translate(-50%, -50%) rotate(-35deg);
-        }
-    }
-
-    /* ── DRAFT badge in meta table ── */
-    .draft-badge {
-        display: inline-block;
-        background: #fff3cd;
-        border: 1.5px solid #ffc107;
-        color: #856404;
-        font-size: 10px;
-        font-weight: 700;
-        padding: 1px 8px;
-        border-radius: 3px;
-        letter-spacing: 1.5px;
-        text-transform: uppercase;
-        vertical-align: middle;
-        margin-left: 6px;
-    }
 
     /* ── Invoice info block ── */
     .invoice-info-block {
@@ -256,8 +192,7 @@
                 if ($item) {
                     $customer = Customers::model()->findByPk($item->customer_id);
                     ?>
-                    <div style="width: 100%;" class="draft-wrap">
-                        <div class="draft-watermark">DRAFT</div>
+                    <div style="width: 100%;">
                         <?php
                         if (isset($preview_type) && $preview_type == SellOrder::NORMAL_PAD_PRINT) {
                             $this->renderPartial('application.modules.sell.views.sellOrderQuotation.pad_header');
@@ -300,8 +235,8 @@
                                 <td class="invoice-meta">
                                     <table class="invoice-meta-table">
                                         <tr>
-                                            <td>Draft No / ID</td>
-                                            <td>#<?= htmlspecialchars($item->so_no) ?> &nbsp;<span style="color:#aaa;">|</span>&nbsp; #<?= $item->id ?> <span class="draft-badge">Draft</span></td>
+                                            <td>Draft No</td>
+                                            <td>D-<?= htmlspecialchars($item->so_no) ?></td>
                                         </tr>
                                         <tr>
                                             <td>Date</td>
