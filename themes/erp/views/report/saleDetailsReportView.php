@@ -1,45 +1,213 @@
 <style>
+    /* ================================
+    ERP REPORT CARD LAYOUT
+    ================================ */
+    .report-card {
+        background: #ffffff;
+        border-radius: 6px;
+        box-shadow: 0 4px 18px rgba(0, 0, 0, 0.06);
+        overflow: hidden;
+        margin-bottom: 20px;
+    }
+
+    /* ================================
+       TABLE BASE
+       ================================ */
     .summaryTab {
-        float: left;
         width: 100%;
-        margin-bottom: 10px;
+        border-collapse: collapse;
         font-size: 12px;
-        border: none;
+    }
+
+    .summaryTab th,
+    .summaryTab td {
+        padding: 6px 8px;
+        border-bottom: 1px solid #e9ecef;
+        text-align: right;
+        white-space: nowrap;
+    }
+
+    /* ================================
+       HEADER
+       ================================ */
+    .summaryTab thead th {
+        background: #212529;
+        color: #ffffff;
+        font-weight: 600;
+        font-size: 11px;
+        letter-spacing: 0.4px;
+        text-transform: uppercase;
+    }
+
+    #sticky-header-clone-sdr {
+        display: none;
+        position: fixed;
+        z-index: 1000;
+        background: #212529;
         border-collapse: collapse;
     }
 
-    .summaryTab tr {
-        border: 1px dotted #a6a6a6;
+    #sticky-header-clone-sdr th {
+        background: #212529 !important;
+        color: #ffffff !important;
+        font-weight: 600;
+        font-size: 11px;
+        letter-spacing: 0.4px;
+        text-transform: uppercase;
+        padding: 6px 8px;
+        border-bottom: 1px solid #e9ecef;
+        white-space: nowrap;
     }
 
-    .summaryTab tr td,
-    .summaryTab tr th {
-        padding: 5px;
+    /* ================================
+       ROW STYLES
+       ================================ */
+    .summaryTab tbody tr:nth-child(even) {
+        background: #f8f9fa;
+    }
+
+    .summaryTab tbody tr:hover {
+        background: #e9f5ff;
+        transition: background 0.15s ease;
+    }
+
+    /* ================================
+       INVOICE LINK STYLE
+       ================================ */
+    .invoiceDetails {
+        color: #007bff;
+        cursor: pointer;
+        font-weight: 600;
+    }
+
+    .invoiceDetails:hover {
+        text-decoration: underline;
+    }
+
+    /* ================================
+       TOTAL ROW
+       ================================ */
+    .summaryTab .total-row th,
+    .summaryTab .total-row td {
+        background: #212529;
+        color: #ffffff;
+        font-weight: 700;
+        border-top: 2px solid #000;
+    }
+
+    /* ================================
+       NUMBER FORMAT
+       ================================ */
+    .summaryTab td {
+        font-family: "JetBrains Mono", monospace;
+        letter-spacing: 0.3px;
+    }
+
+    /* ================================
+       MODAL POLISH
+       ================================ */
+    .modal-content {
+        border-radius: 6px;
+    }
+
+    .modal-header {
+        background: #212529;
+        color: #ffffff;
+    }
+
+    .modal-footer {
+        background: #f8f9fa;
+    }
+
+    /* ================================
+       REPORT META PANEL
+    ================================ */
+    .report-meta-card {
+        background: #ffffff;
+        border: 1px solid #dee2e6;
+        border-left: 4px solid #17a2b8;
+        border-radius: 4px;
+        margin-bottom: 12px;
         font-size: 12px;
-        border: 1px solid #a6a6a6;
-        text-align: left;
     }
 
-    .summaryTab tr th {
-        background-color: #c0c0c0;
-        font-weight: bold;
-        border: 1px solid #a6a6a6;
-        text-align: center;
+    .meta-header {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        padding: 8px 12px;
+        background: #f8f9fa;
+        border-bottom: 1px solid #dee2e6;
     }
 
-
-    .final-result .sticky {
-        position: sticky;
-        position: -webkit-sticky;
-        top: 0;
-        background: white;
+    .meta-sub {
+        display: block;
+        font-size: 11px;
+        color: #6c757d;
     }
 
-    .final-result tbody tr:hover {
-        background: #dedede;
-        transition: background-color 100ms;
+    .meta-time {
+        font-size: 11px;
+        color: #495057;
     }
 
+    .meta-grid {
+        display: grid;
+        grid-template-columns: repeat(auto-fit, minmax(180px, 1fr));
+        gap: 10px;
+        padding: 10px 12px;
+    }
+
+    .meta-grid small {
+        display: block;
+        font-size: 10px;
+        color: #6c757d;
+    }
+
+    .meta-grid b {
+        font-weight: 600;
+        color: #212529;
+    }
+
+    .meta-formula {
+        padding: 8px 12px;
+        border-top: 1px dashed #dee2e6;
+        background: #fdfefe;
+    }
+
+    .meta-formula ul {
+        padding-left: 16px;
+        margin: 4px 0 0 0;
+    }
+
+    .meta-formula li {
+        font-size: 11px;
+        color: #495057;
+    }
+
+    @media (max-width: 768px) {
+        .summaryTab { font-size: 11px; }
+    }
+
+    @media print {
+        .stock-table-wrapper {
+            overflow: visible !important;
+        }
+
+        .summaryTab {
+            font-size: 10px;
+        }
+
+        .summaryTab th,
+        .summaryTab td {
+            white-space: normal !important;
+            padding: 3px 4px;
+        }
+
+        .summaryTab thead th {
+            white-space: nowrap !important;
+        }
+    }
 </style>
 
 <?php
@@ -48,102 +216,129 @@ date_default_timezone_set("Asia/Dhaka");
 echo "<div class='printBtn' style='width: unset;'>";
 echo "  <img class='exportToExcel' id='exportToExcel'  src='" . Yii::app()->theme->baseUrl . "/images/excel.png' title='EXPORT TO EXCEL'>";
 $this->widget('ext.mPrint.mPrint', array(
-    'title' => ' ', //the title of the document. Defaults to the HTML title
-    'tooltip' => 'Print', //tooltip message of the print icon. Defaults to 'print'
-    'text' => '', //text which will appear beside the print icon. Defaults to NULL
-    'element' => '.printAllTableForThisReport', //the element to be printed.
-    'exceptions' => array(//the element/s which will be ignored
-    ),
-    'publishCss' => TRUE, //publish the CSS for the whole page?
-    'visible' => !Yii::app()->user->isGuest, //should this be visible to the current user?
-    'alt' => 'print', //text which will appear if image can't be loaded
-    'debug' => FALSE, //enable the debugger to see what you will get
-    'id' => 'print-div2'         //id of the print link
+    'title' => ' ',
+    'tooltip' => 'Print',
+    'text' => '',
+    'element' => '.printAllTableForThisReport',
+    'exceptions' => array(),
+    'publishCss' => TRUE,
+    'visible' => !Yii::app()->user->isGuest,
+    'alt' => 'print',
+    'debug' => FALSE,
+    'id' => 'print-div2'
 ));
 echo "</div>";
-
 ?>
+
 <script src="<?= Yii::app()->theme->baseUrl ?>/js/jquery.table2excel.js"></script>
-<div class='printAllTableForThisReport table-responsive p-0"'>
-    <table class="summaryTab final-result table2excel table2excel_with_colors table table-bordered table-sm"
-           id="table-1">
-        <thead>
-        <tr>
-            <td colspan="10" style="font-size:16px; font-weight:bold; text-align:center"><?php echo $message; ?>
-            </td>
-        </tr>
-        <tr class="titlesTr sticky">
-            <th style="width: 2%; box-shadow: 0px 0px 0px 1px black inset;">SL</th>
-            <th style="width: 10%; box-shadow: 0px 0px 0px 1px black inset;">Date</th>
-            <th style="width: 7%; box-shadow: 0px 0px 0px 1px black inset;">Invoice Id</th>
-            <th style="box-shadow: 0px 0px 0px 1px black inset;">Customer</th>
-            <th style="box-shadow: 0px 0px 0px 1px black inset;">Product</th>
-            <th style="width: 10%;box-shadow: 0px 0px 0px 1px black inset;" title="Purchase Price">P.P</th>
-            <th style="width: 10%;box-shadow: 0px 0px 0px 1px black inset;">Qty</th>
-            <th style="width: 10%;box-shadow: 0px 0px 0px 1px black inset;" title="Sell Price">S.P</th>
-            <th style="width: 10%;box-shadow: 0px 0px 0px 1px black inset;" title="Row Total Sell Price">T.S.P</th>
-            <th style="width: 10%;box-shadow: 0px 0px 0px 1px black inset;" title="Net Income">N.I</th>
-        </tr>
-        </thead>
-        <tbody>
-        <?php
-        $sl = 1;
-        $rowFound = false;
-        $groundTotal = 0;
-        $row_closing = $row_closing_discount = $net_income_total = $total_due = 0;
-        $qty_total = $amount_total = $row_total_total = $net_income_total = 0;
-        ?>
+<div class='printAllTableForThisReport'>
 
-        <?php
-        if ($data) {
-            foreach ($data as $dmr) {
-                $rowFound = true;
+    <div class="report-meta-card">
+        <div class="meta-header">
+            <div>
+                <b>📊 Sale Details Report</b>
+                <span class="meta-sub">System-generated line-item sales breakdown</span>
+            </div>
+            <div class="meta-time">
+                Generated: <?= date('d M Y, h:i A') ?>
+            </div>
+        </div>
 
-                $pp = round($dmr->costing / $dmr->qty, 2);
-                $net_income = $dmr->row_total - $dmr->costing;
-                $qty_total += $dmr->qty;
-                $amount_total += $dmr->amount;
-                $row_total_total += $dmr->row_total;
-                $net_income_total += $net_income;
+        <div class="meta-grid">
+            <div>
+                <small>Period</small>
+                <b><?= strip_tags($message) ?></b>
+            </div>
+            <div>
+                <small>Printed By</small>
+                <b><?= CHtml::encode(Yii::app()->user->name) ?></b>
+            </div>
+        </div>
+
+        <div class="meta-formula">
+            <b>Calculation Logic:</b>
+            <ul>
+                <li><b>P.P</b> = Purchase Price (Costing ÷ Qty)</li>
+                <li><b>S.P</b> = Unit Sell Price</li>
+                <li><b>T.S.P</b> = Row Total Sell Price</li>
+                <li><b>N.I</b> = Net Income (Row Total − Costing)</li>
+            </ul>
+        </div>
+    </div>
+
+    <div class="stock-table-wrapper" style="overflow-x: auto;">
+        <table class="summaryTab final-result table2excel table2excel_with_colors table table-bordered table-sm"
+               id="table-sdr">
+            <thead>
+            <tr class="titlesTr">
+                <th style="width: 2%;">SL</th>
+                <th style="width: 10%;">Date</th>
+                <th style="width: 7%;">Invoice Id</th>
+                <th>Customer</th>
+                <th>Product</th>
+                <th style="width: 10%;" title="Purchase Price">P.P</th>
+                <th style="width: 10%;">Qty</th>
+                <th style="width: 10%;" title="Sell Price">S.P</th>
+                <th style="width: 10%;" title="Row Total Sell Price">T.S.P</th>
+                <th style="width: 10%;" title="Net Income">N.I</th>
+            </tr>
+            </thead>
+            <tbody>
+            <?php
+            $sl = 1;
+            $rowFound = false;
+            $qty_total = $amount_total = $row_total_total = $net_income_total = 0;
+            ?>
+
+            <?php
+            if ($data) {
+                foreach ($data as $dmr) {
+                    $rowFound = true;
+                    $pp = round($dmr->costing / $dmr->qty, 2);
+                    $net_income = $dmr->row_total - $dmr->costing;
+                    $qty_total += $dmr->qty;
+                    $amount_total += $dmr->amount;
+                    $row_total_total += $dmr->row_total;
+                    $net_income_total += $net_income;
+                    ?>
+                    <tr>
+                        <td style="text-align: center;"><?php echo $sl++; ?></td>
+                        <td style="text-align: center;"><?php echo $dmr->date; ?></td>
+                        <td style="text-align: center; text-decoration: underline; cursor:zoom-in;" class="invoiceDetails"
+                            title="click here to get the preview"><?php echo $dmr->id; ?></td>
+                        <td style="text-align: left;"><?php echo sprintf("%s | %s", $dmr->customer_name, $dmr->contact_no); ?></td>
+                        <td style="text-align: left;"><?php echo sprintf("%s | %s", $dmr->product_name, $dmr->product_code); ?></td>
+                        <td style="text-align: right;"><?php echo number_format($pp, 2); ?></td>
+                        <td style="text-align: right;"><?php echo number_format($dmr->qty, 2); ?></td>
+                        <td style="text-align: right;"><?php echo number_format($dmr->amount, 2); ?></td>
+                        <td style="text-align: right;"><?php echo number_format($dmr->row_total, 2); ?></td>
+                        <td style="text-align: right;"><?php echo number_format($net_income, 2); ?></td>
+                    </tr>
+                    <?php
+                }
+            }
+            if (!$rowFound) {
                 ?>
                 <tr>
-                    <td style="text-align: center;"><?php echo $sl++; ?></td>
-                    <td style="text-align: center;"><?php echo $dmr->date; ?></td>
-                    <td style="text-align: center; text-decoration: underline; cursor:zoom-in;" class="invoiceDetails"
-                        title="click here to get the preview"><?php echo $dmr->id; ?></td>
-                    <td style="text-align: left;"><?php echo sprintf("%s | %s", $dmr->customer_name, $dmr->contact_no); ?></td>
-                    <td style="text-align: left;"><?php echo sprintf("%s | %s", $dmr->product_name, $dmr->product_code); ?></td>
-                    <td style="text-align: right;"><?php echo number_format($pp, 2); ?></td>
-                    <td style="text-align: right;"><?php echo number_format($dmr->qty, 2); ?></td>
-                    <td style="text-align: right;"><?php echo number_format($dmr->amount, 2); ?></td>
-                    <td style="text-align: right;"><?php echo number_format($dmr->row_total, 2); ?></td>
-                    <td style="text-align: right;"><?php echo number_format($net_income, 2); ?></td>
+                    <td colspan='10' style='text-align: center; font-size: 18px; text-transform: uppercase;'>
+                        <div class='alert alert-warning'><i class='fa fa-exclamation-triangle'></i> No result found!</div>
+                    </td>
                 </tr>
                 <?php
-
             }
-        }
-        if (!$rowFound) {
             ?>
+
             <tr>
-                <td colspan='12' style='text-align: center; font-size: 18px; text-transform: uppercase; '>
-                    <div class='alert alert-warning'><i class='fa fa-exclamation-triangle'></i> No result found !</div>
-                </td>
+                <th style="text-align: right;" colspan="6">Ground Total</th>
+                <th style="text-align: right;"><?php echo number_format($qty_total, 2); ?></th>
+                <th style="text-align: right;"><?php echo number_format($amount_total, 2); ?></th>
+                <th style="text-align: right;"><?php echo number_format($row_total_total, 2); ?></th>
+                <th style="text-align: right;"><?php echo number_format($net_income_total, 2); ?></th>
             </tr>
-            <?php
-        }
-        ?>
 
-        <tr>
-            <th style="text-align: right;" colspan="6">Ground Total</th>
-            <th style="text-align: right;"><?php echo number_format($qty_total, 2); ?></th>
-            <th style="text-align: right;"><?php echo number_format($amount_total, 2); ?></th>
-            <th style="text-align: right;"><?php echo number_format($row_total_total, 2); ?></th>
-            <th style="text-align: right;"><?php echo number_format($net_income_total, 2); ?></th>
-        </tr>
-
-        </tbody>
-    </table>
+            </tbody>
+        </table>
+    </div>
 </div>
 
 <!--        modal-->
@@ -158,7 +353,7 @@ echo "</div>";
                 </button>
             </div>
             <div class="modal-body text-center">
-                <p>Loading...</p> <!-- this will be replaced by the response from the server -->
+                <p>Loading...</p>
             </div>
             <div class="modal-footer">
                 <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
@@ -166,16 +361,6 @@ echo "</div>";
         </div>
     </div>
 </div>
-
-<style>
-    .summaryTab tr td, .summaryTab tr {
-        padding: 3px 3px 3px 3px;
-        margin: 5px;
-        font-size: 12px;
-        border: 1px solid #a6a6a6;
-        text-align: left;
-    }
-</style>
 
 <script>
     $(function () {
@@ -186,7 +371,7 @@ echo "</div>";
                 $(table).table2excel({
                     exclude: ".noExl",
                     name: "Excel Document Name",
-                    filename: "SELL_ORDER_REPORT-" + new Date().toISOString().replace(/[\-\:\.]/g, "") + ".xls",
+                    filename: "SALE_DETAILS_REPORT-" + new Date().toISOString().replace(/[\-\:\.]/g, "") + ".xls",
                     fileext: ".xls",
                     exclude_img: true,
                     exclude_links: true,
@@ -196,18 +381,15 @@ echo "</div>";
             }
         });
     });
-    //
-    $('#table-1').off('click', '.invoiceDetails').on('click', '.invoiceDetails', function () {
 
+    $('#table-sdr').off('click', '.invoiceDetails').on('click', '.invoiceDetails', function () {
         var invoiceId = $(this).text();
         var $this = $(this);
         $this.html('<i class="fa fa-spinner fa-spin"></i>');
         $.ajax({
             url: '<?= Yii::app()->createUrl("sell/sellOrder/voucherPreview") ?>',
             type: 'POST',
-            data: {
-                invoiceId: invoiceId
-            },
+            data: { invoiceId: invoiceId },
             success: function (response) {
                 $('#information-modal').modal('show');
                 $('#information-modal .modal-body').html(response);
@@ -219,4 +401,44 @@ echo "</div>";
             }
         });
     });
+
+    // JS sticky header
+    (function () {
+        var $table   = $('#table-sdr');
+        var $origRow = $table.find('thead tr.titlesTr');
+        var $clone   = null;
+
+        function buildClone() {
+            var $c = $('<table id="sticky-header-clone-sdr"><thead><tr></tr></thead></table>');
+            $origRow.find('th').each(function () {
+                var w = $(this).outerWidth();
+                $c.find('tr').append(
+                    $('<th>').text($(this).text()).css('width', w + 'px').css('min-width', w + 'px')
+                );
+            });
+            $c.css('width', $table.outerWidth() + 'px');
+            $('body').append($c);
+            $clone = $c;
+        }
+
+        function updateClonePosition() {
+            if (!$clone) return;
+            var left = $table.offset().left - $(window).scrollLeft();
+            $clone.css({ top: 0, left: left + 'px' });
+        }
+
+        $(window).on('scroll resize', function () {
+            var tableTop    = $table.offset().top;
+            var tableBottom = tableTop + $table.outerHeight();
+            var scrollTop   = $(window).scrollTop();
+
+            if (scrollTop > tableTop && scrollTop < tableBottom) {
+                if (!$clone) buildClone();
+                $clone.show();
+                updateClonePosition();
+            } else {
+                if ($clone) $clone.hide();
+            }
+        });
+    })();
 </script>
