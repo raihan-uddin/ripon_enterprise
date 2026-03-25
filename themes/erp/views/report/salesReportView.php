@@ -69,9 +69,26 @@
         font-size: 11px;
         letter-spacing: 0.4px;
         text-transform: uppercase;
-        position: sticky;
-        top: 0;
-        z-index: 10;
+    }
+
+    #sticky-header-clone-sr {
+        display: none;
+        position: fixed;
+        z-index: 1000;
+        background: #212529;
+        border-collapse: collapse;
+    }
+
+    #sticky-header-clone-sr th {
+        background: #212529 !important;
+        color: #ffffff !important;
+        font-weight: 600;
+        font-size: 11px;
+        letter-spacing: 0.4px;
+        text-transform: uppercase;
+        padding: 6px 8px;
+        border-bottom: 1px solid #e9ecef;
+        white-space: nowrap;
     }
 
     /* ================================
@@ -239,7 +256,7 @@ echo "</div>";
 
 ?>
 <script src="<?= Yii::app()->theme->baseUrl ?>/js/jquery.table2excel.js"></script>
-<div class='printAllTableForThisReport table-responsive p-0'>
+<div class='printAllTableForThisReport'>
     <div class="report-meta-card">
 
         <div class="meta-header">
@@ -295,24 +312,24 @@ echo "</div>";
         </div>
 
     </div>
-    <div class="table-responsive">
+    <div class="stock-table-wrapper" style="overflow-x: auto;">
         <table class="summaryTab final-result table2excel table2excel_with_colors table table-bordered table-sm"
-               id="table-1">
+               id="table-sr">
             <thead>
-            <tr class="titlesTr sticky">
-                <th style="width: 2%; box-shadow: 0px 0px 0px 1px black inset;">SL</th>
-                <th style="width: 10%; box-shadow: 0px 0px 0px 1px black inset;">Date</th>
-                <th style="width: 7%; box-shadow: 0px 0px 0px 1px black inset;">ID</th>
-                <th style="box-shadow: 0px 0px 0px 1px black inset;">Customer</th>
-                <th style="width: 10%;box-shadow: 0px 0px 0px 1px black inset;">Sell Value</th>
-                <th style="width: 10%;box-shadow: 0px 0px 0px 1px black inset;">Vat</th>
-                <th style="width: 10%;box-shadow: 0px 0px 0px 1px black inset;">Delivery Charge</th>
-                <th style="width: 10%;box-shadow: 0px 0px 0px 1px black inset;">Discount</th>
-                <th style="width: 10%;box-shadow: 0px 0px 0px 1px black inset;">Road Fee</th>
-                <th style="width: 10%;box-shadow: 0px 0px 0px 1px black inset;">Damage</th>
-                <th style="width: 10%;box-shadow: 0px 0px 0px 1px black inset;">SR Commission</th>
-                <th style="width: 10%;box-shadow: 0px 0px 0px 1px black inset;">Amount</th>
-                <th style="width: 10%;box-shadow: 0px 0px 0px 1px black inset;">N.I</th>
+            <tr class="titlesTr">
+                <th style="width: 2%;">SL</th>
+                <th style="width: 10%;">Date</th>
+                <th style="width: 7%;">ID</th>
+                <th>Customer</th>
+                <th style="width: 10%;">Sell Value</th>
+                <th style="width: 10%;">Vat</th>
+                <th style="width: 10%;">Delivery Charge</th>
+                <th style="width: 10%;">Discount</th>
+                <th style="width: 10%;">Road Fee</th>
+                <th style="width: 10%;">Damage</th>
+                <th style="width: 10%;">SR Commission</th>
+                <th style="width: 10%;">Amount</th>
+                <th style="width: 10%;">N.I</th>
             </tr>
             </thead>
             <tbody>
@@ -460,7 +477,7 @@ echo "</div>";
         });
     });
 
-    $('body #table-1').off('click', '.invoiceDetails').on('click', '.invoiceDetails', function () {
+    $('body #table-sr').off('click', '.invoiceDetails').on('click', '.invoiceDetails', function () {
 
         var invoiceId = $(this).text();
         var $this = $(this);
@@ -483,4 +500,44 @@ echo "</div>";
             }
         });
     });
+
+    // JS sticky header
+    (function () {
+        var $table   = $('#table-sr');
+        var $origRow = $table.find('thead tr.titlesTr');
+        var $clone   = null;
+
+        function buildClone() {
+            var $c = $('<table id="sticky-header-clone-sr"><thead><tr></tr></thead></table>');
+            $origRow.find('th').each(function () {
+                var w = $(this).outerWidth();
+                $c.find('tr').append(
+                    $('<th>').text($(this).text()).css('width', w + 'px').css('min-width', w + 'px')
+                );
+            });
+            $c.css('width', $table.outerWidth() + 'px');
+            $('body').append($c);
+            $clone = $c;
+        }
+
+        function updateClonePosition() {
+            if (!$clone) return;
+            var left = $table.offset().left - $(window).scrollLeft();
+            $clone.css({ top: 0, left: left + 'px' });
+        }
+
+        $(window).on('scroll resize', function () {
+            var tableTop    = $table.offset().top;
+            var tableBottom = tableTop + $table.outerHeight();
+            var scrollTop   = $(window).scrollTop();
+
+            if (scrollTop > tableTop && scrollTop < tableBottom) {
+                if (!$clone) buildClone();
+                $clone.show();
+                updateClonePosition();
+            } else {
+                if ($clone) $clone.hide();
+            }
+        });
+    })();
 </script>
