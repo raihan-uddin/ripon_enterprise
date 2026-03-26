@@ -1402,7 +1402,7 @@ Yii::app()->clientScript->registerCoreScript("jquery.ui");
 
             const grand =
                 (total + vat + delivery) -
-                (discount + road + damage - commission);
+                (discount + road + damage + commission);
 
             $(f.GRAND_TOTAL).val(grand.toFixed(2));
         }
