@@ -333,3 +333,72 @@ input:focus {
     position: relative;
     z-index: 1050;
 }
+
+/* ════════════════════════════════════════════════════════════════
+   UNIFIED THEME — Indigo accent, consistent with navbar
+   Applies globally to all card-primary / card-info / card-success /
+   card-warning / card-danger headers and primary action buttons.
+   ════════════════════════════════════════════════════════════════ */
+
+
+/* ── Primary button — indigo theme ── */
+.btn-primary {
+    background-color: #4f46e5 !important;
+    border-color:     #4f46e5 !important;
+    color: #fff !important;
+    transition: background .15s, border-color .15s, box-shadow .15s !important;
+}
+.btn-primary:hover,
+.btn-primary:focus {
+    background-color: #4338ca !important;
+    border-color:     #4338ca !important;
+    color: #fff !important;
+    box-shadow: 0 4px 12px rgba(79,70,229,.35) !important;
+}
+.btn-primary:active,
+.btn-primary.active {
+    background-color: #3730a3 !important;
+    border-color:     #3730a3 !important;
+}
+
+/* ── Form focus rings — indigo instead of teal/blue ── */
+input:focus,
+select:focus,
+textarea:focus,
+.form-control:focus {
+    border-color: #6366f1 !important;
+    box-shadow: 0 0 0 2px rgba(99,102,241,.2) !important;
+    outline: none !important;
+}
+
+/* ── Pagination active page — indigo ── */
+.pagination li.active a,
+.pagination li.active span {
+    background:   #4f46e5 !important;
+    border-color: #4f46e5 !important;
+    color: #fff !important;
+}
+.pagination li a:hover {
+    background:   #ede9fe !important;
+    border-color: #6366f1 !important;
+    color:        #4f46e5 !important;
+}
+
+/* ── Grid filter focus — indigo ── */
+.grid-view .filters input:focus,
+.grid-view .filters select:focus {
+    border-color: #6366f1 !important;
+    box-shadow: 0 0 0 2px rgba(99,102,241,.2) !important;
+}
+
+/* ── Go-to-page button — indigo ── */
+.goto-page-wrap button {
+    background: #4f46e5 !important;
+}
+.goto-page-wrap button:hover {
+    background: #4338ca !important;
+}
+.goto-page-wrap input:focus {
+    border-color: #6366f1 !important;
+    box-shadow: 0 0 0 2px rgba(99,102,241,.2) !important;
+}

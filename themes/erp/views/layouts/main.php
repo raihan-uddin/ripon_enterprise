@@ -29,7 +29,7 @@
     <link rel="stylesheet" href="<?php echo Yii::app()->theme->baseUrl; ?>/css/jquery-ui.css">
     <link rel="stylesheet" href="<?php echo Yii::app()->theme->baseUrl; ?>/dist/css/adminlte.min.css">
     <link rel="stylesheet" href="<?php echo Yii::app()->theme->baseUrl; ?>/css/lightpick.css">
-    <link rel="stylesheet" href="<?php echo Yii::app()->theme->baseUrl; ?>/css/custom.css">
+    <link rel="stylesheet" href="<?php echo Yii::app()->theme->baseUrl; ?>/css/custom.css?v=<?php echo filemtime(Yii::app()->theme->basePath.'/css/custom.css'); ?>">
     <title><?php echo CHtml::encode($this->pageTitle); ?></title>
 </head>
 <body class="hold-transition layout-top-nav" style="font-size: 14px;">

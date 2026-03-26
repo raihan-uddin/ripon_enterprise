@@ -9,6 +9,9 @@ $this->widget('application.components.BreadCrumb', array(
 ?>
 
 <style>
+    /* ── Indigo left accent on section cards ── */
+    .card-primary > .card-header { border-left: 3px solid #4f46e5; }
+
     /* ── Grid header ── */
     #prod-items-grid th {
         background: #f0f4f8;

@@ -30,7 +30,7 @@ $endDate   = date('Y-m-t');
                 ->queryScalar();
         ?></span>
         <div class="db-action-icon"><i class="fa fa-file-text-o"></i></div>
-        <div class="db-action-label">Draft<small>Ctrl+S</small></div>
+        <div class="db-action-label">Draft<small>Ctrl+D</small></div>
     </a>
     <?php endif; ?>
 
