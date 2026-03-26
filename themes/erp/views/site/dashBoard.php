@@ -65,6 +65,7 @@ $this->widget('application.components.BreadCrumb', array(
 .db-search-item-label{font-size:12.5px;font-weight:500}
 .db-search-item-type{font-size:10px;color:#9ca3af;margin-left:auto;white-space:nowrap}
 .db-search-empty{padding:14px;text-align:center;font-size:12.5px;color:#9ca3af}
+.db-search-item.focused{background:#f0f0ff;color:#374151}
 .db-search-section{font-size:10px;font-weight:700;text-transform:uppercase;
     letter-spacing:.7px;color:#9ca3af;padding:8px 14px 4px}
 
@@ -487,6 +488,8 @@ $this->widget('application.components.BreadCrumb', array(
                             searchDrop.innerHTML=html;
                         }
                         searchDrop.style.display='block';
+                        /* reset keyboard focus */
+                        searchDrop.querySelectorAll('.db-search-item.focused').forEach(function(el){el.classList.remove('focused');});
                     }
                 });
             },280);
@@ -499,7 +502,28 @@ $this->widget('application.components.BreadCrumb', array(
                 searchDrop.style.display='none';
         });
         searchInput.addEventListener('keydown',function(e){
-            if(e.key==='Escape'){searchDrop.style.display='none';this.blur();}
+            if(e.key==='Escape'){searchDrop.style.display='none';this.blur();return;}
+            if(searchDrop.style.display==='none') return;
+            var items=searchDrop.querySelectorAll('.db-search-item');
+            if(!items.length) return;
+            var cur=searchDrop.querySelector('.db-search-item.focused');
+            var idx=Array.prototype.indexOf.call(items,cur);
+            if(e.key==='ArrowDown'){
+                e.preventDefault();
+                var next=idx<items.length-1?idx+1:0;
+                if(cur) cur.classList.remove('focused');
+                items[next].classList.add('focused');
+                items[next].scrollIntoView({block:'nearest'});
+            } else if(e.key==='ArrowUp'){
+                e.preventDefault();
+                var prev=idx>0?idx-1:items.length-1;
+                if(cur) cur.classList.remove('focused');
+                items[prev].classList.add('focused');
+                items[prev].scrollIntoView({block:'nearest'});
+            } else if(e.key==='Enter'){
+                e.preventDefault();
+                if(cur) window.location.href=cur.getAttribute('href');
+            }
         });
     }
 
