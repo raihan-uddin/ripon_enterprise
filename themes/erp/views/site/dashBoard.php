@@ -7,7 +7,7 @@ $this->widget('application.components.BreadCrumb', array(
 /* ================================================================
    DASHBOARD — Full Redesign
    ================================================================ */
-@keyframes dbFadeUp{from{opacity:0;transform:translateY(16px)}to{opacity:1;transform:translateY(0)}}
+@keyframes dbFadeUp{from{opacity:0;transform:translateY(16px)}to{opacity:1;transform:none}}
 .db-animate{animation:dbFadeUp .5s cubic-bezier(.22,1,.36,1) both}
 .db-animate-d1{animation-delay:.05s}.db-animate-d2{animation-delay:.12s}
 .db-animate-d3{animation-delay:.19s}.db-animate-d4{animation-delay:.26s}
@@ -207,6 +207,15 @@ $this->widget('application.components.BreadCrumb', array(
     .db-stat-num{font-size:24px}.db-welcome-title{font-size:18px}
     .db-shortcuts-hint{display:none}.db-header-right{align-items:flex-start}
     .db-today-strip{grid-template-columns:repeat(2,1fr)}
+    /* Report dropdowns: stack vertically, open inline below button */
+    .db-report-wrap{flex-direction:column}
+    .db-report-wrap .btn-group{width:100%;position:relative}
+    .db-report-wrap .db-report-btn{width:100%;justify-content:space-between}
+    .db-report-wrap .dropdown-menu{
+        position:static!important;float:none!important;
+        width:100%!important;margin-top:4px!important;
+        box-shadow:0 2px 8px rgba(0,0,0,.08)!important;
+        border-radius:8px!important;border-color:#f3f4f6!important}
 }
 @media(max-width:480px){
     .db-actions-grid{grid-template-columns:repeat(3,1fr)}
@@ -279,19 +288,6 @@ $this->widget('application.components.BreadCrumb', array(
         <?php $this->renderPartial('block-widget'); ?>
     </div>
 </div>
-
-<!-- ── Alerts ── -->
-<?php if (Yii::app()->user->checkAccess('admin')): ?>
-<div class="db-section db-animate db-animate-d2">
-    <div class="db-section-head">
-        <h6>Alerts</h6>
-        <button class="db-section-toggle" data-target="sec-alerts" title="Collapse"><i class="fa fa-chevron-down"></i></button>
-    </div>
-    <div class="db-section-body" id="sec-alerts">
-        <?php $this->renderPartial('_alerts'); ?>
-    </div>
-</div>
-<?php endif; ?>
 
 <!-- ── Quick Actions ── -->
 <div class="db-section db-animate db-animate-d2">
@@ -428,21 +424,27 @@ $this->widget('application.components.BreadCrumb', array(
             body.style.maxHeight='0';body.style.opacity='0';
             body.classList.add('collapsed');btn.classList.add('collapsed');
         } else {
-            body.style.maxHeight='none'; /* none = never clips dynamically-loaded content */
+            body.style.maxHeight='none';
+            body.style.overflow='visible'; /* allow dropdowns to escape section boundary */
         }
         btn.addEventListener('click',function(){
             var isCollapsed=body.classList.contains('collapsed');
             if(isCollapsed){
                 /* expand: animate from 0 → scrollHeight, then release to none */
+                body.style.overflow='hidden'; /* clip during animation */
                 body.classList.remove('collapsed');btn.classList.remove('collapsed');
                 body.style.maxHeight=body.scrollHeight+'px';body.style.opacity='1';
                 body.addEventListener('transitionend',function onExp(){
                     body.removeEventListener('transitionend',onExp);
-                    if(!body.classList.contains('collapsed')) body.style.maxHeight='none';
+                    if(!body.classList.contains('collapsed')){
+                        body.style.maxHeight='none';
+                        body.style.overflow='visible'; /* dropdowns work after expand */
+                    }
                 });
                 delete collapsed[id];
             } else {
                 /* collapse: pin current height first so transition has a start value */
+                body.style.overflow='hidden'; /* clip during animation */
                 body.style.maxHeight=body.scrollHeight+'px';
                 requestAnimationFrame(function(){
                     body.classList.add('collapsed');btn.classList.add('collapsed');
@@ -454,6 +456,59 @@ $this->widget('application.components.BreadCrumb', array(
         });
     });
 
+})();
+
+/* ── Strip animation after play so sections don't retain stacking contexts ── */
+document.querySelectorAll('.db-section.db-animate').forEach(function(el){
+    el.addEventListener('animationend', function(){
+        el.style.animation  = 'none';  /* remove animation property entirely */
+        el.style.opacity    = '1';
+        el.style.transform  = '';      /* clear any retained transform */
+    }, {once: true});
+});
+
+/* ── Report dropdown: position:fixed via MutationObserver (bypass all stacking contexts) ── */
+(function(){
+    var isMobile = function(){ return window.innerWidth <= 768; };
+
+    function applyFixed($btn, $menu){
+        var rect = $btn[0].getBoundingClientRect();
+        $menu.css({
+            position : 'fixed',
+            top      : (rect.bottom + 4) + 'px',
+            left     : rect.left + 'px',
+            minWidth : Math.max(215, rect.width) + 'px',
+            width    : 'auto',
+            zIndex   : 99999
+        });
+    }
+    function resetMenu($menu){
+        $menu.css({position:'', top:'', left:'', minWidth:'', width:'', zIndex:''});
+    }
+
+    /* Watch class changes on each .btn-group — works regardless of Bootstrap version */
+    document.querySelectorAll('.db-report-wrap .btn-group').forEach(function(btnGroup){
+        var obs = new MutationObserver(function(){
+            if(isMobile()) return;
+            var $bg   = $(btnGroup);
+            var $btn  = $bg.find('[data-toggle="dropdown"]');
+            var $menu = $bg.find('.dropdown-menu');
+            if($bg.hasClass('open') || $menu.hasClass('show')){
+                applyFixed($btn, $menu);
+            } else {
+                resetMenu($menu);
+            }
+        });
+        obs.observe(btnGroup, {attributes: true, attributeFilter: ['class']});
+        /* Also watch the menu itself (Bootstrap 4 adds .show to the menu) */
+        var menu = btnGroup.querySelector('.dropdown-menu');
+        if(menu) obs.observe(menu, {attributes: true, attributeFilter: ['class']});
+    });
+
+    /* Close fixed dropdowns on scroll so menu doesn't drift from its button */
+    $(window).on('scroll.dbreport', function(){
+        if(!isMobile()) $('.db-report-wrap .btn-group.open').removeClass('open');
+    });
 })();
 
 /* ── Keyboard shortcuts ── */
