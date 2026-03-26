@@ -8,7 +8,42 @@ $initials   = count($parts) >= 2
     ? strtoupper($parts[0][0] . $parts[count($parts)-1][0])
     : strtoupper(substr($userName, 0, 2));
 
-$ca = [Yii::app()->user, 'checkAccess']; // shorthand
+// ── Permission cache (session-scoped, clears on logout) ─────────────────────
+// RDbAuthManager loads all auth items in ~2 DB queries per request.
+// We cache the final booleans in the session so subsequent page loads cost 0 queries.
+$_navPerms = Yii::app()->user->getState('_nav_perms');
+if ($_navPerms === null) {
+    $u = Yii::app()->user;
+    $_navPerms = array_fill_keys([
+        'Users.Admin','rights',
+        'Accounting.Expense.Create','Accounting.Expense.Admin','Accounting.ExpenseHead.Admin',
+        'ProdItems.Admin','ProdBrands.Admin','ProdModels.Create','ProdModels.Admin',
+        'Units.Admin','Companies.Admin',
+        'Inventory.Inventory.Admin','Inventory.Inventory.VerifyProduct',
+        'Inventory.Inventory.StockReport','Inventory.Inventory.StockReportSupplierWise',
+        'Sell.Customers.Admin','Sell.CrmBank.Admin',
+        'Sell.SellOrder.Create','Sell.SellOrder.Admin',
+        'Sell.SellOrderQuotation.Create','Sell.SellOrderQuotation.Admin',
+        'Sell.SellReturn.CreateProductReturn','Sell.SellReturn.Admin',
+        'Accounting.MoneyReceipt.AdminMoneyReceipt','Accounting.MoneyReceipt.Admin',
+        'Commercial.ComBank.Admin','Commercial.Suppliers.Admin',
+        'Commercial.PurchaseOrder.Create','Commercial.PurchaseOrder.Admin',
+        'Accounting.PaymentReceipt.AdminPaymentReceipt','Accounting.PaymentReceipt.Create',
+        'Loan.LoanPersons.Admin','Loan.LoanTransactions.Admin',
+        'Report.PriceListView',
+        'Report.SalesReport','Report.SaleDetailsReport','Report.CustomerDueReport',
+        'Report.CustomerLedger','Report.CollectionReport',
+        'Report.PurchaseReport','Report.PurchaseDetailsReport','Report.SupplierDueReport',
+        'Report.SupplierLedger','Report.PaymentReport',
+        'Report.ExpenseSummaryReport','Report.ExpenseDetailsReport',
+        'Report.DayInOutReport',
+    ], false);
+    foreach ($_navPerms as $k => $_) {
+        $_navPerms[$k] = $u->checkAccess($k);
+    }
+    Yii::app()->user->setState('_nav_perms', $_navPerms);
+}
+$ca = function($perm) use ($_navPerms) { return !empty($_navPerms[$perm]); };
 
 // ── Active menu detection ────────────────────────────────────────────────────
 // Using a closure avoids "Cannot redeclare function" on every widget render.
