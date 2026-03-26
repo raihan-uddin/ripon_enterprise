@@ -13,7 +13,7 @@
 <nav class="bc-nav" aria-label="breadcrumb">
     <ol>
         <li class="bc-item">
-            <a href="<?= Yii::app()->homeUrl ?>">
+            <a href="<?= Yii::app()->createUrl('site/dashBoard') ?>">
                 <i class="fa fa-home bc-home-icon"></i>
             </a>
         </li>
