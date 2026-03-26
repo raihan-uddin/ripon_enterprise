@@ -175,7 +175,7 @@ nav.erp-nav .navbar-nav>.nav-item.active>.nav-link:focus{
 @media(min-width:1280px){
     .erp-nav .navbar-nav>.nav-item>.nav-link{font-size:12px;padding:14px 14px!important}
     .erp-nav .navbar-brand{padding:9px 16px}
-    .erp-nav .navbar-brand img{height:46px}
+    .erp-nav .navbar-brand img{height:38px}
 }
 
 /* Dropdown menus */
@@ -226,6 +226,19 @@ nav.erp-nav .navbar-nav>.nav-item.active>.nav-link:focus{
 .erp-support-call:hover{
     background:rgba(255,255,255,.06);color:#fff;text-decoration:none}
 .erp-support-call i{color:#6366f1;font-size:12px;flex-shrink:0;width:14px;text-align:center}
+
+/* Connect block */
+.erp-connect-block{padding:2px 0}
+.erp-connect-item{
+    display:flex;align-items:center;gap:8px;
+    color:rgba(255,255,255,.78);font-size:12.5px;font-weight:500;
+    text-decoration:none;padding:7px 12px;border-radius:6px;
+    transition:background .12s,color .12s}
+.erp-connect-item:hover{background:rgba(255,255,255,.06);color:#fff;text-decoration:none}
+.erp-connect-item i{font-size:13px;flex-shrink:0;width:14px;text-align:center}
+.erp-ci-globe{color:#6366f1}
+.erp-ci-li{color:#0a66c2}
+.erp-ci-fb{color:#1877f2}
 
 /* User badge */
 .erp-nav .erp-user-btn{display:flex;align-items:center;gap:8px;
@@ -613,6 +626,18 @@ nav.erp-nav .navbar-nav>.nav-item.active>.nav-link:focus{
                         <a class="erp-support-call" href="tel:<?= CHtml::encode(preg_replace('/\s+/', '', Yii::app()->params->adminPhone)) ?>">
                             <i class="fa fa-phone"></i>
                             <?= CHtml::encode(Yii::app()->params->adminPhone) ?>
+                        </a>
+                    </div>
+                    <div class="erp-connect-block">
+                        <div class="erp-support-label"><i class="fa fa-globe"></i> Connect</div>
+                        <a class="erp-connect-item" href="http://raihan-uddin.github.io/" target="_blank" rel="noopener">
+                            <i class="fa fa-globe erp-ci-globe"></i> Portfolio
+                        </a>
+                        <a class="erp-connect-item" href="https://www.linkedin.com/in/raihanuddin2/" target="_blank" rel="noopener">
+                            <i class="fa fa-linkedin-square erp-ci-li"></i> LinkedIn
+                        </a>
+                        <a class="erp-connect-item" href="https://www.facebook.com/raihan.uddin22" target="_blank" rel="noopener">
+                            <i class="fa fa-facebook-square erp-ci-fb"></i> Facebook
                         </a>
                     </div>
                     <div class="dropdown-divider"></div>
