@@ -7,10 +7,17 @@
     <div class="lp-orb lp-orb-2"></div>
     <div class="lp-orb lp-orb-3"></div>
     <div class="lp-grid"></div>
+    <div class="lp-cursor-glow" id="lp-cursor-glow"></div>
 </div>
+
+<!-- Card rotating border wrapper -->
+<div class="lp-card-ring" id="lp-card-ring"></div>
 
 <div class="login-container">
     <div class="login-card">
+
+        <!-- Version badge -->
+        <div class="lp-version-badge">v<?= Yii::app()->params['version']; ?></div>
 
         <!-- Logo -->
         <div class="lp-logo-wrap">
@@ -19,7 +26,14 @@
                  class="company-logo"/>
         </div>
 
+        <!-- Time-of-day greeting -->
+        <div class="lp-greeting" id="lp-greeting" aria-live="polite"></div>
+
         <h5 class="lp-title">Sign in to your account</h5>
+
+        <!-- Screen-reader announcements -->
+        <div id="lp-sr-live" role="status" aria-live="polite" aria-atomic="true"
+             style="position:absolute;width:1px;height:1px;overflow:hidden;clip:rect(0,0,0,0);"></div>
 
         <?php
         $form = $this->beginWidget('CActiveForm', [
@@ -57,6 +71,9 @@
                 </button>
             </div>
             <div class="lp-err"><?= $form->error($model, 'password'); ?></div>
+            <div class="lp-capslock" id="lp-capslock" role="alert" aria-live="assertive">
+                <i class="fas fa-exclamation-triangle"></i> Caps Lock is on
+            </div>
         </div>
 
         <div class="lp-remember">
@@ -294,16 +311,9 @@ body.hold-transition.login-page {
     box-shadow: 0 8px 22px rgba(99,102,241,0.5);
 }
 .lp-btn:active { transform: translateY(0); }
-/* Ripple */
-.lp-btn::after {
-    content: ''; position: absolute;
-    width: 120px; height: 120px;
-    background: rgba(255,255,255,0.2); border-radius: 50%;
-    top: 50%; left: 50%;
-    transform: translate(-50%,-50%) scale(0); opacity: 0;
-    transition: transform 0.4s, opacity 0.6s;
+@keyframes btnRippleAnim {
+    to { transform: scale(1); opacity: 0; }
 }
-.lp-btn:active::after { transform: translate(-50%,-50%) scale(3); opacity: 1; transition: 0s; }
 
 /* ── Support button ── */
 .lp-support-btn {
@@ -420,6 +430,108 @@ body.hold-transition.login-page {
     50%      { box-shadow: 0 6px 24px rgba(99,102,241,0.65), 0 0 0 4px rgba(99,102,241,0.08); }
 }
 
+/* ── Cursor glow ── */
+.lp-cursor-glow {
+    position: absolute;
+    width: 600px; height: 600px;
+    border-radius: 50%;
+    background: radial-gradient(circle, rgba(99,102,241,0.18) 0%, transparent 70%);
+    pointer-events: none;
+    transform: translate(-50%, -50%);
+    transition: left 0.12s ease, top 0.12s ease;
+    will-change: left, top;
+}
+
+/* ── Rotating card border ring ── */
+.lp-card-ring {
+    position: fixed;
+    border-radius: 22px;
+    pointer-events: none;
+    z-index: 2;
+    opacity: 0;
+    transition: opacity 0.8s ease 0.7s;
+}
+.lp-card-ring.visible {
+    opacity: 1;
+}
+.lp-card-ring::before {
+    content: '';
+    position: absolute;
+    inset: -2px;
+    border-radius: inherit;
+    background: conic-gradient(
+        from var(--ring-angle, 0deg),
+        transparent 0deg,
+        rgba(99,102,241,0.6) 60deg,
+        rgba(168,85,247,0.5) 120deg,
+        rgba(99,102,241,0.6) 180deg,
+        transparent 240deg
+    );
+    animation: ringRotate 4s linear infinite;
+    -webkit-mask: linear-gradient(#fff 0 0) content-box, linear-gradient(#fff 0 0);
+    -webkit-mask-composite: xor;
+    mask-composite: exclude;
+    padding: 2px;
+}
+@keyframes ringRotate {
+    from { --ring-angle: 0deg; }
+    to   { --ring-angle: 360deg; }
+}
+/* @property needed for the conic rotation trick */
+@property --ring-angle {
+    syntax: '<angle>';
+    inherits: false;
+    initial-value: 0deg;
+}
+
+/* ── Version badge ── */
+.lp-version-badge {
+    position: absolute; top: 14px; right: 16px;
+    font-size: 10px; font-weight: 700; letter-spacing: 0.5px;
+    color: #6366f1; background: rgba(99,102,241,0.08);
+    border: 1px solid rgba(99,102,241,0.2);
+    border-radius: 20px; padding: 2px 9px;
+    animation: fadeSlide 0.6s ease 0.8s both;
+}
+
+/* ── Time-of-day greeting ── */
+.lp-greeting {
+    text-align: center;
+    font-size: 13px; font-weight: 600;
+    color: #6b7280; margin-bottom: 6px;
+    min-height: 20px;
+    animation: fadeSlide 0.6s ease 0.2s both;
+}
+.lp-greeting .lp-greet-icon {
+    display: inline-block;
+    animation: greetBounce 2.5s ease-in-out 1s infinite;
+}
+@keyframes greetBounce {
+    0%,100% { transform: translateY(0); }
+    50%      { transform: translateY(-3px); }
+}
+
+/* ── Caps Lock warning ── */
+.lp-capslock {
+    display: none;
+    align-items: center; gap: 5px;
+    font-size: 11.5px; font-weight: 600; color: #f59e0b;
+    background: rgba(245,158,11,0.08);
+    border: 1px solid rgba(245,158,11,0.25);
+    border-radius: 6px; padding: 4px 10px;
+    margin-top: 5px;
+}
+.lp-capslock.visible {
+    display: flex;
+    animation: capsIn 0.25s ease forwards;
+}
+@keyframes capsIn {
+    from { opacity: 0; transform: translateY(-4px); }
+    to   { opacity: 1; transform: translateY(0); }
+}
+
+/* ── Title scramble — no extra CSS needed, JS handles it ── */
+
 /* ── Responsive ── */
 @media (max-width: 480px) {
     .login-card   { padding: 28px 22px; }
@@ -437,6 +549,98 @@ function lpTogglePw() {
 }
 
 document.addEventListener('DOMContentLoaded', function () {
+
+    /* ── Time-of-day greeting ── */
+    var greetEl = document.getElementById('lp-greeting');
+    if (greetEl) {
+        var h = new Date().getHours();
+        var greetData =
+            h >= 5  && h < 12 ? { text: 'Good morning',   icon: '☀️'  } :
+            h >= 12 && h < 17 ? { text: 'Good afternoon', icon: '🌤️' } :
+            h >= 17 && h < 21 ? { text: 'Good evening',   icon: '🌆' } :
+                                 { text: 'Good night',     icon: '🌙'  };
+        greetEl.innerHTML =
+            greetData.text + ' <span class="lp-greet-icon">' + greetData.icon + '</span>';
+    }
+
+    /* ── Caps Lock warning ── */
+    var capsEl  = document.getElementById('lp-capslock');
+    var pwInput = document.getElementById('lp-pw');
+    var pwFocused = false;
+    if (capsEl && pwInput) {
+        var checkCaps = function (e) {
+            if (typeof e.getModifierState !== 'function') return;
+            var on = e.getModifierState('CapsLock');
+            if (on) {
+                if (!capsEl.classList.contains('visible')) {
+                    /* re-trigger animation by removing and re-adding */
+                    capsEl.classList.remove('visible');
+                    void capsEl.offsetWidth;
+                    capsEl.classList.add('visible');
+                }
+                document.getElementById('lp-sr-live').textContent = 'Warning: Caps Lock is on.';
+            } else {
+                capsEl.classList.remove('visible');
+                document.getElementById('lp-sr-live').textContent = '';
+            }
+        };
+        pwInput.addEventListener('focus',  function ()  { pwFocused = true; });
+        pwInput.addEventListener('blur',   function ()  { pwFocused = false; });
+        /* listen on document so any keypress while pw is focused updates the warning */
+        document.addEventListener('keydown', function (e) { if (pwFocused) checkCaps(e); });
+        document.addEventListener('keyup',   function (e) { if (pwFocused) checkCaps(e); });
+        /* also check immediately when the field gains focus */
+        pwInput.addEventListener('focus', checkCaps);
+    }
+
+    /* ── Focus trap ── */
+    var cardTrap = document.querySelector('.login-card');
+    if (cardTrap) {
+        var focusable = 'a[href],button:not([disabled]),input:not([disabled]),select,textarea,[tabindex]:not([tabindex="-1"])';
+        cardTrap.addEventListener('keydown', function (e) {
+            if (e.key !== 'Tab') return;
+            var els   = Array.prototype.slice.call(cardTrap.querySelectorAll(focusable));
+            var first = els[0], last = els[els.length - 1];
+            if (e.shiftKey) {
+                if (document.activeElement === first) { e.preventDefault(); last.focus(); }
+            } else {
+                if (document.activeElement === last)  { e.preventDefault(); first.focus(); }
+            }
+        });
+    }
+
+    /* ── Button click ripple ── */
+    var btn = document.querySelector('.lp-btn');
+    if (btn) {
+        btn.addEventListener('click', function (e) {
+            var ripple = document.createElement('span');
+            ripple.className = 'lp-btn-ripple';
+            var rect = btn.getBoundingClientRect();
+            var size = Math.max(rect.width, rect.height) * 2;
+            ripple.style.cssText =
+                'position:absolute;border-radius:50%;background:rgba(255,255,255,0.35);' +
+                'pointer-events:none;transform:scale(0);animation:btnRippleAnim 0.55s ease-out forwards;' +
+                'width:' + size + 'px;height:' + size + 'px;' +
+                'left:' + (e.clientX - rect.left - size / 2) + 'px;' +
+                'top:'  + (e.clientY - rect.top  - size / 2) + 'px;';
+            btn.appendChild(ripple);
+            setTimeout(function () { ripple.remove(); }, 600);
+        });
+    }
+
+    /* ── aria-live: announce validation errors ── */
+    var srLive = document.getElementById('lp-sr-live');
+    var loginForm = document.getElementById('login-form');
+    if (loginForm && srLive) {
+        loginForm.addEventListener('submit', function () {
+            setTimeout(function () {
+                var errs = loginForm.querySelectorAll('.errorMessage');
+                var msgs = [];
+                errs.forEach(function (el) { if (el.textContent.trim()) msgs.push(el.textContent.trim()); });
+                srLive.textContent = msgs.length ? msgs.join('. ') : '';
+            }, 200);
+        });
+    }
 
     /* ── Typewriter loop ── */
     var tw = document.querySelector('.typewriter');
@@ -476,55 +680,135 @@ document.addEventListener('DOMContentLoaded', function () {
         resize();
         window.addEventListener('resize', resize);
 
-        var COUNT = 55;
+        /* night (20-6) = twinkling stars, day/evening = snowflakes */
+        var nowH       = new Date().getHours();
+        var canvasMode = (nowH >= 20 || nowH < 6) ? 'stars' : 'snow';
+
+        var COUNT = canvasMode === 'stars' ? 80 : 55;
         pts = [];
         for (var i = 0; i < COUNT; i++) {
             pts.push({
-                x:  Math.random() * W,
-                y:  Math.random() * H,
-                vx: (Math.random() - 0.5) * 0.4,
-                vy: (Math.random() - 0.5) * 0.4,
-                r:  1.5 + Math.random() * 1.5
+                x:      Math.random() * W,
+                y:      Math.random() * H,
+                vx:     canvasMode === 'snow' ? (Math.random() - 0.3) * 0.35 : (Math.random() - 0.5) * 0.4,
+                vy:     canvasMode === 'snow' ? 0.3 + Math.random() * 0.5    : (Math.random() - 0.5) * 0.4,
+                r:      canvasMode === 'stars' ? 0.8 + Math.random() * 2     : 1.5 + Math.random() * 1.5,
+                phase:  Math.random() * Math.PI * 2  /* twinkle phase */
             });
         }
 
         var LINK_DIST = 130;
+        var tickCount = 0;
 
         function tick() {
             ctx.clearRect(0, 0, W, H);
+            tickCount++;
 
             for (var a = 0; a < pts.length; a++) {
-                var p = pts[a];
-                p.x += p.vx;
-                p.y += p.vy;
-                if (p.x < 0 || p.x > W) p.vx *= -1;
-                if (p.y < 0 || p.y > H) p.vy *= -1;
+                var p  = pts[a];
 
-                /* dot */
-                ctx.beginPath();
-                ctx.arc(p.x, p.y, p.r, 0, Math.PI * 2);
-                ctx.fillStyle = 'rgba(99,102,241,0.35)';
-                ctx.fill();
+                if (canvasMode === 'snow') {
+                    /* Snowflakes drift down, gentle sway */
+                    p.x += p.vx + Math.sin(tickCount * 0.02 + p.phase) * 0.2;
+                    p.y += p.vy;
+                    if (p.y > H + 10) { p.y = -10; p.x = Math.random() * W; }
+                    if (p.x < 0)  p.x = W;
+                    if (p.x > W)  p.x = 0;
 
-                /* lines to nearby dots */
-                for (var b = a + 1; b < pts.length; b++) {
-                    var q  = pts[b];
-                    var dx = p.x - q.x, dy = p.y - q.y;
-                    var d  = Math.sqrt(dx * dx + dy * dy);
-                    if (d < LINK_DIST) {
-                        ctx.beginPath();
-                        ctx.moveTo(p.x, p.y);
-                        ctx.lineTo(q.x, q.y);
-                        ctx.strokeStyle = 'rgba(99,102,241,' + (0.12 * (1 - d / LINK_DIST)) + ')';
-                        ctx.lineWidth = 0.8;
-                        ctx.stroke();
-                    }
+                    var alpha = 0.25 + 0.35 * Math.sin(tickCount * 0.03 + p.phase);
+                    ctx.beginPath();
+                    ctx.arc(p.x, p.y, p.r, 0, Math.PI * 2);
+                    ctx.fillStyle = 'rgba(147,197,253,' + alpha + ')';
+                    ctx.fill();
+
+                } else if (canvasMode === 'stars') {
+                    /* Stars twinkle in place, very slow drift */
+                    p.x += p.vx * 0.15;
+                    p.y += p.vy * 0.15;
+                    if (p.x < 0 || p.x > W) p.vx *= -1;
+                    if (p.y < 0 || p.y > H) p.vy *= -1;
+
+                    var twinkle = 0.4 + 0.6 * Math.abs(Math.sin(tickCount * 0.04 + p.phase));
+                    ctx.beginPath();
+                    ctx.arc(p.x, p.y, p.r * twinkle, 0, Math.PI * 2);
+                    ctx.fillStyle = 'rgba(253,224,71,' + (twinkle * 0.6) + ')';
+                    ctx.shadowBlur  = 4 * twinkle;
+                    ctx.shadowColor = 'rgba(253,224,71,0.5)';
+                    ctx.fill();
+                    ctx.shadowBlur = 0;
+
                 }
             }
             requestAnimationFrame(tick);
         }
         tick();
     }
+
+    /* ── Cursor glow follows mouse ── */
+    var cursorGlow = document.getElementById('lp-cursor-glow');
+    if (cursorGlow) {
+        document.addEventListener('mousemove', function (e) {
+            cursorGlow.style.left = e.clientX + 'px';
+            cursorGlow.style.top  = e.clientY + 'px';
+        });
+    }
+
+    /* ── Rotating border ring — track card position ── */
+    var ring     = document.getElementById('lp-card-ring');
+    var cardEl   = document.querySelector('.login-card');
+    function positionRing() {
+        if (!ring || !cardEl) return;
+        var r = cardEl.getBoundingClientRect();
+        ring.style.left   = r.left   + 'px';
+        ring.style.top    = r.top    + 'px';
+        ring.style.width  = r.width  + 'px';
+        ring.style.height = r.height + 'px';
+    }
+    positionRing();
+    window.addEventListener('resize', positionRing);
+    /* Show ring after card entrance */
+    setTimeout(function () {
+        if (ring) ring.classList.add('visible');
+    }, 900);
+
+    /* ── Title text scramble ── */
+    var titleEl = document.querySelector('.lp-title');
+    if (titleEl) {
+        var original = titleEl.textContent.trim();
+        var chars    = 'ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789!@#$';
+        var revealed = 0;
+        var frame    = 0;
+
+        function scrambleTick() {
+            var out = '';
+            for (var i = 0; i < original.length; i++) {
+                if (original[i] === ' ') { out += ' '; continue; }
+                if (i < revealed) {
+                    out += original[i];
+                } else {
+                    out += chars[Math.floor(Math.random() * chars.length)];
+                }
+            }
+            titleEl.textContent = out;
+            frame++;
+            if (frame % 3 === 0) revealed++;
+            if (revealed <= original.length) {
+                requestAnimationFrame(scrambleTick);
+            } else {
+                titleEl.textContent = original;
+            }
+        }
+        /* Start scramble after card enters */
+        setTimeout(scrambleTick, 500);
+    }
+
+    /* ── Particles attracted toward cursor ── */
+    var mouseX = window.innerWidth  / 2;
+    var mouseY = window.innerHeight / 2;
+    document.addEventListener('mousemove', function (e) {
+        mouseX = e.clientX;
+        mouseY = e.clientY;
+    });
 
     /* ── 3-D card tilt on mouse move ── */
     var card = document.querySelector('.login-card');
