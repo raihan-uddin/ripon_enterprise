@@ -6,6 +6,8 @@ This file provides guidance to Claude Code (claude.ai/code) when working with co
 
 This is a PHP/Yii 1.x enterprise ERP system for inventory management with integrated sales, procurement, accounting, and inventory modules. The application runs on Apache + PHP + MySQL with no build pipeline.
 
+**Company logo:** `themes/erp/images/logo.svg` — this is the canonical project logo. Always use `logo.svg` (not `logo.png`) when referencing "the logo".
+
 ## Running the Application
 
 **Requirements:** PHP 5.3+, MySQL, Apache/Nginx
