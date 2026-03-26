@@ -1,204 +1,136 @@
 <?php
-
-// Get the start and end date of the current month
 $startDate = date('Y-m-01');
-$endDate = date('Y-m-t');
+$endDate   = date('Y-m-t');
 ?>
-<div class="row">
-    <?php
-    if (Yii::app()->user->checkAccess('ProdModels.Admin') || Yii::app()->user->checkAccess('ProdModels.Create') || Yii::app()->user->checkAccess('ProdModels.Update')) {
-        ?>
-        <a class="btn btn-app bg-secondary"
-           href="<?= Yii::app()->createUrl("prodModels/create"/*,array("id"=>$data->primaryKey)*/) ?>">
-        <span class="badge bg-success">
-            <?= ProdModels::model()->count() ?>
-        </span>
-            <i class="fa fa-barcode"></i> Products
-        </a>
-        <?php
-    }
-    ?>
-    <?php
-    if (Yii::app()->user->checkAccess('Sell.Customers.Admin')) {
-        ?>
-        <a class="btn btn-app bg-success" href="<?= Yii::app()->createUrl("sell/customers/admin") ?>">
-            <span class="badge bg-purple"><?= Customers::model()->count() ?></span>
-            <i class="fa fa-users"></i> Customers
-        </a>
-        <?php
-    }
-    ?>
-    <?php
-    if (Yii::app()->user->checkAccess('Sell.sellOrderQuotation.Admin')) {
-        ?>
-        <a class="btn btn-app bg-fuchsia" href="<?= Yii::app()->createUrl("/sell/sellOrderQuotation/create") ?>">
-        <span class="badge bg-teal"><?=
-            Yii::app()->db->createCommand()
-                    ->select('FORMAT(ROUND(SUM(grand_total)), 0) as total_amount')
-                    ->from('sell_order_quotation')
-                    ->where('date BETWEEN :start_date AND :end_date',
-                            array(
-                                    ':start_date' => $startDate,
-                                    ':end_date' => $endDate,
-                            ))
-                    ->queryScalar();
+<div class="db-actions-grid">
 
-            ?></span>
-            <i class="fa fa-inbox"></i> Draft
-            <small>(Ctrl+S)</small>
-        </a>
-        <?php
-    }
-    ?><?php
-    if (Yii::app()->user->checkAccess('Sell.SellOrder.Admin')) {
-        ?>
-        <a class="btn btn-app bg-danger" href="<?= Yii::app()->createUrl("/sell/sellOrder/create") ?>">
-        <span class="badge bg-teal"><?=
-            Yii::app()->db->createCommand()
-                    ->select('FORMAT(ROUND(SUM(grand_total)), 0) as total_amount')
-                    ->from('sell_order')
-                    ->where('order_type = :type AND date BETWEEN :start_date AND :end_date',
-                            array(
-                                    ':type' => SellOrder::NEW_ORDER,
-                                    ':start_date' => $startDate,
-                                    ':end_date' => $endDate,
-                            ))
-                    ->queryScalar();
-            /*SellOrder::model()->countByAttributes(array(
-                'order_type' => SellOrder::NEW_ORDER
-            )); */
+    <?php if (Yii::app()->user->checkAccess('ProdModels.Admin') || Yii::app()->user->checkAccess('ProdModels.Create') || Yii::app()->user->checkAccess('ProdModels.Update')): ?>
+    <a class="db-action-card t-gray" href="<?= Yii::app()->createUrl('prodModels/create') ?>">
+        <span class="db-action-badge"><?= ProdModels::model()->count() ?></span>
+        <div class="db-action-icon"><i class="fa fa-th-large"></i></div>
+        <div class="db-action-label">Products</div>
+    </a>
+    <?php endif; ?>
 
-            ?></span>
-            <i class="fa fa-inbox"></i> Orders
-            <small>(Ctrl+S)</small>
-        </a>
-        <?php
-    }
-    ?>
-    <?php
-    if (Yii::app()->user->checkAccess('Sell.SellReturn.CreateProductReturn')) {
-        ?>
-        <a class="btn btn-app bg-success" href="<?= Yii::app()->createUrl("sell/SellReturn/CreateProductReturn") ?>">
-        <span class="badge bg-teal"><?=
-            Yii::app()->db->createCommand()
-                    ->select('FORMAT(ROUND(SUM(return_amount)), 0) as return_amount')
-                    ->from('sell_return')
-                    ->where('return_date BETWEEN :start_date AND :end_date',
-                            array(
-                                    ':start_date' => $startDate,
-                                    ':end_date' => $endDate,
-                            ))
-                    ->queryScalar();
-            ?></span>
-            <i class="fa fa-undo"></i> Return
-        </a>
-        <?php
-    }
-    ?>
+    <?php if (Yii::app()->user->checkAccess('Sell.Customers.Admin')): ?>
+    <a class="db-action-card t-green" href="<?= Yii::app()->createUrl('sell/customers/admin') ?>">
+        <span class="db-action-badge"><?= Customers::model()->count() ?></span>
+        <div class="db-action-icon"><i class="fa fa-user-circle-o"></i></div>
+        <div class="db-action-label">Customers</div>
+    </a>
+    <?php endif; ?>
 
-    <?php
-    if (Yii::app()->user->checkAccess('Commercial.PurchaseOrder.Create')) {
-        ?>
-        <a class="btn btn-app bg-info" href="<?= Yii::app()->createUrl("/commercial/purchaseOrder/create") ?>">
-        <span class="badge bg-teal"><?=
+    <?php if (Yii::app()->user->checkAccess('Sell.sellOrderQuotation.Admin')): ?>
+    <a class="db-action-card t-purple" href="<?= Yii::app()->createUrl('/sell/sellOrderQuotation/create') ?>">
+        <span class="db-action-badge"><?=
             Yii::app()->db->createCommand()
-                    ->select('FORMAT(ROUND(SUM(grand_total)), 0) as total_amount')
-                    ->from('purchase_order')
-                    ->where('date BETWEEN :start_date AND :end_date', array(
-                            ':start_date' => $startDate,
-                            ':end_date' => $endDate,
-                    ))
-                    ->queryScalar();
-            ?></span>
-            <i class="fa fa-inbox"></i> Purchase Order
-            <small>(Ctrl+P)</small>
-        </a>
-        <?php
-    }
-    ?>
-    <?php
-    if (Yii::app()->user->checkAccess('Accounting.Expense.Create')) {
-        ?>
-        <a class="btn btn-app bg-gradient-warning" href="<?= Yii::app()->createUrl("/accounting/expense/create") ?>">
-            <span class="badge bg-teal"><?=
-                Yii::app()->db->createCommand()
-                        ->select('FORMAT(ROUND(SUM(amount)), 0) as total_amount')
-                        ->from('expense')
-                        ->where(' date BETWEEN :start_date AND :end_date',
-                                array(
-                                        ':start_date' => $startDate,
-                                        ':end_date' => $endDate,
-                                ))
-                        ->queryScalar();
-                ?></span>
-            <i class="fa fa-money"></i> Expense
-        </a>
-        <?php
-    }
-    ?>
-    <?php
-    if (Yii::app()->user->checkAccess('Loan.LoanTransactions.Admin')) {
-        ?>
-        <a class="btn btn-app bg-gradient-danger"
-           href="<?= Yii::app()->createUrl("/loan/loanTransactions/admin") ?>">
-            <span class="badge bg-teal"><?=
-                Yii::app()->db->createCommand()
-                        ->select('FORMAT(ROUND(SUM(amount)), 0) as amount')
-                        ->from('loan_transactions')
-                        ->where(' transaction_date BETWEEN :start_date AND :end_date',
-                                array(
-                                        ':start_date' => $startDate,
-                                        ':end_date' => $endDate,
-                                ))
-                        ->queryScalar();
-                ?></span>
-            <i class="fa fa-money"></i> Loan
-        </a>
-        <?php
-    }
-    ?>
+                ->select('FORMAT(ROUND(SUM(grand_total)), 0) as total_amount')
+                ->from('sell_order_quotation')
+                ->where('date BETWEEN :s AND :e', [':s' => $startDate, ':e' => $endDate])
+                ->queryScalar();
+        ?></span>
+        <div class="db-action-icon"><i class="fa fa-file-text-o"></i></div>
+        <div class="db-action-label">Draft<small>Ctrl+S</small></div>
+    </a>
+    <?php endif; ?>
 
-    <?php
-    if (Yii::app()->user->checkAccess('Accounting.MoneyReceipt.AdminMoneyReceipt')) {
-        ?>
-        <a class="btn btn-app bg-primary"
-           href="<?= Yii::app()->createUrl("/accounting/moneyReceipt/adminMoneyReceipt") ?>">
-             <span class="badge bg-teal"><?=
-                 Yii::app()->db->createCommand()
-                         ->select('FORMAT(ROUND(SUM(amount)), 0) as total_amount')
-                         ->from('money_receipt')
-                         ->where(' date BETWEEN :start_date AND :end_date',
-                                 array(
-                                         ':start_date' => $startDate,
-                                         ':end_date' => $endDate,
-                                 ))
-                         ->queryScalar();
-                 ?></span>
-            <i class="fa fa-money"></i> Collection
-        </a>
-        <?php
-    }
-    ?>
-    <?php
-    if (Yii::app()->user->checkAccess('Accounting.PaymentReceipt.AdminPaymentReceipt')) {
-        ?>
-        <a class="btn btn-app bg-primary"
-           href="<?= Yii::app()->createUrl("/accounting/paymentReceipt/adminPaymentReceipt") ?>">
-             <span class="badge bg-teal"><?=
-                 Yii::app()->db->createCommand()
-                         ->select('FORMAT(ROUND(SUM(amount)), 0) as total_amount')
-                         ->from('payment_receipt')
-                         ->where(' date BETWEEN :start_date AND :end_date',
-                                 array(
-                                         ':start_date' => $startDate,
-                                         ':end_date' => $endDate,
-                                 ))
-                         ->queryScalar();
-                 ?></span>
-            <i class="fa fa-money"></i> Payment
-        </a>
-        <?php
-    }
-    ?>
+    <?php if (Yii::app()->user->checkAccess('Sell.SellOrder.Admin')): ?>
+    <a class="db-action-card t-red" href="<?= Yii::app()->createUrl('/sell/sellOrder/create') ?>">
+        <span class="db-action-badge"><?=
+            Yii::app()->db->createCommand()
+                ->select('FORMAT(ROUND(SUM(grand_total)), 0) as total_amount')
+                ->from('sell_order')
+                ->where('order_type = :type AND date BETWEEN :s AND :e',
+                    [':type' => SellOrder::NEW_ORDER, ':s' => $startDate, ':e' => $endDate])
+                ->queryScalar();
+        ?></span>
+        <div class="db-action-icon"><i class="fa fa-shopping-cart"></i></div>
+        <div class="db-action-label">Orders<small>Ctrl+S</small></div>
+    </a>
+    <?php endif; ?>
+
+    <?php if (Yii::app()->user->checkAccess('Sell.SellReturn.CreateProductReturn')): ?>
+    <a class="db-action-card t-rose" href="<?= Yii::app()->createUrl('sell/SellReturn/CreateProductReturn') ?>">
+        <span class="db-action-badge"><?=
+            Yii::app()->db->createCommand()
+                ->select('FORMAT(ROUND(SUM(return_amount)), 0) as return_amount')
+                ->from('sell_return')
+                ->where('return_date BETWEEN :s AND :e', [':s' => $startDate, ':e' => $endDate])
+                ->queryScalar();
+        ?></span>
+        <div class="db-action-icon"><i class="fa fa-reply"></i></div>
+        <div class="db-action-label">Return</div>
+    </a>
+    <?php endif; ?>
+
+    <?php if (Yii::app()->user->checkAccess('Commercial.PurchaseOrder.Create')): ?>
+    <a class="db-action-card t-blue" href="<?= Yii::app()->createUrl('/commercial/purchaseOrder/create') ?>">
+        <span class="db-action-badge"><?=
+            Yii::app()->db->createCommand()
+                ->select('FORMAT(ROUND(SUM(grand_total)), 0) as total_amount')
+                ->from('purchase_order')
+                ->where('date BETWEEN :s AND :e', [':s' => $startDate, ':e' => $endDate])
+                ->queryScalar();
+        ?></span>
+        <div class="db-action-icon"><i class="fa fa-truck"></i></div>
+        <div class="db-action-label">Purchase<small>Ctrl+P</small></div>
+    </a>
+    <?php endif; ?>
+
+    <?php if (Yii::app()->user->checkAccess('Accounting.Expense.Create')): ?>
+    <a class="db-action-card t-amber" href="<?= Yii::app()->createUrl('/accounting/expense/create') ?>">
+        <span class="db-action-badge"><?=
+            Yii::app()->db->createCommand()
+                ->select('FORMAT(ROUND(SUM(amount)), 0) as total_amount')
+                ->from('expense')
+                ->where('date BETWEEN :s AND :e', [':s' => $startDate, ':e' => $endDate])
+                ->queryScalar();
+        ?></span>
+        <div class="db-action-icon"><i class="fa fa-credit-card"></i></div>
+        <div class="db-action-label">Expense</div>
+    </a>
+    <?php endif; ?>
+
+    <?php if (Yii::app()->user->checkAccess('Loan.LoanTransactions.Admin')): ?>
+    <a class="db-action-card t-rose" href="<?= Yii::app()->createUrl('/loan/loanTransactions/admin') ?>">
+        <span class="db-action-badge"><?=
+            Yii::app()->db->createCommand()
+                ->select('FORMAT(ROUND(SUM(amount)), 0) as amount')
+                ->from('loan_transactions')
+                ->where('transaction_date BETWEEN :s AND :e', [':s' => $startDate, ':e' => $endDate])
+                ->queryScalar();
+        ?></span>
+        <div class="db-action-icon"><i class="fa fa-university"></i></div>
+        <div class="db-action-label">Loan</div>
+    </a>
+    <?php endif; ?>
+
+    <?php if (Yii::app()->user->checkAccess('Accounting.MoneyReceipt.AdminMoneyReceipt')): ?>
+    <a class="db-action-card t-indigo" href="<?= Yii::app()->createUrl('/accounting/moneyReceipt/adminMoneyReceipt') ?>">
+        <span class="db-action-badge"><?=
+            Yii::app()->db->createCommand()
+                ->select('FORMAT(ROUND(SUM(amount)), 0) as total_amount')
+                ->from('money_receipt')
+                ->where('date BETWEEN :s AND :e', [':s' => $startDate, ':e' => $endDate])
+                ->queryScalar();
+        ?></span>
+        <div class="db-action-icon"><i class="fa fa-sign-in"></i></div>
+        <div class="db-action-label">Collection</div>
+    </a>
+    <?php endif; ?>
+
+    <?php if (Yii::app()->user->checkAccess('Accounting.PaymentReceipt.AdminPaymentReceipt')): ?>
+    <a class="db-action-card t-teal" href="<?= Yii::app()->createUrl('/accounting/paymentReceipt/adminPaymentReceipt') ?>">
+        <span class="db-action-badge"><?=
+            Yii::app()->db->createCommand()
+                ->select('FORMAT(ROUND(SUM(amount)), 0) as total_amount')
+                ->from('payment_receipt')
+                ->where('date BETWEEN :s AND :e', [':s' => $startDate, ':e' => $endDate])
+                ->queryScalar();
+        ?></span>
+        <div class="db-action-icon"><i class="fa fa-sign-out"></i></div>
+        <div class="db-action-label">Payment</div>
+    </a>
+    <?php endif; ?>
+
 </div>
-
