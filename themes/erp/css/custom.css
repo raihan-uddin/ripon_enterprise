@@ -326,3 +326,10 @@ input:focus {
     text-align: center;
     padding: 6px 8px !important;
 }
+/* ── Navigation z-index fix ──
+   Dashboard animations create stacking contexts that overlap the nav
+   dropdown menus. Elevate the entire menu wrapper above page content. */
+.mainWrapperMenu {
+    position: relative;
+    z-index: 1050;
+}
