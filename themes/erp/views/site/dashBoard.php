@@ -428,15 +428,21 @@ $this->widget('application.components.BreadCrumb', array(
             body.style.maxHeight='0';body.style.opacity='0';
             body.classList.add('collapsed');btn.classList.add('collapsed');
         } else {
-            body.style.maxHeight=body.scrollHeight+'px';
+            body.style.maxHeight='none'; /* none = never clips dynamically-loaded content */
         }
         btn.addEventListener('click',function(){
             var isCollapsed=body.classList.contains('collapsed');
             if(isCollapsed){
+                /* expand: animate from 0 → scrollHeight, then release to none */
                 body.classList.remove('collapsed');btn.classList.remove('collapsed');
                 body.style.maxHeight=body.scrollHeight+'px';body.style.opacity='1';
+                body.addEventListener('transitionend',function onExp(){
+                    body.removeEventListener('transitionend',onExp);
+                    if(!body.classList.contains('collapsed')) body.style.maxHeight='none';
+                });
                 delete collapsed[id];
             } else {
+                /* collapse: pin current height first so transition has a start value */
                 body.style.maxHeight=body.scrollHeight+'px';
                 requestAnimationFrame(function(){
                     body.classList.add('collapsed');btn.classList.add('collapsed');
