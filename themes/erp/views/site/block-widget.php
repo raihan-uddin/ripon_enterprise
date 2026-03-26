@@ -30,14 +30,14 @@ $cS = new CDbCriteria(); $cS->select="COUNT(*) as id";
 $dS = Suppliers::model()->findByAttributes([],$cS);
 $totalSuppliers = $dS ? (int)$dS->id : 0;
 $lastSuppliers  = (int)$db->createCommand()->select('COUNT(*)')->from('suppliers')
-    ->where('created_at BETWEEN :s AND :e',[':s'=>$lS.' 00:00:00',':e'=>$lE.' 23:59:59'])->queryScalar();
+    ->where('created_datetime BETWEEN :s AND :e',[':s'=>$lS.' 00:00:00',':e'=>$lE.' 23:59:59'])->queryScalar();
 
 /* customers */
 $cC = new CDbCriteria(); $cC->select="COUNT(*) as id";
 $dC = Customers::model()->findByAttributes([],$cC);
 $totalCustomers = $dC ? (int)$dC->id : 0;
 $lastCustomers  = (int)$db->createCommand()->select('COUNT(*)')->from('customers')
-    ->where('created_at BETWEEN :s AND :e',[':s'=>$lS.' 00:00:00',':e'=>$lE.' 23:59:59'])->queryScalar();
+    ->where('created_datetime BETWEEN :s AND :e',[':s'=>$lS.' 00:00:00',':e'=>$lE.' 23:59:59'])->queryScalar();
 
 function bwPct($cur,$prev){
     if($prev<=0) return $cur>0?'+100':null;
