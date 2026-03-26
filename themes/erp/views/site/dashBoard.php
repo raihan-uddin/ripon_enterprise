@@ -247,6 +247,7 @@ $this->widget('application.components.BreadCrumb', array(
             </div>
         </div>
         <div class="db-shortcuts-hint">
+            <span class="db-kbd"><kbd>Ctrl</kbd>+<kbd>D</kbd> Draft</span>
             <span class="db-kbd"><kbd>Ctrl</kbd>+<kbd>S</kbd> Order</span>
             <span class="db-kbd"><kbd>Ctrl</kbd>+<kbd>P</kbd> Purchase</span>
             <span class="db-kbd"><kbd>Ctrl</kbd>+<kbd>E</kbd> Expense</span>
@@ -514,7 +515,8 @@ document.querySelectorAll('.db-section.db-animate').forEach(function(el){
 /* ── Keyboard shortcuts ── */
 $(document).keydown(function(e){
     if(document.activeElement.tagName==='INPUT'||document.activeElement.tagName==='TEXTAREA') return;
-    if(e.ctrlKey&&e.keyCode===83){e.preventDefault();window.location.href='<?= Yii::app()->createUrl("sell/sellOrder/create") ?>';}
+    if(e.ctrlKey&&e.keyCode===68){e.preventDefault();window.location.href='<?= Yii::app()->createUrl("sell/sellOrderQuotation/create") ?>';} /* Ctrl+D → Draft */
+    if(e.ctrlKey&&e.keyCode===83){e.preventDefault();window.location.href='<?= Yii::app()->createUrl("sell/sellOrder/create") ?>';} /* Ctrl+S → Orders */
     if(e.ctrlKey&&e.keyCode===80){e.preventDefault();window.location.href='<?= Yii::app()->createUrl("commercial/purchaseOrder/create") ?>';}
     if(e.ctrlKey&&e.keyCode===69){e.preventDefault();window.location.href='<?= Yii::app()->createUrl("accounting/expense/create") ?>';}
 });

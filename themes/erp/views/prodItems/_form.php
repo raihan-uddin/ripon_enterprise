@@ -12,6 +12,9 @@ $form = $this->beginWidget('CActiveForm', array(
     $(".alert").animate({opacity: 1.0}, 3000).fadeOut("slow");
 </script>
 
+<style>
+#prod-items-form .card-primary > .card-header { border-left: 3px solid #4f46e5; }
+</style>
 <div class="card card-primary">
     <div class="card-header">
         <h3 class="card-title"><?php echo($model->isNewRecord ? 'Add New Category' : 'Update Category'); ?></h3>
