@@ -48,14 +48,15 @@
 /* Chart cards */
 .ch-card{background:#fff;border-radius:14px;border:1px solid #f3f4f6;
     box-shadow:0 1px 3px rgba(0,0,0,.05),0 4px 14px rgba(0,0,0,.04);
-    overflow:hidden;margin-bottom:20px;animation:dbFadeUp .5s ease both}
+    margin-bottom:20px;animation:dbFadeUp .5s ease both}
+.ch-card-head{border-radius:14px 14px 0 0;overflow:hidden}
 .ch-card-head{display:flex;align-items:center;gap:12px;padding:12px 16px 10px;
     border-bottom:1px solid #f9fafb}
 .ch-card-icon{width:34px;height:34px;border-radius:8px;flex-shrink:0;
     display:flex;align-items:center;justify-content:center;font-size:14px}
 .ch-card-title{font-size:13px;font-weight:700;color:#111827;margin-bottom:1px}
 .ch-card-sub{font-size:11px;color:#9ca3af}
-.ch-card-body{padding:4px 8px 8px}
+.ch-card-body{padding:4px 8px 14px}
 .ch-card-actions{margin-left:auto;display:flex;gap:4px}
 .ch-toggle-btn{font-size:11px;font-weight:600;color:#9ca3af;border:1px solid #f3f4f6;
     background:none;border-radius:6px;padding:3px 8px;cursor:pointer;transition:all .15s}
@@ -217,12 +218,11 @@
             '<div><div class="ch-card-title">Return Ratio</div><div class="ch-card-sub">Sales vs returns</div></div>'+
             '</div><div class="ch-card-body"><div id="chart-ratio"></div></div></div></div>'+
             '</div>'+
-            '<div class="ch-card" style="animation-delay:.3s">'+
+            '<div class="ch-card" style="animation-delay:.3s;margin-bottom:0">'+
             '<div class="ch-card-head"><div class="ch-card-icon" style="background:rgba(245,158,11,.1);color:#d97706"><i class="fa fa-exchange"></i></div>'+
             '<div><div class="ch-card-title">Cash Flow</div><div class="ch-card-sub">Inflow vs Outflow comparison</div></div>'+
             '<div class="ch-card-actions"><button class="ch-toggle-btn active" data-chart="cashflow" data-type="bar">Bar</button><button class="ch-toggle-btn" data-chart="cashflow" data-type="line">Line</button></div>'+
-            '</div><div class="ch-card-body"><div id="chart-cashflow"></div></div></div></div>'+
-            '</div>';
+            '</div><div class="ch-card-body"><div id="chart-cashflow"></div></div></div>';
 
         document.getElementById('charts-container').innerHTML=html;
 
