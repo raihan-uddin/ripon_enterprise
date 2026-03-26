@@ -1,89 +1,85 @@
-<div class="row">
-    <div class="col-lg-4 col-md-6 col-sm-12 margin p-2">
-        <div class="input-group mb-3">
-            <input type="text" class="form-control" id="summary-daterange" placeholder="Select Date Range" value="<?= sprintf("%s - %s", date('d/m/Y'), date('d/m/Y')) ?>"
-                   aria-label="Select Date Range" aria-describedby="basic-addon2">
-            <div class="input-group-append">
-                <button class="btn btn-primary" type="button" id="profit-loss-summary-btn">Search</button>
-            </div>
+<div class="db-pl-card">
+    <div class="db-pl-icon"><i class="fa fa-line-chart"></i></div>
+    <div>
+        <div class="db-pl-label">Profit &amp; Loss Summary</div>
+        <small class="text-muted" style="font-size:11px;">Select a date range to analyse P&amp;L</small>
+    </div>
+    <div class="input-group">
+        <input type="text" class="form-control" id="summary-daterange"
+               placeholder="Select Date Range"
+               value="<?= sprintf("%s - %s", date('d/m/Y'), date('d/m/Y')) ?>"
+               aria-label="Select Date Range">
+        <div class="input-group-append">
+            <button class="btn btn-primary" type="button" id="profit-loss-summary-btn">
+                <i class="fa fa-search"></i> Search
+            </button>
         </div>
-        <!--        modal-->
-        <div class="modal fade" id="profit-loss-summary-modal" tabindex="-1" data-backdrop="static"  role="dialog"
-             aria-labelledby="profit-loss-summary-modal" aria-hidden="true">
-            <div class="modal-dialog modal-dialog-centered modal-lg" role="document">
-                <div class="modal-content">
-                    <div class="modal-header">
-                        <h5 class="modal-title" id="exampleModalLabel">Profit & Loss Summary</h5>
-                        <button type="button" class="close" data-dismiss="modal" aria-label="Close">
-                            <span aria-hidden="true">&times;</span>
-                        </button>
-                    </div>
-                    <div class="modal-body text-center">
-                        <p>Loading...</p> <!-- this will be replaced by the response from the server -->
-                    </div>
-                    <div class="modal-footer">
-                        <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
-                    </div>
-                </div>
+    </div>
+</div>
+
+<!-- Modal -->
+<div class="modal fade" id="profit-loss-summary-modal" tabindex="-1"
+     data-backdrop="static" role="dialog" aria-labelledby="profit-loss-summary-modal" aria-hidden="true">
+    <div class="modal-dialog modal-dialog-centered modal-lg" role="document">
+        <div class="modal-content" style="border-radius:14px; overflow:hidden;">
+            <div class="modal-header" style="background:#6366f1; color:#fff; border:none;">
+                <h5 class="modal-title" id="exampleModalLabel" style="font-size:15px; font-weight:600;">
+                    <i class="fa fa-line-chart mr-2"></i> Profit &amp; Loss Summary
+                </h5>
+                <button type="button" class="close" data-dismiss="modal" aria-label="Close"
+                        style="color:#fff; opacity:0.8;">
+                    <span aria-hidden="true">&times;</span>
+                </button>
+            </div>
+            <div class="modal-body text-center">
+                <p>Loading...</p>
+            </div>
+            <div class="modal-footer" style="border:none; padding-top:0;">
+                <button type="button" class="btn btn-secondary btn-sm" data-dismiss="modal"
+                        style="border-radius:8px;">Close</button>
             </div>
         </div>
     </div>
 </div>
+
 <script>
-    var picker = new Lightpick({
-        field: document.getElementById('summary-daterange'),
-        singleDate: false,
-        inline: false,
-        numberOfMonths: 2,
-        numberOfColumns: 2,
-        selectForward: true,
-        onSelect: function (start, end) {
-            var str = '';
-            str += start ? start.format('Do MMMM YYYY') + ' to ' : '';
-            str += end ? end.format('Do MMMM YYYY') : '...';
-            // document.getElementById('result-2').innerHTML = str;
+var picker = new Lightpick({
+    field: document.getElementById('summary-daterange'),
+    singleDate: false, inline: false,
+    numberOfMonths: 2, numberOfColumns: 2, selectForward: true,
+    onSelect: function (start, end) {}
+});
+
+$('#profit-loss-summary-btn').on('click', function () {
+    var dateRange = $('#summary-daterange').val();
+    dateRange = dateRange.split(' - ').map(function (d) {
+        return d.split('/').reverse().join('-');
+    }).join(' - ');
+
+    $('#profit-loss-summary-modal .modal-body').html(
+        '<div class="spinner-border text-primary" role="status"><span class="sr-only">Loading...</span></div>'
+    );
+    $('#profit-loss-summary-btn').prop('disabled', true)
+        .html('<span class="spinner-border spinner-border-sm" role="status" aria-hidden="true"></span> Loading...');
+
+    $.ajax({
+        url: '<?= Yii::app()->createUrl("site/profitLossSummary") ?>',
+        type: 'POST',
+        data: { dateRange: dateRange },
+        success: function (response) {
+            $('#profit-loss-summary-modal .modal-body').html(response);
+            $('#profit-loss-summary-btn').prop('disabled', false)
+                .html('<i class="fa fa-search"></i> Search');
+            $('#profit-loss-summary-modal').modal('show');
+            $('#profit-loss-summary-modal .modal-title').html(
+                '<i class="fa fa-line-chart mr-2"></i> Summary for (' + dateRange + ')'
+            );
+        },
+        error: function () {
+            toastr.error('An error occurred. Please try again later.');
+            $('#profit-loss-summary-btn').prop('disabled', false)
+                .html('<i class="fa fa-search"></i> Search');
         }
     });
-
-    // on click of search button get the date range and send it to the server & show the response on modal
-    $('#profit-loss-summary-btn').on('click', function () {
-        var dateRange = $('#summary-daterange').val();
-        // send the date range in yyyy-mm-dd format currently it is in dd/mm/yyyy format
-        dateRange = dateRange.split(' - ').map(function (date) {
-            return date.split('/').reverse().join('-');
-        }).join(' - ');
-
-        // Show spinner or loading text in the modal body & button disabled
-        $('#profit-loss-summary-modal .modal-body').html('<div class="spinner-border" role="status"><span class="sr-only">Loading...</span></div>');
-        $('#profit-loss-summary-btn').prop('disabled', true).html('<span class="spinner-border spinner-border-sm" role="status" aria-hidden="true"></span> Loading...');
-
-        $.ajax({
-            url: '<?= Yii::app()->createUrl("site/profitLossSummary") ?>',
-            type: 'POST',
-            data: {
-                dateRange: dateRange
-            },
-
-            success: function (response) {
-                // Hide spinner or loading text
-                $('#profit-loss-summary-modal .modal-body').html(response);
-
-                // Enable profit-loss-summary-btn
-                $('#profit-loss-summary-btn').prop('disabled', false).html('Search');
-                // Show the modal
-                $('#profit-loss-summary-modal').modal('show');
-                // Change the modal title to the selected date range
-                $('#profit-loss-summary-modal .modal-title').html(`Summary for (${dateRange})`);
-            },
-            error: function (xhr, status, error) {
-                // Handle errors if needed
-                toastr.error('An error occurred. Please try again later.');
-                // Hide spinner or loading text
-                $('#profit-loss-summary-modal .modal-body').html(response);
-                // Enable profit-loss-summary-btn
-                $('#profit-loss-summary-btn').prop('disabled', false).html('Search');
-            }
-        });
-    });
-
+});
 </script>

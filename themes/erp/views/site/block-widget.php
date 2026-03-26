@@ -1,73 +1,64 @@
+<?php
+/* ── fetch counts ── */
+$cOrders = new CDbCriteria();
+$cOrders->addColumnCondition(['order_type' => SellOrder::NEW_ORDER]);
+$cOrders->select = "COUNT(*) as id";
+$dOrders = SellOrder::model()->findByAttributes([], $cOrders);
+$totalOrders = $dOrders ? (int)$dOrders->id : 0;
+
+$cQuote = new CDbCriteria();
+$cQuote->addColumnCondition(['order_type' => SellOrder::REPAIR_ORDER]);
+$cQuote->select = "COUNT(*) as id";
+$dQuote = SellOrder::model()->findByAttributes([], $cQuote);
+$totalQuotations = $dQuote ? (int)$dQuote->id : 0;
+
+$cSupp = new CDbCriteria(); $cSupp->select = "COUNT(*) as id";
+$dSupp = Suppliers::model()->findByAttributes([], $cSupp);
+$totalSuppliers = $dSupp ? (int)$dSupp->id : 0;
+
+$cCust = new CDbCriteria(); $cCust->select = "COUNT(*) as id";
+$dCust = Customers::model()->findByAttributes([], $cCust);
+$totalCustomers = $dCust ? (int)$dCust->id : 0;
+?>
 <div class="row">
-    <div class="col-lg-3 col-6">
 
-        <div class="small-box bg-info">
-            <div class="inner">
-                <?php
-                $criteria = new CDbCriteria();
-                $criteria->addColumnCondition(['order_type' => SellOrder::NEW_ORDER]);
-                $criteria->select = "COUNT(*) as id";
-                $data = SellOrder::model()->findByAttributes([], $criteria);
-                ?>
-                <h3><?= $data ? $data->id : 0 ?></h3>
-                <p>Total Orders</p>
+    <div class="col-lg-3 col-sm-6 col-12">
+        <div class="db-stat-card c-indigo db-animate db-animate-d1">
+            <div class="db-stat-icon"><i class="fa fa-shopping-cart"></i></div>
+            <div class="db-stat-body">
+                <div class="db-stat-num" data-count="<?= $totalOrders ?>">0</div>
+                <div class="db-stat-label">Total Orders</div>
             </div>
-            <div class="icon">
-                <i class="fa fa-shopping-bag"></i>
-            </div>
-            <a href="#" class="small-box-footer">More info <i class="fa fa-arrow-circle-right"></i></a>
         </div>
     </div>
 
-    <div class="col-lg-3 col-6">
-
-        <div class="small-box bg-success">
-            <div class="inner">
-                <?php
-                $criteria = new CDbCriteria();
-                $criteria->addColumnCondition(['order_type' => SellOrder::REPAIR_ORDER]);
-                $criteria->select = "COUNT(*) as id";
-                $data = SellOrder::model()->findByAttributes([], $criteria);
-                ?>
-                <h3><?= $data ? $data->id : 0 ?><!--<sup style="font-size: 20px">%</sup>--></h3>
-                <p>Total Quotation</p>
+    <div class="col-lg-3 col-sm-6 col-12">
+        <div class="db-stat-card c-green db-animate db-animate-d2">
+            <div class="db-stat-icon"><i class="fa fa-file-text-o"></i></div>
+            <div class="db-stat-body">
+                <div class="db-stat-num" data-count="<?= $totalQuotations ?>">0</div>
+                <div class="db-stat-label">Total Quotations</div>
             </div>
-            <div class="icon">
-                <i class="fa fa-star"></i>
-            </div>
-            <a href="#" class="small-box-footer">More info <i class="fa fa-arrow-circle-right"></i></a>
         </div>
     </div>
 
-    <div class="col-lg-3 col-6">
-        <div class="small-box bg-warning">
-            <div class="inner">
-                <?php
-                $criteria = new CDbCriteria();
-                $criteria->select = "COUNT(*) as id";
-                $data = Suppliers::model()->findByAttributes([], $criteria);
-                ?>
-                <h3><?= $data ? $data->id : 0 ?></h3>
-                <p>Supplier</p>
+    <div class="col-lg-3 col-sm-6 col-12">
+        <div class="db-stat-card c-amber db-animate db-animate-d3">
+            <div class="db-stat-icon"><i class="fa fa-truck"></i></div>
+            <div class="db-stat-body">
+                <div class="db-stat-num" data-count="<?= $totalSuppliers ?>">0</div>
+                <div class="db-stat-label">Suppliers</div>
             </div>
-            <div class="icon">
-                <i class="fa fa-user"></i>
-            </div>
-            <a href="#" class="small-box-footer">More info <i class="fa fa-arrow-circle-right"></i></a>
         </div>
     </div>
 
-    <div class="col-lg-3 col-6">
-
-        <div class="small-box bg-danger">
-            <div class="inner">
-                <h3>65</h3>
-                <p>Unique Visitors</p>
+    <div class="col-lg-3 col-sm-6 col-12">
+        <div class="db-stat-card c-blue db-animate db-animate-d4">
+            <div class="db-stat-icon"><i class="fa fa-users"></i></div>
+            <div class="db-stat-body">
+                <div class="db-stat-num" data-count="<?= $totalCustomers ?>">0</div>
+                <div class="db-stat-label">Customers</div>
             </div>
-            <div class="icon">
-                <i class="fa fa-pie-chart"></i>
-            </div>
-            <a href="#" class="small-box-footer">More info <i class="fa fa-arrow-circle-right"></i></a>
         </div>
     </div>
 
