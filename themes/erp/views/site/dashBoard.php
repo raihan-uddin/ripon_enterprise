@@ -15,7 +15,8 @@ $this->widget('application.components.BreadCrumb', array(
 /* ── Welcome header ── */
 .db-header{display:flex;align-items:flex-start;justify-content:space-between;
     flex-wrap:wrap;gap:16px;margin-bottom:24px;padding:0 0 20px;
-    border-bottom:1px solid #f3f4f6;animation:dbFadeUp .5s cubic-bezier(.22,1,.36,1) both}
+    border-bottom:1px solid #f3f4f6;animation:dbFadeUp .5s cubic-bezier(.22,1,.36,1) both;
+    position:relative;z-index:100}
 .db-header-left{display:flex;align-items:center;gap:14px;flex:1;min-width:0;}
 .db-header-right{display:flex;flex-direction:column;align-items:flex-end;gap:8px}
 .db-avatar{width:52px;height:52px;border-radius:14px;flex-shrink:0;
