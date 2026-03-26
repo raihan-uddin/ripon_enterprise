@@ -40,35 +40,6 @@ $this->widget('application.components.BreadCrumb', array(
 .db-kbd kbd{font-size:9.5px;font-weight:700;background:#e5e7eb;border-radius:3px;
     padding:1px 4px;font-family:monospace;color:#374151}
 
-/* ── Quick search ── */
-.db-search-wrap{position:relative;flex:1;max-width:320px}
-.db-search-input{width:100%;height:36px;padding:0 36px 0 36px;
-    border:1.5px solid #e5e7eb;border-radius:10px;font-size:13px;
-    color:#111827;outline:none;background:#f9fafb;
-    transition:border-color .2s,background .2s,box-shadow .2s}
-.db-search-input:focus{border-color:#6366f1;background:#fff;
-    box-shadow:0 0 0 3px rgba(99,102,241,.12)}
-.db-search-ico{position:absolute;left:11px;top:50%;transform:translateY(-50%);
-    color:#9ca3af;font-size:13px;pointer-events:none}
-.db-search-clear{position:absolute;right:10px;top:50%;transform:translateY(-50%);
-    color:#9ca3af;font-size:12px;cursor:pointer;display:none;
-    background:none;border:none;padding:0;line-height:1}
-.db-search-drop{position:absolute;top:calc(100% + 6px);left:0;right:0;
-    background:#fff;border:1px solid #f3f4f6;border-radius:12px;
-    box-shadow:0 8px 24px rgba(0,0,0,.12);z-index:999;
-    overflow:hidden;display:none;animation:dbFadeUp .15s ease}
-.db-search-item{display:flex;align-items:center;gap:10px;
-    padding:9px 14px;cursor:pointer;text-decoration:none;
-    transition:background .15s;color:#374151}
-.db-search-item:hover{background:#f9fafb;text-decoration:none;color:#374151}
-.db-search-item-icon{width:28px;height:28px;border-radius:7px;flex-shrink:0;
-    display:flex;align-items:center;justify-content:center;font-size:12px}
-.db-search-item-label{font-size:12.5px;font-weight:500}
-.db-search-item-type{font-size:10px;color:#9ca3af;margin-left:auto;white-space:nowrap}
-.db-search-empty{padding:14px;text-align:center;font-size:12.5px;color:#9ca3af}
-.db-search-item.focused{background:#f0f0ff;color:#374151}
-.db-search-section{font-size:10px;font-weight:700;text-transform:uppercase;
-    letter-spacing:.7px;color:#9ca3af;padding:8px 14px 4px}
 
 /* ── Today's snapshot strip ── */
 .db-today-strip{display:grid;grid-template-columns:repeat(4,1fr);gap:10px;
@@ -244,7 +215,6 @@ $this->widget('application.components.BreadCrumb', array(
     .db-avatar{width:44px;height:44px;font-size:17px}
     .db-header-right{width:100%}.db-month-progress{width:100%}
     .db-today-strip{grid-template-columns:repeat(2,1fr)}
-    .db-search-wrap{max-width:100%}
 }
 @media(max-width:340px){.db-actions-grid{grid-template-columns:repeat(2,1fr)}}
 </style>
@@ -259,16 +229,6 @@ $this->widget('application.components.BreadCrumb', array(
         </div>
     </div>
     <div class="db-header-right">
-        <!-- Quick search -->
-        <div class="db-search-wrap">
-            <i class="fa fa-search db-search-ico"></i>
-            <input type="text" id="db-search-input" class="db-search-input"
-                   placeholder="Search customers, products, orders…" autocomplete="off">
-            <button class="db-search-clear" id="db-search-clear" title="Clear">
-                <i class="fa fa-times"></i>
-            </button>
-            <div class="db-search-drop" id="db-search-drop"></div>
-        </div>
         <div class="db-month-progress">
             <div class="db-month-label">
                 <?= date('F Y') ?> &nbsp;<span id="db-month-pct">0%</span>
@@ -456,78 +416,6 @@ $this->widget('application.components.BreadCrumb', array(
         }
     });
 
-    /* ── Quick search ── */
-    var searchInput=document.getElementById('db-search-input');
-    var searchDrop =document.getElementById('db-search-drop');
-    var searchClear=document.getElementById('db-search-clear');
-    var searchTimer=null;
-    var typeIcons={customer:'fa-user-circle-o',product:'fa-th-large',order:'fa-shopping-cart'};
-    var typeColors={customer:'rgba(34,197,94,.1)',product:'rgba(99,102,241,.1)',order:'rgba(239,68,68,.1)'};
-    var typeTextColors={customer:'#16a34a',product:'#6366f1',order:'#dc2626'};
-
-    if(searchInput){
-        searchInput.addEventListener('input',function(){
-            var q=this.value.trim();
-            if(searchClear) searchClear.style.display=q?'block':'none';
-            clearTimeout(searchTimer);
-            if(q.length<2){searchDrop.style.display='none';return;}
-            searchTimer=setTimeout(function(){
-                $.ajax({url:'<?= Yii::app()->createUrl("site/quickSearch") ?>',type:'POST',
-                    data:{q:q},dataType:'json',
-                    success:function(res){
-                        if(!res.results||!res.results.length){
-                            searchDrop.innerHTML='<div class="db-search-empty">No results found</div>';
-                        } else {
-                            var html='';
-                            res.results.forEach(function(r){
-                                html+='<a href="'+r.url+'" class="db-search-item">'+
-                                    '<span class="db-search-item-icon" style="background:'+typeColors[r.type]+';color:'+typeTextColors[r.type]+'"><i class="fa '+typeIcons[r.type]+'"></i></span>'+
-                                    '<span class="db-search-item-label">'+r.label+'</span>'+
-                                    '<span class="db-search-item-type">'+r.type+'</span>'+
-                                    '</a>';
-                            });
-                            searchDrop.innerHTML=html;
-                        }
-                        searchDrop.style.display='block';
-                        /* reset keyboard focus */
-                        searchDrop.querySelectorAll('.db-search-item.focused').forEach(function(el){el.classList.remove('focused');});
-                    }
-                });
-            },280);
-        });
-        if(searchClear) searchClear.addEventListener('click',function(){
-            searchInput.value='';searchDrop.style.display='none';this.style.display='none';searchInput.focus();
-        });
-        document.addEventListener('click',function(e){
-            if(!searchInput.contains(e.target)&&!searchDrop.contains(e.target))
-                searchDrop.style.display='none';
-        });
-        searchInput.addEventListener('keydown',function(e){
-            if(e.key==='Escape'){searchDrop.style.display='none';this.blur();return;}
-            if(searchDrop.style.display==='none') return;
-            var items=searchDrop.querySelectorAll('.db-search-item');
-            if(!items.length) return;
-            var cur=searchDrop.querySelector('.db-search-item.focused');
-            var idx=Array.prototype.indexOf.call(items,cur);
-            if(e.key==='ArrowDown'){
-                e.preventDefault();
-                var next=idx<items.length-1?idx+1:0;
-                if(cur) cur.classList.remove('focused');
-                items[next].classList.add('focused');
-                items[next].scrollIntoView({block:'nearest'});
-            } else if(e.key==='ArrowUp'){
-                e.preventDefault();
-                var prev=idx>0?idx-1:items.length-1;
-                if(cur) cur.classList.remove('focused');
-                items[prev].classList.add('focused');
-                items[prev].scrollIntoView({block:'nearest'});
-            } else if(e.key==='Enter'){
-                e.preventDefault();
-                if(cur) window.location.href=cur.getAttribute('href');
-            }
-        });
-    }
-
     /* ── Collapsible sections ── */
     var STORE_KEY='db_collapsed';
     var collapsed=JSON.parse(localStorage.getItem(STORE_KEY)||'{}');
@@ -564,9 +452,9 @@ $this->widget('application.components.BreadCrumb', array(
 
 /* ── Keyboard shortcuts ── */
 $(document).keydown(function(e){
-    if(document.getElementById('db-search-input')===document.activeElement) return;
+    if(document.activeElement.tagName==='INPUT'||document.activeElement.tagName==='TEXTAREA') return;
     if(e.ctrlKey&&e.keyCode===83){e.preventDefault();window.location.href='<?= Yii::app()->createUrl("sell/sellOrder/create") ?>';}
     if(e.ctrlKey&&e.keyCode===80){e.preventDefault();window.location.href='<?= Yii::app()->createUrl("commercial/purchaseOrder/create") ?>';}
-    if(e.ctrlKey&&e.keyCode===69){e.preventDefault();window.location.href='<?= Yii::app()->createUrl("accounting/expense/create ") ?>';}
+    if(e.ctrlKey&&e.keyCode===69){e.preventDefault();window.location.href='<?= Yii::app()->createUrl("accounting/expense/create") ?>';}
 });
 </script>

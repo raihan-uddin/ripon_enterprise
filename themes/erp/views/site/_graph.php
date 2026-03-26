@@ -73,11 +73,30 @@
 .ch-skeleton-kpi{display:grid;grid-template-columns:repeat(4,1fr);gap:12px;margin-bottom:20px}
 .ch-skeleton-kpi-card{height:72px;border-radius:12px}
 
+/* Responsive */
+@media(max-width:991px){
+    .ch-card-head{flex-wrap:wrap;gap:8px}
+    .ch-card-actions{width:100%;justify-content:flex-end;margin-left:0}
+}
 @media(max-width:768px){
+    .ch-toolbar{flex-direction:column;align-items:flex-start}
+    .ch-toolbar-right{width:100%;justify-content:space-between}
+    .ch-date-tabs{flex:1}
+    .ch-date-tab{flex:1;text-align:center;padding:5px 6px;font-size:11px}
     .ch-kpi-row{grid-template-columns:repeat(2,1fr)}
     .ch-skeleton-kpi{grid-template-columns:repeat(2,1fr)}
     .ch-kpi-val{font-size:16px}
-    .ch-date-tab{padding:4px 8px;font-size:11px}
+    .ch-kpi{padding:11px 12px}
+    /* ensure Bootstrap columns stack and don't cause gutter overflow */
+    #charts-container .row{margin-left:0;margin-right:0}
+    #charts-container .row>[class*="col-"]{padding-left:0;padding-right:0}
+    #charts-container .row>[class*="col-"]+[class*="col-"]{margin-top:16px}
+}
+@media(max-width:480px){
+    .ch-kpi-row{grid-template-columns:repeat(2,1fr);gap:8px}
+    .ch-kpi-val{font-size:14px}
+    .ch-card-body{padding:2px 4px 6px}
+    .ch-refresh-btn span{display:none}
 }
 </style>
 
@@ -162,6 +181,11 @@
     /* Chart instances for toggle */
     var chartInstances={};
 
+    var isMobile=window.innerWidth<768;
+    var chartH=isMobile?220:290;
+    var chartHTrend=isMobile?200:290;
+    var chartHCash=isMobile?180:220;
+
     function renderCharts(d){
         var html=
             '<div class="ch-kpi-row" id="ch-kpi-row">'+
@@ -170,31 +194,30 @@
             '<div class="ch-kpi k-expense"  style="animation-delay:.15s"><div class="ch-kpi-label"><i class="fa fa-credit-card"></i> Total Expense</div><div class="ch-kpi-val" id="kpi-expense">—</div></div>'+
             '<div class="ch-kpi k-profit"   style="animation-delay:.20s"><div class="ch-kpi-label"><i class="fa fa-line-chart"></i> Net Profit</div><div class="ch-kpi-val" id="kpi-profit">—</div></div>'+
             '</div>'+
-            '<div class="row">'+
-            '<div class="col-md-7"><div class="ch-card" style="animation-delay:.1s">'+
+            '<div class="row no-gutters" style="margin-bottom:20px">'+
+            '<div class="col-12 col-md-7" style="padding-right:10px;padding-bottom:0"><div class="ch-card" style="animation-delay:.1s;margin-bottom:0">'+
             '<div class="ch-card-head"><div class="ch-card-icon" style="background:rgba(99,102,241,.1);color:#6366f1"><i class="fa fa-bar-chart"></i></div>'+
             '<div><div class="ch-card-title">Revenue Summary</div><div class="ch-card-sub">Sales · Purchase · Expense</div></div>'+
             '<div class="ch-card-actions"><button class="ch-toggle-btn active" data-chart="summary" data-type="bar">Bar</button><button class="ch-toggle-btn" data-chart="summary" data-type="line">Line</button></div>'+
             '</div><div class="ch-card-body"><div id="chart-summary"></div></div></div></div>'+
-            '<div class="col-md-5"><div class="ch-card" style="animation-delay:.15s">'+
+            '<div class="col-12 col-md-5" style="padding-left:10px;padding-top:'+( isMobile?'16':'0')+'px"><div class="ch-card" style="animation-delay:.15s;margin-bottom:0">'+
             '<div class="ch-card-head"><div class="ch-card-icon" style="background:rgba(34,197,94,.1);color:#16a34a"><i class="fa fa-pie-chart"></i></div>'+
             '<div><div class="ch-card-title">Finance Overview</div><div class="ch-card-sub">Collection · Payment · Profit</div></div>'+
             '<div class="ch-card-actions"><button class="ch-toggle-btn active" data-chart="finance" data-type="donut">Donut</button><button class="ch-toggle-btn" data-chart="finance" data-type="pie">Pie</button></div>'+
             '</div><div class="ch-card-body"><div id="chart-finance"></div></div></div></div>'+
             '</div>'+
-            '<div class="row">'+
-            '<div class="col-md-8"><div class="ch-card" style="animation-delay:.2s">'+
+            '<div class="row no-gutters" style="margin-bottom:20px">'+
+            '<div class="col-12 col-md-8" style="padding-right:10px;padding-bottom:0"><div class="ch-card" style="animation-delay:.2s;margin-bottom:0">'+
             '<div class="ch-card-head"><div class="ch-card-icon" style="background:rgba(59,130,246,.1);color:#2563eb"><i class="fa fa-line-chart"></i></div>'+
             '<div><div class="ch-card-title">Trend Analysis</div><div class="ch-card-sub">Sales · Purchase · Expense over time</div></div>'+
             '<div class="ch-card-actions"><button class="ch-toggle-btn active" data-chart="trend" data-type="area">Area</button><button class="ch-toggle-btn" data-chart="trend" data-type="line">Line</button><button class="ch-toggle-btn" data-chart="trend" data-type="bar">Bar</button></div>'+
             '</div><div class="ch-card-body"><div id="chart-trend"></div></div></div></div>'+
-            '<div class="col-md-4"><div class="ch-card" style="animation-delay:.25s">'+
+            '<div class="col-12 col-md-4" style="padding-left:10px;padding-top:'+(isMobile?'16':'0')+'px"><div class="ch-card" style="animation-delay:.25s;margin-bottom:0">'+
             '<div class="ch-card-head"><div class="ch-card-icon" style="background:rgba(239,68,68,.1);color:#dc2626"><i class="fa fa-undo"></i></div>'+
             '<div><div class="ch-card-title">Return Ratio</div><div class="ch-card-sub">Sales vs returns</div></div>'+
             '</div><div class="ch-card-body"><div id="chart-ratio"></div></div></div></div>'+
             '</div>'+
-            '<div class="row">'+
-            '<div class="col-12"><div class="ch-card" style="animation-delay:.3s">'+
+            '<div class="ch-card" style="animation-delay:.3s">'+
             '<div class="ch-card-head"><div class="ch-card-icon" style="background:rgba(245,158,11,.1);color:#d97706"><i class="fa fa-exchange"></i></div>'+
             '<div><div class="ch-card-title">Cash Flow</div><div class="ch-card-sub">Inflow vs Outflow comparison</div></div>'+
             '<div class="ch-card-actions"><button class="ch-toggle-btn active" data-chart="cashflow" data-type="bar">Bar</button><button class="ch-toggle-btn" data-chart="cashflow" data-type="line">Line</button></div>'+
@@ -213,7 +236,7 @@
 
         /* 1 — Revenue Summary */
         chartInstances.summary=new ApexCharts(document.querySelector('#chart-summary'),{
-            chart:Object.assign({},BASE,{type:'bar',height:290,toolbar:{show:true,tools:{download:true,selection:false,zoom:false,zoomin:false,zoomout:false,pan:false,reset:false}}}),
+            chart:Object.assign({},BASE,{type:'bar',height:chartH,toolbar:{show:true,tools:{download:true,selection:false,zoom:false,zoomin:false,zoomout:false,pan:false,reset:false}}}),
             series:[{name:'Sales',data:[d.sales]},{name:'Purchase',data:[d.purchase]},{name:'Expense',data:[d.expense]}],
             xaxis:{categories:['Period'],labels:{style:{fontSize:'12px'}}},
             yaxis:{labels:{formatter:fmt,style:{fontSize:'11px'}}},
@@ -228,7 +251,7 @@
 
         /* 2 — Finance Donut */
         chartInstances.finance=new ApexCharts(document.querySelector('#chart-finance'),{
-            chart:Object.assign({},BASE,{type:'donut',height:290}),
+            chart:Object.assign({},BASE,{type:'donut',height:chartH}),
             series:[parseFloat(d.collection)||0,parseFloat(d.payment)||0,parseFloat(d.profit)||0],
             labels:['Collection','Payment','Profit'],colors:[COLORS.green,COLORS.purple,COLORS.blue],
             plotOptions:{pie:{donut:{size:'65%',labels:{show:true,total:{show:true,label:'Total',fontSize:'13px',
@@ -241,7 +264,7 @@
 
         /* 3 — Trend */
         chartInstances.trend=new ApexCharts(document.querySelector('#chart-trend'),{
-            chart:Object.assign({},BASE,{type:'area',height:290}),
+            chart:Object.assign({},BASE,{type:'area',height:chartHTrend}),
             series:[{name:'Sales',data:d.trend.sales},{name:'Purchase',data:d.trend.purchase},{name:'Expense',data:d.trend.expense}],
             xaxis:{categories:d.trend.dates,labels:{style:{fontSize:'11px'},rotate:-30},axisBorder:{show:false}},
             yaxis:{labels:{formatter:fmt,style:{fontSize:'11px'}}},
@@ -259,7 +282,7 @@
         var salesVal=parseFloat(d.sales)||0, returnsVal=parseFloat(d.returns)||0;
         var returnPct=salesVal>0?Math.min(100,Math.round(returnsVal/salesVal*100)):0;
         chartInstances.ratio=new ApexCharts(document.querySelector('#chart-ratio'),{
-            chart:Object.assign({},BASE,{type:'radialBar',height:290}),
+            chart:Object.assign({},BASE,{type:'radialBar',height:chartH}),
             series:[returnPct,100-returnPct],labels:['Returns','Net Sales'],
             colors:[COLORS.red,COLORS.indigo],
             plotOptions:{radialBar:{hollow:{size:'40%'},dataLabels:{name:{fontSize:'13px',fontWeight:600},
@@ -273,7 +296,7 @@
 
         /* 5 — Cash Flow */
         chartInstances.cashflow=new ApexCharts(document.querySelector('#chart-cashflow'),{
-            chart:Object.assign({},BASE,{type:'bar',height:220,toolbar:{show:true,tools:{download:true,selection:false,zoom:false,zoomin:false,zoomout:false,pan:false,reset:false}}}),
+            chart:Object.assign({},BASE,{type:'bar',height:chartHCash,toolbar:{show:true,tools:{download:true,selection:false,zoom:false,zoomin:false,zoomout:false,pan:false,reset:false}}}),
             series:[{name:'Inflow',data:[parseFloat(d.collection)||0,parseFloat(d.sales)||0]},{name:'Outflow',data:[parseFloat(d.payment)||0,parseFloat(d.expense)||0]}],
             xaxis:{categories:['Collection / Payment','Sales / Expense'],labels:{style:{fontSize:'12px'}}},
             yaxis:{labels:{formatter:fmt,style:{fontSize:'11px'}}},
