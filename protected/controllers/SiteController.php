@@ -522,6 +522,125 @@ class SiteController extends Controller
 
 
 
+    public function actionTodayStats()
+    {
+        header('Content-Type: application/json');
+        if (Yii::app()->user->isGuest) { echo CJSON::encode(['success'=>false]); Yii::app()->end(); }
+        $today     = date('Y-m-d');
+        $yesterday = date('Y-m-d', strtotime('-1 day'));
+        $db = Yii::app()->db;
+
+        $orderCount = (int)$db->createCommand()
+            ->select('COUNT(*)')->from('sell_order')
+            ->where('order_type=:t AND DATE(date)=:d',[':t'=>SellOrder::NEW_ORDER,':d'=>$today])
+            ->queryScalar();
+
+        $sales = (float)$db->createCommand()
+            ->select('COALESCE(ROUND(SUM(total_amount)),0)')->from('sell_order')
+            ->where('order_type=:t AND DATE(date)=:d',[':t'=>SellOrder::NEW_ORDER,':d'=>$today])
+            ->queryScalar();
+
+        $collection = (float)$db->createCommand()
+            ->select('COALESCE(ROUND(SUM(amount)),0)')->from('money_receipt')
+            ->where('DATE(date)=:d',[':d'=>$today])->queryScalar();
+
+        $expense = (float)$db->createCommand()
+            ->select('COALESCE(ROUND(SUM(amount)),0)')->from('expense')
+            ->where('DATE(date)=:d',[':d'=>$today])->queryScalar();
+
+        $yesterdaySales = (float)$db->createCommand()
+            ->select('COALESCE(ROUND(SUM(total_amount)),0)')->from('sell_order')
+            ->where('order_type=:t AND DATE(date)=:d',[':t'=>SellOrder::NEW_ORDER,':d'=>$yesterday])
+            ->queryScalar();
+
+        echo CJSON::encode(['success'=>true,'data'=>[
+            'orderCount'=>$orderCount,'sales'=>$sales,
+            'collection'=>$collection,'expense'=>$expense,
+            'yesterdaySales'=>$yesterdaySales,
+        ]]);
+        Yii::app()->end();
+    }
+
+    public function actionAlerts()
+    {
+        header('Content-Type: application/json');
+        if (Yii::app()->user->isGuest) { echo CJSON::encode(['success'=>false]); Yii::app()->end(); }
+        $db = Yii::app()->db;
+
+        try {
+            $lowStock = $db->createCommand("
+                SELECT p.id, p.model_name,
+                       (SUM(inv.stock_in) - SUM(inv.stock_out)) AS qty
+                FROM inventory inv
+                JOIN prod_models p ON p.id = inv.model_id
+                WHERE inv.is_deleted = 0
+                GROUP BY inv.model_id, p.model_name
+                HAVING qty >= 0 AND qty <= 5
+                ORDER BY qty ASC LIMIT 8
+            ")->queryAll();
+        } catch (Exception $e) { $lowStock = []; }
+
+        try {
+            $dues = $db->createCommand("
+                SELECT c.id, c.name,
+                       COALESCE(s.total,0) - COALESCE(r.collected,0) AS due
+                FROM customers c
+                LEFT JOIN (
+                    SELECT customer_id, ROUND(SUM(total_amount)) AS total
+                    FROM sell_order WHERE order_type = " . SellOrder::NEW_ORDER . "
+                    GROUP BY customer_id
+                ) s ON s.customer_id = c.id
+                LEFT JOIN (
+                    SELECT customer_id, ROUND(SUM(amount)) AS collected
+                    FROM money_receipt GROUP BY customer_id
+                ) r ON r.customer_id = c.id
+                HAVING due > 0
+                ORDER BY due DESC LIMIT 8
+            ")->queryAll();
+        } catch (Exception $e) { $dues = []; }
+
+        echo CJSON::encode(['success'=>true,'data'=>['lowStock'=>$lowStock,'dues'=>$dues]]);
+        Yii::app()->end();
+    }
+
+    public function actionQuickSearch()
+    {
+        header('Content-Type: application/json');
+        if (Yii::app()->user->isGuest) { echo CJSON::encode(['results'=>[]]); Yii::app()->end(); }
+        $q    = trim(Yii::app()->request->getPost('q',''));
+        if (mb_strlen($q) < 2) { echo CJSON::encode(['results'=>[]]); Yii::app()->end(); }
+        $db   = Yii::app()->db;
+        $like = '%'.$q.'%';
+        $out  = [];
+
+        try {
+            foreach ($db->createCommand()->select('id,name')->from('customers')
+                ->where('name LIKE :q',[':q'=>$like])->limit(4)->queryAll() as $r)
+                $out[] = ['type'=>'customer','label'=>$r['name'],
+                    'url'=>Yii::app()->createUrl('sell/customers/view',['id'=>$r['id']])];
+        } catch (Exception $e) {}
+
+        try {
+            foreach ($db->createCommand()->select('id,model_name')->from('prod_models')
+                ->where('model_name LIKE :q',[':q'=>$like])->limit(4)->queryAll() as $r)
+                $out[] = ['type'=>'product','label'=>$r['model_name'],
+                    'url'=>Yii::app()->createUrl('prodModels/view',['id'=>$r['id']])];
+        } catch (Exception $e) {}
+
+        try {
+            if (is_numeric($q)) {
+                foreach ($db->createCommand()->select('id')->from('sell_order')
+                    ->where('id=:q AND order_type=:t',[':q'=>(int)$q,':t'=>SellOrder::NEW_ORDER])
+                    ->limit(3)->queryAll() as $r)
+                    $out[] = ['type'=>'order','label'=>'Order #'.$r['id'],
+                        'url'=>Yii::app()->createUrl('sell/sellOrder/view',['id'=>$r['id']])];
+            }
+        } catch (Exception $e) {}
+
+        echo CJSON::encode(['results'=>$out]);
+        Yii::app()->end();
+    }
+
     public function actionHelp()
     {
         if (!Yii::app()->user->isGuest) {
