@@ -232,7 +232,7 @@
             series:[parseFloat(d.collection)||0,parseFloat(d.payment)||0,parseFloat(d.profit)||0],
             labels:['Collection','Payment','Profit'],colors:[COLORS.green,COLORS.purple,COLORS.blue],
             plotOptions:{pie:{donut:{size:'65%',labels:{show:true,total:{show:true,label:'Total',fontSize:'13px',
-                formatter:function(w){return fmt(w.globals.seriesTotals.reduce(function(a,b){return a+b;},0));}}}}}}},
+                formatter:function(w){return fmt(w.globals.seriesTotals.reduce(function(a,b){return a+b;},0));}}}}}},
             legend:{position:'bottom',fontSize:'12px',markers:{radius:4}},
             dataLabels:{enabled:true,formatter:function(v){return v.toFixed(1)+'%';},style:{fontSize:'11px'},dropShadow:{enabled:false}},
             tooltip:{theme:'light',y:{formatter:fmt}}
