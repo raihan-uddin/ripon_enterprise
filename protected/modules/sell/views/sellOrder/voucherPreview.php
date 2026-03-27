@@ -711,28 +711,21 @@
                         </tbody>
                     </table>
 
-                    <div style="width: 100%; float: left; clear: right; height: 150px; font-size: 12px; margin-top: 20px;">
-                        <div style="width: 100%; float: left; clear:right;">
-
-                            <div style="width: 50%; float: left;clear:right; text-decoration: overline; margin: auto; display: flex;  justify-content: center;  align-items: center;">
-                                <span style="text-decoration: underline; font-weight: bold;"><?= strtoupper(Yii::app()->params['company']['name']) ?></span>
-                            </div>
-                            <div style="width: 50%; float: left;clear:right; text-decoration: overline; margin: auto; display: flex;  justify-content: center;  align-items: center;">
-                                <span style="text-decoration: underline; font-weight: bold;"><?= $customer_name ?></span>
+                    <div style="width: 100%; font-size: 12px; margin-top: 40px; display: flex;">
+                        <div style="width: 50%; padding: 0 30px 0 0; text-align: center;">
+                            <div style="height: 50px;"></div>
+                            <div style="border-top: 1px solid #000; padding-top: 6px;">
+                                <div style="font-weight: bold;"><?= strtoupper(Yii::app()->params['company']['name']) ?></div>
+                                <div>Authorized Signatory</div>
+                                <div style="margin-top: 6px;">Date: <?= date('d/m/Y') ?></div>
                             </div>
                         </div>
-                        <div style="height: 50px; width: 100%; float: left; clear: right; margin-top: 40px;">
-                            <div style="width: 50%; float: left; clear: right; margin: auto; display: flex; flex-direction: column; justify-content: center; align-items: center;">
-                                <div style="font-weight: bold; text-transform: uppercase;">
-                                    &nbsp;
-                                </div>
-                                <div style="text-decoration: overline;"><?= date('F d, Y') ?></div>
-                            </div>
-
-                            <div style="width: 50%; float: left;clear:right; text-decoration: overline; margin: auto; display: flex;  justify-content: center;  align-items: center;">
-                                <div>(&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;/&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;/&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
-                                    )
-                                </div>
+                        <div style="width: 50%; padding: 0 0 0 30px; text-align: center;">
+                            <div style="height: 50px;"></div>
+                            <div style="border-top: 1px solid #000; padding-top: 6px;">
+                                <div style="font-weight: bold;"><?= $customer_name ?></div>
+                                <div>Customer Signature</div>
+                                <div style="margin-top: 6px;">Date: ___/___/______</div>
                             </div>
                         </div>
                     </div>
