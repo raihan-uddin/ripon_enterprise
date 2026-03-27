@@ -108,3 +108,78 @@ Core controllers (site dashboard, reports, manufacturers, product catalog) live 
 - Font Awesome 4.7.0 for icons
 - Custom CSS in `themes/erp/css/` and global `css/` directory
 - Print-specific styles in `css/print.css` (important for voucher/invoice printing)
+
+## UserMenu (`protected/components/views/UserMenu.php`)
+
+This file renders the entire top navigation bar. It is a self-contained PHP view widget — not a controller or layout — rendered from every layout via a widget call.
+
+### Structure
+
+```
+<style>               ← all navbar CSS lives here (no external stylesheet)
+<nav class="erp-nav"> ← Bootstrap 4 navbar
+    navbar-brand      ← logo (logo.svg, brightness-inverted)
+    navbar-toggler    ← mobile hamburger
+    #erpNav           ← collapsible container
+        .navbar-nav   ← left: main menu items (Dashboard, Common, Inventory, Sales, Purchase, Loan, Reports)
+        .navbar-nav.ml-auto ← right: draft notification bell + user dropdown
+<script>              ← draft notification logic (IIFE)
+<script>              ← active-item highlight + mobile submenu JS
+```
+
+### Dark Theme Tokens
+
+All dropdowns and UI elements must use these exact values — do not use Bootstrap light-theme defaults:
+
+| Token | Value |
+|-------|-------|
+| Navbar bg | `#0f172a` |
+| Dropdown bg | `#1e293b` |
+| Dropdown border | `1px solid rgba(255,255,255,.08)` |
+| Dropdown border-radius | `10px` |
+| Dropdown box-shadow | `0 8px 28px rgba(0,0,0,.35)` |
+| Header text | `#6b7280`, `10px`, `700`, uppercase, `letter-spacing:.8px` |
+| Header icon | `#6366f1`, `10px` |
+| Item text | `rgba(255,255,255,.78)`, `12.5px`, `font-weight:500` |
+| Item padding | `7px 12px`, `border-radius:6px` |
+| Item icon | `#6b7280`, `11px`, `width:14px` |
+| Item hover bg | `rgba(99,102,241,.18)` |
+| Item hover text | `#fff` |
+| Item hover icon | `#a5b4fc` |
+| Active item bg | `rgba(99,102,241,.22)`, `border-left:2px solid #6366f1` |
+| Divider | `border-color:rgba(255,255,255,.07); margin:4px 6px` |
+
+### Permission System
+
+- All menu visibility is guarded by `$ca('Permission.Key')` — a closure wrapping `Yii::app()->user->checkAccess()`
+- Permissions are cached in the session under `_nav_perms` (refreshed on logout) to avoid per-request DB queries
+- Developer-only items use `$isDev` (hardcoded user ID list at top of file)
+- Adding a new menu item requires: (1) add the permission key to the `array_fill_keys` list, (2) wrap the item in `if ($ca(...))`, (3) update `$showXxx` flags if a new section is needed
+
+### Active State Detection
+
+- `$inRoute(array $routes)` — marks a top-level nav item active if the current module/controller matches
+- `$isPage($mod, $ctrl, $act)` — exact module + controller + optional action match
+- JS also adds `.erp-di-active` to the matching dropdown item by comparing `window.location.pathname` to each `href`
+
+### Draft Notification Bell (`#draft-notif-item`)
+
+- Hidden by default (`style="display:none;"`); shown via JS as `display:flex; align-items:center` (not `show()` which sets `display:block`)
+- Scans `localStorage` on every page load and on the `storage` event (cross-tab sync)
+- Recognized draft keys: `so_draft_create` (Sales Order), `mr_draft_customer_<id>` (Money Receipt)
+- Each draft entry exposes: `key`, `title`, `icon`, `color`, `url`, `label`, `savedAt`
+- Icon colors on dark bg: `#818cf8` (indigo, SO) and `#34d399` (emerald, MR)
+- To add a new draft type: add a detection block in `getDrafts()` with the same entry shape and point `url` to the correct form route
+- Discard button uses `rgba(255,255,255,.18)` border — never use Bootstrap `btn-danger` here
+
+### Adding New Nav Items
+
+1. Add the permission key to the `array_fill_keys` list near the top of the file
+2. Add `$ca('...')` check in the relevant `$showXxx` flag
+3. Add the HTML inside the correct `<div class="dropdown-menu">` using `.dropdown-header` + `.dropdown-item` pattern
+4. Use Font Awesome 4.7 icon classes; icon gets `color:#6b7280` via CSS automatically
+5. For a new top-level section: add `$activeXxx` flag, a new `<li class="nav-item dropdown">`, and update `$activeCommon` exclusion logic if needed
+
+### Icon-Only Nav Links
+
+Nav links that contain only an icon (no text) must use `display:flex; align-items:center; justify-content:center` — otherwise the icon sits on the text baseline and appears vertically misaligned. Define this in the `<style>` block with the element's ID selector, not as an inline style.
