@@ -35,8 +35,16 @@
             page-break-after: always !important;
         }
 
-        .card-header { display: none !important; }
-        .card, .card-body { padding: 0 !important; margin: 0 !important; border: none !important; box-shadow: none !important; }
+        .card-header {
+            display: none !important;
+        }
+
+        .card, .card-body {
+            padding: 0 !important;
+            margin: 0 !important;
+            border: none !important;
+            box-shadow: none !important;
+        }
     }
 
 
@@ -68,8 +76,14 @@
             font-family: Arial, sans-serif;
         }
     }
-    .print-page-footer { display: none; }
-    .print-date-stamp { display: none; }
+
+    .print-page-footer {
+        display: none;
+    }
+
+    .print-date-stamp {
+        display: none;
+    }
 
     .item-list tbody th,
     .item-list tbody td {
@@ -102,8 +116,8 @@
     .invoice-info-block {
         width: 100%;
         border-collapse: collapse;
-        margin-bottom: 8px;
-        margin-top: 4px;
+        margin-bottom: 2px;
+        margin-top: 2px;
     }
 
     .invoice-info-block td {
@@ -121,7 +135,7 @@
         border: 1px solid #d0dae6;
         border-left: 4px solid #1a2c3d;
         border-radius: 3px;
-        padding: 8px 12px !important;
+        /*padding: 8px 12px !important;*/
     }
 
     .invoice-bill-to .section-label {
@@ -139,7 +153,7 @@
         font-size: 15px;
         font-weight: 700;
         color: #1a2c3d;
-        margin-bottom: 4px;
+        margin-bottom: 2px;
         line-height: 1.3;
         text-align: left;
     }
@@ -180,7 +194,7 @@
     }
 
     .invoice-meta-table tr td {
-        padding: 5px 10px;
+        /*padding: 5px 10px;*/
         font-size: 12px;
         border-bottom: 1px solid #e8ecf0;
     }
@@ -217,47 +231,61 @@
         margin-bottom: 2px;
         padding-bottom: 0px;
     }
+
     .so-header-inner {
         display: table;
         width: 100%;
         table-layout: fixed;
     }
+
     .so-header-logo,
     .so-header-company,
     .so-header-barcode {
         display: table-cell;
         vertical-align: middle;
     }
-    .so-header-logo { width: 20%; }
+
+    .so-header-logo {
+        width: 20%;
+    }
+
     .so-header-logo img {
         display: block;
         width: 100%;
         height: auto;
         object-fit: contain;
     }
+
     .so-header-company {
         width: 60%;
         text-align: center;
         font-weight: bold;
     }
+
     .so-header-company .co-name {
         font-size: 22px;
         font-weight: 700;
         color: #111;
         letter-spacing: 0.5px;
     }
+
     .so-header-company .co-detail {
         font-size: 13px;
         color: #444;
         line-height: 1.5;
         margin-top: 0;
     }
+
     .so-header-barcode {
         width: 20%;
         text-align: right;
         overflow: hidden;
     }
-    .so-header-barcode svg { display: block; margin-left: auto; }
+
+    .so-header-barcode svg {
+        display: block;
+        margin-left: auto;
+    }
 
     /* ── Title banner ── */
     .so-title-banner {
@@ -269,7 +297,7 @@
         font-weight: 700;
         letter-spacing: 6px;
         text-transform: uppercase;
-        margin-bottom: 8px;
+        margin-bottom: 2px;
     }
 </style>
 
@@ -310,7 +338,7 @@
         <div class="print-date-stamp" id="print-date-stamp"></div>
         <div class="printAllTableForThisReport">
             <?php
-            $logoPath   = Yii::app()->theme->basePath . '/images/logo.svg';
+            $logoPath = Yii::app()->theme->basePath . '/images/logo.svg';
             $logoInline = is_file($logoPath)
                     ? 'data:image/svg+xml;base64,' . base64_encode(file_get_contents($logoPath))
                     : Yii::app()->theme->baseUrl . '/images/logo.png';
@@ -318,7 +346,7 @@
 
             $dataItems = is_array($data) ? $data : iterator_to_array($data);
             $totalItems = count($dataItems);
-            $itemIndex  = 0;
+            $itemIndex = 0;
             foreach ($dataItems as $item) {
                 $itemIndex++;
                 $showProfitLossSummary = isset($show_profit) ? $show_profit : false;
@@ -335,23 +363,28 @@
                         // Barcode for this order
                         $bcSvg = '';
                         try {
-                            $bc    = new TCPDFBarcode($item->so_no, 'C128B');
+                            $bc = new TCPDFBarcode($item->so_no, 'C128B');
                             $bcArr = $bc->getBarcodeArray();
-                            $barW  = 1.0; $barH = 36; $pad = 3; $textH = 14;
-                            $svgW  = round($bcArr['maxw'] * $barW) + $pad * 2;
-                            $svgH  = $barH + $pad + $textH;
+                            $barW = 1.0;
+                            $barH = 36;
+                            $pad = 3;
+                            $textH = 14;
+                            $svgW = round($bcArr['maxw'] * $barW) + $pad * 2;
+                            $svgH = $barH + $pad + $textH;
                             $textY = $barH + $pad + 11;
-                            $x     = $pad; $rects = '';
+                            $x = $pad;
+                            $rects = '';
                             foreach ($bcArr['bcode'] as $bar) {
                                 $bw = $bar['w'] * $barW;
-                                if ($bar['t']) $rects .= '<rect x="'.$x.'" y="0" width="'.$bw.'" height="'.$barH.'" fill="#000"/>';
+                                if ($bar['t']) $rects .= '<rect x="' . $x . '" y="0" width="' . $bw . '" height="' . $barH . '" fill="#000"/>';
                                 $x += $bw;
                             }
-                            $bcSvg = '<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 '.$svgW.' '.$svgH.'" width="100%" style="display:block; max-width:'.$svgW.'px;">'
+                            $bcSvg = '<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 ' . $svgW . ' ' . $svgH . '" width="100%" style="display:block; max-width:' . $svgW . 'px;">'
                                     . $rects
-                                    . '<text x="'.($svgW/2).'" y="'.$textY.'" text-anchor="middle" font-size="10" font-family="monospace" fill="#000">'.htmlspecialchars($item->so_no).'</text>'
+                                    . '<text x="' . ($svgW / 2) . '" y="' . $textY . '" text-anchor="middle" font-size="10" font-family="monospace" fill="#000">' . htmlspecialchars($item->so_no) . '</text>'
                                     . '</svg>';
-                        } catch (Exception $e) {}
+                        } catch (Exception $e) {
+                        }
                         ?>
                         <!-- PO-style header -->
                         <div class="so-header-wrapper">
@@ -361,7 +394,10 @@
                                 </div>
                                 <div class="so-header-company">
                                     <div class="co-name"><?= CHtml::encode(strtoupper(Yii::app()->params['company']['name'])) ?></div>
-                                    <div class="co-detail"><?= CHtml::encode(Yii::app()->params['company']['address_line_1']) ?><?php if (!empty(Yii::app()->params['company']['address_line_2'])): ?> &middot; <?= CHtml::encode(Yii::app()->params['company']['address_line_2']) ?><?php endif; ?><br>অফিস: <?= CHtml::encode(Yii::app()->params['company']['phone_1']) ?><?php if (!empty(Yii::app()->params['company']['phone_2'])): ?> <br> <?= CHtml::encode(Yii::app()->params['company']['invoice_contact_person']) ?>: <?= CHtml::encode(Yii::app()->params['company']['phone_2']) ?><?php endif; ?></div>
+                                    <div class="co-detail"><?= CHtml::encode(Yii::app()->params['company']['address_line_1']) ?><?php if (!empty(Yii::app()->params['company']['address_line_2'])): ?> &middot; <?= CHtml::encode(Yii::app()->params['company']['address_line_2']) ?><?php endif; ?>
+                                        <br>অফিস: <?= CHtml::encode(Yii::app()->params['company']['phone_1']) ?><?php if (!empty(Yii::app()->params['company']['phone_2'])): ?>
+                                            <br> <?= CHtml::encode(Yii::app()->params['company']['invoice_contact_person']) ?>: <?= CHtml::encode(Yii::app()->params['company']['phone_2']) ?><?php endif; ?>
+                                    </div>
                                 </div>
                                 <div class="so-header-barcode">
                                     <?= $bcSvg ?>
@@ -382,7 +418,9 @@
                                                 <div class="detail-row"><?= htmlspecialchars($customer->company_address) ?></div>
                                             <?php endif; ?>
                                             <?php if (!empty($customer->owner_mobile_no)): ?>
-                                                <div class="detail-row"><span style="font-weight:700;"><?= htmlspecialchars($customer->owner_mobile_no) ?></span></div>
+                                                <div class="detail-row"><span
+                                                            style="font-weight:700;"><?= htmlspecialchars($customer->owner_mobile_no) ?></span>
+                                                </div>
                                             <?php endif; ?>
                                             <?php if (!empty($customer->trn_no)): ?>
                                                 <div class="detail-row">
@@ -408,7 +446,8 @@
                                         <?php if ($showProfitLossSummary): ?>
                                             <tr>
                                                 <td>P / L</td>
-                                                <td><span id="profitLossText_<?= $item->id ?>" style="font-size:15px;"></span></td>
+                                                <td><span id="profitLossText_<?= $item->id ?>"
+                                                          style="font-size:15px;"></span></td>
                                             </tr>
                                         <?php endif; ?>
                                     </table>
@@ -502,7 +541,7 @@
                             <?php
                         }
 
-                        $vatDisplay = $vat != 0 ? "" : "display: none;" ;
+                        $vatDisplay = $vat != 0 ? "" : "display: none;";
                         $deliveryChargeDisplay = $delivery_charge != 0 ? "" : "display: none;";
                         $discountDisplay = $discount_amount != 0 ? "" : "display: none;";
                         $roadFeeDisplay = $road_fee != 0 ? "" : "display: none;";
@@ -522,9 +561,9 @@
                                 <div>In Words: <i>BDT
                                         <?php
                                         $amountInWord = new AmountInWord();
-                                        $grandTotal   = $item->grand_total;
-                                        $inword       = $amountInWord->convert(intval($grandTotal)) . ' Taka';
-                                        $paisaPart    = $amountInWord->convertFloat($grandTotal);
+                                        $grandTotal = $item->grand_total;
+                                        $inword = $amountInWord->convert(intval($grandTotal)) . ' Taka';
+                                        $paisaPart = $amountInWord->convertFloat($grandTotal);
                                         if ($paisaPart) {
                                             $inword .= ' and ' . $paisaPart . ' Paisa';
                                         }
@@ -544,10 +583,10 @@
                             </td>
                         </tr>
                         <tr style="<?= $vatDisplay ?>">
-                            <td colspan="2" style="border: none; background: white; <?=$vatDisplay?>">Vat
+                            <td colspan="2" style="border: none; background: white; <?= $vatDisplay ?>">Vat
                                 (<?= number_format($vat_percentage, 2) ?>%) (+)
                             </td>
-                            <td style="text-align: right; border: none;  <?=$vatDisplay?>">
+                            <td style="text-align: right; border: none;  <?= $vatDisplay ?>">
                                 <?= rtrim(rtrim(number_format($vat, 4, '.', ','), '0'), '.') ?>
                             </td>
                         </tr>
@@ -560,26 +599,26 @@
                         <tr style="<?= $discountDisplay ?>">
                             <td colspan="2" style="border: none; background: white;">Discount (-)</td>
                             <td style="text-align: right; border: none;">
-                                (-<?= rtrim(rtrim(number_format($discount_amount, 4, '.', ','), '0'), '.') ?>)
+                                (<?= rtrim(rtrim(number_format($discount_amount, 4, '.', ','), '0'), '.') ?>)
                             </td>
                         </tr>
                         <tr style="<?= $roadFeeDisplay ?>">
                             <td colspan="2" style="border: none; background: white;">Road Fee (-)</td>
                             <td style="text-align: right; border: none;">
-                                (-<?= rtrim(rtrim(number_format($road_fee, 4, '.', ','), '0'), '.') ?>)
+                                (<?= rtrim(rtrim(number_format($road_fee, 4, '.', ','), '0'), '.') ?>)
                             </td>
                         </tr>
 
                         <tr style="<?= $damageDisplay ?>">
                             <td colspan="2" style="border: none; background: white;">Damage (-)</td>
                             <td style="text-align: right; border: none;">
-                                (-<?= rtrim(rtrim(number_format($damage, 4, '.', ','), '0'), '.') ?>)
+                                (<?= rtrim(rtrim(number_format($damage, 4, '.', ','), '0'), '.') ?>)
                             </td>
                         </tr>
                         <tr style="<?= $srCommissionDisplay ?>">
                             <td colspan="2" style="border: none; background: white;">SR Commission (-)</td>
                             <td style="text-align: right; border: none;">
-                                (-<?= rtrim(rtrim(number_format($sr_commission, 4, '.', ','), '0'), '.') ?>)
+                                (<?= rtrim(rtrim(number_format($sr_commission, 4, '.', ','), '0'), '.') ?>)
                             </td>
                         </tr>
 
@@ -647,23 +686,23 @@
 
                                     $current_due_amount = $previous_due_amount + $item->grand_total - $current_collection - $current_collection_discount - $current_return;
                                     ?>
-                                    TK <?= number_format($previous_due_amount, 2) ?>
-                                </td>
-                            </tr>
-                        <?php
-                        if ($current_collection > 0) {
-                            ?>
-                            <tr style="font-weight: bold;">
-                                <td colspan="2" style="border: none; background: white;"></td>
-                                <td colspan="2" style="border: none;">
-                                    Current Paid Amount
-                                </td>
-                                <td style="text-align: right; border: none;">
-                                    <?= rtrim(rtrim(number_format($current_collection, 4, '.', ','), '0'), '.') ?>
+                                    <?= number_format($previous_due_amount, 2) ?>
                                 </td>
                             </tr>
                             <?php
-                        }
+                            if ($current_collection > 0) {
+                                ?>
+                                <tr style="font-weight: bold;">
+                                    <td colspan="2" style="border: none; background: white;"></td>
+                                    <td colspan="2" style="border: none;">
+                                        Current Paid Amount
+                                    </td>
+                                    <td style="text-align: right; border: none;">
+                                        <?= rtrim(rtrim(number_format($current_collection, 4, '.', ','), '0'), '.') ?>
+                                    </td>
+                                </tr>
+                                <?php
+                            }
                             if ($current_return > 0) {
                                 ?>
                                 <tr style="">
@@ -679,21 +718,21 @@
                             }
                             ?>
                             <?php
-                            if($current_collection_discount > 0){
-                            ?>
-                            <tr>
-                                <td colspan="2" style="border: none; background: white;"></td>
-                                <td colspan="2" style="border: none;">
-                                    Cash Discount
-                                </td>
-                                <td style="text-align: right; border: none;">
-                                    (-<?= rtrim(rtrim(number_format($current_collection_discount > 0 ? $current_collection_discount : 0, 2), '0'), '.') ?>
-                                    )
-                                </td>
-                            </tr>
+                            if ($current_collection_discount > 0) {
+                                ?>
+                                <tr>
+                                    <td colspan="2" style="border: none; background: white;"></td>
+                                    <td colspan="2" style="border: none;">
+                                        Cash Discount
+                                    </td>
+                                    <td style="text-align: right; border: none;">
+                                        (<?= rtrim(rtrim(number_format($current_collection_discount > 0 ? $current_collection_discount : 0, 2), '0'), '.') ?>
+                                        )
+                                    </td>
+                                </tr>
                                 <?php
                             }
-                                ?>
+                            ?>
                             <tr style="font-weight: bold;">
                                 <td colspan="2" style="border: none; background: white;"></td>
                                 <td colspan="2" style="border: none;">
@@ -711,36 +750,26 @@
                         </tbody>
                     </table>
 
-                    <div style="width: 100%; float: left; clear: right; height: 150px; font-size: 12px; margin-top: 20px;">
-                        <div style="height: 30px; text-align: left; width: 100%; float: left; clear: right;">
-                            By signing this document, the customer agrees to he services and conditions
-                            described in this document.
-                        </div>
-                        <br>
-                        <div style="width: 100%; float: left; clear:right;">
-
-                            <div style="width: 50%; float: left;clear:right; text-decoration: overline; margin: auto; display: flex;  justify-content: center;  align-items: center;">
-                                <span style="text-decoration: underline; font-weight: bold;"><?= strtoupper(Yii::app()->params['company']['name']) ?></span>
-                            </div>
-                            <div style="width: 50%; float: left;clear:right; text-decoration: overline; margin: auto; display: flex;  justify-content: center;  align-items: center;">
-                                <span style="text-decoration: underline; font-weight: bold;"><?= $customer_name ?></span>
-                            </div>
-                        </div>
-                        <div style="height: 50px; width: 100%; float: left; clear: right; margin-top: 40px;">
-                            <div style="width: 50%; float: left; clear: right; margin: auto; display: flex; flex-direction: column; justify-content: center; align-items: center;">
-                                <div style="font-weight: bold; text-transform: uppercase;">
-                                    &nbsp;
+                    <table style="width: 100%; font-size: 12px; margin-top: 20px; border-collapse: collapse;">
+                        <tr>
+                            <td style="width: 50%; padding: 0 30px 0 0; text-align: center; vertical-align: bottom;">
+                                <div style="height: 70px;"></div>
+                                <div style="border-top: 1px solid #000; padding-top: 6px;">
+                                    <div style="font-weight: bold;"><?= strtoupper(Yii::app()->params['company']['name']) ?></div>
+                                    <div>Authorized Signatory</div>
+                                    <div style="margin-top: 6px;">Date: <?= date('d/m/Y') ?></div>
                                 </div>
-                                <div style="text-decoration: overline;"><?= date('F d, Y') ?></div>
-                            </div>
-
-                            <div style="width: 50%; float: left;clear:right; text-decoration: overline; margin: auto; display: flex;  justify-content: center;  align-items: center;">
-                                <div>(&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;/&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;/&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
-                                    )
+                            </td>
+                            <td style="width: 50%; padding: 0 0 0 30px; text-align: center; vertical-align: bottom;">
+                                <div style="height: 70px;"></div>
+                                <div style="border-top: 1px solid #000; padding-top: 6px;">
+                                    <div style="font-weight: bold;"><?= $customer_name ?></div>
+                                    <div>Customer Signature</div>
+                                    <div style="margin-top: 6px;">Date: ___/___/______</div>
                                 </div>
-                            </div>
-                        </div>
-                    </div>
+                            </td>
+                        </tr>
+                    </table>
 
                 <?php if ($itemIndex < $totalItems): ?>
                     <div class="page-break-div"></div>

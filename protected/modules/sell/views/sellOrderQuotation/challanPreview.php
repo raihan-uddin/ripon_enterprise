@@ -227,35 +227,29 @@
                         </tbody>
                     </table>
 
-                    <div style="width: 100%; float: left; clear: right; height: 150px; font-size: 12px; margin-top: 20px;">
-                        <div style="height: 30px; text-align: left; width: 100%; float: left; clear: right;">
-                            By signing this document, the customer agrees to he services and conditions
-                            described in this document.
-                        </div>
-                        <br>
-                        <div style="width: 100%; float: left; clear:right;">
-
-                            <div style="width: 50%; float: left;clear:right; text-decoration: overline; margin: auto; display: flex;  justify-content: center;  align-items: center;">
-                                <span style="text-decoration: underline; font-weight: bold;">The Mihan Engineers (TMEBD)</span>
-                            </div>
-                            <div style="width: 50%; float: left;clear:right; text-decoration: overline; margin: auto; display: flex;  justify-content: center;  align-items: center;">
-                                <span style="text-decoration: underline; font-weight: bold;"><?= $customer_name ?></span>
-                            </div>
-                        </div>
-                        <div style="height: 50px; width: 100%; float: left; clear: right; margin-top: 40px;">
-                            <div style="width: 50%; float: left; clear: right; margin: auto; display: flex; flex-direction: column; justify-content: center; align-items: center;">
-                                <div style="font-weight: bold; text-transform: uppercase;">
-                                    <?= User::model()->nameOfThis($item->created_by) ?>
-                                </div>
-                                <div style="text-decoration: overline;"><?= date('F d, Y') ?></div>
-                            </div>
-
-                            <div style="width: 50%; float: left;clear:right; text-decoration: overline; margin: auto; display: flex;  justify-content: center;  align-items: center;">
-                                <div>(&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;/&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;/&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
-                                    )
-                                </div>
-                            </div>
-                        </div>
+                    <div style="width: 100%; font-size: 12px; margin-top: 20px;">
+                        <div style="margin-bottom: 10px; font-style: italic; color: #555;">By signing this document, the customer agrees to the services and conditions described in this document.</div>
+                        <table style="width: 100%; border-collapse: collapse;">
+                            <tr>
+                                <td style="width: 50%; padding: 0 30px 0 0; text-align: center; vertical-align: bottom;">
+                                    <div style="height: 70px;"></div>
+                                    <div style="border-top: 1px solid #000; padding-top: 6px;">
+                                        <div style="font-weight: bold;">The Mihan Engineers (TMEBD)</div>
+                                        <div><?= User::model()->nameOfThis($item->created_by) ?></div>
+                                        <div>Authorized Signatory</div>
+                                        <div style="margin-top: 6px;">Date: <?= date('d/m/Y') ?></div>
+                                    </div>
+                                </td>
+                                <td style="width: 50%; padding: 0 0 0 30px; text-align: center; vertical-align: bottom;">
+                                    <div style="height: 70px;"></div>
+                                    <div style="border-top: 1px solid #000; padding-top: 6px;">
+                                        <div style="font-weight: bold;"><?= $customer_name ?></div>
+                                        <div>Customer Signature</div>
+                                        <div style="margin-top: 6px;">Date: ___/___/______</div>
+                                    </div>
+                                </td>
+                            </tr>
+                        </table>
                     </div>
 
                     <div class="page-break-div"></div>
