@@ -351,7 +351,7 @@ endforeach;
             <div class="col-md-3">
                 <?php
                 echo CHtml::ajaxLink(
-                        "Print", Yii::app()->createUrl('/commercial/purchaseOrder/voucherPreview'), array(
+                        "Preview", Yii::app()->createUrl('/commercial/purchaseOrder/voucherPreview'), array(
                         'type' => 'POST',
                         'beforeSend' => "function(){
                         let po_no = $('#PurchaseOrder_po_no').val();

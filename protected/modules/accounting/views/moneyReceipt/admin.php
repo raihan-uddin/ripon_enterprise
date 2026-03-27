@@ -528,7 +528,7 @@ if (Yii::app()->user->checkAccess('Accounting.MoneyReceipt.VoucherPreview')) {
                 <div class="col-md-3">
                     <?php
                     echo CHtml::ajaxLink(
-                        "Print", Yii::app()->createUrl('/accounting/moneyReceipt/voucherPreview'), array(
+                        "Preview", Yii::app()->createUrl('/accounting/moneyReceipt/voucherPreview'), array(
                         'type' => 'POST',
                         'beforeSend' => "function(){
                         let mr_no = $('#MoneyReceipt_mr_no').val();
