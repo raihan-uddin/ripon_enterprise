@@ -528,7 +528,7 @@ if (Yii::app()->user->checkAccess('Accounting.MoneyReceipt.VoucherPreview')) {
                 <div class="col-md-3">
                     <?php
                     echo CHtml::ajaxLink(
-                        "Print", Yii::app()->createUrl('/accounting/moneyReceipt/voucherPreview'), array(
+                        "Preview", Yii::app()->createUrl('/accounting/moneyReceipt/voucherPreview'), array(
                         'type' => 'POST',
                         'beforeSend' => "function(){
                         let mr_no = $('#MoneyReceipt_mr_no').val();
@@ -668,14 +668,40 @@ if (Yii::app()->user->checkAccess('Accounting.MoneyReceipt.VoucherPreview')) {
                 array
                 (
                     'header' => 'Options',
-                    'template' => '{delete}',
+                    'template' => '{update} {delete}',
                     'class' => 'CButtonColumn',
                     'htmlOptions' => ['class' => 'actions-cell'],
                     'buttons' => array(
+                        'update' => array(
+                            'label' => '<i class="fa fa-pencil"></i>',
+                            'imageUrl' => false,
+                            'url' => 'Yii::app()->createUrl("/accounting/moneyReceipt/update", array("id" => $data->id))',
+                            'options' => array('class' => 'action-btn btn-edit', 'rel' => 'tooltip', 'data-toggle' => 'tooltip', 'title' => 'Edit'),
+                        ),
                         'delete' => array(
                             'label' => '<i class="fa fa-trash"></i>',
                             'imageUrl' => false,
+                            'url' => 'Yii::app()->controller->createUrl("delete", array("id" => $data->id))',
                             'options' => array('class' => 'action-btn btn-delete', 'rel' => 'tooltip', 'data-toggle' => 'tooltip', 'title' => Yii::t('app', 'Delete')),
+                            'click' => 'function(e){
+                                e.preventDefault();
+                                var pin = prompt("Enter PIN to delete:");
+                                if(pin !== "3083"){
+                                    alert("Invalid PIN!");
+                                    return false;
+                                }
+                                if(confirm("Are you sure you want to delete this money receipt?")){
+                                    $.fn.yiiGridView.update("money-receipt-grid", {
+                                        type: "POST",
+                                        url: $(this).attr("href"),
+                                        success: function(){
+                                            $.fn.yiiGridView.update("money-receipt-grid");
+                                            toastr.success("Money receipt deleted successfully.");
+                                        }
+                                    });
+                                }
+                                return false;
+                            }',
                         ),
                     )
                 ),

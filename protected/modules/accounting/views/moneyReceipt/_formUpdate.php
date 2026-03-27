@@ -1,47 +1,35 @@
 <?php
-$this->widget('application.components.BreadCrumb', array(
-    'crumbs' => array(
-        array('name' => 'Collection', 'url' => array('admin')),
-        array('name' => 'Create'),
-    ),
-));
+/** @var MoneyReceipt $model */
+/** @var Customers $customer */
 
-// Current due calculation
+// Customer financial summary
 $criteria = new CDbCriteria();
 $criteria->select = 'SUM(grand_total) AS grand_total';
-$criteria->addColumnCondition(array('customer_id' => $model2->id));
+$criteria->addColumnCondition(array('customer_id' => $customer->id));
 $sellOrder = SellOrder::model()->findByAttributes(array(), $criteria);
 $totalSellAmount = $sellOrder ? (float)$sellOrder->grand_total : 0;
 
 $criteria = new CDbCriteria();
 $criteria->select = 'SUM(return_amount) AS return_amount';
-$criteria->addColumnCondition(array('customer_id' => $model2->id));
+$criteria->addColumnCondition(array('customer_id' => $customer->id));
 $returnOrder = SellReturn::model()->findByAttributes(array(), $criteria);
 $totalReturnAmount = $returnOrder ? (float)$returnOrder->return_amount : 0;
 
 $criteria = new CDbCriteria();
 $criteria->select = 'SUM(amount) + SUM(discount) AS amount';
-$criteria->addColumnCondition(array('customer_id' => $model2->id));
-$moneyReceipt = MoneyReceipt::model()->findByAttributes(array(), $criteria);
-$totalMoneyReceipt = $moneyReceipt ? (float)$moneyReceipt->amount : 0;
+$criteria->addColumnCondition(array('customer_id' => $customer->id));
+$mrSum = MoneyReceipt::model()->findByAttributes(array(), $criteria);
+$totalMoneyReceipt = $mrSum ? (float)$mrSum->amount : 0;
 
 $currentDueAmount = $totalSellAmount - $totalReturnAmount - $totalMoneyReceipt;
 
-// MR number preview
-$nextSlNo   = MoneyReceipt::maxSlNo();
-$previewMrNo = 'MR' . date('y') . date('m') . str_pad($nextSlNo, 5, '0', STR_PAD_LEFT);
-
-// Last payment for this customer
-$lpCriteria = new CDbCriteria();
-$lpCriteria->select = 'SUM(amount) AS amount, date, mr_no';
-$lpCriteria->addColumnCondition(array('customer_id' => $model2->id));
-$lpCriteria->group = 'mr_no, date';
-$lpCriteria->order = 'date DESC, id DESC';
-$lpCriteria->limit  = 1;
-$lastPayment = MoneyReceipt::model()->find($lpCriteria);
+// Base due = outstanding before this receipt was applied
+$oldAmount   = (float)$model->amount;
+$oldDiscount = (float)$model->discount;
+$baseDue     = $currentDueAmount + $oldAmount + $oldDiscount;
 
 $form = $this->beginWidget('CActiveForm', array(
-    'id'                     => 'money-receipt-form',
+    'id'                     => 'money-receipt-update-form',
     'enableAjaxValidation'   => false,
     'enableClientValidation' => true,
     'clientOptions'          => array('validateOnSubmit' => true),
@@ -60,27 +48,32 @@ $form = $this->beginWidget('CActiveForm', array(
             </a>
         </div>
         <small class="text-muted">
-            <i class="fa fa-keyboard-o"></i> Tip: <kbd>Ctrl</kbd>+<kbd>Enter</kbd> to save
+            <i class="fa fa-keyboard-o"></i> Tip: <kbd>Ctrl</kbd>+<kbd>Enter</kbd> to update
         </small>
     </div>
 
-    <div class="card shadow-sm mb-4" id="mr_create_card">
+    <div class="card shadow-sm mb-4">
 
         <!-- Card header -->
-        <div class="card-header bg-primary text-white d-flex align-items-center justify-content-between">
-            <h5 class="mb-0">
-                <span id="header_payment_icon" class="mr-2"><i class="fa fa-money"></i></span>
-                Create Money Receipt
+        <div class="card-header bg-warning d-flex align-items-center justify-content-between">
+            <h5 class="mb-0 text-dark">
+                <span id="header_payment_icon" class="mr-2">
+                    <i class="fa fa-<?=
+                        $model->payment_type == MoneyReceipt::CHECK  ? 'file-text-o' :
+                        ($model->payment_type == MoneyReceipt::ONLINE ? 'university' : 'money')
+                    ?>"></i>
+                </span>
+                Update Money Receipt
                 <span id="header_mr_badge"
                       title="Click to copy MR#"
-                      class="badge badge-light ml-2"
+                      class="badge badge-dark ml-2"
                       style="font-family:monospace; font-size:12px; cursor:pointer;"
                       data-toggle="tooltip" data-placement="right">
-                    <?= CHtml::encode($previewMrNo) ?>
+                    <?= CHtml::encode($model->mr_no) ?>
                 </span>
             </h5>
             <div class="card-tools">
-                <button type="button" class="btn btn-tool text-white" data-card-widget="collapse">
+                <button type="button" class="btn btn-tool" data-card-widget="collapse">
                     <i class="fa fa-minus"></i>
                 </button>
             </div>
@@ -118,8 +111,7 @@ $form = $this->beginWidget('CActiveForm', array(
                            style="color:<?= $currentDueAmount > 0 ? '#e65100' : '#28a745' ?>;"></i>
                         <div>
                             <div style="font-size:10px; color:#666; text-transform:uppercase; letter-spacing:1px;">Outstanding</div>
-                            <div style="font-size:20px; font-weight:700;
-                                        color:<?= $currentDueAmount > 0 ? '#e65100' : '#28a745' ?>;">
+                            <div style="font-size:20px; font-weight:700; color:<?= $currentDueAmount > 0 ? '#e65100' : '#28a745' ?>;">
                                 <?= number_format($currentDueAmount, 2) ?>
                             </div>
                         </div>
@@ -129,16 +121,27 @@ $form = $this->beginWidget('CActiveForm', array(
 
             <div class="row">
 
-                <!-- ── Column 1: Date / Customer / Remarks ─────────────────── -->
+                <!-- ── Column 1: MR# / Date / Customer / Remarks ─────────── -->
                 <div class="col-md-3 mb-3">
 
                     <div class="form-group">
+                        <label>MR No</label>
+                        <div class="input-group">
+                            <input type="text" class="form-control font-weight-bold" readonly
+                                   value="<?= CHtml::encode($model->mr_no) ?>"
+                                   style="font-family:monospace;">
+                            <div class="input-group-append">
+                                <span class="input-group-text"><i class="fa fa-hashtag"></i></span>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="form-group">
                         <?= $form->labelEx($model, 'date') ?>
-                        <div class="input-group" id="entry_date">
+                        <div class="input-group" id="update_entry_date">
                             <?= $form->textField($model, 'date', array(
                                 'class'       => 'form-control datetimepicker-input',
                                 'placeholder' => 'YYYY-MM-DD',
-                                'value'       => date('Y-m-d'),
                                 'id'          => 'MoneyReceipt_date',
                             )) ?>
                             <div class="input-group-append">
@@ -153,41 +156,22 @@ $form = $this->beginWidget('CActiveForm', array(
                     <div class="form-group">
                         <?= $form->labelEx($model, 'customer_id') ?>
                         <div class="input-group">
-                            <?= $form->textField($model, 'customer_name', array(
-                                'class'    => 'form-control',
-                                'readonly' => true,
-                                'value'    => $model2->company_name,
-                            )) ?>
-                            <?= $form->hiddenField($model, 'customer_id', array('value' => $model2->id)) ?>
+                            <input type="text" class="form-control" readonly
+                                   value="<?= CHtml::encode($customer->company_name) ?>">
+                            <?= $form->hiddenField($model, 'customer_id') ?>
                             <div class="input-group-append">
                                 <span class="input-group-text"><i class="fa fa-user"></i></span>
                             </div>
                         </div>
-                        <?= $form->error($model, 'customer_id', array('class' => 'text-danger')) ?>
-                        <?php if ($lastPayment): ?>
-                        <small class="text-muted mt-1 d-block">
-                            <i class="fa fa-history"></i>
-                            Last paid <strong><?= number_format((float)$lastPayment->amount, 2) ?></strong>
-                            on <strong><?= date('d M Y', strtotime($lastPayment->date)) ?></strong>
-                            <span class="badge badge-secondary" style="font-family:monospace; font-size:10px;">
-                                <?= CHtml::encode($lastPayment->mr_no) ?>
-                            </span>
-                        </small>
-                        <?php else: ?>
-                        <small class="text-muted mt-1 d-block">
-                            <i class="fa fa-info-circle"></i> No previous payments found.
-                        </small>
-                        <?php endif; ?>
                     </div>
 
                     <div class="form-group">
                         <?= $form->labelEx($model, 'remarks') ?>
                         <?= $form->textArea($model, 'remarks', array(
-                            'class'       => 'form-control',
-                            'rows'        => 4,
-                            'placeholder' => 'Optional remarks...',
-                            'id'          => 'MoneyReceipt_remarks',
-                            'maxlength'   => 200,
+                            'class'     => 'form-control',
+                            'rows'      => 3,
+                            'id'        => 'MoneyReceipt_remarks',
+                            'maxlength' => 200,
                         )) ?>
                         <div class="d-flex justify-content-end">
                             <small id="remarks_counter" class="text-muted">0 / 200</small>
@@ -197,32 +181,17 @@ $form = $this->beginWidget('CActiveForm', array(
 
                 </div>
 
-                <!-- ── Column 2: Amounts + quick-fill + progress ───────────── -->
+                <!-- ── Column 2: Amounts + progress + remaining ───────────── -->
                 <div class="col-md-3 mb-3">
 
                     <div class="form-group">
-                        <label>Current Due</label>
+                        <label>Due Before This Receipt</label>
                         <div class="input-group">
                             <input type="text" class="form-control font-weight-bold"
-                                   id="current_due_amt"
-                                   value="<?= number_format((float)$currentDueAmount, 2) ?>" readonly>
+                                   value="<?= number_format($baseDue, 2) ?>" readonly>
                             <div class="input-group-append">
                                 <span class="input-group-text"><i class="fa fa-balance-scale"></i></span>
                             </div>
-                        </div>
-                    </div>
-
-                    <!-- Quick-fill -->
-                    <div class="form-group">
-                        <label style="font-size:11px; color:#888; text-transform:uppercase; letter-spacing:1px;">
-                            Quick Fill
-                        </label>
-                        <div class="btn-group btn-group-sm w-100">
-                            <button type="button" class="btn btn-outline-primary" onclick="fillAmount(100)">
-                                <i class="fa fa-check-circle"></i> Full Due
-                            </button>
-                            <button type="button" class="btn btn-outline-secondary" onclick="fillAmount(50)">50%</button>
-                            <button type="button" class="btn btn-outline-secondary" onclick="fillAmount(25)">25%</button>
                         </div>
                     </div>
 
@@ -272,22 +241,20 @@ $form = $this->beginWidget('CActiveForm', array(
                     </div>
 
                     <div class="form-group">
-                        <label>Remaining Due</label>
+                        <label>Remaining After Update</label>
                         <div class="input-group">
                             <input type="text" class="form-control font-weight-bold"
                                    id="remaining_due_amt"
-                                   value="<?= number_format((float)$currentDueAmount, 2) ?>" disabled>
+                                   value="<?= number_format($currentDueAmount, 2) ?>" disabled>
                             <div class="input-group-append">
-                                <span class="input-group-text" id="remaining_icon">
-                                    <i class="fa fa-balance-scale"></i>
-                                </span>
+                                <span class="input-group-text"><i class="fa fa-balance-scale"></i></span>
                             </div>
                         </div>
                     </div>
 
                 </div>
 
-                <!-- ── Column 3: Payment type + conditional bank/cheque ──── -->
+                <!-- ── Column 3: Payment type + conditional bank/cheque ────── -->
                 <div class="col-md-3 mb-3">
 
                     <div class="form-group">
@@ -295,23 +262,31 @@ $form = $this->beginWidget('CActiveForm', array(
                         <div class="input-group">
                             <div class="input-group-prepend">
                                 <span class="input-group-text">
-                                    <i class="fa fa-money" id="payment_type_icon"></i>
+                                    <i id="payment_type_icon" class="fa fa-<?=
+                                        $model->payment_type == MoneyReceipt::CHECK  ? 'file-text-o' :
+                                        ($model->payment_type == MoneyReceipt::ONLINE ? 'university' : 'money')
+                                    ?>"></i>
                                 </span>
                             </div>
                             <?= $form->dropDownList($model, 'payment_type',
                                 CHtml::listData(MoneyReceipt::model()->paymentTypeFilter(), 'id', 'title'),
-                                array('prompt' => 'Select', 'class' => 'form-control', 'id' => 'payment_type_dropdown')
+                                array('prompt' => 'Select', 'class' => 'form-control', 'id' => 'update_payment_type')
                             ) ?>
                             <div class="input-group-append">
                                 <span class="input-group-text" id="payment_valid_icon">
+                                    <?php if ($model->payment_type): ?>
+                                    <i class="fa fa-check-circle text-success"></i>
+                                    <?php else: ?>
                                     <i class="fa fa-circle-o text-muted"></i>
+                                    <?php endif; ?>
                                 </span>
                             </div>
                         </div>
                         <?= $form->error($model, 'payment_type', array('class' => 'text-danger')) ?>
                     </div>
 
-                    <div class="form-group d-none" id="bank_section">
+                    <div class="form-group <?= $model->payment_type == MoneyReceipt::CASH ? 'd-none' : '' ?>"
+                         id="bank_section">
                         <?= $form->labelEx($model, 'bank_id') ?>
                         <div class="input-group">
                             <?= $form->dropDownList($model, 'bank_id',
@@ -319,16 +294,14 @@ $form = $this->beginWidget('CActiveForm', array(
                                 array('prompt' => 'Select Bank', 'class' => 'form-control')
                             ) ?>
                             <div class="input-group-append">
-                                <button type="button" class="btn btn-outline-secondary"
-                                        onclick="addBankDialog()" title="Add Bank">
-                                    <i class="fa fa-plus"></i>
-                                </button>
+                                <span class="input-group-text"><i class="fa fa-university"></i></span>
                             </div>
                         </div>
                         <?= $form->error($model, 'bank_id', array('class' => 'text-danger')) ?>
                     </div>
 
-                    <div class="form-group d-none" id="cheque_no_section">
+                    <div class="form-group <?= $model->payment_type != MoneyReceipt::CHECK ? 'd-none' : '' ?>"
+                         id="cheque_no_section">
                         <?= $form->labelEx($model, 'cheque_no') ?>
                         <div class="input-group">
                             <?= $form->textField($model, 'cheque_no', array(
@@ -342,9 +315,10 @@ $form = $this->beginWidget('CActiveForm', array(
                         <?= $form->error($model, 'cheque_no', array('class' => 'text-danger')) ?>
                     </div>
 
-                    <div class="form-group d-none" id="cheque_date_section">
+                    <div class="form-group <?= $model->payment_type != MoneyReceipt::CHECK ? 'd-none' : '' ?>"
+                         id="cheque_date_section">
                         <?= $form->labelEx($model, 'cheque_date') ?>
-                        <div class="input-group" id="cheque_date_picker">
+                        <div class="input-group" id="update_cheque_date">
                             <?= $form->textField($model, 'cheque_date', array(
                                 'class'       => 'form-control datetimepicker-input',
                                 'placeholder' => 'YYYY-MM-DD',
@@ -366,7 +340,6 @@ $form = $this->beginWidget('CActiveForm', array(
                     <div id="receipt_preview" class="rounded p-3"
                          style="background:#fffdf0; border:1px dashed #ccc; font-size:12px; min-height:300px;">
 
-                        <!-- Receipt header -->
                         <div style="text-align:center; border-bottom:1px dashed #bbb; padding-bottom:8px; margin-bottom:8px;">
                             <div style="font-weight:700; font-size:13px; letter-spacing:1px;">
                                 <?= strtoupper(Yii::app()->params['company']['name']) ?>
@@ -374,57 +347,70 @@ $form = $this->beginWidget('CActiveForm', array(
                             <div style="color:#888; font-size:10px; text-transform:uppercase; letter-spacing:2px;">
                                 Money Receipt
                             </div>
-                            <div id="prev_mr_no"
-                                 style="font-family:monospace; font-size:13px; font-weight:700;
-                                        background:#e8f4fd; display:inline-block;
+                            <div style="font-family:monospace; font-size:13px; font-weight:700;
+                                        background:#fff3cd; display:inline-block;
                                         padding:2px 10px; border-radius:10px; margin-top:4px;">
-                                <?= CHtml::encode($previewMrNo) ?>
+                                <?= CHtml::encode($model->mr_no) ?>
                             </div>
                         </div>
 
-                        <!-- Receipt fields -->
                         <table style="width:100%; border-collapse:collapse; font-size:11px;">
                             <tr>
                                 <td style="color:#888; padding:3px 0; width:40%;">Customer</td>
-                                <td id="prev_customer" style="font-weight:600; padding:3px 0;">
-                                    <?= CHtml::encode($model2->company_name) ?>
+                                <td style="font-weight:600; padding:3px 0;">
+                                    <?= CHtml::encode($customer->company_name) ?>
                                 </td>
                             </tr>
                             <tr>
                                 <td style="color:#888; padding:3px 0;">Date</td>
-                                <td id="prev_date" style="padding:3px 0;"><?= date('d M Y') ?></td>
+                                <td id="prev_date" style="padding:3px 0;">
+                                    <?= date('d M Y', strtotime($model->date)) ?>
+                                </td>
                             </tr>
                             <tr>
                                 <td style="color:#888; padding:3px 0;">Payment</td>
-                                <td id="prev_payment_type" style="padding:3px 0;">—</td>
+                                <td id="prev_payment_type" style="padding:3px 0;">
+                                    <?= $model->payment_type == MoneyReceipt::CASH ? 'Cash' :
+                                        ($model->payment_type == MoneyReceipt::CHECK ? 'Cheque' :
+                                        ($model->payment_type == MoneyReceipt::ONLINE ? 'Online Transfer' : '—')) ?>
+                                </td>
                             </tr>
                         </table>
 
-                        <!-- Receipt amounts -->
                         <div style="border-top:1px dashed #bbb; margin-top:10px; padding-top:8px;">
                             <div style="display:flex; justify-content:space-between; padding:2px 0; font-size:11px;">
                                 <span style="color:#888;">Amount</span>
-                                <span id="prev_amount" style="font-weight:600;">0.00</span>
+                                <span id="prev_amount" style="font-weight:600;"><?= number_format($oldAmount, 2) ?></span>
                             </div>
                             <div style="display:flex; justify-content:space-between; padding:2px 0; font-size:11px;">
                                 <span style="color:#888;">Discount</span>
-                                <span id="prev_discount">0.00</span>
+                                <span id="prev_discount"><?= number_format($oldDiscount, 2) ?></span>
                             </div>
                             <div style="display:flex; justify-content:space-between;
                                         padding:6px 0 2px; border-top:1px solid #333;
                                         margin-top:6px; font-weight:700; font-size:14px;">
                                 <span>Total</span>
-                                <span id="prev_total">0.00</span>
+                                <span id="prev_total"><?= number_format($oldAmount + $oldDiscount, 2) ?></span>
                             </div>
                             <div id="prev_amount_words"
                                  style="font-size:10px; color:#888; font-style:italic;
-                                        margin-top:4px; line-height:1.4;"></div>
+                                        margin-top:4px; line-height:1.4;">
+                                <?php
+                                $initTotal = $oldAmount + $oldDiscount;
+                                if ($initTotal > 0) {
+                                    Yii::import('application.extensions.AmountInWord');
+                                    // Fallback: just show the number if extension not available
+                                }
+                                ?>
+                            </div>
                         </div>
 
-                        <!-- Remarks -->
-                        <div id="prev_remarks_wrap" style="margin-top:8px; display:none;">
-                            <div style="color:#888; font-size:10px; font-style:italic;"
-                                 id="prev_remarks"></div>
+                        <div id="prev_remarks_wrap"
+                             style="margin-top:8px; <?= $model->remarks ? '' : 'display:none;' ?>">
+                            <div id="prev_remarks"
+                                 style="color:#888; font-size:10px; font-style:italic;">
+                                <?= $model->remarks ? '"' . CHtml::encode($model->remarks) . '"' : '' ?>
+                            </div>
                         </div>
 
                     </div>
@@ -434,112 +420,24 @@ $form = $this->beginWidget('CActiveForm', array(
         </div><!-- /.card-body -->
 
         <div class="card-footer text-right">
-            <?php echo CHtml::ajaxSubmitButton('Save Receipt',
-                CHtml::normalizeUrl(array('/accounting/moneyReceipt/create', 'id' => $id, 'render' => true)),
-                array(
-                    'dataType'   => 'json',
-                    'type'       => 'post',
-                    'beforeSend' => 'function(){
-                        var date         = $("#MoneyReceipt_date").val();
-                        var customer_id  = $("#MoneyReceipt_customer_id").val();
-                        var payment_type = $("#payment_type_dropdown").val();
-                        var bank_id      = $("#MoneyReceipt_bank_id").val();
-                        var cheque_no    = $("#MoneyReceipt_cheque_no").val();
-                        var cheque_date  = $("#MoneyReceipt_cheque_date").val();
-                        var amount       = parseFloat($("#MoneyReceipt_amount").val()) || 0;
-                        var discount     = parseFloat($("#MoneyReceipt_discount").val()) || 0;
-                        if(!date){ toastr.error("Please insert date."); return false; }
-                        if(!payment_type){ toastr.error("Please select payment type!"); return false; }
-                        if(payment_type == "<?= MoneyReceipt::CHECK ?>"){
-                            if(!bank_id){ toastr.error("Please select a bank!"); return false; }
-                            if(!cheque_no){ toastr.error("Please insert cheque no!"); return false; }
-                            if(!cheque_date){ toastr.error("Please insert cheque date!"); return false; }
-                        } else if(payment_type == "<?= MoneyReceipt::ONLINE ?>"){
-                            if(!bank_id){ toastr.error("Please select a bank!"); return false; }
-                        }
-                        if(!customer_id){ toastr.error("Customer not found!"); return false; }
-                        if(amount + discount === 0){ toastr.error("Please insert an amount."); return false; }
-                        $("#overlay").fadeIn(300);
-                    }',
-                    'success'    => 'function(data){
-                        $("#overlay").fadeOut(300);
-                        if(data.status === "success"){
-                            clearDraft();
-                            formDirty = false;
-                            launchConfetti();
-                            toastr.success("Money receipt saved successfully.");
-                            $("#money-receipt-form")[0].reset();
-                            resetAfterSave();
-                            $("#information-modal-money-receipt").modal("show");
-                            $("#information-modal-money-receipt .modal-body").html(data.soReportInfo);
-                        } else {
-                            $.each(data, function(key, val){
-                                $("#money-receipt-form #" + key + "_em_").html(val).show();
-                            });
-                        }
-                    }',
-                    'error'      => 'function(xhr){
-                        $("#overlay").fadeOut(300);
-                        toastr.error(xhr.responseText);
-                    }',
-                    'complete'   => 'function(){ $("#overlay").fadeOut(300); }',
-                ),
-                array('class' => 'btn btn-primary btn-md', 'id' => 'btn_save_receipt')
-            ); ?>
+            <?= CHtml::submitButton('Update Receipt', array(
+                'class' => 'btn btn-warning btn-md',
+                'id'    => 'btn_update_receipt',
+            )) ?>
             <a href="<?= Yii::app()->baseUrl ?>/index.php/accounting/moneyReceipt/admin"
                class="btn btn-default ml-2">Cancel</a>
         </div>
     </div>
 </div>
 
-<div id="overlay">
-    <div class="cv-spinner"><span class="spinner"></span></div>
-</div>
-
-<!-- Voucher preview modal -->
-<div class="modal fade" id="information-modal-money-receipt" tabindex="-1"
-     data-backdrop="static" role="dialog" aria-hidden="true">
-    <div class="modal-dialog modal-dialog-centered modal-xl" role="document">
-        <div class="modal-content">
-            <div class="modal-header">
-                <h5 class="modal-title">Money Receipt</h5>
-                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
-                    <span aria-hidden="true">&times;</span>
-                </button>
-            </div>
-            <div class="modal-body"></div>
-            <div class="modal-footer">
-                <button type="button" class="btn btn-info"
-                        onclick="window.print()">
-                    <i class="fa fa-print"></i> Print
-                </button>
-                <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
-            </div>
-        </div>
-    </div>
-</div>
-
-<!-- Add Bank dialog -->
-<?php $this->beginWidget('zii.widgets.jui.CJuiDialog', array(
-    'id'      => 'dialogAddBank',
-    'options' => array('title' => 'Add Bank', 'autoOpen' => false, 'modal' => true, 'width' => 550, 'resizable' => false),
-)); ?>
-<div class="divForForm">
-    <div class="ajaxLoaderFormLoad" style="display:none;">
-        <img src="<?= Yii::app()->theme->baseUrl ?>/images/ajax-loader.gif"/>
-    </div>
-</div>
 <?php $this->endWidget(); ?>
-
-<?php $this->endWidget(); // CActiveForm ?>
 
 <script>
 // ── Constants ─────────────────────────────────────────────────────────────────
-var CASH   = '<?= MoneyReceipt::CASH ?>';
-var CHECK  = '<?= MoneyReceipt::CHECK ?>';
-var ONLINE = '<?= MoneyReceipt::ONLINE ?>';
-var currentDue  = <?= (float)$currentDueAmount ?>;
-var DRAFT_KEY   = 'mr_draft_customer_<?= (int)$model2->id ?>';
+var CASH   = <?= MoneyReceipt::CASH ?>;
+var CHECK  = <?= MoneyReceipt::CHECK ?>;
+var ONLINE = <?= MoneyReceipt::ONLINE ?>;
+var baseDue     = <?= (float)$baseDue ?>;
 var formDirty   = false;
 
 var paymentLabels = {};
@@ -548,11 +446,11 @@ paymentLabels[CHECK]  = 'Cheque';
 paymentLabels[ONLINE] = 'Online Transfer';
 
 var paymentIcons = {};
-paymentIcons[CASH]   = 'fa-money';
-paymentIcons[CHECK]  = 'fa-file-text-o';
-paymentIcons[ONLINE] = 'fa-university';
+paymentIcons[CASH]   = 'money';
+paymentIcons[CHECK]  = 'file-text-o';
+paymentIcons[ONLINE] = 'university';
 
-// ── Amount in words (Bangladeshi style) ───────────────────────────────────────
+// ── Amount in words ───────────────────────────────────────────────────────────
 function numberToWords(num) {
     var ones = ['', 'One', 'Two', 'Three', 'Four', 'Five', 'Six', 'Seven', 'Eight', 'Nine',
                 'Ten', 'Eleven', 'Twelve', 'Thirteen', 'Fourteen', 'Fifteen', 'Sixteen',
@@ -572,103 +470,15 @@ function numberToWords(num) {
     if (!num || num <= 0) return '';
     var intPart = Math.floor(num);
     var decPart = Math.round((num - intPart) * 100);
-    var result = convert(intPart) + ' Taka';
+    var result  = convert(intPart) + ' Taka';
     if (decPart > 0) result += ' and ' + convert(decPart) + ' Paisa';
     return result + ' Only';
-}
-
-// ── Draft: save / restore / clear ────────────────────────────────────────────
-function saveDraft() {
-    var d = {
-        date:         $('#MoneyReceipt_date').val(),
-        amount:       $('#MoneyReceipt_amount').val(),
-        discount:     $('#MoneyReceipt_discount').val(),
-        payment_type: $('#payment_type_dropdown').val(),
-        bank_id:      $('#MoneyReceipt_bank_id').val(),
-        cheque_no:    $('#MoneyReceipt_cheque_no').val(),
-        cheque_date:  $('#MoneyReceipt_cheque_date').val(),
-        remarks:      $('#MoneyReceipt_remarks').val(),
-    };
-    localStorage.setItem(DRAFT_KEY, JSON.stringify(d));
-}
-
-function restoreDraft() {
-    var raw = localStorage.getItem(DRAFT_KEY);
-    if (!raw) return;
-    try {
-        var d = JSON.parse(raw);
-        if (!d.amount && !d.discount && !d.remarks) return;
-        if (d.date)         $('#MoneyReceipt_date').val(d.date);
-        if (d.amount)       $('#MoneyReceipt_amount').val(d.amount);
-        if (d.discount)     $('#MoneyReceipt_discount').val(d.discount);
-        if (d.remarks)      { $('#MoneyReceipt_remarks').val(d.remarks); updateRemarksCounter(); }
-        if (d.payment_type) {
-            $('#payment_type_dropdown').val(d.payment_type).trigger('change');
-            setTimeout(function(){
-                if (d.bank_id)     $('#MoneyReceipt_bank_id').val(d.bank_id);
-                if (d.cheque_no)   $('#MoneyReceipt_cheque_no').val(d.cheque_no);
-                if (d.cheque_date) $('#MoneyReceipt_cheque_date').val(d.cheque_date);
-            }, 100);
-        }
-        $('#MoneyReceipt_amount').trigger('input');
-        toastr.info(
-            'Draft restored from your last session. <button class="btn btn-xs btn-light ml-2" onclick="clearDraft();location.reload();">Discard</button>',
-            '', {timeOut: 8000, closeButton: true, enableHtml: true}
-        );
-    } catch(e) { localStorage.removeItem(DRAFT_KEY); }
-}
-
-function clearDraft() {
-    localStorage.removeItem(DRAFT_KEY);
 }
 
 // ── Unsaved changes warning ───────────────────────────────────────────────────
 window.addEventListener('beforeunload', function(e) {
     if (formDirty) { e.preventDefault(); e.returnValue = ''; }
 });
-
-// ── Confetti ─────────────────────────────────────────────────────────────────
-function launchConfetti() {
-    var canvas = document.createElement('canvas');
-    canvas.style.cssText = 'position:fixed;top:0;left:0;width:100%;height:100%;pointer-events:none;z-index:99999;';
-    document.body.appendChild(canvas);
-    canvas.width  = window.innerWidth;
-    canvas.height = window.innerHeight;
-    var ctx    = canvas.getContext('2d');
-    var colors = ['#007bff','#28a745','#ffc107','#dc3545','#17a2b8','#6f42c1','#fd7e14'];
-    var pieces = [];
-    for (var i = 0; i < 160; i++) {
-        pieces.push({
-            x:     Math.random() * canvas.width,
-            y:     -Math.random() * canvas.height * 0.5,
-            r:     Math.random() * 7 + 4,
-            color: colors[Math.floor(Math.random() * colors.length)],
-            speed: Math.random() * 3 + 2,
-            angle: Math.random() * Math.PI * 2,
-            spin:  (Math.random() - 0.5) * 0.15,
-            drift: (Math.random() - 0.5) * 1.5,
-        });
-    }
-    var frame = 0;
-    function animate() {
-        frame++;
-        ctx.clearRect(0, 0, canvas.width, canvas.height);
-        pieces.forEach(function(p) {
-            p.y     += p.speed;
-            p.x     += p.drift;
-            p.angle += p.spin;
-            ctx.save();
-            ctx.translate(p.x, p.y);
-            ctx.rotate(p.angle);
-            ctx.fillStyle = p.color;
-            ctx.fillRect(-p.r / 2, -p.r / 2, p.r, p.r * 0.55);
-            ctx.restore();
-        });
-        if (frame < 220) requestAnimationFrame(animate);
-        else if (canvas.parentNode) document.body.removeChild(canvas);
-    }
-    animate();
-}
 
 // ── Remarks counter ───────────────────────────────────────────────────────────
 function updateRemarksCounter() {
@@ -681,19 +491,15 @@ function updateRemarksCounter() {
 
 // ── Field validation feedback ─────────────────────────────────────────────────
 function validateAmountField() {
-    var a = parseFloat($('#MoneyReceipt_amount').val()) || 0;
-    var d = parseFloat($('#MoneyReceipt_discount').val()) || 0;
+    var a     = parseFloat($('#MoneyReceipt_amount').val())  || 0;
+    var d     = parseFloat($('#MoneyReceipt_discount').val()) || 0;
     var valid = (a + d) > 0;
-    $('#MoneyReceipt_amount')
-        .toggleClass('is-valid',   valid)
-        .toggleClass('is-invalid', !valid && a !== 0);
-    $('#amount_icon i')
-        .attr('class', valid ? 'fa fa-check-circle text-success' : 'fa fa-money');
+    $('#MoneyReceipt_amount').toggleClass('is-valid', valid).toggleClass('is-invalid', !valid && a !== 0);
+    $('#amount_icon i').attr('class', valid ? 'fa fa-check-circle text-success' : 'fa fa-money');
 }
 
 function validateDateField() {
-    var v = $('#MoneyReceipt_date').val();
-    var valid = /^\d{4}-\d{2}-\d{2}$/.test(v);
+    var valid = /^\d{4}-\d{2}-\d{2}$/.test($('#MoneyReceipt_date').val());
     $('#MoneyReceipt_date').toggleClass('is-valid', valid);
     $('#date_icon i').attr('class', valid ? 'fa fa-check-circle text-success' : 'fa fa-calendar');
 }
@@ -704,7 +510,7 @@ function updatePreview() {
     var amount   = parseFloat($('#MoneyReceipt_amount').val())  || 0;
     var discount = parseFloat($('#MoneyReceipt_discount').val()) || 0;
     var total    = amount + discount;
-    var ptVal    = $('#payment_type_dropdown').val();
+    var ptVal    = parseInt($('#update_payment_type').val());
     var ptLabel  = paymentLabels[ptVal] || '—';
     var remarks  = $('#MoneyReceipt_remarks').val();
 
@@ -725,48 +531,37 @@ function updatePreview() {
     }
 }
 
-// ── Quick-fill buttons ────────────────────────────────────────────────────────
-function fillAmount(pct) {
-    if (currentDue <= 0) { toastr.warning('No outstanding due for this customer.'); return; }
-    $('#MoneyReceipt_amount').val(((currentDue * pct) / 100).toFixed(2)).trigger('input').focus();
-}
+// ── Recalculate remaining + progress ─────────────────────────────────────────
+function recalculate() {
+    var a         = parseFloat($('#MoneyReceipt_amount').val())  || 0;
+    var d         = parseFloat($('#MoneyReceipt_discount').val()) || 0;
+    var total     = a + d;
+    var remaining = baseDue - total;
 
-// ── Reset after successful save ───────────────────────────────────────────────
-function resetAfterSave() {
-    $('#remaining_due_amt').val(currentDue.toFixed(2)).css('border-color', '').removeClass('text-success text-primary text-danger');
-    $('#bank_section, #cheque_no_section, #cheque_date_section').addClass('d-none');
-    $('#payment_progress').css('width', '0%').attr('class', 'progress-bar bg-danger');
-    $('#progress_pct').text('0%');
-    $('#amount_in_words').text('');
-    $('#prev_amount_words').text('');
-    $('#header_payment_icon i').attr('class', 'fa fa-money');
-    $('#payment_type_icon').attr('class', 'fa fa-money');
-    $('#payment_valid_icon i').attr('class', 'fa fa-circle-o text-muted');
-    $('#remarks_counter').text('0 / 200');
+    // Remaining color
+    var $rem = $('#remaining_due_amt');
+    $rem.val(remaining.toFixed(2));
+    $rem.removeClass('text-success text-primary text-danger').css('border-color', '');
+    if (remaining > 0.005) {
+        $rem.addClass('text-success').css('border-color', '#28a745');
+    } else if (remaining >= -0.005) {
+        $rem.addClass('text-primary').css('border-color', '#007bff');
+    } else {
+        $rem.addClass('text-danger').css('border-color', '#dc3545');
+    }
+
+    // Progress bar
+    var rawPct  = baseDue > 0 ? (total / baseDue) * 100 : 0;
+    var dispPct = Math.min(rawPct, 100);
+    var barCls  = rawPct < 50 ? 'bg-danger' : (rawPct < 100 ? 'bg-warning' : 'bg-success');
+    $('#payment_progress').css('width', dispPct + '%').attr('class', 'progress-bar ' + barCls);
+    $('#progress_pct').text(Math.round(rawPct) + '%');
+
+    // Amount in words
+    $('#amount_in_words').text(total > 0 ? numberToWords(total) : '');
+
+    validateAmountField();
     updatePreview();
-}
-
-// ── Add Bank dialog ───────────────────────────────────────────────────────────
-function addBankDialog() {
-    <?= CHtml::ajax(array(
-        'url'        => array('/sell/crmBank/CreateBankFromOutSide'),
-        'data'       => 'js:$(this).serialize()',
-        'type'       => 'post',
-        'dataType'   => 'json',
-        'beforeSend' => 'function(){ $(".ajaxLoaderFormLoad").show(); }',
-        'complete'   => 'function(){ $(".ajaxLoaderFormLoad").hide(); }',
-        'success'    => 'function(data){
-            if(data.status=="failure"){
-                $("#dialogAddBank .divForForm").html(data.div);
-                $("#dialogAddBank .divForForm form").submit(addBankDialog);
-            } else {
-                $("#dialogAddBank .divForForm").html(data.div);
-                setTimeout(function(){ $("#dialogAddBank").dialog("close"); }, 1000);
-                $("#MoneyReceipt_bank_id").append(\'<option selected value="\'+data.value+\'">\'+data.label+\'</option>\');
-            }
-        }',
-    )) ?>
-    return false;
 }
 
 // ── Document ready ────────────────────────────────────────────────────────────
@@ -774,34 +569,33 @@ $(document).ready(function() {
 
     // Date pickers
     new Lightpick({
-        field: document.getElementById('entry_date'),
+        field: document.getElementById('update_entry_date'),
         onSelect: function(d) {
             document.getElementById('MoneyReceipt_date').value = d.format('YYYY-MM-DD');
             validateDateField();
             updatePreview();
-            saveDraft();
+            formDirty = true;
         }
     });
     new Lightpick({
-        field: document.getElementById('cheque_date_picker'),
+        field: document.getElementById('update_cheque_date'),
         onSelect: function(d) {
             document.getElementById('MoneyReceipt_cheque_date').value = d.format('YYYY-MM-DD');
-            saveDraft();
+            formDirty = true;
         }
     });
 
-    // Auto-focus amount on load
+    // Init on load
+    validateDateField();
+    updateRemarksCounter();
+    recalculate();
+
+    // Auto-focus amount
     setTimeout(function() { $('#MoneyReceipt_amount').focus(); }, 300);
 
-    // Restore draft
-    restoreDraft();
-
-    // Validate date on initial load (pre-filled with today)
-    validateDateField();
-
     // Payment type change
-    $('#payment_type_dropdown').on('change', function() {
-        var t = this.value;
+    $('#update_payment_type').on('change', function() {
+        var t = parseInt(this.value);
         $('#bank_section').addClass('d-none');
         $('#cheque_no_section').addClass('d-none');
         $('#cheque_date_section').addClass('d-none');
@@ -809,93 +603,59 @@ $(document).ready(function() {
         $('#MoneyReceipt_cheque_no').val('');
         $('#MoneyReceipt_cheque_date').val('');
 
-        if (t == CHECK) {
+        if (t === CHECK) {
             $('#bank_section').removeClass('d-none');
             $('#cheque_no_section').removeClass('d-none');
             $('#cheque_date_section').removeClass('d-none');
-        } else if (t == ONLINE) {
+        } else if (t === ONLINE) {
             $('#bank_section').removeClass('d-none');
         }
 
         // Update icons
-        var icon = paymentIcons[t] || 'fa-money';
-        $('#header_payment_icon i').attr('class', 'fa ' + icon);
-        $('#payment_type_icon').attr('class', 'fa ' + icon);
+        var icon = paymentIcons[t] || 'money';
+        $('#header_payment_icon i').attr('class', 'fa fa-' + icon);
+        $('#payment_type_icon').attr('class', 'fa fa-' + icon);
 
-        // Validation checkmark
-        if (t) {
+        if (this.value) {
             $('#payment_valid_icon i').attr('class', 'fa fa-check-circle text-success');
         } else {
             $('#payment_valid_icon i').attr('class', 'fa fa-circle-o text-muted');
         }
 
         formDirty = true;
-        saveDraft();
         updatePreview();
     });
 
     // Amount / discount input
     $('#MoneyReceipt_amount, #MoneyReceipt_discount').on('input', function() {
         this.value = this.value.replace(/[^\d.]/g, '').replace(/(\..*)\./g, '$1');
-
-        var a         = parseFloat($('#MoneyReceipt_amount').val())  || 0;
-        var d         = parseFloat($('#MoneyReceipt_discount').val()) || 0;
-        var remaining = currentDue - a - d;
-        var total     = a + d;
-
-        // Remaining due color
-        var $rem = $('#remaining_due_amt');
-        $rem.val(remaining.toFixed(2));
-        $rem.removeClass('text-success text-primary text-danger').css('border-color', '');
-        if (remaining > 0.005) {
-            $rem.addClass('text-success').css('border-color', '#28a745');
-        } else if (remaining >= -0.005) {
-            $rem.addClass('text-primary').css('border-color', '#007bff');
-        } else {
-            $rem.addClass('text-danger').css('border-color', '#dc3545');
-        }
-
-        // Progress bar
-        var rawPct  = currentDue > 0 ? (total / currentDue) * 100 : 0;
-        var dispPct = Math.min(rawPct, 100);
-        var barCls  = rawPct < 50 ? 'bg-danger' : (rawPct < 100 ? 'bg-warning' : 'bg-success');
-        $('#payment_progress').css('width', dispPct + '%').attr('class', 'progress-bar ' + barCls);
-        $('#progress_pct').text(Math.round(rawPct) + '%');
-
-        // Amount in words below amount field
-        $('#amount_in_words').text(total > 0 ? numberToWords(total) : '');
-
-        validateAmountField();
-        formDirty = true;
-        saveDraft();
-        updatePreview();
+        formDirty  = true;
+        recalculate();
     });
 
-    // Date field input
+    // Date input
     $('#MoneyReceipt_date').on('input change', function() {
         validateDateField();
         formDirty = true;
-        saveDraft();
         updatePreview();
     });
 
-    // Remarks counter + preview
+    // Remarks
     $('#MoneyReceipt_remarks').on('input', function() {
         updateRemarksCounter();
         formDirty = true;
-        saveDraft();
         updatePreview();
     });
 
-    // Copy MR# to clipboard on badge click
+    // Copy MR# to clipboard
     $('#header_mr_badge').on('click', function() {
         var mrNo = $(this).text().trim();
         if (navigator.clipboard) {
             navigator.clipboard.writeText(mrNo).then(function() {
-                toastr.info('<i class="fa fa-copy"></i> <strong>' + mrNo + '</strong> copied to clipboard!', '', {enableHtml: true, timeOut: 2000});
+                toastr.info('<i class="fa fa-copy"></i> <strong>' + mrNo + '</strong> copied!',
+                    '', {enableHtml: true, timeOut: 2000});
             });
         } else {
-            // Fallback
             var $tmp = $('<input>').val(mrNo).appendTo('body').select();
             document.execCommand('copy');
             $tmp.remove();
@@ -903,23 +663,24 @@ $(document).ready(function() {
         }
     });
 
-    // Keyboard shortcut: Ctrl+Enter to save
+    // Keyboard shortcut: Ctrl+Enter to submit
     $(document).on('keydown', function(e) {
         if (e.ctrlKey && e.key === 'Enter') {
             e.preventDefault();
-            $('#btn_save_receipt').trigger('click');
+            formDirty = false; // allow navigation after submit
+            $('#btn_update_receipt').trigger('click');
         }
     });
 
-    // Prevent accidental Enter-key submit
+    // Prevent Enter on non-textarea
     $(document).on('keypress', function(e) {
         if (e.which === 13 && !$(e.target).is('textarea')) return false;
     });
 
-    // Mark dirty on any form change
-    $('#money-receipt-form').on('change input', function() { formDirty = true; });
+    // Mark dirty on any change
+    $('#money-receipt-update-form').on('change input', function() { formDirty = true; });
 
-    // Tooltip on MR badge
+    // Tooltip
     $('[data-toggle="tooltip"]').tooltip();
 });
 </script>

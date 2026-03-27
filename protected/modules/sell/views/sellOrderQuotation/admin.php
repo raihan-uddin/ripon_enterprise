@@ -335,7 +335,7 @@ if (Yii::app()->user->checkAccess('Sell.SellOrderQuotation.VoucherPreview')) {
                           style="color: red; width: 100%"> <?php echo $form->error($model, 'so_no'); ?></span>
 
                 </div>
-                <div class="col-md-2 col-sm-12">
+                <div class="col-md-3 col-sm-12">
                     <div class="input-group">
                         <div class="input-group-prepend">
                             <span class="input-group-text"
@@ -359,7 +359,7 @@ if (Yii::app()->user->checkAccess('Sell.SellOrderQuotation.VoucherPreview')) {
                 <div class="col-md-3 col-sm-12">
                     <?php
                     echo CHtml::ajaxLink(
-                        "Print", Yii::app()->createUrl('/sell/sellOrderQuotation/voucherPreview'), array(
+                        "Preview", Yii::app()->createUrl('/sell/sellOrderQuotation/voucherPreview'), array(
                         'type' => 'POST',
                         'beforeSend' => "function(){
                             let so_no = $('#SellOrderQuotation_so_no').val();
