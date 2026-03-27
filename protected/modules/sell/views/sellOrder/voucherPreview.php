@@ -102,8 +102,8 @@
     .invoice-info-block {
         width: 100%;
         border-collapse: collapse;
-        margin-bottom: 8px;
-        margin-top: 4px;
+        margin-bottom: 2px;
+        margin-top: 2px;
     }
 
     .invoice-info-block td {
@@ -121,7 +121,7 @@
         border: 1px solid #d0dae6;
         border-left: 4px solid #1a2c3d;
         border-radius: 3px;
-        padding: 8px 12px !important;
+        /*padding: 8px 12px !important;*/
     }
 
     .invoice-bill-to .section-label {
@@ -139,7 +139,7 @@
         font-size: 15px;
         font-weight: 700;
         color: #1a2c3d;
-        margin-bottom: 4px;
+        margin-bottom: 2px;
         line-height: 1.3;
         text-align: left;
     }
@@ -180,7 +180,7 @@
     }
 
     .invoice-meta-table tr td {
-        padding: 5px 10px;
+        /*padding: 5px 10px;*/
         font-size: 12px;
         border-bottom: 1px solid #e8ecf0;
     }
@@ -269,7 +269,7 @@
         font-weight: 700;
         letter-spacing: 6px;
         text-transform: uppercase;
-        margin-bottom: 8px;
+        margin-bottom: 2px;
     }
 </style>
 
@@ -560,26 +560,26 @@
                         <tr style="<?= $discountDisplay ?>">
                             <td colspan="2" style="border: none; background: white;">Discount (-)</td>
                             <td style="text-align: right; border: none;">
-                                (-<?= rtrim(rtrim(number_format($discount_amount, 4, '.', ','), '0'), '.') ?>)
+                                (<?= rtrim(rtrim(number_format($discount_amount, 4, '.', ','), '0'), '.') ?>)
                             </td>
                         </tr>
                         <tr style="<?= $roadFeeDisplay ?>">
                             <td colspan="2" style="border: none; background: white;">Road Fee (-)</td>
                             <td style="text-align: right; border: none;">
-                                (-<?= rtrim(rtrim(number_format($road_fee, 4, '.', ','), '0'), '.') ?>)
+                                (<?= rtrim(rtrim(number_format($road_fee, 4, '.', ','), '0'), '.') ?>)
                             </td>
                         </tr>
 
                         <tr style="<?= $damageDisplay ?>">
                             <td colspan="2" style="border: none; background: white;">Damage (-)</td>
                             <td style="text-align: right; border: none;">
-                                (-<?= rtrim(rtrim(number_format($damage, 4, '.', ','), '0'), '.') ?>)
+                                (<?= rtrim(rtrim(number_format($damage, 4, '.', ','), '0'), '.') ?>)
                             </td>
                         </tr>
                         <tr style="<?= $srCommissionDisplay ?>">
                             <td colspan="2" style="border: none; background: white;">SR Commission (-)</td>
                             <td style="text-align: right; border: none;">
-                                (-<?= rtrim(rtrim(number_format($sr_commission, 4, '.', ','), '0'), '.') ?>)
+                                (<?= rtrim(rtrim(number_format($sr_commission, 4, '.', ','), '0'), '.') ?>)
                             </td>
                         </tr>
 
@@ -647,7 +647,7 @@
 
                                     $current_due_amount = $previous_due_amount + $item->grand_total - $current_collection - $current_collection_discount - $current_return;
                                     ?>
-                                    TK <?= number_format($previous_due_amount, 2) ?>
+                                    <?= number_format($previous_due_amount, 2) ?>
                                 </td>
                             </tr>
                         <?php
@@ -687,7 +687,7 @@
                                     Cash Discount
                                 </td>
                                 <td style="text-align: right; border: none;">
-                                    (-<?= rtrim(rtrim(number_format($current_collection_discount > 0 ? $current_collection_discount : 0, 2), '0'), '.') ?>
+                                    (<?= rtrim(rtrim(number_format($current_collection_discount > 0 ? $current_collection_discount : 0, 2), '0'), '.') ?>
                                     )
                                 </td>
                             </tr>
@@ -712,11 +712,6 @@
                     </table>
 
                     <div style="width: 100%; float: left; clear: right; height: 150px; font-size: 12px; margin-top: 20px;">
-                        <div style="height: 30px; text-align: left; width: 100%; float: left; clear: right;">
-                            By signing this document, the customer agrees to he services and conditions
-                            described in this document.
-                        </div>
-                        <br>
                         <div style="width: 100%; float: left; clear:right;">
 
                             <div style="width: 50%; float: left;clear:right; text-decoration: overline; margin: auto; display: flex;  justify-content: center;  align-items: center;">

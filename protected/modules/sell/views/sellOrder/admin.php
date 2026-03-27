@@ -640,7 +640,7 @@ if (Yii::app()->user->checkAccess('Sell.Order.VoucherPreview')) {
                         ),
                         array(
                                 'header' => 'Actions',
-                                'template' => '{singleInvoice}{createMr}{update}{delete}',
+                                'template' => '{singleInvoice}{update}{createMr}{delete}',
                                 'class' => 'CButtonColumn',
                                 'htmlOptions' => ['style' => 'width:160px;', 'class' => 'actions-cell'],
                                 'afterDelete' => 'function(link,success,data){ if(success) $("#statusMsg").html(data); }',
