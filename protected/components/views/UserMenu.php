@@ -240,6 +240,12 @@ nav.erp-nav .navbar-nav>.nav-item.active>.nav-link:focus{
 .erp-ci-li{color:#0a66c2}
 .erp-ci-fb{color:#1877f2}
 
+/* Draft notification icon — icon-only nav-link, needs flex to vertically centre */
+#draft-notif-toggle{
+    display:flex!important;align-items:center;justify-content:center;
+    position:relative;padding:14px 11px!important}
+#draft-notif-toggle .fa{font-size:14px;line-height:1}
+
 /* User badge */
 .erp-nav .erp-user-btn{display:flex;align-items:center;gap:8px;
     color:rgba(255,255,255,.8)!important;font-size:12.5px;font-weight:600;
@@ -295,6 +301,14 @@ nav.erp-nav .navbar-nav>.nav-item.active>.nav-link:focus{
     nav.erp-nav .dropdown-submenu>.dropdown-menu{
         margin:0 0 0 16px!important;background:rgba(255,255,255,.03)!important}
     nav.erp-nav .dropdown-submenu.open>.dropdown-menu{display:block!important}
+    /* Draft notification — mobile overrides */
+    #draft-notif-item{width:100%!important}
+    #draft-notif-toggle{
+        justify-content:flex-start!important;
+        padding:10px 20px!important}
+    #draft-notif-menu{
+        min-width:unset!important;max-width:unset!important;
+        width:100%!important}
 }
 </style>
 
@@ -616,25 +630,21 @@ nav.erp-nav .navbar-nav>.nav-item.active>.nav-link:focus{
 
             <!-- Draft notifications (JS-populated) -->
             <li class="nav-item dropdown" id="draft-notif-item" style="display:none;">
-                <a class="nav-link position-relative" href="#" id="draft-notif-toggle"
-                   data-toggle="dropdown" role="button" title="Unsaved Drafts"
-                   style="padding-right:10px;">
-                    <i class="fa fa-pencil-square-o" style="font-size:16px;"></i>
+                <a class="nav-link" href="#" id="draft-notif-toggle"
+                   data-toggle="dropdown" role="button" title="Unsaved Drafts">
+                    <i class="fa fa-pencil-square-o"></i>
                     <span id="draft-notif-count"
                           class="badge badge-danger badge-pill"
                           style="position:absolute; top:6px; right:2px;
                                  font-size:9px; min-width:16px; padding:2px 4px;">0</span>
                 </a>
-                <div class="dropdown-menu dropdown-menu-right shadow-sm p-0"
+                <div class="dropdown-menu dropdown-menu-right"
                      id="draft-notif-menu" style="min-width:300px; max-width:340px;">
-                    <div class="dropdown-header d-flex align-items-center justify-content-between
-                                px-3 py-2"
-                         style="background:#f8f9fa; border-bottom:1px solid #dee2e6;
-                                font-size:12px; font-weight:700; text-transform:uppercase;
-                                letter-spacing:0.5px; color:#495057;">
-                        <span><i class="fa fa-pencil-square-o mr-1"></i> Unsaved Drafts</span>
+                    <div class="dropdown-header" style="justify-content:space-between;">
+                        <span><i class="fa fa-pencil-square-o"></i> Unsaved Drafts</span>
                         <a href="#" id="draft-clear-all"
-                           class="text-danger" style="font-size:11px; font-weight:400;">
+                           style="font-size:10px; font-weight:500; color:rgba(255,255,255,.4);
+                                  text-transform:none; letter-spacing:normal;">
                             <i class="fa fa-trash"></i> Clear all
                         </a>
                     </div>
@@ -700,7 +710,7 @@ nav.erp-nav .navbar-nav>.nav-item.active>.nav-link:focus{
                         key:     'so_draft_create',
                         title:   'Sales Order',
                         icon:    'fa-shopping-cart',
-                        color:   '#007bff',
+                        color:   '#818cf8',
                         url:     BASE + '/index.php/sell/sellOrder/create',
                         label:   parts.join(' — '),
                         savedAt: d.saved_at,
@@ -728,7 +738,7 @@ nav.erp-nav .navbar-nav>.nav-item.active>.nav-link:focus{
                         key:     key,
                         title:   'Money Receipt',
                         icon:    'fa-money',
-                        color:   '#28a745',
+                        color:   '#34d399',
                         url:     BASE + '/index.php/accounting/moneyReceipt/create/' + customerId,
                         label:   mrParts.join(' — '),
                         savedAt: mr.saved_at,
@@ -749,29 +759,29 @@ nav.erp-nav .navbar-nav>.nav-item.active>.nav-link:focus{
 
         if (drafts.length === 0) { $item.hide(); return; }
 
-        $item.show();
+        $item.css({display:'flex','align-items':'center'});
         $count.text(drafts.length);
         $list.empty();
 
         drafts.forEach(function (entry) {
             var ts = entry.savedAt ? new Date(entry.savedAt).toLocaleString() : '';
             $list.append(
-                '<a class="dropdown-item d-flex align-items-start py-2 px-3" href="' + entry.url + '"' +
-                    ' style="border-bottom:1px solid #f0f0f0;">' +
-                    '<span class="mr-2 mt-1" style="color:' + entry.color + '; font-size:18px; flex-shrink:0;">' +
+                '<a class="dropdown-item d-flex align-items-start" href="' + entry.url + '"' +
+                    ' style="border-bottom:1px solid rgba(255,255,255,.06); padding:8px 12px;">' +
+                    '<span class="mr-2" style="color:' + entry.color + '; font-size:15px; flex-shrink:0; margin-top:1px;">' +
                         '<i class="fa ' + entry.icon + '"></i>' +
                     '</span>' +
                     '<div style="flex:1; min-width:0; overflow:hidden;">' +
-                        '<div style="font-weight:600; font-size:13px; color:#212529;">' + entry.title + '</div>' +
-                        '<div style="font-size:11px; color:#666; white-space:nowrap; overflow:hidden; text-overflow:ellipsis;">' +
+                        '<div style="font-weight:600; font-size:12.5px; color:rgba(255,255,255,.88);">' + entry.title + '</div>' +
+                        '<div style="font-size:11px; color:rgba(255,255,255,.45); white-space:nowrap; overflow:hidden; text-overflow:ellipsis;">' +
                             (entry.label || 'Unsaved draft') +
                         '</div>' +
-                        (ts ? '<div style="font-size:10px; color:#aaa; margin-top:1px;">' +
+                        (ts ? '<div style="font-size:10px; color:rgba(255,255,255,.28); margin-top:2px;">' +
                             '<i class="fa fa-clock-o"></i> ' + ts + '</div>' : '') +
                     '</div>' +
                     '<button class="draft-discard-btn ml-2" data-key="' + entry.key + '"' +
-                        ' style="background:none; border:1px solid #dc3545; border-radius:3px;' +
-                        ' color:#dc3545; font-size:10px; padding:1px 6px; flex-shrink:0; cursor:pointer;"' +
+                        ' style="background:none; border:1px solid rgba(255,255,255,.18); border-radius:4px;' +
+                        ' color:rgba(255,255,255,.45); font-size:10px; padding:2px 6px; flex-shrink:0; cursor:pointer;"' +
                         ' title="Discard draft">' +
                         '<i class="fa fa-times"></i>' +
                     '</button>' +
