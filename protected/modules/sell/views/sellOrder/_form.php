@@ -1195,6 +1195,8 @@ Yii::app()->clientScript->registerCoreScript("jquery.ui");
                             $("#formResult").fadeIn();
                             $("#formResult").html("Data saved successfully.");
                             toastr.success("Data saved successfully.");
+                            clearDraft();
+                            formDirty = false;
                             $("#bom-form")[0].reset();
                             $("#formResult").animate({opacity:1.0},1000).fadeOut("slow");
                             // $("#soReportDialogBox").dialog("open");
@@ -1275,8 +1277,120 @@ Yii::app()->clientScript->registerCoreScript("jquery.ui");
         // minDate: moment(),
         onSelect: function (date) {
             document.getElementById('SellOrder_date').value = date.format('YYYY-MM-DD');
+            setTimeout(saveDraft, 100);
         }
     });
+
+    // ── Unsaved changes warning ───────────────────────────────────────────────
+    var formDirty = false;
+    window.addEventListener('beforeunload', function (e) {
+        if (formDirty) {
+            e.preventDefault();
+            e.returnValue = '';
+        }
+    });
+
+    // ── Draft auto-save ───────────────────────────────────────────────────────
+    var SO_DRAFT_KEY = 'so_draft_create';
+
+    function saveDraft() {
+        var rows = {};
+        $('.item').each(function () {
+            var modelId = $(this).find('.temp_model_id').val();
+            var qty     = $(this).find('.temp_qty').val();
+            var price   = $(this).find('.temp_unit_price').val();
+            if (modelId && (parseFloat(qty) > 0)) {
+                rows[modelId] = { qty: qty, price: price };
+            }
+        });
+        var draft = {
+            date:         $('#SellOrder_date').val(),
+            customer_id:  $('#SellOrder_customer_id').val(),
+            customer_text: $('#customer_id_text').val(),
+            vat:          $('#SellOrder_vat_percentage').val(),
+            road:         $('#SellOrder_road_fee').val(),
+            damage:       $('#SellOrder_damage_value').val(),
+            discount:     $('#SellOrder_discount_amount').val(),
+            delivery:     $('#SellOrder_delivery_charge').val(),
+            commission:   $('#SellOrder_sr_commission').val(),
+            order_note:   $('#SellOrder_order_note').val(),
+            rows:         rows,
+            saved_at:     new Date().toISOString(),
+        };
+        try { localStorage.setItem(SO_DRAFT_KEY, JSON.stringify(draft)); } catch (e) {}
+    }
+
+    function restoreDraft() {
+        var raw = localStorage.getItem(SO_DRAFT_KEY);
+        if (!raw) return;
+        try {
+            var d = JSON.parse(raw);
+            var hasRows   = d.rows && Object.keys(d.rows).length > 0;
+            var hasHeader = d.customer_id || d.vat || d.road || d.damage ||
+                            d.discount || d.delivery || d.commission || d.order_note;
+            if (!hasRows && !hasHeader) return;
+
+            // Restore header fields
+            if (d.date)         $('#SellOrder_date').val(d.date);
+            if (d.customer_id)  {
+                $('#SellOrder_customer_id').val(d.customer_id);
+                $('#customer_id_text').val(d.customer_text || '');
+            }
+            if (d.vat)          $('#SellOrder_vat_percentage').val(d.vat);
+            if (d.road)         $('#SellOrder_road_fee').val(d.road);
+            if (d.damage)       $('#SellOrder_damage_value').val(d.damage);
+            if (d.discount)     $('#SellOrder_discount_amount').val(d.discount);
+            if (d.delivery)     $('#SellOrder_delivery_charge').val(d.delivery);
+            if (d.commission)   $('#SellOrder_sr_commission').val(d.commission);
+            if (d.order_note)   $('#SellOrder_order_note').val(d.order_note);
+
+            // Restore product rows
+            if (hasRows) {
+                var restoredGroups = {};
+                $('.item').each(function () {
+                    var modelId = $(this).find('.temp_model_id').val();
+                    if (modelId && d.rows[modelId]) {
+                        var row = d.rows[modelId];
+                        $(this).find('.temp_qty').val(row.qty || '');
+                        $(this).find('.temp_unit_price').val(row.price || '');
+                        $(this).removeClass('hidden');
+                        // Track which company groups need sub-header shown
+                        $.each($(this).attr('class').split(' '), function (_, cls) {
+                            if (cls.startsWith('company-') && cls !== 'company-sub-header') {
+                                restoredGroups[cls] = true;
+                            }
+                        });
+                    }
+                });
+                // Show sub-headers and flip toggle icons for restored groups
+                $.each(restoredGroups, function (groupClass) {
+                    $('.' + groupClass + '.company-sub-header').removeClass('hidden');
+                    $('[data-target="' + groupClass + '"]').find('.toggle-icon').text('▲');
+                });
+                // Trigger recalculations after DOM settles
+                setTimeout(function () {
+                    $('.temp_qty').each(function () {
+                        if ($(this).val()) $(this).trigger('input');
+                    });
+                    $('#SellOrder_vat_percentage').trigger('input');
+                }, 150);
+            }
+
+            var savedAt = d.saved_at ? new Date(d.saved_at).toLocaleString() : '';
+            toastr.info(
+                'Draft restored' + (savedAt ? ' — saved at ' + savedAt : '') + '.' +
+                ' <button class="btn btn-xs btn-light ml-2" ' +
+                'onclick="clearDraft();location.reload();">Discard</button>',
+                'Session Restored',
+                { timeOut: 8000, closeButton: true, enableHtml: true }
+            );
+        } catch (e) { localStorage.removeItem(SO_DRAFT_KEY); }
+    }
+
+    function clearDraft() {
+        localStorage.removeItem(SO_DRAFT_KEY);
+    }
+
     $(function () {
 
         /* ==========================
@@ -1717,6 +1831,28 @@ Yii::app()->clientScript->registerCoreScript("jquery.ui");
                 e.preventDefault();
             }
         });
+
+        // Draft: save on any relevant field change (debounced 600ms)
+        var _draftTimer;
+        $(document).on('input change',
+            '#SellOrder_date, #SellOrder_customer_id, ' +
+            '#SellOrder_vat_percentage, #SellOrder_road_fee, #SellOrder_damage_value, ' +
+            '#SellOrder_discount_amount, #SellOrder_delivery_charge, #SellOrder_sr_commission, ' +
+            '#SellOrder_order_note, .temp_qty, .temp_unit_price',
+            function () {
+                formDirty = true;
+                clearTimeout(_draftTimer);
+                _draftTimer = setTimeout(saveDraft, 600);
+            }
+        );
+        // Save when customer is selected from autocomplete
+        $(document).on('autocompleteselect', '#customer_id_text', function () {
+            formDirty = true;
+            setTimeout(saveDraft, 200);
+        });
+
+        // Restore draft on page load
+        restoreDraft();
 
     });
 </script>

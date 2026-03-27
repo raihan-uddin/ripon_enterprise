@@ -580,14 +580,16 @@ function numberToWords(num) {
 // ── Draft: save / restore / clear ────────────────────────────────────────────
 function saveDraft() {
     var d = {
-        date:         $('#MoneyReceipt_date').val(),
-        amount:       $('#MoneyReceipt_amount').val(),
-        discount:     $('#MoneyReceipt_discount').val(),
-        payment_type: $('#payment_type_dropdown').val(),
-        bank_id:      $('#MoneyReceipt_bank_id').val(),
-        cheque_no:    $('#MoneyReceipt_cheque_no').val(),
-        cheque_date:  $('#MoneyReceipt_cheque_date').val(),
-        remarks:      $('#MoneyReceipt_remarks').val(),
+        date:          $('#MoneyReceipt_date').val(),
+        customer_name: <?= json_encode($model2->company_name) ?>,
+        amount:        $('#MoneyReceipt_amount').val(),
+        discount:      $('#MoneyReceipt_discount').val(),
+        payment_type:  $('#payment_type_dropdown').val(),
+        bank_id:       $('#MoneyReceipt_bank_id').val(),
+        cheque_no:     $('#MoneyReceipt_cheque_no').val(),
+        cheque_date:   $('#MoneyReceipt_cheque_date').val(),
+        remarks:       $('#MoneyReceipt_remarks').val(),
+        saved_at:      new Date().toISOString(),
     };
     localStorage.setItem(DRAFT_KEY, JSON.stringify(d));
 }

@@ -611,8 +611,36 @@ nav.erp-nav .navbar-nav>.nav-item.active>.nav-link:focus{
 
         </ul>
 
-        <!-- Right: user + logout -->
+        <!-- Right: draft notifications + user + logout -->
         <ul class="navbar-nav ml-auto">
+
+            <!-- Draft notifications (JS-populated) -->
+            <li class="nav-item dropdown" id="draft-notif-item" style="display:none;">
+                <a class="nav-link position-relative" href="#" id="draft-notif-toggle"
+                   data-toggle="dropdown" role="button" title="Unsaved Drafts"
+                   style="padding-right:10px;">
+                    <i class="fa fa-pencil-square-o" style="font-size:16px;"></i>
+                    <span id="draft-notif-count"
+                          class="badge badge-danger badge-pill"
+                          style="position:absolute; top:6px; right:2px;
+                                 font-size:9px; min-width:16px; padding:2px 4px;">0</span>
+                </a>
+                <div class="dropdown-menu dropdown-menu-right shadow-sm p-0"
+                     id="draft-notif-menu" style="min-width:300px; max-width:340px;">
+                    <div class="dropdown-header d-flex align-items-center justify-content-between
+                                px-3 py-2"
+                         style="background:#f8f9fa; border-bottom:1px solid #dee2e6;
+                                font-size:12px; font-weight:700; text-transform:uppercase;
+                                letter-spacing:0.5px; color:#495057;">
+                        <span><i class="fa fa-pencil-square-o mr-1"></i> Unsaved Drafts</span>
+                        <a href="#" id="draft-clear-all"
+                           class="text-danger" style="font-size:11px; font-weight:400;">
+                            <i class="fa fa-trash"></i> Clear all
+                        </a>
+                    </div>
+                    <div id="draft-notif-list"></div>
+                </div>
+            </li>
             <li class="nav-item dropdown">
                 <a class="nav-link erp-user-btn dropdown-toggle" href="#" data-toggle="dropdown" role="button">
                     <span class="erp-avatar"><?= $initials ?></span>
@@ -649,6 +677,133 @@ nav.erp-nav .navbar-nav>.nav-item.active>.nav-link:focus{
         </ul>
     </div>
 </nav>
+
+<script>
+(function () {
+    var BASE = '<?= Yii::app()->baseUrl ?>';
+
+    // ── Collect all drafts from localStorage ──────────────────────────────────
+    function getDrafts() {
+        var list = [];
+
+        // Sales Order draft
+        try {
+            var so = localStorage.getItem('so_draft_create');
+            if (so) {
+                var d = JSON.parse(so);
+                var rowCount = d.rows ? Object.keys(d.rows).length : 0;
+                if (d.customer_id || rowCount > 0) {
+                    var parts = [];
+                    if (d.customer_text) parts.push(d.customer_text);
+                    if (rowCount > 0)    parts.push(rowCount + ' item' + (rowCount > 1 ? 's' : ''));
+                    list.push({
+                        key:     'so_draft_create',
+                        title:   'Sales Order',
+                        icon:    'fa-shopping-cart',
+                        color:   '#007bff',
+                        url:     BASE + '/index.php/sell/sellOrder/create',
+                        label:   parts.join(' — '),
+                        savedAt: d.saved_at,
+                    });
+                }
+            }
+        } catch (e) { localStorage.removeItem('so_draft_create'); }
+
+        // Money Receipt drafts (one per customer)
+        for (var i = 0; i < localStorage.length; i++) {
+            var key = localStorage.key(i);
+            if (!key) continue;
+            var m = key.match(/^mr_draft_customer_(\d+)$/);
+            if (!m) continue;
+            try {
+                var mr = JSON.parse(localStorage.getItem(key));
+                var amt = (parseFloat(mr.amount) || 0) + (parseFloat(mr.discount) || 0);
+                if (amt > 0 || mr.date) {
+                    var customerId = m[1];
+                    var mrParts = [];
+                    if (mr.customer_name) mrParts.push(mr.customer_name);
+                    else                  mrParts.push('Customer #' + customerId);
+                    if (amt > 0) mrParts.push('৳ ' + amt.toFixed(2));
+                    list.push({
+                        key:     key,
+                        title:   'Money Receipt',
+                        icon:    'fa-money',
+                        color:   '#28a745',
+                        url:     BASE + '/index.php/accounting/moneyReceipt/create/' + customerId,
+                        label:   mrParts.join(' — '),
+                        savedAt: mr.saved_at,
+                    });
+                }
+            } catch (e) { localStorage.removeItem(key); }
+        }
+
+        return list;
+    }
+
+    // ── Render notification dropdown ──────────────────────────────────────────
+    function buildDraftMenu() {
+        var drafts = getDrafts();
+        var $item  = $('#draft-notif-item');
+        var $list  = $('#draft-notif-list');
+        var $count = $('#draft-notif-count');
+
+        if (drafts.length === 0) { $item.hide(); return; }
+
+        $item.show();
+        $count.text(drafts.length);
+        $list.empty();
+
+        drafts.forEach(function (entry) {
+            var ts = entry.savedAt ? new Date(entry.savedAt).toLocaleString() : '';
+            $list.append(
+                '<a class="dropdown-item d-flex align-items-start py-2 px-3" href="' + entry.url + '"' +
+                    ' style="border-bottom:1px solid #f0f0f0;">' +
+                    '<span class="mr-2 mt-1" style="color:' + entry.color + '; font-size:18px; flex-shrink:0;">' +
+                        '<i class="fa ' + entry.icon + '"></i>' +
+                    '</span>' +
+                    '<div style="flex:1; min-width:0; overflow:hidden;">' +
+                        '<div style="font-weight:600; font-size:13px; color:#212529;">' + entry.title + '</div>' +
+                        '<div style="font-size:11px; color:#666; white-space:nowrap; overflow:hidden; text-overflow:ellipsis;">' +
+                            (entry.label || 'Unsaved draft') +
+                        '</div>' +
+                        (ts ? '<div style="font-size:10px; color:#aaa; margin-top:1px;">' +
+                            '<i class="fa fa-clock-o"></i> ' + ts + '</div>' : '') +
+                    '</div>' +
+                    '<button class="draft-discard-btn ml-2" data-key="' + entry.key + '"' +
+                        ' style="background:none; border:1px solid #dc3545; border-radius:3px;' +
+                        ' color:#dc3545; font-size:10px; padding:1px 6px; flex-shrink:0; cursor:pointer;"' +
+                        ' title="Discard draft">' +
+                        '<i class="fa fa-times"></i>' +
+                    '</button>' +
+                '</a>'
+            );
+        });
+    }
+
+    // ── Wire up events ────────────────────────────────────────────────────────
+    $(document).ready(function () {
+        buildDraftMenu();
+
+        // Discard one draft
+        $(document).on('click', '.draft-discard-btn', function (e) {
+            e.preventDefault();
+            e.stopPropagation();
+            localStorage.removeItem($(this).data('key'));
+            buildDraftMenu();
+        });
+
+        // Clear all drafts
+        $(document).on('click', '#draft-clear-all', function (e) {
+            e.preventDefault();
+            getDrafts().forEach(function (d) { localStorage.removeItem(d.key); });
+            buildDraftMenu();
+        });
+    });
+
+    // Re-scan when another tab saves/clears a draft
+    window.addEventListener('storage', buildDraftMenu);
+})();
+</script>
 
 <script>
 $(function(){
