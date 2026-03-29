@@ -57,8 +57,8 @@ function bwBadge($cur,$prev){
 .bw-badge{display:inline-flex;align-items:center;gap:3px;font-size:10px;font-weight:700;
 border-radius:20px;padding:2px 7px;margin-left:6px;}
 .bw-badge i{font-size:9px;}
-.bw-up  {background:rgba(34,197,94,0.12); color:#16a34a;}
-.bw-down{background:rgba(239,68,68,0.12); color:#dc2626;}
+.bw-up  {background:rgba(255,255,255,.22);color:#fff;}
+.bw-down{background:rgba(0,0,0,.18);color:rgba(255,255,255,.9);}
 </style>
 
 <div class="row">
