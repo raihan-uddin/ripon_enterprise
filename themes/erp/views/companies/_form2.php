@@ -8,7 +8,7 @@ $form = $this->beginWidget('CActiveForm', array(
 ?>
 <div class="card card-primary">
     <div class="card-header">
-        <h3 class="card-title"><?php echo($model->isNewRecord ? 'Add New Company' : 'Update Company: ' . $model->item_name); ?></h3>
+        <h3 class="card-title"><?php echo($model->isNewRecord ? 'Add New Company' : 'Update Company: ' . $model->name); ?></h3>
 
         <div class="card-tools">
             <button type="button" class="btn btn-tool" data-card-widget="collapse">
@@ -26,7 +26,7 @@ $form = $this->beginWidget('CActiveForm', array(
                 <?php echo $form->labelEx($model, 'name'); ?>
                 <?php echo $form->textField($model, 'name', array('maxlength' => 255, 'class' => 'form-control')); ?>
                 <span class="help-block"
-                      style="color: red; width: 100%"> <?php echo $form->error($model, 'item_name'); ?></span>
+                      style="color: red; width: 100%"> <?php echo $form->error($model, 'name'); ?></span>
             </div>
         </div>
     </div>
