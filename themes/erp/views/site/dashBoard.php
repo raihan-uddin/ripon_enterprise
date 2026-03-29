@@ -43,8 +43,7 @@ $this->widget('application.components.BreadCrumb', array(
 
 
 /* ── Today's snapshot strip ── */
-.db-today-strip{display:grid;grid-template-columns:repeat(4,1fr);gap:12px;
-    margin-bottom:24px;animation:dbFadeUp .5s ease .05s both}
+.db-today-strip{display:grid;grid-template-columns:repeat(4,1fr);gap:12px}
 .db-today-tile{border-radius:16px;padding:16px 18px;border:none;color:#fff;
     box-shadow:0 4px 14px rgba(0,0,0,.18);
     position:relative;overflow:hidden;
@@ -279,26 +278,34 @@ $this->widget('application.components.BreadCrumb', array(
 </div>
 
 <!-- ── Today's Snapshot ── -->
-<div class="db-today-strip" id="db-today-strip">
-    <div class="db-today-tile ts-indigo">
-        <div class="db-today-label"><i class="fa fa-shopping-cart"></i> Today's Orders</div>
-        <div class="db-today-val" id="ts-orders">—</div>
-        <div class="db-today-sub" id="ts-orders-sub">Loading…</div>
+<div class="db-section db-animate db-animate-d2" style="animation-delay:.08s">
+    <div class="db-section-head">
+        <h6>Today's Snapshot &mdash; <?= date('d M Y') ?></h6>
+        <button class="db-section-toggle" data-target="sec-today" title="Collapse"><i class="fa fa-chevron-down"></i></button>
     </div>
-    <div class="db-today-tile ts-green">
-        <div class="db-today-label"><i class="fa fa-line-chart"></i> Today's Sales</div>
-        <div class="db-today-val" id="ts-sales">—</div>
-        <div class="db-today-sub" id="ts-sales-sub">Loading…</div>
-    </div>
-    <div class="db-today-tile ts-amber">
-        <div class="db-today-label"><i class="fa fa-sign-in"></i> Today's Collection</div>
-        <div class="db-today-val" id="ts-collection">—</div>
-        <div class="db-today-sub">&nbsp;</div>
-    </div>
-    <div class="db-today-tile ts-red">
-        <div class="db-today-label"><i class="fa fa-credit-card"></i> Today's Expense</div>
-        <div class="db-today-val" id="ts-expense">—</div>
-        <div class="db-today-sub">&nbsp;</div>
+    <div class="db-section-body" id="sec-today">
+        <div class="db-today-strip" id="db-today-strip">
+            <div class="db-today-tile ts-indigo">
+                <div class="db-today-label"><i class="fa fa-shopping-cart"></i> Today's Orders</div>
+                <div class="db-today-val" id="ts-orders">—</div>
+                <div class="db-today-sub" id="ts-orders-sub">Loading…</div>
+            </div>
+            <div class="db-today-tile ts-green">
+                <div class="db-today-label"><i class="fa fa-line-chart"></i> Today's Sales</div>
+                <div class="db-today-val" id="ts-sales">—</div>
+                <div class="db-today-sub" id="ts-sales-sub">Loading…</div>
+            </div>
+            <div class="db-today-tile ts-amber">
+                <div class="db-today-label"><i class="fa fa-sign-in"></i> Today's Collection</div>
+                <div class="db-today-val" id="ts-collection">—</div>
+                <div class="db-today-sub">&nbsp;</div>
+            </div>
+            <div class="db-today-tile ts-red">
+                <div class="db-today-label"><i class="fa fa-credit-card"></i> Today's Expense</div>
+                <div class="db-today-val" id="ts-expense">—</div>
+                <div class="db-today-sub">&nbsp;</div>
+            </div>
+        </div>
     </div>
 </div>
 
