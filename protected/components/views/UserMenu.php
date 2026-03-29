@@ -79,12 +79,15 @@ $activeSales     = $inRoute(['sell']) || $isPage('accounting','moneyReceipt');
 $activePurchase  = $inRoute(['commercial']) || $isPage('accounting','paymentReceipt');
 $activeLoan      = $inRoute(['loan']);
 $activeReports   = $inRoute(['report']);
-$activeCommon    = !$activeSales && !$activePurchase
+$activeExpense   = !$activeSales && !$activePurchase && $isPage('accounting','expense')
+               || $isPage('accounting','expenseHead');
+$activeCommon    = !$activeSales && !$activePurchase && !$activeExpense
                && $inRoute(['users','rights','business','branch','accounting']);
 
 $showCommon = $isDev
-    || $ca('Users.Admin') || $ca('rights')
-    || $ca('Accounting.Expense.Create') || $ca('Accounting.Expense.Admin') || $ca('Accounting.ExpenseHead.Admin');
+    || $ca('Users.Admin') || $ca('rights');
+
+$showExpense = $ca('Accounting.Expense.Create') || $ca('Accounting.Expense.Admin') || $ca('Accounting.ExpenseHead.Admin');
 
 $showInventory = $ca('ProdItems.Admin') || $ca('ProdBrands.Admin')
     || $ca('ProdModels.Create') || $ca('ProdModels.Admin')
@@ -356,19 +359,6 @@ nav.erp-nav .navbar-nav>.nav-item.active>.nav-link:focus{
                     <?php endif; ?>
                     <?php endif; ?>
 
-                    <?php if ($ca('Accounting.Expense.Create') || $ca('Accounting.Expense.Admin') || $ca('Accounting.ExpenseHead.Admin')): ?>
-                    <div class="dropdown-divider"></div>
-                    <div class="dropdown-header"><i class="fa fa-credit-card"></i> Expense</div>
-                    <?php if ($ca('Accounting.Expense.Create')): ?>
-                    <a class="dropdown-item" href="<?= Yii::app()->createUrl('/accounting/expense/create') ?>"><i class="fa fa-plus"></i> New Expense</a>
-                    <?php endif; ?>
-                    <?php if ($ca('Accounting.Expense.Admin')): ?>
-                    <a class="dropdown-item" href="<?= Yii::app()->createUrl('/accounting/expense/admin') ?>"><i class="fa fa-list"></i> Manage Expenses</a>
-                    <?php endif; ?>
-                    <?php if ($ca('Accounting.ExpenseHead.Admin')): ?>
-                    <a class="dropdown-item" href="<?= Yii::app()->createUrl('/accounting/expenseHead/admin') ?>"><i class="fa fa-tags"></i> Expense Heads</a>
-                    <?php endif; ?>
-                    <?php endif; ?>
                 </div>
             </li>
             <?php endif; ?>
@@ -524,6 +514,27 @@ nav.erp-nav .navbar-nav>.nav-item.active>.nav-link:focus{
                     <?php if ($ca('Accounting.PaymentReceipt.Create')): ?>
                     <a class="dropdown-item" href="<?= Yii::app()->createUrl('/accounting/paymentReceipt/admin') ?>"><i class="fa fa-list"></i> Manage Payments</a>
                     <?php endif; ?>
+                    <?php endif; ?>
+                </div>
+            </li>
+            <?php endif; ?>
+
+            <!-- Expense -->
+            <?php if ($showExpense): ?>
+            <li class="nav-item dropdown<?= $activeExpense ? ' active' : '' ?>">
+                <a class="nav-link dropdown-toggle" href="#" data-toggle="dropdown" role="button">
+                    <i class="fa fa-credit-card mr-1"></i> Expense
+                </a>
+                <div class="dropdown-menu">
+                    <?php if ($ca('Accounting.Expense.Create')): ?>
+                    <a class="dropdown-item" href="<?= Yii::app()->createUrl('/accounting/expense/create') ?>"><i class="fa fa-plus"></i> New Expense</a>
+                    <?php endif; ?>
+                    <?php if ($ca('Accounting.Expense.Admin')): ?>
+                    <a class="dropdown-item" href="<?= Yii::app()->createUrl('/accounting/expense/admin') ?>"><i class="fa fa-list"></i> Manage Expenses</a>
+                    <?php endif; ?>
+                    <?php if ($ca('Accounting.ExpenseHead.Admin')): ?>
+                    <div class="dropdown-divider"></div>
+                    <a class="dropdown-item" href="<?= Yii::app()->createUrl('/accounting/expenseHead/admin') ?>"><i class="fa fa-tags"></i> Expense Heads</a>
                     <?php endif; ?>
                 </div>
             </li>
