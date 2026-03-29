@@ -696,6 +696,29 @@ nav.erp-nav .navbar-nav>.nav-item.active>.nav-link:focus{
     function getDrafts() {
         var list = [];
 
+        // Purchase Order draft
+        try {
+            var po = localStorage.getItem('po_draft_create');
+            if (po) {
+                var pd = JSON.parse(po);
+                var poRows = pd.rows ? Object.keys(pd.rows).length : 0;
+                if (pd.supplier_id || poRows > 0) {
+                    var poParts = [];
+                    if (pd.supplier_text) poParts.push(pd.supplier_text);
+                    if (poRows > 0) poParts.push(poRows + ' item' + (poRows > 1 ? 's' : ''));
+                    list.push({
+                        key:     'po_draft_create',
+                        title:   'Purchase Order',
+                        icon:    'fa-truck',
+                        color:   '#f59e0b',
+                        url:     BASE + '/index.php/commercial/purchaseOrder/create',
+                        label:   poParts.join(' — '),
+                        savedAt: pd.saved_at,
+                    });
+                }
+            }
+        } catch (e) { localStorage.removeItem('po_draft_create'); }
+
         // Sales Order draft
         try {
             var so = localStorage.getItem('so_draft_create');
