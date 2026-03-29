@@ -690,6 +690,9 @@ nav.erp-nav .navbar-nav>.nav-item.active>.nav-link:focus{
                         </a>
                     </div>
                     <div class="dropdown-divider"></div>
+                    <a class="dropdown-item" href="<?= Yii::app()->createUrl('/user/profile/changepassword') ?>">
+                        <i class="fa fa-key"></i> Change Password
+                    </a>
                     <a class="dropdown-item" href="<?= Yii::app()->createUrl('/site/logout') ?>">
                         <i class="fa fa-sign-out"></i> Logout
                     </a>
