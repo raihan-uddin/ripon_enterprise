@@ -124,44 +124,49 @@ $this->widget('application.components.BreadCrumb', array(
 .bw-down{background:rgba(239,68,68,.12);color:#dc2626}
 
 /* ── Quick action cards ── */
-.db-actions-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(118px,1fr));gap:10px}
-.db-action-card{background:#fff;border:1.5px solid #f3f4f6;border-radius:12px;
-    padding:14px 10px 12px;text-align:center;text-decoration:none;
-    display:flex;flex-direction:column;align-items:center;gap:7px;
-    transition:all .2s ease;position:relative;color:#374151;
-    box-shadow:0 1px 3px rgba(0,0,0,.05);overflow:hidden}
-.db-action-card:hover,.db-action-card:focus{text-decoration:none;color:#374151;
-    transform:translateY(-3px);box-shadow:0 8px 20px rgba(0,0,0,.10)}
-.db-action-card:hover.t-gray  {background:rgba(107,114,128,.03);border-color:rgba(107,114,128,.35)}
-.db-action-card:hover.t-green {background:rgba(34,197,94,.03);  border-color:rgba(34,197,94,.4)}
-.db-action-card:hover.t-purple{background:rgba(168,85,247,.03); border-color:rgba(168,85,247,.4)}
-.db-action-card:hover.t-red   {background:rgba(239,68,68,.03);  border-color:rgba(239,68,68,.4)}
-.db-action-card:hover.t-blue  {background:rgba(59,130,246,.03); border-color:rgba(59,130,246,.4)}
-.db-action-card:hover.t-amber {background:rgba(245,158,11,.03); border-color:rgba(245,158,11,.4)}
-.db-action-card:hover.t-rose  {background:rgba(244,63,94,.03);  border-color:rgba(244,63,94,.4)}
-.db-action-card:hover.t-indigo{background:rgba(99,102,241,.03); border-color:rgba(99,102,241,.4)}
-.db-action-card:hover.t-teal  {background:rgba(20,184,166,.03); border-color:rgba(20,184,166,.4)}
+.db-actions-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(118px,1fr));gap:12px}
+.db-action-card{border-radius:16px;padding:16px 10px 13px;text-align:center;text-decoration:none;
+    display:flex;flex-direction:column;align-items:center;gap:8px;border:none;color:#fff;
+    transition:all .22s ease;position:relative;overflow:hidden;
+    box-shadow:0 4px 14px rgba(0,0,0,.18)}
+.db-action-card:hover,.db-action-card:focus{text-decoration:none;color:#fff;
+    transform:translateY(-5px) scale(1.03);box-shadow:0 14px 32px rgba(0,0,0,.28)}
+/* bold vivid gradients */
+.db-action-card.t-gray  {background:linear-gradient(135deg,#64748b,#334155);box-shadow:0 4px 14px rgba(100,116,139,.5)}
+.db-action-card.t-green {background:linear-gradient(135deg,#22c55e,#15803d);box-shadow:0 4px 14px rgba(34,197,94,.5)}
+.db-action-card.t-purple{background:linear-gradient(135deg,#a855f7,#7e22ce);box-shadow:0 4px 14px rgba(168,85,247,.5)}
+.db-action-card.t-red   {background:linear-gradient(135deg,#ef4444,#b91c1c);box-shadow:0 4px 14px rgba(239,68,68,.5)}
+.db-action-card.t-blue  {background:linear-gradient(135deg,#3b82f6,#1d4ed8);box-shadow:0 4px 14px rgba(59,130,246,.5)}
+.db-action-card.t-amber {background:linear-gradient(135deg,#f59e0b,#b45309);box-shadow:0 4px 14px rgba(245,158,11,.5)}
+.db-action-card.t-rose  {background:linear-gradient(135deg,#f43f5e,#be123c);box-shadow:0 4px 14px rgba(244,63,94,.5)}
+.db-action-card.t-indigo{background:linear-gradient(135deg,#6366f1,#4338ca);box-shadow:0 4px 14px rgba(99,102,241,.5)}
+.db-action-card.t-teal  {background:linear-gradient(135deg,#14b8a6,#0f766e);box-shadow:0 4px 14px rgba(20,184,166,.5)}
+/* hover brightens */
+.db-action-card.t-gray:hover  {background:linear-gradient(135deg,#94a3b8,#475569)}
+.db-action-card.t-green:hover {background:linear-gradient(135deg,#4ade80,#16a34a)}
+.db-action-card.t-purple:hover{background:linear-gradient(135deg,#c084fc,#9333ea)}
+.db-action-card.t-red:hover   {background:linear-gradient(135deg,#f87171,#dc2626)}
+.db-action-card.t-blue:hover  {background:linear-gradient(135deg,#60a5fa,#2563eb)}
+.db-action-card.t-amber:hover {background:linear-gradient(135deg,#fbbf24,#d97706)}
+.db-action-card.t-rose:hover  {background:linear-gradient(135deg,#fb7185,#e11d48)}
+.db-action-card.t-indigo:hover{background:linear-gradient(135deg,#818cf8,#4f46e5)}
+.db-action-card.t-teal:hover  {background:linear-gradient(135deg,#2dd4bf,#0d9488)}
+/* decorative glowing orb top-right */
+.db-action-card::before{content:'';position:absolute;top:-20px;right:-20px;
+    width:64px;height:64px;border-radius:50%;background:rgba(255,255,255,.13);pointer-events:none}
 .db-action-card .db-ripple{position:absolute;border-radius:50%;transform:scale(0);
-    pointer-events:none;animation:dbRipple .5s ease-out forwards;background:rgba(99,102,241,.18)}
+    pointer-events:none;animation:dbRipple .5s ease-out forwards;background:rgba(255,255,255,.3)}
 @keyframes dbRipple{to{transform:scale(4);opacity:0}}
-.db-action-icon{width:42px;height:42px;border-radius:10px;display:flex;
-    align-items:center;justify-content:center;font-size:17px;
+.db-action-icon{width:46px;height:46px;border-radius:12px;display:flex;
+    align-items:center;justify-content:center;font-size:20px;color:#fff;
+    background:rgba(255,255,255,.22);
     transition:transform .22s cubic-bezier(.34,1.56,.64,1)}
-.db-action-card:hover .db-action-icon{transform:scale(1.15) translateY(-1px)}
-.db-action-label{font-size:11.5px;font-weight:600;color:#374151;line-height:1.3}
-.db-action-label small{display:block;font-size:10px;font-weight:400;color:#9ca3af;margin-top:1px}
-.db-action-badge{position:absolute;top:7px;right:7px;font-size:9px;font-weight:700;
-    border-radius:6px;padding:1px 5px;max-width:68px;overflow:hidden;
-    text-overflow:ellipsis;white-space:nowrap}
-.t-gray   .db-action-icon,.t-gray   .db-action-badge{background:rgba(107,114,128,.1);color:#6b7280}
-.t-green  .db-action-icon,.t-green  .db-action-badge{background:rgba(34,197,94,.1); color:#16a34a}
-.t-purple .db-action-icon,.t-purple .db-action-badge{background:rgba(168,85,247,.1);color:#9333ea}
-.t-red    .db-action-icon,.t-red    .db-action-badge{background:rgba(239,68,68,.1); color:#dc2626}
-.t-blue   .db-action-icon,.t-blue   .db-action-badge{background:rgba(59,130,246,.1);color:#2563eb}
-.t-amber  .db-action-icon,.t-amber  .db-action-badge{background:rgba(245,158,11,.1);color:#d97706}
-.t-rose   .db-action-icon,.t-rose   .db-action-badge{background:rgba(244,63,94,.1); color:#e11d48}
-.t-indigo .db-action-icon,.t-indigo .db-action-badge{background:rgba(99,102,241,.1);color:#6366f1}
-.t-teal   .db-action-icon,.t-teal   .db-action-badge{background:rgba(20,184,166,.1);color:#0d9488}
+.db-action-card:hover .db-action-icon{transform:scale(1.2) translateY(-2px);background:rgba(255,255,255,.35)}
+.db-action-label{font-size:12px;font-weight:700;color:#fff;line-height:1.3;text-shadow:0 1px 3px rgba(0,0,0,.2)}
+.db-action-label small{display:block;font-size:10px;font-weight:400;color:rgba(255,255,255,.78);margin-top:1px}
+.db-action-badge{position:absolute;top:8px;right:8px;font-size:9px;font-weight:700;color:#fff;
+    border-radius:6px;padding:2px 6px;max-width:68px;overflow:hidden;
+    text-overflow:ellipsis;white-space:nowrap;background:rgba(0,0,0,.22)}
 
 /* ── Report buttons ── */
 .db-report-wrap{display:flex;flex-wrap:wrap;gap:8px}
@@ -255,6 +260,17 @@ $this->widget('application.components.BreadCrumb', array(
     </div>
 </div>
 
+<!-- ── Quick Actions ── -->
+<div class="db-section db-animate db-animate-d2">
+    <div class="db-section-head">
+        <h6>Quick Actions &mdash; <?= date('F Y') ?></h6>
+        <button class="db-section-toggle" data-target="sec-actions" title="Collapse"><i class="fa fa-chevron-down"></i></button>
+    </div>
+    <div class="db-section-body" id="sec-actions">
+        <?php $this->renderPartial('shortcut-link'); ?>
+    </div>
+</div>
+
 <!-- ── Today's Snapshot ── -->
 <div class="db-today-strip" id="db-today-strip">
     <div class="db-today-tile ts-indigo">
@@ -287,17 +303,6 @@ $this->widget('application.components.BreadCrumb', array(
     </div>
     <div class="db-section-body" id="sec-overview">
         <?php $this->renderPartial('block-widget'); ?>
-    </div>
-</div>
-
-<!-- ── Quick Actions ── -->
-<div class="db-section db-animate db-animate-d2">
-    <div class="db-section-head">
-        <h6>Quick Actions &mdash; <?= date('F Y') ?></h6>
-        <button class="db-section-toggle" data-target="sec-actions" title="Collapse"><i class="fa fa-chevron-down"></i></button>
-    </div>
-    <div class="db-section-body" id="sec-actions">
-        <?php $this->renderPartial('shortcut-link'); ?>
     </div>
 </div>
 
