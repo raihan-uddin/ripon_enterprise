@@ -362,7 +362,7 @@ $this->widget('application.components.BreadCrumb', array(
         var time=now.toLocaleTimeString([],{hour:'2-digit',minute:'2-digit'});
         var gt=document.getElementById('db-greeting-text');
         var dt=document.getElementById('db-datetime-text');
-        if(gt) gt.textContent=greet+', <?= addslashes(Yii::app()->user->name) ?>';
+        if(gt) gt.textContent=greet+', <?= addslashes(strtoupper(Yii::app()->user->name)) ?>';
         if(dt) dt.textContent=days[now.getDay()]+', '+now.getDate()+' '+months[now.getMonth()]+' '+now.getFullYear()+' \u00b7 '+time;
     }
     updateHeader(); setInterval(updateHeader,60000);
