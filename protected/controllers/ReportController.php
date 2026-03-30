@@ -1095,24 +1095,13 @@ class ReportController extends RController
                                 s.company_name as supplier_name, s.id as supplier_id, s.company_contact_no as supplier_contact_no, 
                                 po.po_no, so.so_no as invoice_no, sod.warranty as sales_warranty";
         $criteria->order = 't.date desc';
-        $data = Inventory::model()->findAll($criteria);
-        if ($data) {
-            echo $this->renderPartial('productStockLedgerView', array(
-                'data' => $data,
-                'model_id' => $model_id,
-                'dateFrom' => $dateFrom,
-                'dateTo' => $dateTo,
-            ), true, true);
-        } else {
-            echo '<div class="alert alert-danger alert-dismissible fade show" role="alert">
-                        <strong>Sorry!</strong> No data found.
-                        <br>
-                        <span class="text-uppercase">Search Params: Product ID: ' . $model_id . ', Date From: ' . $dateFrom . ', Date To: ' . $dateTo . '</span>
-                        <button type="button" class="close" data-dismiss="alert" aria-label="Close">
-                            <span aria-hidden="true">&times;</span>
-                        </button>
-                    </div>';
-        }
+        $data = Inventory::model()->findAll($criteria) ?: [];
+        echo $this->renderPartial('productStockLedgerView', array(
+            'data'      => $data,
+            'model_id'  => $model_id,
+            'dateFrom'  => $dateFrom,
+            'dateTo'    => $dateTo,
+        ), true, true);
         Yii::app()->end();
     }
 
