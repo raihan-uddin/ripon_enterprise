@@ -72,7 +72,7 @@
                     <td><?= $d->master_id > 0 ? $d->master_id : ''; ?></td>
                     <td><?= $customerName; ?></td>
                     <td>
-                        <?php echo strlen($d->product_sl_no) > 0 ? $d->product_sl_no : '<span style="color: red;">N/A</span>' ?>
+                        <?php echo strlen((string)$d->product_sl_no) > 0 ? $d->product_sl_no : '<span style="color: red;">N/A</span>' ?>
                     </td>
                     <td style="text-align: center;"><?php echo $d->stock_in; ?></td>
                 </tr>
