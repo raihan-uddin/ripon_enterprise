@@ -3,9 +3,12 @@
 /** @var integer $start_date */
 /** @var integer $end_date */
 
-$product     = $model_id > 0 ? ProdModels::model()->findByPk($model_id) : null;
-$productName = $product ? $product->model_name : '—';
-$productCode = $product ? $product->code : '';
+$product      = $model_id > 0 ? ProdModels::model()->findByPk($model_id) : null;
+$productName  = $product ? $product->model_name : '—';
+$productCode  = $product ? $product->code : '';
+$manufacturer = ($product && $product->manufacturer_id) ? Company::model()->findByPk($product->manufacturer_id) : null;
+$category     = ($product && $product->item_id)         ? ProdItems::model()->findByPk($product->item_id)             : null;
+$subCategory  = ($product && $product->brand_id)        ? ProdBrands::model()->findByPk($product->brand_id)           : null;
 
 $isSingleDay = ($start_date == $end_date);
 $dateLabel   = $isSingleDay
@@ -147,6 +150,16 @@ $uniqueDays = $isSingleDay ? 1 : ceil(($end_date - $start_date) / 86400) + 1;
 .si-badge-return{background:#f0fdf4;color:#065f46;}
 .si-badge-default{background:#f1f5f9;color:#475569;}
 
+/* ─── PRODUCT META STRIP ─── */
+.si-meta{display:flex;flex-wrap:wrap;gap:8px;margin-bottom:18px;}
+.si-meta-item{background:#fff;border:1px solid var(--si-border);border-radius:8px;
+              padding:8px 14px;display:flex;flex-direction:column;gap:2px;min-width:110px;
+              box-shadow:0 1px 4px rgba(0,0,0,.04);}
+.si-meta-lbl{font-size:9.5px;color:var(--si-muted);text-transform:uppercase;
+             letter-spacing:.6px;font-weight:600;}
+.si-meta-val{font-size:13px;font-weight:700;color:var(--si-text);}
+.si-meta-pp{color:#1d4ed8;}
+.si-meta-sp{color:var(--si-green);}
 @media print{
     .si-hdr,.si-tbl thead{-webkit-print-color-adjust:exact;print-color-adjust:exact;}
     .si-stat::before{-webkit-print-color-adjust:exact;print-color-adjust:exact;}
@@ -172,6 +185,40 @@ $uniqueDays = $isSingleDay ? 1 : ceil(($end_date - $start_date) / 86400) + 1;
       <div class="si-pill"><i class="fa fa-calendar"></i><?= $dateLabel ?></div>
     </div>
   </div>
+</div>
+
+<!-- Product meta -->
+<div class="si-meta">
+  <?php if ($manufacturer): ?>
+  <div class="si-meta-item">
+    <span class="si-meta-lbl"><i class="fa fa-building-o"></i> Company</span>
+    <span class="si-meta-val"><?= CHtml::encode($manufacturer->name) ?></span>
+  </div>
+  <?php endif; ?>
+  <?php if ($category): ?>
+  <div class="si-meta-item">
+    <span class="si-meta-lbl"><i class="fa fa-folder-o"></i> Category</span>
+    <span class="si-meta-val"><?= CHtml::encode($category->item_name) ?></span>
+  </div>
+  <?php endif; ?>
+  <?php if ($subCategory): ?>
+  <div class="si-meta-item">
+    <span class="si-meta-lbl"><i class="fa fa-tag"></i> Sub-Category</span>
+    <span class="si-meta-val"><?= CHtml::encode($subCategory->brand_name) ?></span>
+  </div>
+  <?php endif; ?>
+  <?php if ($product && $product->purchase_price > 0): ?>
+  <div class="si-meta-item">
+    <span class="si-meta-lbl"><i class="fa fa-shopping-cart"></i> Purchase Price</span>
+    <span class="si-meta-val si-meta-pp"><?= number_format($product->purchase_price, 2) ?></span>
+  </div>
+  <?php endif; ?>
+  <?php if ($product && $product->sell_price > 0): ?>
+  <div class="si-meta-item">
+    <span class="si-meta-lbl"><i class="fa fa-money"></i> Sale Price</span>
+    <span class="si-meta-val si-meta-sp"><?= number_format($product->sell_price, 2) ?></span>
+  </div>
+  <?php endif; ?>
 </div>
 
 <!-- Stats -->
