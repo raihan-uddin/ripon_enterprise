@@ -1,7 +1,10 @@
 <?php
 /** @var integer $model_id */
 
-$product = ($model_id > 0) ? ProdModels::model()->findByPk($model_id) : null;
+$product      = ($model_id > 0) ? ProdModels::model()->findByPk($model_id) : null;
+$manufacturer = ($product && $product->manufacturer_id) ? Company::model()->findByPk($product->manufacturer_id) : null;
+$category     = ($product && $product->item_id)         ? ProdItems::model()->findByPk($product->item_id)             : null;
+$subCategory  = ($product && $product->brand_id)        ? ProdBrands::model()->findByPk($product->brand_id)           : null;
 
 $total = 0; $totalPositive = 0; $totalNegative = 0; $rows = [];
 if ($model_id) {
@@ -107,6 +110,16 @@ foreach ($rows as $r) { if ($r->stock_in > $maxQty) $maxQty = $r->stock_in; }
 .cc-no-data{text-align:center;padding:48px 20px;color:var(--cs-muted);}
 .cc-no-data i{font-size:36px;display:block;margin-bottom:10px;opacity:.25;}
 
+/* ─── PRODUCT META STRIP ─── */
+.cs-meta{display:flex;flex-wrap:wrap;gap:8px;margin-bottom:18px;}
+.cs-meta-item{background:#fff;border:1px solid var(--cs-border);border-radius:8px;
+              padding:8px 14px;display:flex;flex-direction:column;gap:2px;min-width:110px;
+              box-shadow:0 1px 4px rgba(0,0,0,.04);}
+.cs-meta-lbl{font-size:9.5px;color:var(--cs-muted);text-transform:uppercase;
+             letter-spacing:.6px;font-weight:600;}
+.cs-meta-val{font-size:13px;font-weight:700;color:var(--cs-text);}
+.cs-meta-pp{color:#1d4ed8;}
+.cs-meta-sp{color:#15803d;}
 @media print{
     .cs-hdr,.cs-tbl thead{-webkit-print-color-adjust:exact;print-color-adjust:exact;}
     .cs-stat::before{-webkit-print-color-adjust:exact;print-color-adjust:exact;}
@@ -132,6 +145,40 @@ foreach ($rows as $r) { if ($r->stock_in > $maxQty) $maxQty = $r->stock_in; }
       <?php endif; ?>
     </div>
   </div>
+</div>
+
+<!-- Product meta -->
+<div class="cs-meta">
+  <?php if ($manufacturer): ?>
+  <div class="cs-meta-item">
+    <span class="cs-meta-lbl"><i class="fa fa-building-o"></i> Company</span>
+    <span class="cs-meta-val"><?= CHtml::encode($manufacturer->name) ?></span>
+  </div>
+  <?php endif; ?>
+  <?php if ($category): ?>
+  <div class="cs-meta-item">
+    <span class="cs-meta-lbl"><i class="fa fa-folder-o"></i> Category</span>
+    <span class="cs-meta-val"><?= CHtml::encode($category->item_name) ?></span>
+  </div>
+  <?php endif; ?>
+  <?php if ($subCategory): ?>
+  <div class="cs-meta-item">
+    <span class="cs-meta-lbl"><i class="fa fa-tag"></i> Sub-Category</span>
+    <span class="cs-meta-val"><?= CHtml::encode($subCategory->brand_name) ?></span>
+  </div>
+  <?php endif; ?>
+  <?php if ($product && $product->purchase_price > 0): ?>
+  <div class="cs-meta-item">
+    <span class="cs-meta-lbl"><i class="fa fa-shopping-cart"></i> Purchase Price</span>
+    <span class="cs-meta-val cs-meta-pp"><?= number_format($product->purchase_price, 2) ?></span>
+  </div>
+  <?php endif; ?>
+  <?php if ($product && $product->sell_price > 0): ?>
+  <div class="cs-meta-item">
+    <span class="cs-meta-lbl"><i class="fa fa-money"></i> Sale Price</span>
+    <span class="cs-meta-val cs-meta-sp"><?= number_format($product->sell_price, 2) ?></span>
+  </div>
+  <?php endif; ?>
 </div>
 
 <!-- Stats -->
