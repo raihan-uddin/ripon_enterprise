@@ -103,13 +103,19 @@ class AssignmentController extends RController
 				$formModel->attributes = $_POST['AssignmentForm'];
 				if( $formModel->validate()===true )
 				{
-					// Update and redirect
-					$this->_authorizer->authManager->assign($formModel->itemname, $model->getId());
-					$item = $this->_authorizer->authManager->getAuthItem($formModel->itemname);
-					$item = $this->_authorizer->attachAuthItemBehavior($item);
+					// Update and redirect (supports single or multiple itemnames)
+					$itemnames = is_array($formModel->itemname) ? $formModel->itemname : array($formModel->itemname);
+					$itemnames = array_filter($itemnames);
+					$assignedNames = array();
+					foreach ($itemnames as $itemname) {
+						$this->_authorizer->authManager->assign($itemname, $model->getId());
+						$item = $this->_authorizer->authManager->getAuthItem($itemname);
+						$item = $this->_authorizer->attachAuthItemBehavior($item);
+						$assignedNames[] = $item->getNameText();
+					}
 
 					Yii::app()->user->setFlash($this->module->flashSuccessKey,
-						Rights::t('core', 'Permission :name assigned.', array(':name'=>$item->getNameText()))
+						Rights::t('core', 'Permission :name assigned.', array(':name'=>implode(', ', $assignedNames)))
 					);
 
 					$this->redirect(array('assignment/user', 'id'=>$model->getId()));

@@ -1,28 +1,18 @@
-<div class="form">
+<?php $form = $this->beginWidget('CActiveForm'); ?>
 
-<?php $form=$this->beginWidget('CActiveForm'); ?>
-	
-	<div class="row">
-		<?php //echo $form->dropDownList($model, 'itemname', $itemnameSelectOptions); ?>
-        <?php
-        $this->widget('ext.select2.ESelect2', [
-            'model' => $model,
-            'attribute' => 'itemname',
-            'data' => $itemnameSelectOptions,
-            'options' => [
-            //    'placeholder' => 'Select Depot',
-                'width' => '600',
-                'allowClear' => true,
-            ],
-        ]);
-        ?>
-		<?php echo $form->error($model, 'itemname'); ?>
-	</div>
-	
-	<div class="row buttons">
-		<?php echo CHtml::submitButton(Rights::t('core', 'Assign')); ?>
-	</div>
+<div class="form-group">
+    <?php echo CHtml::activeListBox($model, 'itemname', $itemnameSelectOptions, array(
+        'multiple'         => 'multiple',
+        'data-rms'         => '1',
+        'data-placeholder' => Rights::t('core', 'Select a role or permission…'),
+    )); ?>
+    <?php echo $form->error($model, 'itemname', array('class' => 'text-danger', 'style' => 'font-size:12px;margin-top:4px;display:block')); ?>
+</div>
+
+<div class="form-group mb-0">
+    <button type="submit" class="btn btn-success btn-block">
+        <i class="fa fa-check"></i> <?php echo Rights::t('core', 'Assign'); ?>
+    </button>
+</div>
 
 <?php $this->endWidget(); ?>
-
-</div>

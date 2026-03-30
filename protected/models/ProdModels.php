@@ -122,7 +122,7 @@ class ProdModels extends CActiveRecord
     public function attributeLabels()
     {
         return array(
-            'id' => 'Product ID',
+            'id' => 'ID',
             'qty' => 'Stock Qty',
             'item_id' => 'Category',
             'brand_id' => 'Sub-Category',
