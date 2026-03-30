@@ -364,14 +364,19 @@ if (is_file($logoPath)) {
     aria-labelledby="information-modal" aria-hidden="true">
     <div class="modal-dialog modal-dialog-centered modal-xl" role="document">
         <div class="modal-content">
-            <div class="modal-header">
+            <div class="modal-header" style="position:relative; overflow:hidden; padding-bottom:0;">
                 <h5 class="modal-title" id="exampleModalLabel">LEDGER</h5>
                 <button type="button" class="close" data-dismiss="modal" aria-label="Close">
                     <span aria-hidden="true">&times;</span>
                 </button>
+                <div id="modal-progress-bar" style="
+                    position:absolute; bottom:0; left:0; height:3px; width:0%;
+                    background:linear-gradient(90deg,#17a2b8,#6366f1);
+                    transition:width .3s ease; border-radius:0 2px 2px 0;
+                "></div>
             </div>
             <div class="modal-body text-center">
-                <p>Loading...</p> <!-- this will be replaced by the response from the server -->
+                <p>Loading...</p>
             </div>
             <div class="modal-footer">
                 <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
@@ -379,6 +384,26 @@ if (is_file($logoPath)) {
         </div>
     </div>
 </div>
+
+<style>
+    @keyframes srSkeleton {
+        0%   { background-position: -400px 0; }
+        100% { background-position: 400px 0; }
+    }
+    .sr-skeleton-line {
+        height: 14px; border-radius: 4px; margin: 8px auto;
+        background: linear-gradient(90deg, #e8edf2 25%, #d0d8e4 50%, #e8edf2 75%);
+        background-size: 800px 100%;
+        animation: srSkeleton 1.2s infinite linear;
+    }
+    .sr-row-flash {
+        animation: srRowFlash .55s ease forwards;
+    }
+    @keyframes srRowFlash {
+        0%   { background-color: rgba(99,102,241,.22); }
+        100% { background-color: transparent; }
+    }
+</style>
 
 <!-- modal for stock qty modify -->
 <div class="modal fade" id="stockQtyModifyModal" tabindex="-1" role="dialog" aria-labelledby="stockQtyModifyModal"
@@ -435,97 +460,98 @@ if (is_file($logoPath)) {
     });
 
 
-    function currentStockPreview(element, product_id, start_date, end_date) {
-        if (anyLedgerCall) {
-            toastr.warning('Please wait for the previous request to complete');
-            return;
+    function srSkeletonHtml() {
+        var lines = '';
+        for (var i = 0; i < 8; i++) {
+            var w = (60 + Math.random() * 35).toFixed(0);
+            lines += '<div class="sr-skeleton-line" style="width:' + w + '%;"></div>';
         }
-        anyLedgerCall = true;
+        return '<div style="padding:20px 10px;">' + lines + '</div>';
+    }
 
-        var invoiceId = element.innerHTML;
-        element.innerHTML = '<i class="fa fa-spinner fa-spin"></i>';
+    function srOpenLoading(title) {
+        var $modal = $('#information-modal');
+        $modal.find('.modal-title').text(title || 'LEDGER');
+        $modal.find('.modal-body').html(srSkeletonHtml());
+        var $bar = $('#modal-progress-bar');
+        $bar.css('width', '0%');
+        $modal.modal('show');
+        // animate progress bar to ~70% while waiting
+        setTimeout(function () { $bar.css('width', '70%'); }, 50);
+    }
+
+    function srFinishLoading(response, $el, savedHtml) {
+        $('#modal-progress-bar').css('width', '100%');
+        setTimeout(function () {
+            $('#information-modal .modal-body').html(response);
+            $('#modal-progress-bar').css({ width: '0%', transition: 'none' });
+            setTimeout(function () {
+                $('#modal-progress-bar').css('transition', 'width .3s ease');
+            }, 50);
+        }, 200);
+        if ($el) $el.html(savedHtml);
+        anyLedgerCall = false;
+    }
+
+    function srErrorLoading($el, savedHtml) {
+        $('#information-modal').modal('hide');
+        if ($el) $el.html(savedHtml);
+        toastr.error('Something went wrong');
+        anyLedgerCall = false;
+    }
+
+    function srFlashRow(element) {
+        var $row = $(element).closest('tr');
+        $row.removeClass('sr-row-flash');
+        void $row[0].offsetWidth; // reflow to restart animation
+        $row.addClass('sr-row-flash');
+    }
+
+    function currentStockPreview(element, product_id) {
+        if (anyLedgerCall) { toastr.warning('Please wait for the previous request to complete'); return; }
+        anyLedgerCall = true;
+        srFlashRow(element);
+        var $el = $(element), saved = $el.html();
+        $el.html('<i class="fa fa-spinner fa-spin"></i>');
+        srOpenLoading('Stock Preview');
         $.ajax({
             url: '<?= Yii::app()->createUrl("inventory/inventory/currentStockReportBatchWiseView") ?>',
             type: 'GET',
-            data: {
-                product_id: product_id
-            },
-            success: function (response) {
-                $('#information-modal').modal('show');
-                $('#information-modal .modal-body').html(response);
-                element.innerHTML = invoiceId;
-            },
-            error: function () {
-                element.innerHTML = invoiceId;
-                toastr.error('Something went wrong');
-            },
-            complete: function () {
-                anyLedgerCall = false;
-            }
+            data: { product_id: product_id },
+            success: function (r) { srFinishLoading(r, $el, saved); },
+            error:   function ()  { srErrorLoading($el, saved); }
         });
     }
 
     function currentStockOutPreview(element, product_id, start_date, end_date) {
-        if (anyLedgerCall) {
-            toastr.warning('Please wait for the previous request to complete');
-            return;
-        }
+        if (anyLedgerCall) { toastr.warning('Please wait for the previous request to complete'); return; }
         anyLedgerCall = true;
-
-        var invoiceId = element.innerHTML;
-        element.innerHTML = '<i class="fa fa-spinner fa-spin"></i>';
+        srFlashRow(element);
+        var $el = $(element), saved = $el.html();
+        $el.html('<i class="fa fa-spinner fa-spin"></i>');
+        srOpenLoading('Stock Out Detail');
         $.ajax({
             url: '<?= Yii::app()->createUrl("inventory/inventory/currentStockOutReportBatchWiseView") ?>',
             type: 'GET',
-            data: {
-                product_id: product_id,
-                start_date: start_date,
-                end_date: end_date
-            },
-            success: function (response) {
-                $('#information-modal').modal('show');
-                $('#information-modal .modal-body').html(response);
-                element.innerHTML = invoiceId;
-            },
-            error: function () {
-                element.innerHTML = invoiceId;
-                toastr.error('Something went wrong');
-            },
-            complete: function () {
-                anyLedgerCall = false;
-            }
+            data: { product_id: product_id, start_date: start_date, end_date: end_date },
+            success: function (r) { srFinishLoading(r, $el, saved); },
+            error:   function ()  { srErrorLoading($el, saved); }
         });
     }
 
     function currentStockInPreview(element, product_id, start_date, end_date) {
-
-        if (anyLedgerCall) {
-            toastr.warning('Please wait for the previous request to complete');
-            return;
-        }
-
-        var invoiceId = element.innerHTML;
-        element.innerHTML = '<i class="fa fa-spinner fa-spin"></i>';
+        if (anyLedgerCall) { toastr.warning('Please wait for the previous request to complete'); return; }
+        anyLedgerCall = true;
+        srFlashRow(element);
+        var $el = $(element), saved = $el.html();
+        $el.html('<i class="fa fa-spinner fa-spin"></i>');
+        srOpenLoading('Stock In Detail');
         $.ajax({
             url: '<?= Yii::app()->createUrl("inventory/inventory/currentStockInReportBatchWiseView") ?>',
             type: 'GET',
-            data: {
-                product_id: product_id,
-                start_date: start_date,
-                end_date: end_date
-            },
-            success: function (response) {
-                $('#information-modal').modal('show');
-                $('#information-modal .modal-body').html(response);
-                element.innerHTML = invoiceId;
-            },
-            error: function () {
-                element.innerHTML = invoiceId;
-                toastr.error('Something went wrong');
-            },
-            complete: function () {
-                anyLedgerCall = false;
-            }
+            data: { product_id: product_id, start_date: start_date, end_date: end_date },
+            success: function (r) { srFinishLoading(r, $el, saved); },
+            error:   function ()  { srErrorLoading($el, saved); }
         });
     }
 
@@ -549,15 +575,13 @@ if (is_file($logoPath)) {
     $('body').off('click', '.showProductLedger').on('click', '.showProductLedger', showProductLedger);
 
     function showProductLedger() {
-        if (anyLedgerCall) {
-            toastr.warning('Please wait for the previous request to complete');
-            return;
-        }
-
-        let model_id = $(this).data('id');
-        let currentText = $(this).text();
-        let $this = $(this);
+        if (anyLedgerCall) { toastr.warning('Please wait for the previous request to complete'); return; }
+        anyLedgerCall = true;
+        srFlashRow(this);
+        let $this = $(this), saved = $this.html();
+        let model_id = $this.data('id');
         $this.html('<i class="fa fa-spinner fa-spin"></i>');
+        srOpenLoading('Product Ledger');
         $.ajax({
             url: '<?= Yii::app()->createUrl("report/productStockLedgerView") ?>',
             type: 'POST',
@@ -566,18 +590,8 @@ if (is_file($logoPath)) {
                 'Inventory[date_from]': '<?= $startDate ?>',
                 'Inventory[date_to]': '<?= $endDate ?>'
             },
-            success: function (response) {
-                $('#information-modal').modal('show');
-                $('#information-modal .modal-body').html(response);
-                $this.html(currentText);
-            },
-            error: function () {
-                $this.html(currentText);
-                toastr.error('Something went wrong');
-            },
-            complete: function () {
-                anyLedgerCall = false;
-            }
+            success: function (r) { srFinishLoading(r, $this, saved); },
+            error:   function ()  { srErrorLoading($this, saved); }
         });
     }
 

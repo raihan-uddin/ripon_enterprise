@@ -338,17 +338,34 @@ class AuthItemController extends RController
             if (isset($_POST['AuthChildForm']) === true) {
                 $childFormModel->attributes = $_POST['AuthChildForm'];
                 if ($childFormModel->validate() === true) {
-                    // Add the child and load it
-                    $this->_authorizer->authManager->addItemChild($itemName, $childFormModel->itemname);
-                    $child = $this->_authorizer->authManager->getAuthItem($childFormModel->itemname);
-                    $child = $this->_authorizer->attachAuthItemBehavior($child);
+                    // Add children (supports single or multiple itemnames)
+                    $itemnames = is_array($childFormModel->itemname) ? $childFormModel->itemname : array($childFormModel->itemname);
+                    $itemnames = array_filter($itemnames);
+                    $childNames = array();
+                    $errors     = array();
+                    foreach ($itemnames as $childItemName) {
+                        try {
+                            $this->_authorizer->authManager->addItemChild($itemName, $childItemName);
+                            $child = $this->_authorizer->authManager->getAuthItem($childItemName);
+                            $child = $this->_authorizer->attachAuthItemBehavior($child);
+                            $childNames[] = $child->getNameText();
+                        } catch (CException $e) {
+                            $errors[] = $childItemName . ': ' . $e->getMessage();
+                        }
+                    }
 
-                    // Set a flash message for adding the child
-                    Yii::app()->user->setFlash($this->module->flashSuccessKey,
-                        Rights::t('core', 'Child :name added.', array(':name' => $child->getNameText()))
-                    );
+                    if (!empty($childNames)) {
+                        Yii::app()->user->setFlash($this->module->flashSuccessKey,
+                            Rights::t('core', 'Child :name added.', array(':name' => implode(', ', $childNames)))
+                        );
+                    }
+                    if (!empty($errors)) {
+                        Yii::app()->user->setFlash($this->module->flashErrorKey,
+                            implode(' | ', $errors)
+                        );
+                    }
 
-                    // Reidrect to the same page
+                    // Redirect to the same page
                     $this->redirect(array('authItem/update', 'name' => urlencode($itemName)));
                 }
             }

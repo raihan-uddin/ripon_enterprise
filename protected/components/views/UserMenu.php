@@ -82,7 +82,7 @@ $activeReports   = $inRoute(['report']);
 $activeExpense   = !$activeSales && !$activePurchase && $isPage('accounting','expense')
                || $isPage('accounting','expenseHead');
 $activeCommon    = !$activeSales && !$activePurchase && !$activeExpense
-               && $inRoute(['users','rights','business','branch','accounting']);
+               && $inRoute(['users','rights','accounting']);
 
 $showCommon = $isDev
     || $ca('Users.Admin') || $ca('rights');
@@ -342,7 +342,7 @@ nav.erp-nav .navbar-nav>.nav-item.active>.nav-link:focus{
             <?php if ($showCommon): ?>
             <li class="nav-item dropdown<?= $activeCommon ? ' active' : '' ?>">
                 <a class="nav-link dropdown-toggle" href="#" data-toggle="dropdown" role="button">
-                    <i class="fa fa-cogs mr-1"></i> Common
+                    <i class="fa fa-cogs mr-1"></i> Settings
                 </a>
                 <div class="dropdown-menu">
                     <?php if ($ca('Users.Admin') || $ca('rights') || $isDev): ?>
@@ -352,10 +352,6 @@ nav.erp-nav .navbar-nav>.nav-item.active>.nav-link:focus{
                     <?php endif; ?>
                     <?php if ($ca('rights')): ?>
                     <a class="dropdown-item" href="<?= Yii::app()->createUrl('/rights') ?>"><i class="fa fa-lock"></i> Permissions</a>
-                    <?php endif; ?>
-                    <?php if ($isDev): ?>
-                    <a class="dropdown-item" href="<?= Yii::app()->createUrl('/business') ?>"><i class="fa fa-building-o"></i> Business</a>
-                    <a class="dropdown-item" href="<?= Yii::app()->createUrl('/branch') ?>"><i class="fa fa-code-fork"></i> Branch</a>
                     <?php endif; ?>
                     <?php endif; ?>
 
