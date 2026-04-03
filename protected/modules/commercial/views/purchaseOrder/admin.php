@@ -305,7 +305,7 @@ $user = Yii::app()->getUser();
 foreach ($user->getFlashKeys() as $key):
     if ($user->hasFlash($key)): ?>
         <div class="alert alert-<?php echo $key; ?> alert-dismissible">
-            <button type="button" class="close" data-bs-dismiss="alert" aria-hidden="true">×</button>
+            <button type="button" class="btn-close" data-bs-dismiss="alert" aria-hidden="true">×</button>
             <?php echo $user->getFlash($key); ?>
         </div>
     <?php
@@ -337,7 +337,7 @@ endforeach;
         <div class="row">
             <div class="col-md-2">
                 <div class="input-group">
-                    <div class="input-group-prepend">
+                    
                             <span class="input-group-text"
                                   id="basic-addon1">PO No</span>
                     </div>
@@ -458,7 +458,7 @@ endforeach;
         </span>
     </div>",
                 'summaryCssClass' => 'col-sm-12 col-md-6',
-                'pagerCssClass'   => 'col-xs-12 text-right',
+                'pagerCssClass'   => 'col-xs-12 text-end',
                 'columns' => array(
                         array(
                                 'name'              => 'id',
@@ -476,14 +476,14 @@ endforeach;
                         array(
                                 'name'              => 'date',
                                 'footer'            => '<span class="grid-footer-label">Page Total</span>',
-                                'footerHtmlOptions' => ['class' => 'text-right grid-footer-label-cell'],
+                                'footerHtmlOptions' => ['class' => 'text-end grid-footer-label-cell'],
                                 'htmlOptions'       => ['class' => 'text-center', 'style' => 'width:100px;'],
                         ),
                         array(
                                 'name'              => 'supplier_id',
                                 'value'             => 'Suppliers::model()->nameOfThis($data->supplier_id)',
                                 'footer'            => '',
-                                'htmlOptions'       => ['class' => 'text-left'],
+                                'htmlOptions'       => ['class' => 'text-start'],
                         ),
                         array(
                                 'name'              => 'po_no',
@@ -497,17 +497,17 @@ endforeach;
                                 'header'            => 'Total',
                                 'headerHtmlOptions' => ['title' => 'Grand Total', 'style' => 'cursor:help;'],
                                 'footer'            => number_format($pageTotals['grand_total'], 2),
-                                'footerHtmlOptions' => ['class' => 'text-right grid-footer-grand'],
+                                'footerHtmlOptions' => ['class' => 'text-end grid-footer-grand'],
                                 'type'              => 'raw',
                                 'value'             => 'CHtml::tag("span", ["class"=>"grand-cell"], number_format($data->grand_total, 2))',
-                                'htmlOptions'       => ['class' => 'text-right', 'style' => 'width:95px;'],
+                                'htmlOptions'       => ['class' => 'text-end', 'style' => 'width:95px;'],
                         ),
                         array(
                                 'name'              => 'created_by',
                                 'header'            => 'By',
                                 'headerHtmlOptions' => ['title' => 'Created By', 'style' => 'cursor:help;'],
                                 'footer'            => '',
-                                'value'             => 'CHtml::tag("span", ["class"=>"badge badge-info text-capitalize"], Users::model()->nameOfThis($data->created_by))',
+                                'value'             => 'CHtml::tag("span", ["class"=>"badge bg-info text-capitalize"], Users::model()->nameOfThis($data->created_by))',
                                 'type'              => 'raw',
                                 'htmlOptions'       => ['class' => 'text-center', 'style' => 'width:100px;'],
                         ),
@@ -573,7 +573,7 @@ endforeach;
     <div class="card-footer" style="background:#f8f9fa; padding:8px 16px;">
         <div class="row" style="align-items:center;">
             <div class="col-sm-12 col-md-6"></div>
-            <div class="col-sm-12 col-md-6 text-right">
+            <div class="col-sm-12 col-md-6 text-end">
                 <div class="goto-page-wrap" style="justify-content:flex-end;">
                     <span>Go to page</span>
                     <input type="number" id="goto-page-input" class="form-control" min="1" placeholder="Page #"/>
@@ -692,7 +692,7 @@ $this->beginWidget('zii.widgets.jui.CJuiDialog', array(
         <div class="modal-content">
             <div class="modal-header">
                 <h5 class="modal-title" id="exampleModalLabel">Invoice</h5>
-                <button type="button" class="close" data-bs-dismiss="modal" aria-label="Close">
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close">
                     <span aria-hidden="true">&times;</span>
                 </button>
             </div>

@@ -42,7 +42,7 @@ $form = $this->beginWidget('CActiveForm', [
 
                 <!-- Column 1 -->
                 <div class="col-md-4 mb-3">
-                    <div class="form-group">
+                    <div class="mb-3">
                         <?= $form->labelEx($model, 'date') ?>
                         <div class="input-group">
                             <?= $form->textField($model, 'date', [
@@ -50,14 +50,13 @@ $form = $this->beginWidget('CActiveForm', [
                                     'placeholder' => 'YYYY-MM-DD',
                                     'value' => date('Y-m-d')
                             ]) ?>
-                            <div class="input-group-append">
                                 <span class="input-group-text"><i class="fa fa-calendar"></i></span>
                             </div>
                         </div>
                         <?= $form->error($model, 'date', ['class' => 'text-danger']) ?>
                     </div>
 
-                    <div class="form-group">
+                    <div class="mb-3">
                         <?= $form->labelEx($model, 'supplier_id') ?>
                         <div class="input-group">
                             <?= $form->textField($model, 'supplier_name', [
@@ -70,14 +69,13 @@ $form = $this->beginWidget('CActiveForm', [
                                     'readonly' => true,
                                     'value' => $model2->id
                             ]) ?>
-                            <div class="input-group-append">
                                 <span class="input-group-text"><i class="fa fa-user"></i></span>
                             </div>
                         </div>
                         <?= $form->error($model, 'supplier_id', ['class' => 'text-danger']) ?>
                     </div>
 
-                    <div class="form-group">
+                    <div class="mb-3">
                         <?= $form->labelEx($model, 'remarks') ?>
                         <?= $form->textField($model, 'remarks', ['class' => 'form-control']) ?>
                         <?= $form->error($model, 'remarks', ['class' => 'text-danger']) ?>
@@ -87,7 +85,7 @@ $form = $this->beginWidget('CActiveForm', [
 
                 <!-- Column 2 -->
                 <div class="col-md-4 mb-3">
-                    <div class="form-group">
+                    <div class="mb-3">
                         <label>Current Due Amount</label>
                         <div class="input-group">
                             <?php
@@ -118,44 +116,40 @@ $form = $this->beginWidget('CActiveForm', [
                             ?>
                             <input type="text" class="form-control" id="current_due_amt" name="current_due_amt"
                                    value="<?= number_format((float)$currentDueAmount, 2) ?>" readonly>
-                            <div class="input-group-append">
                                 <span class="input-group-text"><i class="fa fa-balance-scale"></i></span>
                             </div>
                         </div>
                     </div>
 
-                    <div class="form-group">
+                    <div class="mb-3">
                         <?= $form->labelEx($model, 'amount') ?>
                         <div class="input-group">
                             <?= $form->textField($model, 'amount', [
                                     'class' => 'form-control',
                             ]) ?>
-                            <div class="input-group-append">
                                 <span class="input-group-text"><i class="fa fa-money"></i></span>
                             </div>
                         </div>
                         <?= $form->error($model, 'amount', ['class' => 'text-danger']) ?>
                     </div>
 
-                    <div class="form-group">
+                    <div class="mb-3">
                         <?= $form->labelEx($model, 'discount') ?>
                         <div class="input-group">
                             <?= $form->textField($model, 'discount', [
                                     'class' => 'form-control',
                             ]) ?>
-                            <div class="input-group-append">
                                 <span class="input-group-text"><i class="fa fa-money"></i></span>
                             </div>
                         </div>
                         <?= $form->error($model, 'discount', ['class' => 'text-danger']) ?>
                     </div>
 
-                    <div class="form-group">
+                    <div class="mb-3">
                         <label>Remaining Due Amount</label>
                         <div class="input-group">
                             <input type="text" class="form-control" id="remaining_due_amt" name="remaining_due_amt"
                                    disabled>
-                            <div class="input-group-append">
                                 <span class="input-group-text"><i class="fa fa-balance-scale"></i></span>
                             </div>
                         </div>
@@ -165,7 +159,7 @@ $form = $this->beginWidget('CActiveForm', [
 
                 <!-- Column 3 -->
                 <div class="col-md-4 mb-3">
-                    <div class="form-group">
+                    <div class="mb-3">
                         <?= $form->labelEx($model, 'payment_type') ?>
                         <div class="input-group">
                             <?= $form->dropDownList($model, 'payment_type', CHtml::listData(MoneyReceipt::model()->paymentTypeFilter(), 'id', 'title'), [
@@ -173,20 +167,18 @@ $form = $this->beginWidget('CActiveForm', [
                                     'class' => 'form-control',
                                     'id' => 'payment_type_dropdown'
                             ]) ?>
-                            <div class="input-group-append">
                                 <span class="input-group-text"><i class="fa fa-credit-card"></i></span>
                             </div>
                         </div>
                         <?= $form->error($model, 'payment_type', ['class' => 'text-danger']) ?>
                     </div>
 
-                    <div class="form-group bank-group d-none" id="bank_section">
+                    <div class="mb-3 bank-group d-none" id="bank_section">
                         <?= $form->labelEx($model, 'bank_id') ?>
                         <div class="input-group">
                             <?= $form->dropDownList($model, 'bank_id',
                                     CHtml::listData(ComBank::model()->findAll(array('order' => 'name ASC')), 'id', 'name'),
                                     ['prompt' => 'Select', 'class' => 'form-control']) ?>
-                            <div class="input-group-append">
                                 <button type="button" class="btn btn-outline-secondary" onclick="addProdItem()">
                                     <i class="fa fa-plus"></i>
                                 </button>
@@ -195,25 +187,23 @@ $form = $this->beginWidget('CActiveForm', [
                         <?= $form->error($model, 'bank_id', ['class' => 'text-danger']) ?>
                     </div>
 
-                    <div class="form-group cheque-group d-none" id="cheque_no_section">
+                    <div class="mb-3 cheque-group d-none" id="cheque_no_section">
                         <?= $form->labelEx($model, 'cheque_no') ?>
                         <div class="input-group">
                             <?= $form->textField($model, 'cheque_no', ['class' => 'form-control']) ?>
-                            <div class="input-group-append">
                                 <span class="input-group-text"><i class="fa fa-credit-card"></i></span>
                             </div>
                         </div>
                         <?= $form->error($model, 'cheque_no', ['class' => 'text-danger']) ?>
                     </div>
 
-                    <div class="form-group cheque-group d-none" id="cheque_date_section">
+                    <div class="mb-3 cheque-group d-none" id="cheque_date_section">
                         <?= $form->labelEx($model, 'cheque_date') ?>
                         <div class="input-group">
                             <?= $form->textField($model, 'cheque_date', [
                                     'class' => 'form-control datetimepicker-input',
                                     'placeholder' => 'YYYY-MM-DD'
                             ]) ?>
-                            <div class="input-group-append">
                                 <span class="input-group-text"><i class="fa fa-calendar"></i></span>
                             </div>
                         </div>
@@ -225,7 +215,7 @@ $form = $this->beginWidget('CActiveForm', [
             </div>
         </div>
 
-        <div class="card-footer text-right">
+        <div class="card-footer text-end">
             <?php
             echo CHtml::ajaxSubmitButton('Create', CHtml::normalizeUrl(array('/accounting/paymentReceipt/create', 'id' => $id, 'render' => true)), array(
                     'dataType' => 'json',

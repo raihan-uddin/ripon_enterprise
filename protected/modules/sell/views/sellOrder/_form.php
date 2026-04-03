@@ -645,12 +645,11 @@ Yii::app()->clientScript->registerCoreScript("jquery.ui");
     <div class="card-body">
         <div class="row">
             <div class="col-xs-12 col-sm-12 col-md-4 col-lg-4">
-                <div class="form-group row">
+                <div class="mb-3 row">
                     <?php echo $form->labelEx($model, 'date', ['class' => 'col-sm-4 col-form-label']); ?>
                     <div class="col-sm-8">
                         <div class="input-group" id="entry_date" data-target-input="nearest">
                             <?php echo $form->textField($model, 'date', array('class' => 'form-control datetimepicker-input', 'placeholder' => 'YYYY-MM-DD', 'value' => date('Y-m-d'))); ?>
-                            <div class="input-group-append">
                                 <div class="input-group-text"><i class="fa fa-calendar"></i></div>
                             </div>
                         </div>
@@ -661,14 +660,13 @@ Yii::app()->clientScript->registerCoreScript("jquery.ui");
             </div>
 
             <div class="col-xs-12 col-sm-12 col-md-8 col-lg-4">
-                <div class="form-group row">
+                <div class="mb-3 row">
                     <?php echo $form->labelEx($model, 'customer_id', ['class' => 'col-sm-4 col-form-label']); ?>
                     <div class="col-sm-8">
                         <div class="input-group" data-target-input="nearest">
                             <label for="customer_id_text"></label><input type="text" id="customer_id_text"
                                                                          class="form-control customer-ac-input">
                             <?php echo $form->hiddenField($model, 'customer_id', array('maxlength' => 255, 'class' => 'form-control', 'placeholder' => 'Search customer by name, ID, or phone...')); ?>
-                            <div class="input-group-append">
                                 <div class="input-group-text">
                                     <?php echo CHtml::link(' <i class="fa fa-plus"></i>', "", array('onclick' => "{addDistributor(); $('#dialogAddDistributor').dialog('open');}")); ?>
                                     <?php
@@ -872,7 +870,7 @@ Yii::app()->clientScript->registerCoreScript("jquery.ui");
                                                     </span>
 
                                                     <div class="company-actions">
-                                                        <span class="margin-badge badge badge-secondary">
+                                                        <span class="margin-badge badge bg-secondary">
                                                             MARGIN: 0%
                                                         </span>
                                                         <span class="toggle-icon">▼</span>
@@ -1053,7 +1051,6 @@ Yii::app()->clientScript->registerCoreScript("jquery.ui");
                                                                 'placeholder' => '0',
                                                                 'value' => '0'
                                                         ]); ?>
-                                                        <div class="input-group-append">
                                                             <span class="input-group-text">%</span>
                                                         </div>
                                                     </div>
@@ -1884,7 +1881,7 @@ $this->beginWidget('zii.widgets.jui.CJuiDialog', array(
         <div class="modal-content">
             <div class="modal-header">
                 <h5 class="modal-title" id="exampleModalLabel">Invoice</h5>
-                <button type="button" class="close" data-bs-dismiss="modal" aria-label="Close">
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close">
                     <span aria-hidden="true">&times;</span>
                 </button>
             </div>

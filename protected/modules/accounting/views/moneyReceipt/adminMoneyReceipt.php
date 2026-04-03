@@ -29,7 +29,7 @@ $user = Yii::app()->getUser();
 foreach ($user->getFlashKeys() as $key):
   if ($user->hasFlash($key)): ?>
     <div class="alert alert-<?php echo $key; ?> alert-dismissible">
-      <button type="button" class="close" data-bs-dismiss="alert" aria-hidden="true">×</button>
+      <button type="button" class="btn-close" data-bs-dismiss="alert" aria-hidden="true">×</button>
       <?php echo $user->getFlash($key); ?>
     </div>
 <?php

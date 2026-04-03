@@ -28,7 +28,7 @@ $form = $this->beginWidget('CActiveForm', array(
     <div class="card-body">
         <div class="row">
 
-            <div class="form-group col-xs-12 col-sm-6 col-lg-4">
+            <div class="mb-3 col-xs-12 col-sm-6 col-lg-4">
                 <?php echo $form->labelEx($model, 'name'); ?>
                 <?php echo $form->textField($model, 'name', array('maxlength' => 255, 'class' => 'form-control')); ?>
                 <span class="help-block"

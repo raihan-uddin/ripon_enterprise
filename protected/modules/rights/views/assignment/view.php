@@ -9,7 +9,6 @@
         <div class="card-tools">
             <div class="input-group input-group-sm" style="width:220px;">
                 <input type="text" id="search" class="form-control" placeholder="Search users…">
-                <div class="input-group-append">
                     <span class="input-group-text"><i class="fa fa-search"></i></span>
                 </div>
             </div>

@@ -4,17 +4,17 @@
 )); ?>
 
 <?php if ($model->scenario === 'update'): ?>
-    <div class="form-group row">
+    <div class="mb-3 row">
         <label class="col-sm-3 col-form-label font-weight-bold">Type</label>
         <div class="col-sm-9 d-flex align-items-center">
-            <span class="badge badge-primary" style="font-size:12px;padding:5px 10px;">
+            <span class="badge bg-primary" style="font-size:12px;padding:5px 10px;">
                 <?php echo Rights::getAuthItemTypeName($model->type); ?>
             </span>
         </div>
     </div>
 <?php endif; ?>
 
-<div class="form-group row">
+<div class="mb-3 row">
     <?php echo $form->labelEx($model, 'name', array('class' => 'col-sm-3 col-form-label font-weight-bold')); ?>
     <div class="col-sm-9">
         <?php if ($model->scenario === 'update'): ?>
@@ -39,7 +39,7 @@
     </div>
 </div>
 
-<div class="form-group row">
+<div class="mb-3 row">
     <?php echo $form->labelEx($model, 'description', array('class' => 'col-sm-3 col-form-label font-weight-bold')); ?>
     <div class="col-sm-9">
         <?php echo $form->textField($model, 'description', array(

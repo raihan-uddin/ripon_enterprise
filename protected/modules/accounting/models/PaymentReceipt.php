@@ -218,11 +218,11 @@ class PaymentReceipt extends CActiveRecord
     public function paymentTypeString($value)
     {
         if ($value == self::CASH)
-            $badge = "<span class='badge badge-success'>CASH</span>";
+            $badge = "<span class='badge bg-success'>CASH</span>";
         else if ($value == self::CHECK)
-            $badge = "<span class='badge badge-info'>CHECK</span>";
+            $badge = "<span class='badge bg-info'>CHECK</span>";
         else if ($value == self::ONLINE)
-            $badge = "<span class='badge badge-warning'>ONLINE</span>";
+            $badge = "<span class='badge bg-warning text-dark'>ONLINE</span>";
         else
             $badge = "";
         return $badge;

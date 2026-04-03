@@ -9,7 +9,6 @@
                placeholder="Select Date Range"
                value="<?= sprintf("%s - %s", date('d/m/Y'), date('d/m/Y')) ?>"
                aria-label="Select Date Range">
-        <div class="input-group-append">
             <button class="btn btn-primary" type="button" id="profit-loss-summary-btn">
                 <i class="fa fa-search"></i> Search
             </button>
@@ -26,7 +25,7 @@
                 <h5 class="modal-title" id="exampleModalLabel" style="font-size:15px; font-weight:600;">
                     <i class="fa fa-line-chart mr-2"></i> Profit &amp; Loss Summary
                 </h5>
-                <button type="button" class="close" data-bs-dismiss="modal" aria-label="Close"
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"
                         style="color:#fff; opacity:0.8;">
                     <span aria-hidden="true">&times;</span>
                 </button>

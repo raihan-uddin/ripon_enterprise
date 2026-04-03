@@ -31,21 +31,21 @@ $this->widget('application.components.BreadCrumb', array(
     <div class="card-body">
         <div class="row">
             <div class="col-sm-12 col-md-2">
-                <div class="form-group">
+                <div class="mb-3">
                     <label class="loan-filter-label">From Date <span style="color:red;">*</span></label>
                     <input type="text" id="loan_date_from" class="form-control datetimepicker-input"
                            placeholder="YYYY-MM-DD" value="<?= date('Y-m-01') ?>">
                 </div>
             </div>
             <div class="col-sm-12 col-md-2">
-                <div class="form-group">
+                <div class="mb-3">
                     <label class="loan-filter-label">To Date <span style="color:red;">*</span></label>
                     <input type="text" id="loan_date_to" class="form-control datetimepicker-input"
                            placeholder="YYYY-MM-DD" value="<?= date('Y-m-d') ?>">
                 </div>
             </div>
             <div class="col-sm-12 col-md-3">
-                <div class="form-group">
+                <div class="mb-3">
                     <label class="loan-filter-label">Person <span style="color:#aaa; font-weight:400;">(optional — সকলের জন্য ফাঁকা রাখুন)</span></label>
                     <select id="loan_person_id" class="form-control">
                         <option value="0">— সকল ব্যক্তি (All) —</option>
@@ -58,14 +58,14 @@ $this->widget('application.components.BreadCrumb', array(
                 </div>
             </div>
             <div class="col-sm-12 col-md-2" style="display:flex; align-items:flex-end;">
-                <div class="form-group" style="width:100%;">
-                    <button id="loanLedgerSearchBtn" class="btn btn-success btn-block" onclick="loadLoanLedger()">
+                <div class="mb-3" style="width:100%;">
+                    <button id="loanLedgerSearchBtn" class="btn btn-success w-100" onclick="loadLoanLedger()">
                         <i class="fa fa-search"></i> Search
                     </button>
                 </div>
             </div>
             <div class="col-sm-12 col-md-2" style="display:flex; align-items:flex-end;">
-                <div class="form-group" style="width:100%; display:none;" id="loanPrintBtnWrapper">
+                <div class="mb-3" style="width:100%; display:none;" id="loanPrintBtnWrapper">
                     <?php
                     $this->widget('ext.mPrint.mPrint', array(
                         'title'      => ' ',
@@ -78,7 +78,7 @@ $this->widget('application.components.BreadCrumb', array(
                         'visible'    => !Yii::app()->user->isGuest,
                         'debug'      => true,
                         'id'         => 'loan-ledger-print-btn',
-                        'htmlOptions'=> array('class' => 'btn btn-default btn-block'),
+                        'htmlOptions'=> array('class' => 'btn btn-secondary w-100'),
                     ));
                     ?>
                 </div>

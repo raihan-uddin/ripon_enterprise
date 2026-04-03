@@ -26,7 +26,7 @@ $this->breadcrumbs = array(
                 <?php echo CHtml::link(
                     Rights::t('core', 'Cancel'),
                     Yii::app()->user->rightsReturnUrl,
-                    array('class' => 'btn btn-default')
+                    array('class' => 'btn btn-secondary')
                 ); ?>
             </div>
         </div>

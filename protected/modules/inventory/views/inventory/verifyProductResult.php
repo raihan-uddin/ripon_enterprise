@@ -112,8 +112,8 @@ $model_id = end($data)->model_id;
                             </td>
                             <td class="text-center"><?= $d->stock_in > 0 ? '<span class="vfr-stock-in">' . number_format($d->stock_in) . '</span>' : '' ?></td>
                             <td class="text-center"><?= $d->stock_out > 0 ? '<span class="vfr-stock-out">' . number_format($d->stock_out) . '</span>' : '' ?></td>
-                            <td class="text-right"><?= number_format($d->purchase_price, 2) ?></td>
-                            <td class="text-right"><?= number_format($d->sell_price, 2) ?></td>
+                            <td class="text-end"><?= number_format($d->purchase_price, 2) ?></td>
+                            <td class="text-end"><?= number_format($d->sell_price, 2) ?></td>
                             <td class="text-center <?= $expired_class ?>"
                                 title="<?= $d->sales_warranty > 0 ? sprintf("%d Month", $d->sales_warranty) : '' ?>">
                                 <?= $warranty_month ? date('d/m/y', strtotime($warranty_expire_date)) : '' ?>
@@ -146,7 +146,7 @@ $model_id = end($data)->model_id;
         <div class="modal-content">
             <div class="modal-header">
                 <h5 class="modal-title" id="exampleModalLabel">Ledger</h5>
-                <button type="button" class="close" data-bs-dismiss="modal" aria-label="Close">
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close">
                     <span aria-hidden="true">&times;</span>
                 </button>
             </div>

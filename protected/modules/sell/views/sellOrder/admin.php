@@ -354,7 +354,7 @@ $user = Yii::app()->getUser();
 foreach ($user->getFlashKeys() as $key):
     if ($user->hasFlash($key)): ?>
         <div class="alert alert-<?php echo $key; ?> alert-dismissible fade show" role="alert">
-            <button type="button" class="close" data-bs-dismiss="alert" aria-hidden="true">×</button>
+            <button type="button" class="btn-close" data-bs-dismiss="alert" aria-hidden="true">×</button>
             <i class="fa fa-<?php echo ($key === 'success') ? 'check-circle' : 'exclamation-triangle'; ?>" style="margin-right:6px;"></i>
             <?php echo $user->getFlash($key); ?>
         </div>
@@ -390,7 +390,7 @@ if (Yii::app()->user->checkAccess('Sell.Order.VoucherPreview')) {
             <div class="row align-items-center">
                 <div class="col-md-5 col-sm-12">
                     <div class="input-group">
-                        <div class="input-group-prepend">
+                        
                             <span class="input-group-text" style="height:38px;">SO No</span>
                         </div>
                         <?php echo $form->textField($model, 'so_no', array(
@@ -399,7 +399,7 @@ if (Yii::app()->user->checkAccess('Sell.Order.VoucherPreview')) {
                                 'placeholder' => 'Enter SO number or select date range...',
                                 'aria-describedby' => 'basic-addon1',
                         )); ?>
-                        <div class="input-group-append">
+                        
                             <span class="input-group-text" style="height:38px; padding:0 6px;">
                             <?php echo $form->dropDownList(
                                     $model, 'print_type', [
@@ -526,7 +526,7 @@ if (Yii::app()->user->checkAccess('Sell.Order.VoucherPreview')) {
                     </div>",
                 'emptyText' => "<div class='alert alert-warning text-center' role='alert'><i class='icon fa fa-exclamation-triangle'></i> No results found.</div>",
                 'summaryCssClass' => 'col-sm-12 col-md-6',
-                'pagerCssClass' => 'col-xs-12 text-right',
+                'pagerCssClass' => 'col-xs-12 text-end',
                 'pager' => array(
                         'class'          => 'CLinkPager',
                         'cssFile'        => false,
@@ -545,7 +545,7 @@ if (Yii::app()->user->checkAccess('Sell.Order.VoucherPreview')) {
                         array(
                                 'name' => 'date',
                                 'footer' => '<span class="grid-footer-label">Page Total</span>',
-                                'footerHtmlOptions' => ['class' => 'text-right grid-footer-label-cell'],
+                                'footerHtmlOptions' => ['class' => 'text-end grid-footer-label-cell'],
                                 'htmlOptions' => ['class' => 'text-center', 'style' => 'width:100px;'],
                         ),
                         array(
@@ -559,67 +559,67 @@ if (Yii::app()->user->checkAccess('Sell.Order.VoucherPreview')) {
                                 'name' => 'customer_id',
                                 'footer' => '',
                                 'value' => 'Customers::model()->nameOfThis($data->customer_id)',
-                                'htmlOptions' => ['class' => 'text-left'],
+                                'htmlOptions' => ['class' => 'text-start'],
                         ),
                         array(
                                 'name' => 'discount_amount',
                                 'header' => 'Disc.',
                                 'headerHtmlOptions' => ['title' => 'Discount Amount', 'style' => 'cursor:help;'],
                                 'footer' => $pageTotals['discount_amount'] > 0 ? number_format($pageTotals['discount_amount'], 2) : '<span class="val-zero">—</span>',
-                                'footerHtmlOptions' => ['class' => 'text-right grid-footer-cell'],
+                                'footerHtmlOptions' => ['class' => 'text-end grid-footer-cell'],
                                 'type' => 'raw',
                                 'value' => '$data->discount_amount > 0 ? number_format($data->discount_amount, 2) : "<span class=\"val-zero\">—</span>"',
-                                'htmlOptions' => ['class' => 'text-right', 'style' => 'width:75px;'],
+                                'htmlOptions' => ['class' => 'text-end', 'style' => 'width:75px;'],
                         ),
                         array(
                                 'name' => 'delivery_charge',
                                 'header' => 'Del.',
                                 'headerHtmlOptions' => ['title' => 'Delivery Charge', 'style' => 'cursor:help;'],
                                 'footer' => $pageTotals['delivery_charge'] > 0 ? number_format($pageTotals['delivery_charge'], 2) : '<span class="val-zero">—</span>',
-                                'footerHtmlOptions' => ['class' => 'text-right grid-footer-cell'],
+                                'footerHtmlOptions' => ['class' => 'text-end grid-footer-cell'],
                                 'type' => 'raw',
                                 'value' => '$data->delivery_charge > 0 ? number_format($data->delivery_charge, 2) : "<span class=\"val-zero\">—</span>"',
-                                'htmlOptions' => ['class' => 'text-right', 'style' => 'width:70px;'],
+                                'htmlOptions' => ['class' => 'text-end', 'style' => 'width:70px;'],
                         ),
                         array(
                                 'name' => 'road_fee',
                                 'header' => 'Road',
                                 'headerHtmlOptions' => ['title' => 'Road Fee', 'style' => 'cursor:help;'],
                                 'footer' => $pageTotals['road_fee'] > 0 ? number_format($pageTotals['road_fee'], 2) : '<span class="val-zero">—</span>',
-                                'footerHtmlOptions' => ['class' => 'text-right grid-footer-cell'],
+                                'footerHtmlOptions' => ['class' => 'text-end grid-footer-cell'],
                                 'type' => 'raw',
                                 'value' => '$data->road_fee > 0 ? number_format($data->road_fee, 2) : "<span class=\"val-zero\">—</span>"',
-                                'htmlOptions' => ['class' => 'text-right', 'style' => 'width:60px;'],
+                                'htmlOptions' => ['class' => 'text-end', 'style' => 'width:60px;'],
                         ),
                         array(
                                 'name' => 'damage_value',
                                 'header' => 'Dmg.',
                                 'headerHtmlOptions' => ['title' => 'Damage Value', 'style' => 'cursor:help;'],
                                 'footer' => $pageTotals['damage_value'] > 0 ? number_format($pageTotals['damage_value'], 2) : '<span class="val-zero">—</span>',
-                                'footerHtmlOptions' => ['class' => 'text-right grid-footer-cell'],
+                                'footerHtmlOptions' => ['class' => 'text-end grid-footer-cell'],
                                 'type' => 'raw',
                                 'value' => '$data->damage_value > 0 ? number_format($data->damage_value, 2) : "<span class=\"val-zero\">—</span>"',
-                                'htmlOptions' => ['class' => 'text-right', 'style' => 'width:65px;'],
+                                'htmlOptions' => ['class' => 'text-end', 'style' => 'width:65px;'],
                         ),
                         array(
                                 'name' => 'sr_commission',
                                 'header' => 'Comm.',
                                 'headerHtmlOptions' => ['title' => 'SR Commission', 'style' => 'cursor:help;'],
                                 'footer' => $pageTotals['sr_commission'] > 0 ? number_format($pageTotals['sr_commission'], 2) : '<span class="val-zero">—</span>',
-                                'footerHtmlOptions' => ['class' => 'text-right grid-footer-cell'],
+                                'footerHtmlOptions' => ['class' => 'text-end grid-footer-cell'],
                                 'type' => 'raw',
                                 'value' => '$data->sr_commission > 0 ? number_format($data->sr_commission, 2) : "<span class=\"val-zero\">—</span>"',
-                                'htmlOptions' => ['class' => 'text-right', 'style' => 'width:70px;'],
+                                'htmlOptions' => ['class' => 'text-end', 'style' => 'width:70px;'],
                         ),
                         array(
                                 'name' => 'grand_total',
                                 'header' => 'Total',
                                 'headerHtmlOptions' => ['title' => 'Grand Total', 'style' => 'cursor:help;'],
                                 'footer' => number_format($pageTotals['grand_total'], 2),
-                                'footerHtmlOptions' => ['class' => 'text-right grid-footer-grand'],
+                                'footerHtmlOptions' => ['class' => 'text-end grid-footer-grand'],
                                 'type' => 'raw',
                                 'value' => 'CHtml::tag("span", ["class"=>"grand-cell"], number_format($data->grand_total, 2))',
-                                'htmlOptions' => ['class' => 'text-right', 'style' => 'width:95px;'],
+                                'htmlOptions' => ['class' => 'text-end', 'style' => 'width:95px;'],
                         ),
                         array(
                                 'name' => 'created_by',
@@ -628,7 +628,7 @@ if (Yii::app()->user->checkAccess('Sell.Order.VoucherPreview')) {
                                 'footer' => '',
                                 'filter' => false,
                                 'type' => 'raw',
-                                'value' => 'CHtml::tag("span", ["class"=>"badge badge-info text-capitalize"], Users::model()->nameOfThis($data->created_by))',
+                                'value' => 'CHtml::tag("span", ["class"=>"badge bg-info text-capitalize"], Users::model()->nameOfThis($data->created_by))',
                                 'htmlOptions' => ['class' => 'text-center', 'style' => 'width:100px;'],
                         ),
                         array(
@@ -731,7 +731,7 @@ if (Yii::app()->user->checkAccess('Sell.Order.VoucherPreview')) {
     <div class="card-footer" style="background:#f8f9fa; padding:8px 16px;">
         <div class="row" style="align-items:center;">
             <div class="col-sm-12 col-md-6"></div>
-            <div class="col-sm-12 col-md-6 text-right">
+            <div class="col-sm-12 col-md-6 text-end">
                 <div class="goto-page-wrap" style="justify-content:flex-end;">
                     <span>Go to page</span>
                     <input type="number" id="goto-page-input" class="form-control" min="1" placeholder="Page #"/>
@@ -754,7 +754,7 @@ if (Yii::app()->user->checkAccess('Sell.Order.VoucherPreview')) {
         <div class="modal-content">
             <div class="modal-header">
                 <h5 class="modal-title">Invoice</h5>
-                <button type="button" class="close" data-bs-dismiss="modal" aria-label="Close">
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close">
                     <span aria-hidden="true">&times;</span>
                 </button>
             </div>

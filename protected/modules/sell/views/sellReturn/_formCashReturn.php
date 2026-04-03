@@ -154,7 +154,6 @@ Yii::app()->clientScript->registerCoreScript("jquery.ui");
                         <i class="fa fa-calendar pr-fl-icon"></i>
                         <?php echo $form->textField($model, 'return_date', array('class' => 'pr-fl-input datetimepicker-input', 'placeholder' => ' ', 'value' => date('Y-m-d'), 'id' => 'SellReturn_return_date')); ?>
                         <label class="pr-fl-label">Return Date</label>
-                        <div class="input-group-append" id="entry_date" data-target-input="nearest">
                             <div class="input-group-text"><i class="fa fa-calendar"></i></div>
                         </div>
                         <?php echo $form->error($model, 'return_date', array('class' => 'pr-error')); ?>
@@ -166,7 +165,6 @@ Yii::app()->clientScript->registerCoreScript("jquery.ui");
                         <input type="text" id="customer_id_text" class="pr-fl-input" placeholder=" ">
                         <?php echo $form->hiddenField($model, 'customer_id', array('maxlength' => 255, 'class' => 'form-control')); ?>
                         <label class="pr-fl-label">Customer</label>
-                        <div class="input-group-append">
                             <div class="input-group-text">
                                 <?php
                                 echo CHtml::link(' <i class="fa fa-plus"></i>', "",
@@ -300,7 +298,7 @@ Yii::app()->clientScript->registerCoreScript("jquery.ui");
                             <input type="text" id="model_id_text" class="pr-fl-input" placeholder=" ">
                             <?php echo $form->hiddenField($model2, 'model_id', array('maxlength' => 255, 'class' => 'form-control', 'readonly' => true)); ?>
                             <label class="pr-fl-label">Product</label>
-                            <div class="input-group-append">
+                            
                                 <div class="input-group-text" style="display:flex;gap:2px">
                                     <?php
                                     echo CHtml::link(' <i class="fa fa-plus"></i>', "",
@@ -435,7 +433,6 @@ Yii::app()->clientScript->registerCoreScript("jquery.ui");
                             <i class="fa fa-barcode pr-fl-icon"></i>
                             <input type="text" id="product_sl_no" class="pr-fl-input" placeholder=" ">
                             <label class="pr-fl-label">Product SL No</label>
-                            <div class="input-group-append">
                                 <button class="btn btn-warning btn-sm" type="button" onclick="verifyProductSlNo()" style="position:absolute;right:36px;top:50%;transform:translateY(-50%);padding:2px 8px;font-size:11px;border-radius:5px">Verify</button>
                                 <span class="input-group-text" onclick="resetProductSlNo()"><i class="fa fa-refresh"></i></span>
                             </div>
@@ -652,7 +649,7 @@ Yii::app()->clientScript->registerCoreScript("jquery.ui");
         <div class="modal-content">
             <div class="modal-header">
                 <h5 class="modal-title" id="exampleModalLabel">Invoice</h5>
-                <button type="button" class="close" data-bs-dismiss="modal" aria-label="Close">
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close">
                     <span aria-hidden="true">&times;</span>
                 </button>
             </div>
@@ -761,7 +758,7 @@ Yii::app()->clientScript->registerCoreScript("jquery.ui");
             error: function (data) {
                 $('#formResultError').html('<div class="alert alert-danger alert-dismissible fade show" role="alert">\n' +
                     '  <strong>Error!</strong> ' + data.responseText +
-                    '  <button type="button" class="close" data-bs-dismiss="alert" aria-label="Close">\n' +
+                    '  <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close">\n' +
                     '    <span aria-hidden="true">&times;</span>\n' +
                     '  </button>\n' +
                     '</div>');
@@ -804,10 +801,10 @@ Yii::app()->clientScript->registerCoreScript("jquery.ui");
                     <input type="text" name="SellReturnDetails[qty][]" class="form-control text-center temp_qty" value="${qty}">
                 </td>
                 <td>
-                    <input type="text" name="SellReturnDetails[amount][]" class="form-control temp_unit_price text-right" value="${amount}">
+                    <input type="text" name="SellReturnDetails[amount][]" class="form-control temp_unit_price text-end" value="${amount}">
                 </td>
                 <td>
-                    <input type="text" name="SellReturnDetails[row_total][]" class="form-control row-total text-right" value="${row_total}">
+                    <input type="text" name="SellReturnDetails[row_total][]" class="form-control row-total text-end" value="${row_total}">
                 </td>
                 <td>
                     <button type="button" class="pr-btn-danger dlt" style="padding:5px 9px"><i class="fa fa-trash"></i></button>

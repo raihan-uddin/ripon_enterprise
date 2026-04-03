@@ -36,11 +36,10 @@ $form = $this->beginWidget('CActiveForm', array(
         <div class="row">
 
             <div class="col-sm-12 col-md-2">
-                <div class="form-group" style="">
+                <div class="mb-3" style="">
                     <?php echo $form->labelEx($model, 'date_from', ['class' => 'col-form-label']); ?>
                     <div class="input-group" id="date_from" data-target-input="nearest">
                         <?php echo $form->textField($model, 'date_from', array('class' => 'form-control datetimepicker-input', 'placeholder' => 'YYYY-MM-DD', 'value' => date('Y-m-d'))); ?>
-                        <div class="input-group-append">
                             <div class="input-group-text"><i class="fa fa-calendar"></i></div>
                         </div>
                     </div>
@@ -50,11 +49,10 @@ $form = $this->beginWidget('CActiveForm', array(
             </div>
 
             <div class="col-sm-12 col-md-2">
-                <div class="form-group" style="">
+                <div class="mb-3" style="">
                     <?php echo $form->labelEx($model, 'date_to', ['class' => 'col-form-label']); ?>
                     <div class="input-group" id="date_to" data-target-input="nearest">
                         <?php echo $form->textField($model, 'date_to', array('class' => 'form-control datetimepicker-input', 'placeholder' => 'YYYY-MM-DD', 'value' => date('Y-m-d'))); ?>
-                        <div class="input-group-append">
                             <div class="input-group-text"><i class="fa fa-calendar"></i></div>
                         </div>
                     </div>
@@ -64,12 +62,11 @@ $form = $this->beginWidget('CActiveForm', array(
             </div>
 
             <div class="col-sm-12 col-md-2">
-                <div class="form-group" style="">
+                <div class="mb-3" style="">
                     <?php echo $form->labelEx($model, 'supplier_id', ['class' => 'col-form-label']); ?>
                     <div class="input-group" id="supplier_id" data-target-input="nearest">
                         <input type="text" id="supplier_id_text" class="form-control">
                         <?php echo $form->hiddenField($model, 'supplier_id', array('class' => 'form-control',)); ?>
-                        <div class="input-group-append" onclick="clearProduct()">
                             <div class="input-group-text"><i class="fa fa-refresh"></i></div>
                         </div>
                     </div>

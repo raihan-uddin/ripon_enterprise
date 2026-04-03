@@ -48,7 +48,7 @@ Yii::app()->clientScript->registerCoreScript('jquery.ui');
             </div>
             <div class="card-body">
 
-                <div class="form-group">
+                <div class="mb-3">
                     <?php echo $form->labelEx($model, 'cash_due'); ?>
                     <?php echo $form->dropDownList($model, 'cash_due',
                         Lookup::items('cash_due'),
@@ -61,7 +61,7 @@ Yii::app()->clientScript->registerCoreScript('jquery.ui');
                     <?php echo $form->error($model, 'cash_due', array('class' => 'text-danger small')); ?>
                 </div>
 
-                <div class="form-group">
+                <div class="mb-3">
                     <?php echo $form->labelEx($model, 'date'); ?>
                     <?php echo $form->textField($model, 'date', array(
                         'class'       => 'form-control',
@@ -73,7 +73,7 @@ Yii::app()->clientScript->registerCoreScript('jquery.ui');
                     <?php echo $form->error($model, 'date', array('class' => 'text-danger small')); ?>
                 </div>
 
-                <div class="form-group">
+                <div class="mb-3">
                     <label class="control-label" for="PurchaseOrder_manual_po_no">Manual PO No</label>
                     <?php echo $form->textField($model, 'manual_po_no', array(
                         'class'       => 'form-control',
@@ -95,13 +95,12 @@ Yii::app()->clientScript->registerCoreScript('jquery.ui');
             </div>
             <div class="card-body">
 
-                <div class="form-group">
+                <div class="mb-3">
                     <?php echo $form->labelEx($model, 'supplier_id'); ?>
                     <div class="input-group">
                         <input type="text" id="supplier_id_text" class="form-control"
                                placeholder="Search supplier…" autocomplete="off">
                         <?php echo $form->hiddenField($model, 'supplier_id', array('maxlength' => 255)); ?>
-                        <div class="input-group-append">
                             <button type="button" class="btn btn-outline-secondary"
                                     onclick="addSupplier(); $('#addSupplierDialog').dialog('open');"
                                     title="Add new supplier">
@@ -157,7 +156,7 @@ Yii::app()->clientScript->registerCoreScript('jquery.ui');
                     </script>
                 </div>
 
-                <div class="form-group">
+                <div class="mb-3">
                     <?php echo $form->labelEx($model, 'contact_no'); ?>
                     <?php echo $form->textField($model, 'contact_no', array(
                         'class'    => 'form-control',
@@ -167,7 +166,7 @@ Yii::app()->clientScript->registerCoreScript('jquery.ui');
                     )); ?>
                 </div>
 
-                <div class="form-group">
+                <div class="mb-3">
                     <?php echo $form->labelEx($model, 'address'); ?>
                     <?php echo $form->textField($model, 'address', array(
                         'class'    => 'form-control',
@@ -190,10 +189,9 @@ Yii::app()->clientScript->registerCoreScript('jquery.ui');
             </div>
             <div class="card-body">
 
-                <div class="form-group">
+                <div class="mb-3">
                     <?php echo $form->labelEx($model, 'total_amount'); ?>
                     <div class="input-group">
-                        <div class="input-group-prepend">
                             <span class="input-group-text"><i class="fa fa-money"></i></span>
                         </div>
                         <?php echo $form->textField($model, 'total_amount', array(
@@ -205,12 +203,11 @@ Yii::app()->clientScript->registerCoreScript('jquery.ui');
                     </div>
                 </div>
 
-                <div class="form-group">
+                <div class="mb-3">
                     <label class="control-label">VAT</label>
                     <div class="row no-gutters" style="gap:6px;">
                         <div class="col">
                             <div class="input-group">
-                                <div class="input-group-prepend">
                                     <span class="input-group-text">%</span>
                                 </div>
                                 <?php echo $form->textField($model, 'vat_percentage', array(
@@ -222,7 +219,6 @@ Yii::app()->clientScript->registerCoreScript('jquery.ui');
                         </div>
                         <div class="col">
                             <div class="input-group">
-                                <div class="input-group-prepend">
                                     <span class="input-group-text"><i class="fa fa-money"></i></span>
                                 </div>
                                 <?php echo $form->textField($model, 'vat_amount', array(
@@ -236,12 +232,11 @@ Yii::app()->clientScript->registerCoreScript('jquery.ui');
                     </div>
                 </div>
 
-                <div class="form-group">
+                <div class="mb-3">
                     <label class="control-label">Discount</label>
                     <div class="row no-gutters" style="gap:6px;">
                         <div class="col">
                             <div class="input-group">
-                                <div class="input-group-prepend">
                                     <span class="input-group-text">%</span>
                                 </div>
                                 <?php echo $form->textField($model, 'discount_percentage', array(
@@ -253,7 +248,6 @@ Yii::app()->clientScript->registerCoreScript('jquery.ui');
                         </div>
                         <div class="col">
                             <div class="input-group">
-                                <div class="input-group-prepend">
                                     <span class="input-group-text"><i class="fa fa-money"></i></span>
                                 </div>
                                 <?php echo $form->textField($model, 'discount', array(
@@ -267,10 +261,10 @@ Yii::app()->clientScript->registerCoreScript('jquery.ui');
                     </div>
                 </div>
 
-                <div class="form-group mb-0">
+                <div class="mb-3 mb-0">
                     <?php echo $form->labelEx($model, 'grand_total'); ?>
                     <div class="input-group">
-                        <div class="input-group-prepend">
+                        
                             <span class="input-group-text"
                                   style="background:#6366f1; border-color:#6366f1; color:#fff;">
                                 <i class="fa fa-money"></i>
@@ -307,7 +301,7 @@ Yii::app()->clientScript->registerCoreScript('jquery.ui');
 
         <div class="row mb-3">
             <div class="col-12 col-md-5">
-                <div class="form-group mb-0">
+                <div class="mb-3 mb-0">
                     <?php echo $form->labelEx($model, 'manufacturer_id'); ?>
                     <?php echo $form->dropDownList($model, 'manufacturer_id',
                         CHtml::listData(Company::model()->findAll(array('order' => 'name ASC')), 'id', 'name'),
@@ -358,7 +352,7 @@ Yii::app()->clientScript->registerCoreScript('jquery.ui');
 <!-- ── Notes & Save ───────────────────────────────────────────────────────── -->
 <div class="card shadow-sm mb-4">
     <div class="card-body">
-        <div class="form-group mb-0">
+        <div class="mb-3 mb-0">
             <?php echo $form->labelEx($model, 'order_note'); ?>
             <?php echo $form->textArea($model, 'order_note', array(
                 'class'       => 'form-control',

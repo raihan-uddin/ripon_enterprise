@@ -36,7 +36,7 @@ $form = $this->beginWidget('CActiveForm', array(
         <div class="row">
 
             <div class="col-sm-12 col-md-2">
-                <div class="form-group" style="">
+                <div class="mb-3" style="">
                     <?php echo $form->labelEx($model, 'date_from', ['class' => 'col-form-label']); ?>
                     <div class="input-group" id="date_from" data-target-input="nearest">
                         <?php echo $form->textField($model, 'date_from', array('class' => 'form-control datetimepicker-input', 'placeholder' => 'YYYY-MM-DD', 'value' => date('Y-m-d'))); ?>
@@ -47,7 +47,7 @@ $form = $this->beginWidget('CActiveForm', array(
             </div>
 
             <div class="col-sm-12 col-md-2">
-                <div class="form-group" style="">
+                <div class="mb-3" style="">
                     <?php echo $form->labelEx($model, 'date_to', ['class' => 'col-form-label']); ?>
                     <div class="input-group" id="date_to" data-target-input="nearest">
                         <?php echo $form->textField($model, 'date_to', array('class' => 'form-control datetimepicker-input', 'placeholder' => 'YYYY-MM-DD', 'value' => date('Y-m-d'))); ?>
@@ -58,12 +58,11 @@ $form = $this->beginWidget('CActiveForm', array(
             </div>
 
             <div class="col-sm-12 col-md-2">
-                <div class="form-group" style="">
+                <div class="mb-3" style="">
                     <?php echo $form->labelEx($model, 'customer_id', ['class' => 'col-form-label']); ?>
                     <div class="input-group" id="customer_id" data-target-input="nearest">
                         <input type="text" id="customer_id_text" class="form-control">
                         <?php echo $form->hiddenField($model, 'customer_id', array('class' => 'form-control',)); ?>
-                        <div class="input-group-append" onclick="clearProduct()">
                             <div class="input-group-text"><i class="fa fa-refresh"></i></div>
                         </div>
                     </div>
@@ -93,7 +92,7 @@ $form = $this->beginWidget('CActiveForm', array(
             </div>
 
             <div class="col-sm-12 col-md-2">
-                <div class="form-group" style="">
+                <div class="mb-3" style="">
                     <?php echo $form->labelEx($model, 'manufacturer_id', ['class' => 'col-form-label']); ?>
                     <div class="input-group" id="manufacturer_id" data-target-input="nearest">
                         <?php
@@ -103,7 +102,7 @@ $form = $this->beginWidget('CActiveForm', array(
                             'class' => 'form-control',
                         ));
                         ?>
-                        <!--                        <div class="input-group-append">-->
+                        <!--                        -->
                         <!--                            <div class="input-group-text"><i class="fa fa-calendar"></i></div>-->
                         <!--                        </div>-->
                     </div>
@@ -113,12 +112,11 @@ $form = $this->beginWidget('CActiveForm', array(
             </div>
 
             <div class="col-sm-12 col-md-2">
-                <div class="form-group" style="">
+                <div class="mb-3" style="">
                     <?php echo $form->labelEx($model, 'model_id', ['class' => 'col-form-label']); ?>
                     <div class="input-group" id="model_id" data-target-input="nearest">
                         <input type="text" id="model_id_text" class="form-control">
                         <?php echo $form->hiddenField($model, 'model_id', array('class' => 'form-control',)); ?>
-                        <div class="input-group-append" onclick="clearProduct()">
                             <div class="input-group-text"><i class="fa fa-refresh"></i></div>
                         </div>
                     </div>
@@ -167,12 +165,11 @@ $form = $this->beginWidget('CActiveForm', array(
             </div>
 
             <div class="col-sm-12 col-md-2">
-                <div class="form-group" style="">
+                <div class="mb-3" style="">
                     <?php echo $form->labelEx($model, 'created_by', ['class' => 'col-form-label']); ?>
                     <div class="input-group" id="created_by" data-target-input="nearest">
                         <input type="text" id="created_by_text" class="form-control">
                         <?php echo $form->hiddenField($model, 'created_by', array('class' => 'form-control',)); ?>
-                        <div class="input-group-append" onclick="clearUser()">
                             <div class="input-group-text"><i class="fa fa-refresh"></i></div>
                         </div>
                     </div>

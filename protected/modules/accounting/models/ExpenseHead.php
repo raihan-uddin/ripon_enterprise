@@ -156,9 +156,9 @@ class ExpenseHead extends CActiveRecord
     public function statusString($value)
     {
         if ($value == self::ACTIVE) {
-            return "<span class='badge badge-success'>ACTIVE</span>";
+            return "<span class='badge bg-success'>ACTIVE</span>";
         } else {
-            return "<span class='badge badge-danger'>INACTIVE</span>";
+            return "<span class='badge bg-danger'>INACTIVE</span>";
         }
     }
 }

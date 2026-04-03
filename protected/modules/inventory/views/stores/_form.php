@@ -28,13 +28,13 @@ $form = $this->beginWidget('CActiveForm', array(
         <div class="card-body">
             <div class="row">
 
-                <div class="form-group col-xs-12 col-sm-12 col-lg-12">
+                <div class="mb-3 col-xs-12 col-sm-12 col-lg-12">
                     <?php echo $form->labelEx($model, 'name'); ?>
                     <?php echo $form->textField($model, 'name', array('maxlength' => 255, 'class' => 'form-control')); ?>
                     <span class="help-block"
                           style="color: red; width: 100%"> <?php echo $form->error($model, 'name'); ?></span>
                 </div>
-                <div class="form-group col-xs-12 col-sm-12 col-lg-12">
+                <div class="mb-3 col-xs-12 col-sm-12 col-lg-12">
                     <?php echo $form->labelEx($model, 'address'); ?>
                     <?php echo $form->textArea($model, 'address', array('maxlength' => 255, 'class' => 'form-control')); ?>
                     <span class="help-block"

@@ -144,7 +144,7 @@ $uniqueDays = $isSingleDay ? 1 : ceil(($end_date - $start_date) / 86400) + 1;
 .so-badge-warranty{background:#fdf4ff;color:#7e22ce;}
 .so-badge-replace{background:#fff7ed;color:#c2410c;}
 .so-badge-return{background:#ecfdf5;color:#065f46;}
-.so-badge-default{background:#f1f5f9;color:#475569;}
+.so-bg-secondary{background:#f1f5f9;color:#475569;}
 
 /* ─── PRODUCT META STRIP ─── */
 .so-meta{display:flex;flex-wrap:wrap;gap:8px;margin-bottom:18px;}
@@ -284,7 +284,7 @@ $uniqueDays = $isSingleDay ? 1 : ceil(($end_date - $start_date) / 86400) + 1;
           case Inventory::WARRANTY_RETURN:     $badgeClass = 'so-badge-warranty';break;
           case Inventory::PRODUCT_REPLACEMENT: $badgeClass = 'so-badge-replace'; break;
           case Inventory::CASH_SALE_RETURN:    $badgeClass = 'so-badge-return';  break;
-          default:                             $badgeClass = 'so-badge-default';
+          default:                             $badgeClass = 'so-bg-secondary';
       }
   ?>
     <tr>

@@ -29,19 +29,19 @@ $form = $this->beginWidget('CActiveForm', array(
     <div class="card-body">
         <div class="row">
 
-            <div class="form-group col-xs-12 col-sm-6 col-lg-4">
+            <div class="mb-3 col-xs-12 col-sm-6 col-lg-4">
                 <?php echo $form->labelEx($model, 'iso2'); ?>
                 <?php echo $form->textField($model, 'iso2', array('maxlength' => 255, 'class' => 'form-control')); ?>
                 <span class="help-block"
                       style="color: red; width: 100%"> <?php echo $form->error($model, 'iso2'); ?></span>
             </div>
-            <div class="form-group col-xs-12 col-sm-6 col-lg-4">
+            <div class="mb-3 col-xs-12 col-sm-6 col-lg-4">
                 <?php echo $form->labelEx($model, 'iso3'); ?>
                 <?php echo $form->textField($model, 'iso3', array('maxlength' => 255, 'class' => 'form-control')); ?>
                 <span class="help-block"
                       style="color: red; width: 100%"> <?php echo $form->error($model, 'iso3'); ?></span>
             </div>
-            <div class="form-group col-xs-12 col-sm-6 col-lg-4">
+            <div class="mb-3 col-xs-12 col-sm-6 col-lg-4">
                 <?php echo $form->labelEx($model, 'country'); ?>
                 <?php echo $form->textField($model, 'country', array('maxlength' => 255, 'class' => 'form-control')); ?>
                 <span class="help-block"

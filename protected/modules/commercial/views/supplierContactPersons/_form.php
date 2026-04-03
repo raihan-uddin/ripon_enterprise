@@ -27,37 +27,37 @@ $form = $this->beginWidget('CActiveForm', array(
     </div>
     <div class="card-body">
         <div class="row">
-            <div class="form-group col-xs-12 col-sm-6 col-lg-4">
+            <div class="mb-3 col-xs-12 col-sm-6 col-lg-4">
                 <?php echo $form->labelEx($model, 'company_id'); ?>
                 <?php echo $form->dropDownList($model, 'company_id', CHtml::listData(Suppliers::model()->findAll(array('order' => 'company_name ASC')), 'id', 'company_name'), array('prompt' => 'Select', 'class' => 'form-control')); ?>
                 <span class="help-block"
                       style="color: red; width: 100%"> <?php echo $form->error($model, 'company_id'); ?></span>
             </div>
-            <div class="form-group col-xs-12 col-sm-6 col-lg-4">
+            <div class="mb-3 col-xs-12 col-sm-6 col-lg-4">
                 <?php echo $form->labelEx($model, 'contact_person_name'); ?>
                 <?php echo $form->textField($model, 'contact_person_name', array('maxlength' => 255, 'class' => 'form-control')); ?>
                 <span class="help-block"
                       style="color: red; width: 100%"> <?php echo $form->error($model, 'contact_person_name'); ?></span>
             </div>
-            <div class="form-group col-xs-12 col-sm-6 col-lg-4">
+            <div class="mb-3 col-xs-12 col-sm-6 col-lg-4">
                 <?php echo $form->labelEx($model, 'contact_number1'); ?>
                 <?php echo $form->textField($model, 'contact_number1', array('maxlength' => 255, 'class' => 'form-control')); ?>
                 <span class="help-block"
                       style="color: red; width: 100%"> <?php echo $form->error($model, 'contact_number1'); ?></span>
             </div>
-            <div class="form-group col-xs-12 col-sm-6 col-lg-4">
+            <div class="mb-3 col-xs-12 col-sm-6 col-lg-4">
                 <?php echo $form->labelEx($model, 'contact_number2'); ?>
                 <?php echo $form->textField($model, 'contact_number2', array('maxlength' => 255, 'class' => 'form-control')); ?>
                 <span class="help-block"
                       style="color: red; width: 100%"> <?php echo $form->error($model, 'contact_number2'); ?></span>
             </div>
-            <div class="form-group col-xs-12 col-sm-6 col-lg-4">
+            <div class="mb-3 col-xs-12 col-sm-6 col-lg-4">
                 <?php echo $form->labelEx($model, 'contact_number3'); ?>
                 <?php echo $form->textField($model, 'contact_number3', array('maxlength' => 255, 'class' => 'form-control')); ?>
                 <span class="help-block"
                       style="color: red; width: 100%"> <?php echo $form->error($model, 'contact_number3'); ?></span>
             </div>
-            <div class="form-group col-xs-12 col-sm-6 col-lg-4">
+            <div class="mb-3 col-xs-12 col-sm-6 col-lg-4">
                 <?php echo $form->labelEx($model, 'email'); ?>
                 <?php echo $form->textField($model, 'email', array('maxlength' => 255, 'class' => 'form-control')); ?>
                 <span class="help-block"

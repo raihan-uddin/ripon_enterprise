@@ -29,7 +29,7 @@ $form = $this->beginWidget('CActiveForm', array(
                       style="color: red; width: 100%"> <?php echo $form->error($model, 'name'); ?></span>
             </div>
 
-            <div class="form-group col-xs-12 col-sm-12 col-lg-12">
+            <div class="mb-3 col-xs-12 col-sm-12 col-lg-12">
                 <?php echo $form->labelEx($model, 'status'); ?>
                 <?php
                 echo $form->dropDownList(

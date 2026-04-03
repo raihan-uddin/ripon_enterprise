@@ -124,7 +124,7 @@ foreach ($dataAsc as $r) {
 .pl-badge-warranty{background:#fdf4ff;color:#7e22ce;}
 .pl-badge-replace{background:#fff7ed;color:#c2410c;}
 .pl-badge-return{background:#ecfdf5;color:#065f46;}
-.pl-badge-default{background:#f1f5f9;color:#475569;}
+.pl-bg-secondary{background:#f1f5f9;color:#475569;}
 .pc-foot-lbl{text-align:right;color:var(--pl-muted);font-size:10.5px;text-transform:uppercase;letter-spacing:.5px;}
 .pc-foot-in{text-align:center;font-weight:800;color:var(--pl-green);font-size:14px;}
 .pc-foot-out{text-align:center;font-weight:800;color:var(--pl-red);font-size:14px;}
@@ -310,7 +310,7 @@ foreach ($dataAsc as $r) {
           case Inventory::WARRANTY_RETURN:     $badgeClass='pl-badge-warranty';break;
           case Inventory::PRODUCT_REPLACEMENT: $badgeClass='pl-badge-replace'; break;
           case Inventory::CASH_SALE_RETURN:    $badgeClass='pl-badge-return';  break;
-          default:                             $badgeClass='pl-badge-default';
+          default:                             $badgeClass='pl-bg-secondary';
       }
   ?>
     <tr>

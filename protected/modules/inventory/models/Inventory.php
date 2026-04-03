@@ -280,15 +280,15 @@ class Inventory extends CActiveRecord
     public function getStatus($value)
     {
         if ($value == self::MANUAL_ENTRY)
-            $badge = "<span class='badge badge-info'>MANUAL ENTRY</span>";
+            $badge = "<span class='badge bg-info'>MANUAL ENTRY</span>";
         else if ($value == self::PURCHASE_RECEIVE)
-            $badge = "<span class='badge badge-info'>PURCHASE</span>";
+            $badge = "<span class='badge bg-info'>PURCHASE</span>";
         else if ($value == self::SALES_DELIVERY)
-            $badge = "<span class='badge badge-info'>SALES</span>";
+            $badge = "<span class='badge bg-info'>SALES</span>";
         else if ($value == self::CASH_SALE_RETURN)
-            $badge = "<span class='badge badge-info'>CASH SALE RETURN</span>";
+            $badge = "<span class='badge bg-info'>CASH SALE RETURN</span>";
         else if ($value == self::WARRANTY_RETURN)
-            $badge = "<span class='badge badge-info'>WARRANTY RETURN</span>";
+            $badge = "<span class='badge bg-info'>WARRANTY RETURN</span>";
         else
             $badge = "";
         return $badge;

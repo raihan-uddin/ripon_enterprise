@@ -56,7 +56,7 @@
 
 			
 
-			<div class="form-group">
+			<div class="mb-3">
 				<label for="inputEmail3" class="col-sm-2 control-label">
 					<?php echo $form->labelEx($model,'username'); ?>
 				</label>
@@ -66,7 +66,7 @@
 				</div>
 			</div>
 
-			<div class="form-group">
+			<div class="mb-3">
 				<label for="inputEmail3" class="col-sm-2 control-label">
 					<?php echo $form->labelEx($model,'password'); ?>
 				</label>
@@ -81,7 +81,7 @@
 				</div>	
 			</div>
 
-			<div class="form-group">
+			<div class="mb-3">
 				<label for="inputEmail3" class="col-sm-2 control-label">
 					<?php echo $form->labelEx($model,'verifyPassword'); ?>
 				</label>
@@ -91,7 +91,7 @@
 				</div>
 			</div>
 
-			<div class="form-group">
+			<div class="mb-3">
 				<label for="inputEmail3" class="col-sm-2 control-label">
 					<?php echo $form->labelEx($model,'email'); ?>
 				</label>
@@ -107,7 +107,7 @@
 				if ($profileFields) {
 					foreach($profileFields as $field) {
 					?>
-						<div class="form-group">
+						<div class="mb-3">
 							<label for="inputEmail3" class="col-sm-2 control-label">
 								<?php echo $form->labelEx($profile,$field->varname); ?>
 							</label>
@@ -132,7 +132,7 @@
 			?>
 
 			<?php if (UserModule::doCaptcha('registration')): ?>
-				<div class="form-group">
+				<div class="mb-3">
 					<label for="inputEmail3" class="col-sm-2 control-label">
 						<?php echo $form->labelEx($model,'verifyCode'); ?>
 					</label>
@@ -141,7 +141,7 @@
 					</div>
 				</div>
 
-				<div class="form-group">
+				<div class="mb-3">
 					<div class="col-sm-10 col-sm-offset-2">
 					<?php echo $form->textField($model,'verifyCode'); ?>
 						<?php echo $form->error($model,'verifyCode'); ?>						

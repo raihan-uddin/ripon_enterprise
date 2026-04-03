@@ -31,12 +31,11 @@ $form = $this->beginWidget('CActiveForm', array(
     <div class="card-body">
         <div class="row">
             <div class="col-sm-12 col-md-4">
-                <div class="form-group" style="">
+                <div class="mb-3" style="">
                     <?php echo $form->labelEx($model, 'customer_id', ['class' => 'col-form-label']); ?>
                     <div class="input-group" id="customer_id" data-target-input="nearest">
                         <input type="text" id="customer_id_text" class="form-control">
                         <?php echo $form->hiddenField($model, 'customer_id', array('class' => 'form-control',)); ?>
-                        <div class="input-group-append" onclick="clearProduct()">
                             <div class="input-group-text"><i class="fa fa-refresh"></i></div>
                         </div>
                     </div>

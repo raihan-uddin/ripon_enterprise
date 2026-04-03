@@ -254,7 +254,7 @@ or <b>=</b>) at the beginning of each of your search values to specify how the c
         </span>
     </div>",
 	'summaryCssClass' => 'col-sm-12 col-md-6',
-	'pagerCssClass'   => 'col-xs-12 text-right',
+	'pagerCssClass'   => 'col-xs-12 text-end',
 	'columns'=>array(
 		'id',
 		'claim_type',

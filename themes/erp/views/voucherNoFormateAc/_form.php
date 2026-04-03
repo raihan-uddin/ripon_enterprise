@@ -25,7 +25,7 @@ $form = $this->beginWidget('CActiveForm', array(
                 <tr>
                     <td> <?php echo $form->labelEx($model, 'type'); ?></td>
                     <td>
-                        <span class="badge badge-success"><?php echo LookupAc::item('voucher_type', $model->type); ?></span>
+                        <span class="badge bg-success"><?php echo LookupAc::item('voucher_type', $model->type); ?></span>
                     </td>
                 </tr>
                 <tr>

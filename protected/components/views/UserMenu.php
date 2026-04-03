@@ -298,7 +298,7 @@ nav.erp-nav .navbar-nav>.nav-item.active>.nav-link:focus{
         background:transparent!important;border-radius:0!important}
     nav.erp-nav .dropdown-menu .dropdown-item:hover{
         background:rgba(99,102,241,.15)!important;color:#fff!important}
-    nav.erp-nav .ml-auto{
+    nav.erp-nav .ms-auto{
         margin-left:0!important;width:100%!important;
         border-top:1px solid rgba(255,255,255,.07)!important;padding-top:6px!important}
     nav.erp-nav .dropdown-submenu>.dropdown-menu{
@@ -633,7 +633,7 @@ nav.erp-nav .navbar-nav>.nav-item.active>.nav-link:focus{
         </ul>
 
         <!-- Right: draft notifications + user + logout -->
-        <ul class="navbar-nav ml-auto">
+        <ul class="navbar-nav ms-auto">
 
             <!-- Draft notifications (JS-populated) -->
             <li class="nav-item dropdown" id="draft-notif-item" style="display:none;">
@@ -641,7 +641,7 @@ nav.erp-nav .navbar-nav>.nav-item.active>.nav-link:focus{
                    data-bs-toggle="dropdown" role="button" title="Unsaved Drafts">
                     <i class="fa fa-pencil-square-o"></i>
                     <span id="draft-notif-count"
-                          class="badge badge-danger badge-pill"
+                          class="badge bg-danger badge-pill"
                           style="position:absolute; top:6px; right:2px;
                                  font-size:9px; min-width:16px; padding:2px 4px;">0</span>
                 </a>

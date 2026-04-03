@@ -484,7 +484,7 @@ $user = Yii::app()->getUser();
 foreach ($user->getFlashKeys() as $key):
     if ($user->hasFlash($key)): ?>
         <div class="alert alert-<?php echo $key; ?> alert-dismissible">
-            <button type="button" class="close" data-bs-dismiss="alert" aria-hidden="true">×</button>
+            <button type="button" class="btn-close" data-bs-dismiss="alert" aria-hidden="true">×</button>
             <?php echo $user->getFlash($key); ?>
         </div>
     <?php
@@ -542,7 +542,7 @@ endforeach;
         </span>
     </div>",
             'summaryCssClass' => 'col-sm-12 col-md-6',
-            'pagerCssClass'   => 'col-xs-12 text-right',
+            'pagerCssClass'   => 'col-xs-12 text-end',
             'columns' => array(
                 'name',
                 'address',
@@ -582,7 +582,7 @@ endforeach;
     <div class="card-footer" style="background:#f8f9fa; padding:8px 16px;">
         <div class="row" style="align-items:center;">
             <div class="col-sm-12 col-md-6"></div>
-            <div class="col-sm-12 col-md-6 text-right">
+            <div class="col-sm-12 col-md-6 text-end">
                 <div class="goto-page-wrap" style="justify-content:flex-end;">
                     <span>Go to page</span>
                     <input type="number" id="goto-page-input" class="form-control" min="1" placeholder="Page #"/>

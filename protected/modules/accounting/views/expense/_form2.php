@@ -392,7 +392,7 @@ Yii::app()->clientScript->registerCoreScript("jquery.ui");
                                 <tr class="item">
                                     <td class="text-center sl-no"
                                         style="vertical-align: middle;"><?= ++$key ?></td>
-                                    <td class="text-left" style="vertical-align: middle;">
+                                    <td class="text-start" style="vertical-align: middle;">
                                         <?= ExpenseHead::model()->nameOfThis($dt->expense_head_id) ?>
                                         <input type="hidden" name="ExpenseDetails[temp_expense_head_id][]"
                                                class="form-control model-id"
@@ -400,11 +400,11 @@ Yii::app()->clientScript->registerCoreScript("jquery.ui");
                                     </td>
                                     <td class="text-center" style="vertical-align: middle;  min-width: 120px;">
                                         <input type="text" name="ExpenseDetails[temp_remarks][]"
-                                               class="ex-tbl-input text-left" value="<?= $dt->remarks ?>">
+                                               class="ex-tbl-input text-start" value="<?= $dt->remarks ?>">
                                     </td>
                                     <td class="text-center" style="vertical-align: middle;  min-width: 120px;">
                                         <input type="text" name="ExpenseDetails[temp_amount][]"
-                                               class="ex-tbl-input text-right temp-amount"
+                                               class="ex-tbl-input text-end temp-amount"
                                                value="<?= $dt->amount ?>">
                                     </td>
                                     <td class="text-center">
@@ -420,7 +420,7 @@ Yii::app()->clientScript->registerCoreScript("jquery.ui");
                         </tbody>
                         <tfoot>
                         <tr>
-                            <th colspan="3" class="text-right" style="vertical-align:middle;font-size:11.5px">
+                            <th colspan="3" class="text-end" style="vertical-align:middle;font-size:11.5px">
                                 <i class="fa fa-calculator" style="color:#6366f1;margin-right:4px"></i> Grand Total
                             </th>
                             <th style="vertical-align:middle">
@@ -620,18 +620,18 @@ Yii::app()->clientScript->registerCoreScript("jquery.ui");
             $("#list tbody").append(`
                     <tr class="item">
                         <td class="text-center sl-no" style="vertical-align: middle;">${$('#list tbody tr').length + 1}</td>
-                        <td class="text-left" style="vertical-align: middle;">
+                        <td class="text-start" style="vertical-align: middle;">
                             ${head_text}
                             <input type="hidden" name="ExpenseDetails[temp_expense_head_id][]"
                                    class="form-control model-id" value="${head}">
                         </td>
                         <td class="text-center" style="vertical-align: middle;  min-width: 120px;">
                             <input type="text" name="ExpenseDetails[temp_remarks][]"
-                                   class="ex-tbl-input text-left" value="${note}">
+                                   class="ex-tbl-input text-start" value="${note}">
                         </td>
                         <td class="text-center" style="vertical-align: middle;  min-width: 120px;">
                             <input type="text" name="ExpenseDetails[temp_amount][]"
-                                   class="ex-tbl-input text-right temp-amount" value="${amount}">
+                                   class="ex-tbl-input text-end temp-amount" value="${amount}">
                         </td>
                         <td class="text-center">
                             <button type="button" class="ex-dlt-btn dlt"><i class="fa fa-trash-o"></i>
@@ -724,7 +724,7 @@ $this->beginWidget('zii.widgets.jui.CJuiDialog', array(
         <div class="modal-content">
             <div class="modal-header">
                 <h5 class="modal-title" id="exampleModalLabel">Invoice</h5>
-                <button type="button" class="close" data-bs-dismiss="modal" aria-label="Close">
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close">
                     <span aria-hidden="true">&times;</span>
                 </button>
             </div>

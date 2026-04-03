@@ -283,9 +283,9 @@ class SellOrder extends CActiveRecord
     public function orderType($value)
     {
         if ($value != self::NEW_ORDER) {
-            $string = "<span class='badge badge-danger'>QUOTATION</span>";
+            $string = "<span class='badge bg-danger'>QUOTATION</span>";
         } else {
-            $string = "<span class='badge badge-success'>NEW ORDER</span>";
+            $string = "<span class='badge bg-success'>NEW ORDER</span>";
         }
         return $string;
     }
@@ -294,9 +294,9 @@ class SellOrder extends CActiveRecord
     public function isPaid($value)
     {
         if ($value != self::PAID) {
-            $string = "<span class='badge badge-danger'>DUE</span>";
+            $string = "<span class='badge bg-danger'>DUE</span>";
         } else {
-            $string = "<span class='badge badge-success'>PAID</span>";
+            $string = "<span class='badge bg-success'>PAID</span>";
         }
         return $string;
     }

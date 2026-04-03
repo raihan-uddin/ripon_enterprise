@@ -125,9 +125,9 @@ class ComBank extends CActiveRecord
     public function statusString($value)
     {
         if ($value != self::ACTIVE) {
-            $string = "<span class='badge badge-danger'>INACTIVE</span>";
+            $string = "<span class='badge bg-danger'>INACTIVE</span>";
         } else {
-            $string = "<span class='badge badge-success'>ACTIVE</span>";
+            $string = "<span class='badge bg-success'>ACTIVE</span>";
         }
         return $string;
     }

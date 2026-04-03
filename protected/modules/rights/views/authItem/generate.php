@@ -86,7 +86,7 @@
         <?php echo CHtml::link(
             Rights::t('core', 'Cancel'),
             array('authItem/permissions'),
-            array('class' => 'btn btn-default')
+            array('class' => 'btn btn-secondary')
         ); ?>
         <span id="rgenSubmitHint" class="rgen-submit-hint"></span>
     </div>
@@ -304,7 +304,7 @@ $(document).ready(function () {
             ? '<?php echo Rights::t('core', 'Generate'); ?> (' + sel + ')'
             : '<?php echo Rights::t('core', 'Generate'); ?>'
         );
-        $('#rgenSubmit').toggleClass('btn-primary', sel > 0).toggleClass('btn-default', sel === 0);
+        $('#rgenSubmit').toggleClass('btn-primary', sel > 0).toggleClass('btn-secondary', sel === 0);
         $('#rgenSubmitHint').text(sel === 0 ? '<?php echo Rights::t('core', 'Select at least one item'); ?>' : '');
 
         /* Header checkbox state */
@@ -476,7 +476,7 @@ $(document).ready(function () {
         var sel = $('.generate-item-table :checkbox:not(#rgenChkAll):checked').length;
         if (sel === 0) {
             e.preventDefault();
-            $('#rgenSubmit').addClass('btn-danger').removeClass('btn-primary btn-default');
+            $('#rgenSubmit').addClass('btn-danger').removeClass('btn-primary btn-secondary');
             $('#rgenSubmitHint').text('<?php echo Rights::t('core', 'Select at least one item'); ?>');
             setTimeout(function () {
                 $('#rgenSubmit').removeClass('btn-danger').addClass('btn-primary');

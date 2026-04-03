@@ -293,7 +293,7 @@ $user = Yii::app()->getUser();
 foreach ($user->getFlashKeys() as $key):
     if ($user->hasFlash($key)): ?>
         <div class="alert alert-<?php echo $key; ?> alert-dismissible">
-            <button type="button" class="close" data-bs-dismiss="alert" aria-hidden="true">×</button>
+            <button type="button" class="btn-close" data-bs-dismiss="alert" aria-hidden="true">×</button>
             <?php echo $user->getFlash($key); ?>
         </div>
     <?php
@@ -322,7 +322,7 @@ endforeach;
         <div class="row">
             <div class="col-md-2">
                 <div class="input-group">
-                    <div class="input-group-prepend">
+                    
                             <span class="input-group-text"
                                   id="basic-addon1">ID</span>
                     </div>
@@ -418,7 +418,7 @@ endforeach;
         </span>
     </div>",
             'summaryCssClass' => 'col-sm-12 col-md-6',
-            'pagerCssClass'   => 'col-xs-12 text-right',
+            'pagerCssClass'   => 'col-xs-12 text-end',
             'columns' => array(
                 array(
                     'name' => 'id',
@@ -434,7 +434,7 @@ endforeach;
                 array(
                     'name' => 'customer_id',
                     'value' => 'Customers::model()->nameOfThis($data->customer_id)',
-                    'htmlOptions' => ['class' => 'text-left']
+                    'htmlOptions' => ['class' => 'text-start']
                 ),
                 array(
                     'name'=>'sell_id',
@@ -493,7 +493,7 @@ endforeach;
     <div class="card-footer" style="background:#f8f9fa; padding:8px 16px;">
         <div class="row" style="align-items:center;">
             <div class="col-sm-12 col-md-6"></div>
-            <div class="col-sm-12 col-md-6 text-right">
+            <div class="col-sm-12 col-md-6 text-end">
                 <div class="goto-page-wrap" style="justify-content:flex-end;">
                     <span>Go to page</span>
                     <input type="number" id="goto-page-input" class="form-control" min="1" placeholder="Page #"/>
@@ -612,7 +612,7 @@ $this->beginWidget('zii.widgets.jui.CJuiDialog', array(
         <div class="modal-content">
             <div class="modal-header">
                 <h5 class="modal-title" id="exampleModalLabel">Return Invoice</h5>
-                <button type="button" class="close" data-bs-dismiss="modal" aria-label="Close">
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close">
                     <span aria-hidden="true">&times;</span>
                 </button>
             </div>

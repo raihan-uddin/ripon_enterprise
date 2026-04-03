@@ -25,7 +25,7 @@ $this->widget('application.components.BreadCrumb', array(
                 <div class="alert alert-success alert-dismissible" role="alert">
                     <i class="fa fa-check-circle mr-1"></i>
                     <?= CHtml::encode(Yii::app()->user->getFlash('profileMessage')) ?>
-                    <button type="button" class="close" data-bs-dismiss="alert">&times;</button>
+                    <button type="button" class="btn-close" data-bs-dismiss="alert">&times;</button>
                 </div>
                 <?php endif; ?>
 
@@ -39,10 +39,9 @@ $this->widget('application.components.BreadCrumb', array(
 
                 <?php echo $form->errorSummary($model, null, null, array('class' => 'alert alert-danger', 'style' => 'font-size:13px;')); ?>
 
-                <div class="form-group">
+                <div class="mb-3">
                     <?php echo $form->labelEx($model, 'oldPassword', array('class' => 'control-label')); ?>
                     <div class="input-group">
-                        <div class="input-group-prepend">
                             <span class="input-group-text"><i class="fa fa-lock"></i></span>
                         </div>
                         <?php echo $form->passwordField($model, 'oldPassword', array(
@@ -50,7 +49,6 @@ $this->widget('application.components.BreadCrumb', array(
                             'placeholder' => 'Current password',
                             'id'          => 'oldPassword',
                         )); ?>
-                        <div class="input-group-append">
                             <button type="button" class="btn btn-outline-secondary toggle-pw" data-bs-target="oldPassword" tabindex="-1">
                                 <i class="fa fa-eye"></i>
                             </button>
@@ -59,10 +57,9 @@ $this->widget('application.components.BreadCrumb', array(
                     <?php echo $form->error($model, 'oldPassword', array('class' => 'text-danger small')); ?>
                 </div>
 
-                <div class="form-group">
+                <div class="mb-3">
                     <?php echo $form->labelEx($model, 'password', array('class' => 'control-label')); ?>
                     <div class="input-group">
-                        <div class="input-group-prepend">
                             <span class="input-group-text"><i class="fa fa-key"></i></span>
                         </div>
                         <?php echo $form->passwordField($model, 'password', array(
@@ -70,7 +67,6 @@ $this->widget('application.components.BreadCrumb', array(
                             'placeholder' => 'New password (min 4 characters)',
                             'id'          => 'newPassword',
                         )); ?>
-                        <div class="input-group-append">
                             <button type="button" class="btn btn-outline-secondary toggle-pw" data-bs-target="newPassword" tabindex="-1">
                                 <i class="fa fa-eye"></i>
                             </button>
@@ -79,10 +75,9 @@ $this->widget('application.components.BreadCrumb', array(
                     <?php echo $form->error($model, 'password', array('class' => 'text-danger small')); ?>
                 </div>
 
-                <div class="form-group">
+                <div class="mb-3">
                     <?php echo $form->labelEx($model, 'verifyPassword', array('class' => 'control-label')); ?>
                     <div class="input-group">
-                        <div class="input-group-prepend">
                             <span class="input-group-text"><i class="fa fa-check-circle-o"></i></span>
                         </div>
                         <?php echo $form->passwordField($model, 'verifyPassword', array(
@@ -90,7 +85,6 @@ $this->widget('application.components.BreadCrumb', array(
                             'placeholder' => 'Repeat new password',
                             'id'          => 'verifyPassword',
                         )); ?>
-                        <div class="input-group-append">
                             <button type="button" class="btn btn-outline-secondary toggle-pw" data-bs-target="verifyPassword" tabindex="-1">
                                 <i class="fa fa-eye"></i>
                             </button>

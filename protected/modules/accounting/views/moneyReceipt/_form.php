@@ -132,7 +132,7 @@ $form = $this->beginWidget('CActiveForm', array(
                 <!-- ── Column 1: Date / Customer / Remarks ─────────────────── -->
                 <div class="col-md-3 mb-3">
 
-                    <div class="form-group">
+                    <div class="mb-3">
                         <?= $form->labelEx($model, 'date') ?>
                         <div class="input-group" id="entry_date">
                             <?= $form->textField($model, 'date', array(
@@ -141,7 +141,7 @@ $form = $this->beginWidget('CActiveForm', array(
                                 'value'       => date('Y-m-d'),
                                 'id'          => 'MoneyReceipt_date',
                             )) ?>
-                            <div class="input-group-append">
+                            
                                 <span class="input-group-text" id="date_icon">
                                     <i class="fa fa-check-circle text-success"></i>
                                 </span>
@@ -150,7 +150,7 @@ $form = $this->beginWidget('CActiveForm', array(
                         <?= $form->error($model, 'date', array('class' => 'text-danger')) ?>
                     </div>
 
-                    <div class="form-group">
+                    <div class="mb-3">
                         <?= $form->labelEx($model, 'customer_id') ?>
                         <div class="input-group">
                             <?= $form->textField($model, 'customer_name', array(
@@ -159,7 +159,6 @@ $form = $this->beginWidget('CActiveForm', array(
                                 'value'    => $model2->company_name,
                             )) ?>
                             <?= $form->hiddenField($model, 'customer_id', array('value' => $model2->id)) ?>
-                            <div class="input-group-append">
                                 <span class="input-group-text"><i class="fa fa-user"></i></span>
                             </div>
                         </div>
@@ -169,7 +168,7 @@ $form = $this->beginWidget('CActiveForm', array(
                             <i class="fa fa-history"></i>
                             Last paid <strong><?= number_format((float)$lastPayment->amount, 2) ?></strong>
                             on <strong><?= date('d M Y', strtotime($lastPayment->date)) ?></strong>
-                            <span class="badge badge-secondary" style="font-family:monospace; font-size:10px;">
+                            <span class="badge bg-secondary" style="font-family:monospace; font-size:10px;">
                                 <?= CHtml::encode($lastPayment->mr_no) ?>
                             </span>
                         </small>
@@ -180,7 +179,7 @@ $form = $this->beginWidget('CActiveForm', array(
                         <?php endif; ?>
                     </div>
 
-                    <div class="form-group">
+                    <div class="mb-3">
                         <?= $form->labelEx($model, 'remarks') ?>
                         <?= $form->textArea($model, 'remarks', array(
                             'class'       => 'form-control',
@@ -200,20 +199,19 @@ $form = $this->beginWidget('CActiveForm', array(
                 <!-- ── Column 2: Amounts + quick-fill + progress ───────────── -->
                 <div class="col-md-3 mb-3">
 
-                    <div class="form-group">
+                    <div class="mb-3">
                         <label>Current Due</label>
                         <div class="input-group">
                             <input type="text" class="form-control font-weight-bold"
                                    id="current_due_amt"
                                    value="<?= number_format((float)$currentDueAmount, 2) ?>" readonly>
-                            <div class="input-group-append">
                                 <span class="input-group-text"><i class="fa fa-balance-scale"></i></span>
                             </div>
                         </div>
                     </div>
 
                     <!-- Quick-fill -->
-                    <div class="form-group">
+                    <div class="mb-3">
                         <label style="font-size:11px; color:#888; text-transform:uppercase; letter-spacing:1px;">
                             Quick Fill
                         </label>
@@ -226,7 +224,7 @@ $form = $this->beginWidget('CActiveForm', array(
                         </div>
                     </div>
 
-                    <div class="form-group">
+                    <div class="mb-3">
                         <?= $form->labelEx($model, 'amount') ?>
                         <div class="input-group">
                             <?= $form->textField($model, 'amount', array(
@@ -234,7 +232,7 @@ $form = $this->beginWidget('CActiveForm', array(
                                 'placeholder' => '0.00',
                                 'id'          => 'MoneyReceipt_amount',
                             )) ?>
-                            <div class="input-group-append">
+                            
                                 <span class="input-group-text" id="amount_icon">
                                     <i class="fa fa-money"></i>
                                 </span>
@@ -256,7 +254,7 @@ $form = $this->beginWidget('CActiveForm', array(
                         </div>
                     </div>
 
-                    <div class="form-group">
+                    <div class="mb-3">
                         <?= $form->labelEx($model, 'discount') ?>
                         <div class="input-group">
                             <?= $form->textField($model, 'discount', array(
@@ -264,20 +262,19 @@ $form = $this->beginWidget('CActiveForm', array(
                                 'placeholder' => '0.00',
                                 'id'          => 'MoneyReceipt_discount',
                             )) ?>
-                            <div class="input-group-append">
                                 <span class="input-group-text"><i class="fa fa-tag"></i></span>
                             </div>
                         </div>
                         <?= $form->error($model, 'discount', array('class' => 'text-danger')) ?>
                     </div>
 
-                    <div class="form-group">
+                    <div class="mb-3">
                         <label>Remaining Due</label>
                         <div class="input-group">
                             <input type="text" class="form-control font-weight-bold"
                                    id="remaining_due_amt"
                                    value="<?= number_format((float)$currentDueAmount, 2) ?>" disabled>
-                            <div class="input-group-append">
+                            
                                 <span class="input-group-text" id="remaining_icon">
                                     <i class="fa fa-balance-scale"></i>
                                 </span>
@@ -290,10 +287,9 @@ $form = $this->beginWidget('CActiveForm', array(
                 <!-- ── Column 3: Payment type + conditional bank/cheque ──── -->
                 <div class="col-md-3 mb-3">
 
-                    <div class="form-group">
+                    <div class="mb-3">
                         <?= $form->labelEx($model, 'payment_type') ?>
                         <div class="input-group">
-                            <div class="input-group-prepend">
                                 <span class="input-group-text">
                                     <i class="fa fa-money" id="payment_type_icon"></i>
                                 </span>
@@ -302,7 +298,7 @@ $form = $this->beginWidget('CActiveForm', array(
                                 CHtml::listData(MoneyReceipt::model()->paymentTypeFilter(), 'id', 'title'),
                                 array('prompt' => 'Select', 'class' => 'form-control', 'id' => 'payment_type_dropdown')
                             ) ?>
-                            <div class="input-group-append">
+                            
                                 <span class="input-group-text" id="payment_valid_icon">
                                     <i class="fa fa-circle-o text-muted"></i>
                                 </span>
@@ -311,14 +307,13 @@ $form = $this->beginWidget('CActiveForm', array(
                         <?= $form->error($model, 'payment_type', array('class' => 'text-danger')) ?>
                     </div>
 
-                    <div class="form-group d-none" id="bank_section">
+                    <div class="mb-3 d-none" id="bank_section">
                         <?= $form->labelEx($model, 'bank_id') ?>
                         <div class="input-group">
                             <?= $form->dropDownList($model, 'bank_id',
                                 CHtml::listData(CrmBank::model()->findAll(array('order' => 'name ASC')), 'id', 'name'),
                                 array('prompt' => 'Select Bank', 'class' => 'form-control')
                             ) ?>
-                            <div class="input-group-append">
                                 <button type="button" class="btn btn-outline-secondary"
                                         onclick="addBankDialog()" title="Add Bank">
                                     <i class="fa fa-plus"></i>
@@ -328,28 +323,26 @@ $form = $this->beginWidget('CActiveForm', array(
                         <?= $form->error($model, 'bank_id', array('class' => 'text-danger')) ?>
                     </div>
 
-                    <div class="form-group d-none" id="cheque_no_section">
+                    <div class="mb-3 d-none" id="cheque_no_section">
                         <?= $form->labelEx($model, 'cheque_no') ?>
                         <div class="input-group">
                             <?= $form->textField($model, 'cheque_no', array(
                                 'class'       => 'form-control',
                                 'placeholder' => 'Cheque number',
                             )) ?>
-                            <div class="input-group-append">
                                 <span class="input-group-text"><i class="fa fa-credit-card-alt"></i></span>
                             </div>
                         </div>
                         <?= $form->error($model, 'cheque_no', array('class' => 'text-danger')) ?>
                     </div>
 
-                    <div class="form-group d-none" id="cheque_date_section">
+                    <div class="mb-3 d-none" id="cheque_date_section">
                         <?= $form->labelEx($model, 'cheque_date') ?>
                         <div class="input-group" id="cheque_date_picker">
                             <?= $form->textField($model, 'cheque_date', array(
                                 'class'       => 'form-control datetimepicker-input',
                                 'placeholder' => 'YYYY-MM-DD',
                             )) ?>
-                            <div class="input-group-append">
                                 <span class="input-group-text"><i class="fa fa-calendar"></i></span>
                             </div>
                         </div>
@@ -433,7 +426,7 @@ $form = $this->beginWidget('CActiveForm', array(
             </div><!-- /.row -->
         </div><!-- /.card-body -->
 
-        <div class="card-footer text-right">
+        <div class="card-footer text-end">
             <?php echo CHtml::ajaxSubmitButton('Save Receipt',
                 CHtml::normalizeUrl(array('/accounting/moneyReceipt/create', 'id' => $id, 'render' => true)),
                 array(
@@ -487,7 +480,7 @@ $form = $this->beginWidget('CActiveForm', array(
                 array('class' => 'btn btn-primary btn-md', 'id' => 'btn_save_receipt')
             ); ?>
             <a href="<?= Yii::app()->baseUrl ?>/index.php/accounting/moneyReceipt/admin"
-               class="btn btn-default ml-2">Cancel</a>
+               class="btn btn-secondary ml-2">Cancel</a>
         </div>
     </div>
 </div>
@@ -503,7 +496,7 @@ $form = $this->beginWidget('CActiveForm', array(
         <div class="modal-content">
             <div class="modal-header">
                 <h5 class="modal-title">Money Receipt</h5>
-                <button type="button" class="close" data-bs-dismiss="modal" aria-label="Close">
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close">
                     <span aria-hidden="true">&times;</span>
                 </button>
             </div>

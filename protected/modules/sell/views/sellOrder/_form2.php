@@ -649,7 +649,7 @@ Yii::app()->clientScript->registerCoreScript("jquery.ui");
     <div class="card-body">
         <div class="row">
             <div class="col-xs-12 col-sm-12 col-md-4 col-lg-4">
-                <div class="form-group row">
+                <div class="mb-3 row">
                     <?php echo $form->labelEx($model, 'date', ['class' => 'col-sm-4 col-form-label']); ?>
                     <div class="col-sm-8">
                         <div class="input-group" id="entry_date" data-target-input="nearest">
@@ -665,7 +665,7 @@ Yii::app()->clientScript->registerCoreScript("jquery.ui");
             $customer = Customers::model()->findByPk($model->customer_id);
             ?>
             <div class="col-xs-12 col-sm-12 col-md-8 col-lg-8">
-                <div class="form-group row">
+                <div class="mb-3 row">
                     <?php echo $form->labelEx($model, 'customer_id', ['class' => 'col-sm-4 col-form-label']); ?>
                     <div class="col-sm-8">
                         <input type="text" id="customer_id_text" class="form-control" readonly
@@ -842,7 +842,7 @@ Yii::app()->clientScript->registerCoreScript("jquery.ui");
                                                     </span>
 
                                                     <div class="company-actions">
-                                                        <span class="margin-badge badge badge-secondary">
+                                                        <span class="margin-badge badge bg-secondary">
                                                             MARGIN: 0%
                                                         </span>
                                                         <span class="toggle-icon">▼</span>
@@ -1019,7 +1019,6 @@ Yii::app()->clientScript->registerCoreScript("jquery.ui");
                                                                 'class' => 'form-control text-center input-addition tooltip-input',
                                                                 'placeholder' => '0',
                                                         ]); ?>
-                                                        <div class="input-group-append">
                                                             <span class="input-group-text">%</span>
                                                         </div>
                                                     </div>
@@ -1747,7 +1746,7 @@ $this->beginWidget('zii.widgets.jui.CJuiDialog', array(
         <div class="modal-content">
             <div class="modal-header">
                 <h5 class="modal-title" id="exampleModalLabel">Invoice</h5>
-                <button type="button" class="close" data-bs-dismiss="modal" aria-label="Close">
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close">
                     <span aria-hidden="true">&times;</span>
                 </button>
             </div>
