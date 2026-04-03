@@ -231,7 +231,7 @@ $form = $this->beginWidget('CActiveForm', [
                             $("#list tbody").empty();
                             $("#soReportDialogBox").dialog("open");
                             $("#AjFlashReportSo").html(data.soReportInfo).show();
-                            $("#information-modal-money-receipt").modal("show");
+                            bootstrap.Modal.getOrCreateInstance(document.getElementById('information-modal-money-receipt')).show();
                             $("#information-modal-money-receipt .modal-body").html(data.soReportInfo); 
                         }else{
                             $("#formResultError").html("Data not saved. Please solve the following errors.");

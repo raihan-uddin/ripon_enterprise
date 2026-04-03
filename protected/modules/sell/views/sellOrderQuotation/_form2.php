@@ -938,7 +938,7 @@ Yii::app()->clientScript->registerCoreScript("jquery.ui");
                             $("#formResult").html("Data saved successfully.");
                             toastr.success("Data saved successfully.");
                             $("#formResult").animate({opacity:1.0},1000).fadeOut("slow");
-                            $("#information-modal").modal("show");
+                            bootstrap.Modal.getOrCreateInstance(document.getElementById('information-modal')).show();
                             $("#information-modal .modal-body").html(data.soReportInfo);
                         }else{
                             $.each(data, function(key, val) {

@@ -463,7 +463,7 @@ $form = $this->beginWidget('CActiveForm', array(
                             toastr.success("Money receipt saved successfully.");
                             $("#money-receipt-form")[0].reset();
                             resetAfterSave();
-                            $("#information-modal-money-receipt").modal("show");
+                            bootstrap.Modal.getOrCreateInstance(document.getElementById('information-modal-money-receipt')).show();
                             $("#information-modal-money-receipt .modal-body").html(data.soReportInfo);
                         } else {
                             $.each(data, function(key, val){
@@ -915,6 +915,6 @@ $(document).ready(function() {
     $('#money-receipt-form').on('change input', function() { formDirty = true; });
 
     // Tooltip on MR badge
-    $('[data-bs-toggle="tooltip"]').tooltip();
+    document.querySelectorAll('[data-bs-toggle="tooltip"]').forEach(function(el){new bootstrap.Tooltip(el)});
 });
 </script>

@@ -418,7 +418,7 @@ Yii::app()->clientScript->registerCoreScript('jquery.ui');
                             $("#table-empty-row").show();
                             updateItemBadge();
                             calculateTotal();
-                            $("#information-modal").modal("show");
+                            bootstrap.Modal.getOrCreateInstance(document.getElementById('information-modal')).show();
                             $("#information-modal .modal-body").html(data.soReportInfo);
                         } else {
                             $.each(data, function(key, val){

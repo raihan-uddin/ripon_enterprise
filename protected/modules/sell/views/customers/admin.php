@@ -428,6 +428,6 @@ $(document).on('keypress', '#goto-page-input', function(e) {
     if (e.which === 13) goToPage();
 });
 $(function() {
-    $('[data-bs-toggle="tooltip"]').tooltip();
+    document.querySelectorAll('[data-bs-toggle="tooltip"]').forEach(function(el){new bootstrap.Tooltip(el)});
 });
 </script>

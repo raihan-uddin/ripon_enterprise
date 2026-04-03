@@ -183,7 +183,7 @@ $model_id = end($data)->model_id;
                 'Inventory[customer_id]': customer_id
             },
             success: function (response) {
-                $('#information-modal').modal('show');
+                bootstrap.Modal.getOrCreateInstance(document.getElementById('information-modal')).show();
                 $('#information-modal .modal-body').html(response);
                 $this.html(currentText);
             },
@@ -219,7 +219,7 @@ $model_id = end($data)->model_id;
                 'Inventory[supplier_id]': supplier_id
             },
             success: function (response) {
-                $('#information-modal').modal('show');
+                bootstrap.Modal.getOrCreateInstance(document.getElementById('information-modal')).show();
                 $('#information-modal .modal-body').html(response);
                 $this.html(currentText);
             },
@@ -254,7 +254,7 @@ $model_id = end($data)->model_id;
                 'Inventory[model_id]': model_id
             },
             success: function (response) {
-                $('#information-modal').modal('show');
+                bootstrap.Modal.getOrCreateInstance(document.getElementById('information-modal')).show();
                 $('#information-modal .modal-body').html(response);
                 $this.html('<i class="fa fa-reorder"></i> Product Ledger');
             },

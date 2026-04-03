@@ -457,7 +457,7 @@ Yii::app()->clientScript->registerCoreScript("jquery.ui");
 //                        $("#list tbody").empty();
                         //$("#soReportDialogBox").dialog("open");
                         //$("#AjFlashReportSo").html(data.soReportInfo).show();
-                        $("#information-modal").modal("show");
+                        bootstrap.Modal.getOrCreateInstance(document.getElementById('information-modal')).show();
                         $("#information-modal .modal-body").html(data.soReportInfo);
                     }else{
                         $("#formResultError").html("Data not saved. Please solve the following errors.");

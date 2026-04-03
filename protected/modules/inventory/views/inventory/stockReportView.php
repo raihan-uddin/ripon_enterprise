@@ -475,7 +475,7 @@ if (is_file($logoPath)) {
         $modal.find('.modal-body').html(srSkeletonHtml());
         var $bar = $('#modal-progress-bar');
         $bar.css('width', '0%');
-        $modal.modal('show');
+        bootstrap.Modal.getOrCreateInstance($modal[0]).show();
         // animate progress bar to ~70% while waiting
         setTimeout(function () { $bar.css('width', '70%'); }, 50);
     }
@@ -494,7 +494,7 @@ if (is_file($logoPath)) {
     }
 
     function srErrorLoading($el, savedHtml) {
-        $('#information-modal').modal('hide');
+        bootstrap.Modal.getOrCreateInstance(document.getElementById('information-modal')).hide();
         if ($el) $el.html(savedHtml);
         toastr.error('Something went wrong');
         anyLedgerCall = false;

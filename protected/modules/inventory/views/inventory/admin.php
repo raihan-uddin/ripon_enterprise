@@ -581,7 +581,7 @@ if (Yii::app()->user->checkAccess('Inventory.Inventory.VoucherPreview')) {
                                 if(data.status=='error'){
                                     toastr.error('No data found for this challan!');
                                 } else {
-                                    $('#information-modal').modal('show');
+                                    bootstrap.Modal.getOrCreateInstance(document.getElementById('information-modal')).show();
                                     $('#information-modal .modal-body').html(data);
                                 }
                                 $('#overlay').fadeOut(300);

@@ -726,7 +726,7 @@ Yii::app()->clientScript->registerCoreScript("jquery.ui");
             url: '<?php echo $this->createUrl('/inventory/inventory/verifyProduct') ?>',
             data: {product_sl: product_sl},
             success: function (data) {
-                $('#information-modal').modal('show');
+                bootstrap.Modal.getOrCreateInstance(document.getElementById('information-modal')).show();
                 $('#information-modal .modal-body').html(data);
 
                 $('#overlay').fadeOut();

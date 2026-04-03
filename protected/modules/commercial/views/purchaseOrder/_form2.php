@@ -474,7 +474,7 @@ Yii::app()->clientScript->registerCoreScript('jquery.ui');
                             formDirty = false;
                             $("#po-dirty-indicator").hide();
                             toastr.success("Purchase order updated successfully.");
-                            $("#information-modal").modal("show");
+                            bootstrap.Modal.getOrCreateInstance(document.getElementById('information-modal')).show();
                             $("#information-modal .modal-body").html(data.soReportInfo);
                         } else {
                             $("#formResultError").html(data.message).removeClass("d-none");

@@ -550,7 +550,7 @@ if (Yii::app()->user->checkAccess('Accounting.Expense.VoucherPreview')) {
                         } else {
                             //$('#viewDialog').dialog('open');   
                             //$('#AjFlash').html(data).show();    
-                            $('#information-modal').modal('show');
+                            bootstrap.Modal.getOrCreateInstance(document.getElementById('information-modal')).show();
                             $('#information-modal .modal-body').html(data);   
                         }      
                         $('#overlay').fadeOut(300);　                                                         

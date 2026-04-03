@@ -275,7 +275,7 @@ echo "</div>";
                 product_id: product_id
             },
             success: function (response) {
-                $('#information-modal').modal('show');
+                bootstrap.Modal.getOrCreateInstance(document.getElementById('information-modal')).show();
                 $('#information-modal .modal-body').html(response);
                 element.innerHTML = invoiceId;
             },
@@ -298,7 +298,7 @@ echo "</div>";
                 end_date: end_date
             },
             success: function (response) {
-                $('#information-modal').modal('show');
+                bootstrap.Modal.getOrCreateInstance(document.getElementById('information-modal')).show();
                 $('#information-modal .modal-body').html(response);
                 element.innerHTML = invoiceId;
             },
@@ -322,7 +322,7 @@ echo "</div>";
                 end_date: end_date
             },
             success: function (response) {
-                $('#information-modal').modal('show');
+                bootstrap.Modal.getOrCreateInstance(document.getElementById('information-modal')).show();
                 $('#information-modal .modal-body').html(response);
                 element.innerHTML = invoiceId;
             },

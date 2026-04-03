@@ -183,7 +183,7 @@ echo "</div>";
                 invoiceId: invoiceId
             },
             success: function (response) {
-                $('#information-modal').modal('show');
+                bootstrap.Modal.getOrCreateInstance(document.getElementById('information-modal')).show();
                 $('#information-modal .modal-body').html(response);
                 $this.html(invoiceId);
             },

@@ -435,7 +435,7 @@ if (Yii::app()->user->checkAccess('Sell.Order.VoucherPreview')) {
                                 if(data.status=='error'){
                                     toastr.error('No data found!');
                                 } else {
-                                    $('#information-modal').modal('show');
+                                    bootstrap.Modal.getOrCreateInstance(document.getElementById('information-modal')).show();
                                     $('#information-modal .modal-body').html(data);
                                 }
                                 $('#overlay').fadeOut(300);
@@ -662,7 +662,7 @@ if (Yii::app()->user->checkAccess('Sell.Order.VoucherPreview')) {
                                                         .done(function(data) {
                                                             $('#overlay').fadeOut(300);
                                                             $('#information-modal .modal-body').html(data);
-                                                            $('#information-modal').modal('show');
+                                                            bootstrap.Modal.getOrCreateInstance(document.getElementById('information-modal')).show();
                                                         })
                                                         .fail(function(xhr) {
                                                             $('#overlay').fadeOut(300);

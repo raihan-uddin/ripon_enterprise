@@ -21,7 +21,7 @@ $form = $this->beginWidget('CActiveForm', array(
 ));
 ?>
 
-<script src="<?php echo Yii::app()->theme->baseUrl; ?>/plugins/bs-custom-file-input/bs-custom-file-input.min.js"></script>
+<!-- bs-custom-file-input removed: BS5 native file input used -->
 
 <style>
 /* ══════════════════════════════════════════
@@ -832,7 +832,7 @@ $form = $this->beginWidget('CActiveForm', array(
 
 <script>
 $(function () {
-    bsCustomFileInput.init();
+    // bsCustomFileInput removed — BS5 native file input
 
     /* ── Toggle: stockable ── */
     $('#toggle-stockable').on('change', function () {

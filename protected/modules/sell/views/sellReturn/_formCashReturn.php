@@ -583,7 +583,7 @@ Yii::app()->clientScript->registerCoreScript("jquery.ui");
                                 $("#bom-form")[0].reset();
                                 $("#formResult").animate({opacity:1.0},1000).fadeOut("slow");
                                 $("#list").empty();
-                                $("#information-modal").modal("show");
+                                bootstrap.Modal.getOrCreateInstance(document.getElementById('information-modal')).show();
                                 $("#information-modal .modal-body").html(data.soReportInfo);
                             }else{
                                 $.each(data, function(key, val) {
@@ -750,7 +750,7 @@ Yii::app()->clientScript->registerCoreScript("jquery.ui");
             url: '<?php echo $this->createUrl('/inventory/inventory/verifyProduct') ?>',
             data: {product_sl: product_sl},
             success: function (data) {
-                $('#information-modal').modal('show');
+                bootstrap.Modal.getOrCreateInstance(document.getElementById('information-modal')).show();
                 $('#information-modal .modal-body').html(data);
 
                 $('#overlay').fadeOut();

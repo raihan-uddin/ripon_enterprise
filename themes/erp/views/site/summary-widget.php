@@ -69,7 +69,7 @@ $('#profit-loss-summary-btn').on('click', function () {
             $('#profit-loss-summary-modal .modal-body').html(response);
             $('#profit-loss-summary-btn').prop('disabled', false)
                 .html('<i class="fa fa-search"></i> Search');
-            $('#profit-loss-summary-modal').modal('show');
+            bootstrap.Modal.getOrCreateInstance(document.getElementById('profit-loss-summary-modal')).show();
             $('#profit-loss-summary-modal .modal-title').html(
                 '<i class="fa fa-line-chart mr-2"></i> Summary for (' + dateRange + ')'
             );

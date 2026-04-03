@@ -672,6 +672,6 @@ $(document).ready(function() {
     $('#money-receipt-update-form').on('change input', function() { formDirty = true; });
 
     // Tooltip
-    $('[data-bs-toggle="tooltip"]').tooltip();
+    document.querySelectorAll('[data-bs-toggle="tooltip"]').forEach(function(el){new bootstrap.Tooltip(el)});
 });
 </script>
