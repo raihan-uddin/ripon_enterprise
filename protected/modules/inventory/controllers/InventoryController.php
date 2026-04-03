@@ -68,19 +68,11 @@ class InventoryController extends RController
                 foreach ($_POST['Inventory']['temp_model_id'] as $key => $model_id) {
                     $prodmodel = ProdModels::model()->findByPk($model_id);
                     $purchase_price = $prodmodel->purchase_price;
-                    $productSlNo = Inventory::model()->findByAttributes([
-                        'product_sl_no' => $_POST['Inventory']['temp_product_sl_no'][$key],
-                        'model_id' => $model_id,
-                    ]);
-                    if ($productSlNo) {
-                        $purchase_price = $productSlNo->purchase_price;
-                    }
                     $model2 = new Inventory();
                     $model2->sl_no = $sl_no;
                     $model2->challan_no = $challan_no;
                     $model2->model_id = $model_id;
                     $model2->date = $_POST['Inventory']['date'];
-                    $model2->product_sl_no = $_POST['Inventory']['temp_product_sl_no'][$key];
                     $model2->purchase_price = $purchase_price;
                     if ($t_type == Inventory::STOCK_IN) {
                         $model2->stock_in = $_POST['Inventory']['temp_stock_in'][$key] > 0 ? $_POST['Inventory']['temp_stock_in'][$key] : $_POST['Inventory']['temp_stock_out'][$key];
@@ -169,12 +161,20 @@ class InventoryController extends RController
             if ($data) {
                 echo $this->renderPartial('verifyProductResult', array('model' => $model, 'data' => $data, 'product_sl' => $product_sl), true, true);
             } else {
-                echo '<div class="alert alert-danger alert-dismissible fade show" role="alert">
-                        <strong>SL No: ' . $product_sl . '</strong> not found!
-                        <button type="button" class="close" data-dismiss="alert" aria-label="Close">
-                            <span aria-hidden="true">&times;</span>
-                        </button>
-                    </div>';
+                echo '<style>
+                    .vfr-not-found{max-width:420px;margin:0 auto;background:#fff;border:1px solid #eef2ff;border-radius:12px;padding:24px;text-align:center}
+                    .vfr-nf-icon{width:48px;height:48px;border-radius:50%;background:#fef2f2;display:inline-flex;align-items:center;justify-content:center;margin-bottom:14px}
+                    .vfr-nf-icon i{font-size:22px;color:#ef4444}
+                    .vfr-nf-title{font-size:16px;font-weight:700;color:#1e293b;margin:0 0 10px}
+                    .vfr-nf-chip{display:inline-block;background:#f1f5f9;border-radius:6px;padding:4px 10px;font-family:monospace;font-size:13px;color:#6366f1;margin-bottom:10px}
+                    .vfr-nf-msg{font-size:12.5px;color:#64748b;margin:0}
+                </style>
+                <div class="vfr-not-found">
+                    <div class="vfr-nf-icon"><i class="fa fa-exclamation-circle"></i></div>
+                    <div class="vfr-nf-title">Not Found</div>
+                    <div class="vfr-nf-chip">' . htmlspecialchars($product_sl) . '</div>
+                    <p class="vfr-nf-msg">No records found for this serial number</p>
+                </div>';
             }
             Yii::app()->end();
         }

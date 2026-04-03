@@ -494,74 +494,105 @@ endforeach;
 if (Yii::app()->user->checkAccess('Inventory.Inventory.VoucherPreview')) {
     ?>
 
-    <div class="card card-primary">
-        <div class="card-header">
-            <h3 class="card-title">Preview Order</h3>
+    <style>
+    .vp-card{border:none;border-radius:16px;overflow:hidden;
+        box-shadow:0 4px 6px rgba(0,0,0,.04),0 12px 36px rgba(0,0,0,.10);margin-bottom:20px;}
+    .vp-card>.card-header{
+        background:linear-gradient(135deg,#4f46e5 0%,#7c3aed 100%);
+        border:none;padding:16px 24px;position:relative;overflow:hidden;}
+    .vp-card>.card-header::before{
+        content:'';position:absolute;inset:0;pointer-events:none;
+        background-image:radial-gradient(rgba(255,255,255,.18) 1.2px,transparent 1.2px);
+        background-size:22px 22px;}
+    .vp-card>.card-header::after{
+        content:'';position:absolute;top:-40px;right:-40px;
+        width:130px;height:130px;border-radius:50%;
+        background:rgba(255,255,255,.07);pointer-events:none;}
+    .vp-hd{display:flex;align-items:center;justify-content:space-between;position:relative;z-index:1;}
+    .vp-hd-title{font-size:15px;font-weight:800;color:#fff;letter-spacing:-.2px;
+        display:flex;align-items:center;gap:8px;}
+    .vp-hd-icon{width:30px;height:30px;border-radius:8px;
+        background:rgba(255,255,255,.2);display:flex;align-items:center;justify-content:center;
+        font-size:13px;color:#fff;flex-shrink:0;}
+    .vp-card>.card-body{padding:20px 24px;background:#fff;}
+    .vp-label{display:block;font-size:11px;font-weight:700;color:#475569;
+        margin-bottom:5px;text-transform:uppercase;letter-spacing:.4px;}
+    .vp-input{width:100%;border:1.5px solid #e2e8f0;border-radius:8px;
+        padding:9px 12px;font-size:13px;color:#1e293b;background:#fff;
+        outline:none;transition:border-color .18s,box-shadow .18s;-webkit-appearance:none;}
+    .vp-input:focus{border-color:#6366f1;box-shadow:0 0 0 3px rgba(99,102,241,.12);}
+    .vp-input:hover:not(:focus){border-color:#94a3b8;}
+    .vp-error{font-size:11px;color:#ef4444;margin-top:4px;display:block;}
+    .vp-btn{
+        display:inline-flex;align-items:center;gap:7px;
+        padding:10px 20px;border-radius:8px;font-size:13px;font-weight:700;
+        background:linear-gradient(135deg,#6366f1,#7c3aed);color:#fff;border:none;
+        cursor:pointer;box-shadow:0 4px 12px rgba(99,102,241,.35);
+        transition:box-shadow .18s,transform .15s;text-decoration:none;}
+    .vp-btn:hover{box-shadow:0 6px 18px rgba(99,102,241,.45);transform:translateY(-1px);color:#fff;text-decoration:none;}
+    .vp-btn:active{transform:translateY(0);}
+    </style>
 
-            <div class="card-tools">
-                <button type="button" class="btn btn-tool" data-card-widget="collapse">
-                    <i class="fa fa-minus"></i>
-                </button>
-                <!--<button type="button" class="btn btn-tool" data-card-widget="remove">
-                    <i class="fa fa-times"></i>
-                </button>-->
+    <div class="card vp-card">
+        <div class="card-header">
+            <div class="vp-hd">
+                <div class="vp-hd-title">
+                    <div class="vp-hd-icon"><i class="fa fa-file-text-o"></i></div>
+                    Preview Voucher
+                </div>
+                <div class="card-tools">
+                    <button type="button" class="btn btn-tool" data-card-widget="collapse">
+                        <i class="fa fa-minus"></i>
+                    </button>
+                </div>
             </div>
         </div>
         <div class="card-body">
-
             <?php $form = $this->beginWidget('CActiveForm', array(
                 'action' => Yii::app()->createUrl($this->route),
                 'method' => 'get',
             )); ?>
-            <div class="row">
-                <div class="col-md-3">
-                    <div class="input-group">
-                        <div class="input-group-prepend">
-                            <span class="input-group-text"
-                                  id="basic-addon1">CHALLAN NO</span>
-                        </div>
-                        <?php echo $form->textField($model, 'challan_no', array('maxlength' => 255, 'class' => 'form-control', "aria-describedby" => "basic-addon1")); ?>
-                    </div>
-                    <span class="help-block"
-                          style="color: red; width: 100%"> <?php echo $form->error($model, 'challan_no'); ?></span>
-
+            <div class="row" style="align-items:flex-end;">
+                <div class="col-sm-6 col-md-3" style="margin-bottom:14px;">
+                    <label class="vp-label"><i class="fa fa-barcode" style="color:#6366f1;margin-right:3px;"></i> Challan No</label>
+                    <?php echo $form->textField($model, 'challan_no', array(
+                        'maxlength' => 255,
+                        'class'     => 'vp-input',
+                        'placeholder' => 'e.g. GRN-000001',
+                    )); ?>
+                    <?= $form->error($model, 'challan_no', array('class' => 'vp-error')) ?>
                 </div>
-
-
-                <div class="col-md-3">
+                <div class="col-sm-6 col-md-3" style="margin-bottom:14px;">
                     <?php
                     echo CHtml::ajaxLink(
-                        "Print", Yii::app()->createUrl('/inventory/inventory/voucherPreview'), array(
-                        'type' => 'POST',
-                        'beforeSend' => "function(){
-                        let so_no = $('#Inventory_challan_no').val();
-                        if(so_no == ''){
-                        toastr.error('Please insert Challan no!');
-                            return false;
-                        }
-                        $('#overlay').fadeIn(300);　 
-                     }",
-                        'success' => "function( data ){
-                        if(data.status=='error'){
-                            toastr.error('No data found!');
-                        } else {
-                             //$('#viewDialog').dialog('open');   
-                             //$('#AjFlash').html(data).show();    
-                             $('#information-modal').modal('show');
-                              $('#information-modal .modal-body').html(data);   
-                        }      
-                        $('#overlay').fadeOut(300);　                                                         
-                    }",
-                        'complete' => "function(){
-                        $('#overlay').fadeOut(300);　      
-                    }",
-                        'data' => array(
-                            'challan_no' => 'js:jQuery("#Inventory_challan_no").val()',
-                            'printOrPreview' => 'print',
-                        )
-                    ), array(
-                            'class' => 'btn btn-info',
-                        )
+                        '<i class="fa fa-print"></i> Print / Preview',
+                        Yii::app()->createUrl('/inventory/inventory/voucherPreview'),
+                        array(
+                            'type'       => 'POST',
+                            'beforeSend' => "function(){
+                                let challan = $('#Inventory_challan_no').val();
+                                if(challan == ''){
+                                    toastr.error('Please enter a challan number!');
+                                    return false;
+                                }
+                                $('#overlay').fadeIn(300);
+                            }",
+                            'success'    => "function(data){
+                                if(data.status=='error'){
+                                    toastr.error('No data found for this challan!');
+                                } else {
+                                    $('#information-modal').modal('show');
+                                    $('#information-modal .modal-body').html(data);
+                                }
+                                $('#overlay').fadeOut(300);
+                            }",
+                            'complete'   => "function(){ $('#overlay').fadeOut(300); }",
+                            'data'       => array(
+                                'challan_no'     => 'js:jQuery("#Inventory_challan_no").val()',
+                                'printOrPreview' => 'print',
+                            ),
+                        ),
+                        array('class' => 'vp-btn')
                     );
                     ?>
                 </div>

@@ -80,7 +80,7 @@ class CPropertyValue
 	 */
 	public static function ensureInteger($value)
 	{
-		return (integer)$value;
+		return (int)$value;
 	}
 
 	/**
