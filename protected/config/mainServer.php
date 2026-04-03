@@ -13,7 +13,7 @@ return array(
         'application.components.*',
         'application.components.Controller',
         'application.extensions.AmountInWord',
-        'application.extensions.bootstrap.*',
+        // 'application.extensions.bootstrap.*', // Removed: EBootstrap extension deleted (Phase 0)
         'application.helpers.*',
         'application.models.*',
         'application.modules.accounting.models.*',
@@ -69,7 +69,7 @@ return array(
             'baseUrl' => '/rights', // Base URL for Rights. Change if module is nested.
             'layout' => 'rights.views.layouts.main', // Layout to use for displaying Rights.
             'appLayout' => 'application.views.layouts.main', // Application layout.
-            'cssFile' => '/css/default.css', // Style sheet file to use for Rights.
+            'cssFile' => false, // Disabled: Blueprint default.css removed (Phase 0)
             'install' => false, // Whether to enable installer.
             'debug' => false,
         ),
