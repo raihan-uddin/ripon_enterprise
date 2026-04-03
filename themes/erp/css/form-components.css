@@ -1,0 +1,124 @@
+/* ══════════════════════════════════════════════════════════════
+   form-components.css — Unified floating-label card form system
+   Replaces 14 inline <style> blocks across _form.php views
+   ══════════════════════════════════════════════════════════════ */
+
+:root {
+    --frm-accent: #4f46e5;
+    --frm-accent-end: #7c3aed;
+    --frm-accent-light: #6366f1;
+    --frm-shadow: 0 4px 6px rgba(0,0,0,.04), 0 12px 36px rgba(0,0,0,.10);
+    --frm-footer-bg: #f8fafc;
+    --frm-footer-border: #f1f5f9;
+    --frm-error: #ef4444;
+    --frm-input-border: #e2e8f0;
+    --frm-input-focus: #6366f1;
+    --frm-input-hover: #94a3b8;
+    --frm-label-color: #94a3b8;
+    --frm-text: #1e293b;
+}
+
+/* ── Card container ── */
+.frm-card{border:none;border-radius:16px;overflow:hidden;box-shadow:var(--frm-shadow);}
+
+/* ── Gradient header ── */
+.frm-card>.card-header{
+    background:linear-gradient(135deg,var(--frm-accent) 0%,var(--frm-accent-end) 100%);
+    border:none;padding:20px 26px;position:relative;overflow:hidden;}
+.frm-card>.card-header::before{
+    content:'';position:absolute;inset:0;pointer-events:none;
+    background-image:radial-gradient(rgba(255,255,255,.18) 1.2px,transparent 1.2px);
+    background-size:22px 22px;}
+.frm-card>.card-header::after{
+    content:'';position:absolute;top:-50px;right:-50px;
+    width:150px;height:150px;border-radius:50%;
+    background:rgba(255,255,255,.07);pointer-events:none;}
+
+/* ── Header content ── */
+.frm-hd-top{display:flex;align-items:flex-start;justify-content:space-between;position:relative;z-index:1;}
+.frm-hd-title{font-size:16px;font-weight:800;color:#fff;letter-spacing:-.2px;
+    display:flex;align-items:center;gap:9px;}
+.frm-hd-icon{width:32px;height:32px;border-radius:9px;
+    background:rgba(255,255,255,.2);display:flex;align-items:center;justify-content:center;
+    font-size:14px;color:#fff;flex-shrink:0;}
+.frm-hd-sub{font-size:11.5px;color:rgba(255,255,255,.65);margin-top:3px;font-weight:400;}
+
+/* ── Card body & footer ── */
+.frm-card>.card-body{padding:22px 26px;background:#fff;}
+.frm-card>.card-footer{background:var(--frm-footer-bg);border-top:1px solid var(--frm-footer-border);
+    padding:14px 26px;display:flex;align-items:center;gap:10px;}
+
+/* ── Sections ── */
+.frm-section{background:#f8fafc;border:1.5px solid #f1f5f9;border-radius:12px;
+    padding:0;margin-bottom:18px;overflow:hidden;}
+.frm-sec-title{display:flex;align-items:center;gap:8px;
+    font-size:13.5px;font-weight:700;color:#334155;
+    padding:12px 18px;border-bottom:1.5px solid #f1f5f9;background:#fff;}
+.frm-sec-title i{color:var(--frm-accent-light);font-size:12px;}
+.frm-sec-body{padding:18px;}
+.frm-divider{border:none;border-top:1.5px dashed #e2e8f0;margin:10px 0;}
+
+/* ── Floating label ── */
+.frm-fl{position:relative;margin-bottom:14px;}
+.frm-fl-input{
+    width:100%;border:1.5px solid var(--frm-input-border);border-radius:8px;
+    padding:18px 12px 6px 38px;font-size:13.5px;color:var(--frm-text);
+    outline:none;background:#fff;line-height:1.4;
+    transition:border-color .18s,box-shadow .18s,transform .15s;
+    -webkit-appearance:none;}
+.frm-fl-input:focus{
+    border-color:var(--frm-input-focus);
+    box-shadow:0 0 0 3.5px rgba(99,102,241,.12);
+    transform:translateY(-1px);}
+.frm-fl-input:hover:not(:focus){border-color:var(--frm-input-hover);}
+.frm-fl-label{
+    position:absolute;left:38px;top:12px;
+    font-size:13px;color:var(--frm-label-color);font-weight:500;
+    pointer-events:none;
+    transition:all .18s cubic-bezier(.4,0,.2,1);}
+.frm-fl-input:focus+.frm-fl-label,
+.frm-fl-input:not(:placeholder-shown)+.frm-fl-label{
+    top:5px;font-size:9.5px;font-weight:700;color:var(--frm-input-focus);
+    letter-spacing:.5px;text-transform:uppercase;}
+.frm-fl-icon{
+    position:absolute;left:12px;top:50%;transform:translateY(-50%);
+    color:#cbd5e1;font-size:13px;pointer-events:none;transition:color .18s;}
+.frm-fl:focus-within .frm-fl-icon{color:var(--frm-input-focus);}
+
+/* ── Floating select ── */
+.frm-fl select.frm-fl-input{padding:14px 12px 6px 38px;cursor:pointer;}
+.frm-fl select.frm-fl-input+.frm-fl-label{
+    top:5px;font-size:9.5px;font-weight:700;color:var(--frm-input-focus);
+    letter-spacing:.5px;text-transform:uppercase;}
+
+/* ── Tick mark on filled ── */
+.frm-fl-tick{position:absolute;right:10px;top:50%;transform:translateY(-50%);
+    color:#22c55e;font-size:11px;opacity:0;transition:opacity .2s;}
+.frm-fl-input:not(:placeholder-shown)~.frm-fl-tick{opacity:1;}
+
+/* ── Error ── */
+.frm-error,.errorMessage{font-size:11.5px;color:var(--frm-error);margin-top:5px;display:block;}
+
+/* ── Submit button ── */
+.frm-submit{
+    position:relative;overflow:hidden;
+    display:inline-flex;align-items:center;gap:8px;
+    padding:10px 24px;border-radius:9px;font-size:13.5px;font-weight:700;
+    background:linear-gradient(135deg,var(--frm-accent-light),var(--frm-accent-end));color:#fff;border:none;
+    cursor:pointer;box-shadow:0 4px 14px rgba(99,102,241,.4);
+    transition:box-shadow .18s,transform .15s;}
+.frm-submit:hover{box-shadow:0 6px 20px rgba(99,102,241,.5);transform:translateY(-2px);}
+.frm-submit:active{transform:translateY(0);}
+
+/* ── Ripple ── */
+.frm-ripple{position:absolute;border-radius:50%;background:rgba(255,255,255,.38);
+    transform:scale(0);animation:frmRipple .6s linear;pointer-events:none;}
+@keyframes frmRipple{to{transform:scale(4);opacity:0;}}
+
+/* ── Responsive ── */
+@media(max-width:576px){
+    .frm-card>.card-body{padding:16px;}
+    .frm-card>.card-header{padding:16px 18px;}
+    .frm-sec-body{padding:14px;}
+    .frm-submit{width:100%;justify-content:center;}
+}

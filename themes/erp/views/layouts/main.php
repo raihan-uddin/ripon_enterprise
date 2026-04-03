@@ -18,6 +18,9 @@
     <link rel="stylesheet" href="<?php echo $themeUrl; ?>/css/lightpick.css">
 
     <!-- App CSS -->
+    <link rel="stylesheet" href="<?php echo $themeUrl; ?>/css/form-components.css?v=<?php echo filemtime($themePath.'/css/form-components.css'); ?>">
+    <link rel="stylesheet" href="<?php echo $themeUrl; ?>/css/report-tables.css?v=<?php echo filemtime($themePath.'/css/report-tables.css'); ?>">
+    <link rel="stylesheet" href="<?php echo $themeUrl; ?>/css/admin-grids.css?v=<?php echo filemtime($themePath.'/css/admin-grids.css'); ?>">
     <link rel="stylesheet" href="<?php echo $themeUrl; ?>/css/custom.css?v=<?php echo filemtime($themePath.'/css/custom.css'); ?>">
 
     <title><?php echo CHtml::encode($this->pageTitle); ?></title>
@@ -37,6 +40,7 @@ $cs->registerScriptFile(Yii::app()->theme->baseUrl . '/vendor/inputmask/jquery.i
 $cs->registerScriptFile(Yii::app()->theme->baseUrl . '/vendor/toastr/toastr.min.js');
 $cs->registerScriptFile(Yii::app()->theme->baseUrl . '/js/lightpick.js');
 $cs->registerScriptFile(Yii::app()->theme->baseUrl . '/js/as-min.js');
+$cs->registerScriptFile(Yii::app()->theme->baseUrl . '/js/common.js');
 ?>
 </body>
 </html>

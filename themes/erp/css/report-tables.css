@@ -1,0 +1,62 @@
+/* ══════════════════════════════════════════════════════════════
+   report-tables.css — Unified report table & card styling
+   Replaces 20 inline <style> blocks across *View.php report files
+   ══════════════════════════════════════════════════════════════ */
+
+:root {
+    --rpt-header-bg: #212529;
+    --rpt-header-text: #fff;
+    --rpt-stripe: #f8f9fa;
+    --rpt-hover: #e9ecef;
+    --rpt-border: #dee2e6;
+}
+
+/* ── Report card container ── */
+.report-card{border:none;border-radius:12px;overflow:hidden;
+    box-shadow:0 2px 8px rgba(0,0,0,.06);margin-bottom:20px;}
+
+/* ── Summary table ── */
+.summaryTab{width:100%;margin-bottom:10px;font-size:12px;
+    border:none;border-collapse:collapse;}
+.summaryTab tr{border:1px solid var(--rpt-border);}
+.summaryTab tr td,
+.summaryTab tr th{padding:5px 8px;font-size:12px;
+    border:1px solid var(--rpt-border);text-align:left;}
+.summaryTab tr th{background-color:var(--rpt-header-bg);color:var(--rpt-header-text);
+    font-weight:700;text-align:center;font-size:11px;
+    text-transform:uppercase;letter-spacing:.5px;}
+.summaryTab tbody tr:nth-child(even){background-color:var(--rpt-stripe);}
+.summaryTab tbody tr:hover{background:var(--rpt-hover);transition:background-color 100ms;}
+.summaryTab tfoot td{font-weight:700;background:#f0f4f8;
+    border-top:2px solid var(--rpt-header-bg);}
+
+/* ── Sticky header ── */
+.final-result .sticky,
+.summaryTab thead th.sticky{
+    position:sticky;position:-webkit-sticky;top:0;z-index:2;}
+
+/* ── Report filter bar ── */
+.report-filter-bar{padding:15px 20px;background:#fff;
+    border-bottom:1px solid #eee;}
+
+/* ── Report action buttons ── */
+.report-btn-group{display:flex;gap:8px;flex-wrap:wrap;}
+.report-btn-group .btn{font-size:12px;padding:6px 14px;}
+
+/* ── Print styles ── */
+@media print{
+    .erp-nav,.erp-footer,.report-filter-bar,.btn-print,.btn-excel,
+    .no-print,.report-btn-group{display:none!important;}
+    .summaryTab{width:100%;border-collapse:collapse;}
+    .summaryTab th,.summaryTab td{border:1px solid #000!important;padding:4px 6px;}
+    .summaryTab thead th{background:#eee!important;color:#000!important;
+        -webkit-print-color-adjust:exact;print-color-adjust:exact;}
+    @page{margin:1.5cm;}
+    body{font-size:10pt;}
+}
+
+/* ── Responsive ── */
+@media(max-width:576px){
+    .summaryTab{font-size:11px;}
+    .summaryTab tr td,.summaryTab tr th{padding:4px 6px;}
+}
