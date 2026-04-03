@@ -91,6 +91,12 @@ return array(
     ),
     // application components
     'components' => array(
+        'clientScript' => array(
+            'scriptMap' => array(
+                'jquery.js' => '/themes/erp/vendor/jquery/jquery-3.7.1.min.js',
+                'jquery.min.js' => '/themes/erp/vendor/jquery/jquery-3.7.1.min.js',
+            ),
+        ),
         'cache' => array(
             'class' => 'CDbCache',
             'connectionID' => 'db', // <<< THIS IS THE ISSUE

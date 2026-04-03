@@ -2,31 +2,22 @@
 <html lang="en">
 <head>
     <meta charset="utf-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=5">
     <title><?php echo CHtml::encode($this->pageTitle); ?></title>
-    <link rel="icon" type="image/svg+xml" href="<?php echo Yii::app()->theme->baseUrl; ?>/images/favicon.svg"/>
-    <!-- Google Font: Source Sans Pro -->
-    <link rel="stylesheet"
-          href="https://fonts.googleapis.com/css?family=Source+Sans+Pro:300,400,400i,700&display=fallback">
-    <!-- Font Awesome -->
-    <link rel="stylesheet" href="<?php echo Yii::app()->theme->baseUrl; ?>/plugins/fontawesome-free/css/all.min.css">
-    <!-- icheck bootstrap -->
-    <link rel="stylesheet"
-          href="<?php echo Yii::app()->theme->baseUrl; ?>/plugins/icheck-bootstrap/icheck-bootstrap.min.css">
-    <!-- Theme style -->
-    <link rel="stylesheet" href="<?php echo Yii::app()->theme->baseUrl; ?>/dist/css/adminlte.min.css">
+    <?php $themeUrl = Yii::app()->theme->baseUrl; ?>
+    <link rel="icon" type="image/svg+xml" href="<?php echo $themeUrl; ?>/images/favicon.svg"/>
+    <!-- Font Awesome 6 -->
+    <link rel="stylesheet" href="<?php echo $themeUrl; ?>/vendor/fontawesome6/css/all.min.css?v=6.5.2">
+    <!-- Bootstrap 5.3 -->
+    <link rel="stylesheet" href="<?php echo $themeUrl; ?>/vendor/bootstrap5/css/bootstrap.min.css?v=5.3.3">
 </head>
-<body class="hold-transition login-page">
+<body class="login-page">
 <?php echo $content; ?>
 
 <?php
 $cs = Yii::app()->getClientScript();
 $cs->registerCoreScript('jquery');
-//$cs->registerScriptFile(Yii::app()->theme->baseUrl . '/js/jquery.js');
-//$cs->registerScriptFile(Yii::app()->theme->baseUrl . '/plugins/jquery/jquery.min.js');
-//$cs->registerScriptFile(Yii::app()->theme->baseUrl . '/plugins/bootstrap/js/bootstrap.bundle.min.js');
-//$cs->registerScriptFile(Yii::app()->theme->baseUrl . '/dist/js/adminlte.min.js');
+$cs->registerScriptFile(Yii::app()->theme->baseUrl . '/vendor/bootstrap5/js/bootstrap.bundle.min.js');
 ?>
 </body>
 </html>
-

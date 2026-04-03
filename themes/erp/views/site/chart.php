@@ -189,7 +189,7 @@
 
 </div>
 
-<script src="<?php echo Yii::app()->theme->baseUrl; ?>/plugins/chart.js/Chart.min.js"></script>
+<script src="<?php echo Yii::app()->theme->baseUrl; ?>/vendor/chartjs/Chart.min.js"></script>
 <script>
     $(function () {
         /* ChartJS

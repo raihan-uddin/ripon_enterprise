@@ -3,36 +3,26 @@
 <head>
     <meta http-equiv="Content-Type" content="text/html; charset=utf-8"/>
     <meta charset="utf-8">
-
     <meta name="language" content="en"/>
-    <meta content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no" name="viewport">
-    <!-- Google Font: Source Sans Pro -->
-    <!--  <link rel="stylesheet"
-            href="https://fonts.googleapis.com/css?family=Source+Sans+Pro:300,400,400i,700&display=fallback">-->
-    <!--    <link rel="stylesheet" href="-->
-    <?php //echo Yii::app()->theme->baseUrl; ?><!--/css/layout.css" type="text/css"-->
-    <!--          media="screen"/>-->
-    <!--    <link rel="stylesheet" href="-->
-    <?php //echo Yii::app()->theme->baseUrl; ?><!--/css/style.css" type="text/css"-->
-    <!--          media="screen"/>-->
-    <!--    <link rel="stylesheet" href="-->
-    <?php //echo Yii::app()->theme->baseUrl; ?><!--/css/custom.css" type="text/css"-->
-    <!--          media="screen"/>-->
-    <link rel="icon" type="image/svg+xml" href="<?php echo Yii::app()->theme->baseUrl; ?>/images/favicon.svg"/>
+    <meta content="width=device-width, initial-scale=1, maximum-scale=5" name="viewport">
+    <?php $themeUrl = Yii::app()->theme->baseUrl; $themePath = Yii::app()->theme->basePath; ?>
 
-    <link rel="stylesheet" href="<?php echo Yii::app()->theme->baseUrl; ?>/font-awesome/css/font-awesome.min.css">
-    <link rel="stylesheet" href="<?php echo Yii::app()->theme->baseUrl; ?>/css/ionicons.min.css">
-    <link rel="stylesheet" href="<?php echo Yii::app()->theme->baseUrl; ?>/plugins/toastr/toastr.min.css">
-    <link rel="stylesheet" href="<?php echo Yii::app()->theme->baseUrl; ?>/plugins/toastr/toastr.min.css">
+    <link rel="icon" type="image/svg+xml" href="<?php echo $themeUrl; ?>/images/favicon.svg"/>
 
+    <!-- Vendor CSS -->
+    <link rel="stylesheet" href="<?php echo $themeUrl; ?>/vendor/fontawesome6/css/all.min.css?v=6.5.2">
+    <link rel="stylesheet" href="<?php echo $themeUrl; ?>/css/ionicons.min.css">
+    <link rel="stylesheet" href="<?php echo $themeUrl; ?>/vendor/toastr/toastr.min.css?v=<?php echo filemtime($themePath.'/vendor/toastr/toastr.min.css'); ?>">
+    <link rel="stylesheet" href="<?php echo $themeUrl; ?>/css/jquery-ui.css">
+    <link rel="stylesheet" href="<?php echo $themeUrl; ?>/vendor/bootstrap5/css/bootstrap.min.css?v=5.3.3">
+    <link rel="stylesheet" href="<?php echo $themeUrl; ?>/css/lightpick.css">
 
-    <link rel="stylesheet" href="<?php echo Yii::app()->theme->baseUrl; ?>/css/jquery-ui.css">
-    <link rel="stylesheet" href="<?php echo Yii::app()->theme->baseUrl; ?>/dist/css/adminlte.min.css">
-    <link rel="stylesheet" href="<?php echo Yii::app()->theme->baseUrl; ?>/css/lightpick.css">
-    <link rel="stylesheet" href="<?php echo Yii::app()->theme->baseUrl; ?>/css/custom.css?v=<?php echo filemtime(Yii::app()->theme->basePath.'/css/custom.css'); ?>">
+    <!-- App CSS -->
+    <link rel="stylesheet" href="<?php echo $themeUrl; ?>/css/custom.css?v=<?php echo filemtime($themePath.'/css/custom.css'); ?>">
+
     <title><?php echo CHtml::encode($this->pageTitle); ?></title>
 </head>
-<body class="hold-transition layout-top-nav" style="font-size: 14px;">
+<body style="font-size: 14px;">
 
 <?php echo $content; ?>
 
@@ -41,14 +31,11 @@ $cs = Yii::app()->getClientScript();
 $cs->registerCoreScript('jquery');
 $cs->registerScriptFile(Yii::app()->theme->baseUrl . '/js/jquery-ui.js');
 $cs->registerScriptFile(Yii::app()->theme->baseUrl . '/js/alertify.js');
-$cs->registerScriptFile(Yii::app()->theme->baseUrl . '/plugins/bootstrap/js/bootstrap.bundle.min.js');
-$cs->registerScriptFile(Yii::app()->theme->baseUrl . '/plugins/moment/moment.min.js');
-$cs->registerScriptFile(Yii::app()->theme->baseUrl . '/plugins/inputmask/jquery.inputmask.min.js');
-$cs->registerScriptFile(Yii::app()->theme->baseUrl . '/plugins/toastr/toastr.min.js');
-$cs->registerScriptFile(Yii::app()->theme->baseUrl . '/plugins/bootstrap-switch/js/bootstrap-switch.min.js');
-$cs->registerScriptFile(Yii::app()->theme->baseUrl . '/dist/js/adminlte.min.js');
+$cs->registerScriptFile(Yii::app()->theme->baseUrl . '/vendor/bootstrap5/js/bootstrap.bundle.min.js');
+$cs->registerScriptFile(Yii::app()->theme->baseUrl . '/vendor/moment/moment.min.js');
+$cs->registerScriptFile(Yii::app()->theme->baseUrl . '/vendor/inputmask/jquery.inputmask.min.js');
+$cs->registerScriptFile(Yii::app()->theme->baseUrl . '/vendor/toastr/toastr.min.js');
 $cs->registerScriptFile(Yii::app()->theme->baseUrl . '/js/lightpick.js');
-//$cs->registerScriptFile(Yii::app()->theme->baseUrl . '/js/bootstrap-autocomplete.min.js');
 $cs->registerScriptFile(Yii::app()->theme->baseUrl . '/js/as-min.js');
 ?>
 </body>
