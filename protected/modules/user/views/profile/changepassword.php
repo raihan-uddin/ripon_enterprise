@@ -15,7 +15,7 @@ $this->widget('application.components.BreadCrumb', array(
             <div class="card-header text-white"
                  style="background:linear-gradient(135deg,#6366f1,#4338ca); padding:16px 20px;">
                 <h5 class="mb-0" style="font-size:15px; font-weight:700;">
-                    <i class="fa fa-key mr-2"></i> Change Password
+                    <i class="fas fa-key mr-2"></i> Change Password
                 </h5>
             </div>
 
@@ -23,7 +23,7 @@ $this->widget('application.components.BreadCrumb', array(
 
                 <?php if (Yii::app()->user->hasFlash('profileMessage')): ?>
                 <div class="alert alert-success alert-dismissible" role="alert">
-                    <i class="fa fa-check-circle mr-1"></i>
+                    <i class="fas fa-check-circle mr-1"></i>
                     <?= CHtml::encode(Yii::app()->user->getFlash('profileMessage')) ?>
                     <button type="button" class="btn-close" data-bs-dismiss="alert">&times;</button>
                 </div>
@@ -42,7 +42,7 @@ $this->widget('application.components.BreadCrumb', array(
                 <div class="mb-3">
                     <?php echo $form->labelEx($model, 'oldPassword', array('class' => 'control-label')); ?>
                     <div class="input-group">
-                            <span class="input-group-text"><i class="fa fa-lock"></i></span>
+                            <span class="input-group-text"><i class="fas fa-lock"></i></span>
                         </div>
                         <?php echo $form->passwordField($model, 'oldPassword', array(
                             'class'       => 'form-control',
@@ -50,7 +50,7 @@ $this->widget('application.components.BreadCrumb', array(
                             'id'          => 'oldPassword',
                         )); ?>
                             <button type="button" class="btn btn-outline-secondary toggle-pw" data-bs-target="oldPassword" tabindex="-1">
-                                <i class="fa fa-eye"></i>
+                                <i class="fas fa-eye"></i>
                             </button>
                         </div>
                     </div>
@@ -60,7 +60,7 @@ $this->widget('application.components.BreadCrumb', array(
                 <div class="mb-3">
                     <?php echo $form->labelEx($model, 'password', array('class' => 'control-label')); ?>
                     <div class="input-group">
-                            <span class="input-group-text"><i class="fa fa-key"></i></span>
+                            <span class="input-group-text"><i class="fas fa-key"></i></span>
                         </div>
                         <?php echo $form->passwordField($model, 'password', array(
                             'class'       => 'form-control',
@@ -68,7 +68,7 @@ $this->widget('application.components.BreadCrumb', array(
                             'id'          => 'newPassword',
                         )); ?>
                             <button type="button" class="btn btn-outline-secondary toggle-pw" data-bs-target="newPassword" tabindex="-1">
-                                <i class="fa fa-eye"></i>
+                                <i class="fas fa-eye"></i>
                             </button>
                         </div>
                     </div>
@@ -78,7 +78,7 @@ $this->widget('application.components.BreadCrumb', array(
                 <div class="mb-3">
                     <?php echo $form->labelEx($model, 'verifyPassword', array('class' => 'control-label')); ?>
                     <div class="input-group">
-                            <span class="input-group-text"><i class="fa fa-check-circle-o"></i></span>
+                            <span class="input-group-text"><i class="fas fa-circle-check"></i></span>
                         </div>
                         <?php echo $form->passwordField($model, 'verifyPassword', array(
                             'class'       => 'form-control',
@@ -86,7 +86,7 @@ $this->widget('application.components.BreadCrumb', array(
                             'id'          => 'verifyPassword',
                         )); ?>
                             <button type="button" class="btn btn-outline-secondary toggle-pw" data-bs-target="verifyPassword" tabindex="-1">
-                                <i class="fa fa-eye"></i>
+                                <i class="fas fa-eye"></i>
                             </button>
                         </div>
                     </div>
@@ -100,7 +100,7 @@ $this->widget('application.components.BreadCrumb', array(
                  style="background:#f8fafc; padding:14px 20px; border-top:1px solid #f1f5f9;">
                 <a href="<?= Yii::app()->createUrl('/user/profile') ?>"
                    class="btn btn-sm btn-outline-secondary">
-                    <i class="fa fa-arrow-left mr-1"></i> Back
+                    <i class="fas fa-arrow-left mr-1"></i> Back
                 </a>
                 <?php echo CHtml::submitButton('Save Password', array(
                     'form'  => 'changepassword-form',

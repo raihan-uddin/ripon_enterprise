@@ -38,7 +38,7 @@ $model_id = end($data)->model_id;
         </div>
         <div>
             <button class="vfr-ledger-btn" type="button" id="showProductLedger" data-id="<?= $model_id ?>" title="Show Product Ledger">
-                <i class="fa fa-reorder"></i> Product Ledger
+                <i class="fas fa-reorder"></i> Product Ledger
             </button>
         </div>
     </div>
@@ -172,7 +172,7 @@ $model_id = end($data)->model_id;
         let currentText = $(this).text();
         let customer_id = $(this).data('id');
         let $this = $(this);
-        $this.html('<i class="fa fa-spinner fa-spin"></i>');
+        $this.html('<i class="fas fa-spinner fa-spin"></i>');
 
         $.ajax({
             url: '<?= Yii::app()->createUrl("report/customerLedgerView") ?>',
@@ -208,7 +208,7 @@ $model_id = end($data)->model_id;
         let currentText = $(this).text();
         let supplier_id = $(this).data('id');
         let $this = $(this);
-        $this.html('<i class="fa fa-spinner fa-spin"></i>');
+        $this.html('<i class="fas fa-spinner fa-spin"></i>');
 
         $.ajax({
             url: '<?= Yii::app()->createUrl("report/supplierLedgerView") ?>',
@@ -246,7 +246,7 @@ $model_id = end($data)->model_id;
 
         let model_id = $('#showProductLedger').data('id');
         let $this = $('#showProductLedger');
-        $this.html('<i class="fa fa-spinner fa-spin"></i>');
+        $this.html('<i class="fas fa-spinner fa-spin"></i>');
         $.ajax({
             url: '<?= Yii::app()->createUrl("report/productStockLedgerView") ?>',
             type: 'POST',
@@ -256,10 +256,10 @@ $model_id = end($data)->model_id;
             success: function (response) {
                 bootstrap.Modal.getOrCreateInstance(document.getElementById('information-modal')).show();
                 $('#information-modal .modal-body').html(response);
-                $this.html('<i class="fa fa-reorder"></i> Product Ledger');
+                $this.html('<i class="fas fa-reorder"></i> Product Ledger');
             },
             error: function () {
-                $this.html('<i class="fa fa-reorder"></i> Product Ledger');
+                $this.html('<i class="fas fa-reorder"></i> Product Ledger');
                 toastr.error('Something went wrong');
             },
             complete: function () {

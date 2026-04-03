@@ -37,7 +37,7 @@
     <div class="al-card">
         <div class="al-head">
             <div class="al-icon" style="background:rgba(245,158,11,0.1);color:#d97706">
-                <i class="fa fa-exclamation-triangle"></i>
+                <i class="fas fa-exclamation-triangle"></i>
             </div>
             <div>
                 <div class="al-title">Low Stock Alert</div>
@@ -55,7 +55,7 @@
     <div class="al-card">
         <div class="al-head">
             <div class="al-icon" style="background:rgba(239,68,68,0.1);color:#dc2626">
-                <i class="fa fa-clock-o"></i>
+                <i class="fas fa-clock"></i>
             </div>
             <div>
                 <div class="al-title">Outstanding Dues</div>
@@ -94,7 +94,7 @@
                         '</div>';
                 }).join('');
             } else {
-                lsEl.innerHTML='<div class="al-empty"><i class="fa fa-check-circle" style="color:#22c55e;margin-right:6px"></i>All items are well-stocked</div>';
+                lsEl.innerHTML='<div class="al-empty"><i class="fas fa-check-circle" style="color:#22c55e;margin-right:6px"></i>All items are well-stocked</div>';
             }
             /* Dues */
             var dEl=document.getElementById('al-dues-body');
@@ -106,7 +106,7 @@
                         '</div>';
                 }).join('');
             } else {
-                dEl.innerHTML='<div class="al-empty"><i class="fa fa-check-circle" style="color:#22c55e;margin-right:6px"></i>No outstanding dues</div>';
+                dEl.innerHTML='<div class="al-empty"><i class="fas fa-check-circle" style="color:#22c55e;margin-right:6px"></i>No outstanding dues</div>';
             }
         },
         error:function(){

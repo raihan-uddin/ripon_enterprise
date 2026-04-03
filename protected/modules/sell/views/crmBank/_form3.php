@@ -213,7 +213,7 @@ $form = $this->beginWidget('CActiveForm', array(
     <div class="cb-header">
         <div class="cb-header-left">
             <div class="cb-header-icon">
-                <i class="fa fa-university"></i>
+                <i class="fas fa-university"></i>
             </div>
             <div>
                 <div class="cb-header-title"><?php echo($model->isNewRecord ? 'Add New Bank' : 'Update Bank: ' . CHtml::encode($model->name)); ?></div>
@@ -222,7 +222,7 @@ $form = $this->beginWidget('CActiveForm', array(
         </div>
         <div class="cb-card-tools card-tools">
             <button type="button" class="btn btn-tool" data-card-widget="collapse">
-                <i class="fa fa-minus"></i>
+                <i class="fas fa-minus"></i>
             </button>
         </div>
     </div>
@@ -238,7 +238,7 @@ $form = $this->beginWidget('CActiveForm', array(
                         'id'          => 'CrmBank_name',
                     )); ?>
                     <label class="cb-fl-label" for="CrmBank_name">Bank Name</label>
-                    <i class="fa fa-university cb-fl-icon"></i>
+                    <i class="fas fa-university cb-fl-icon"></i>
                     <?php echo $form->error($model, 'name', array('class' => 'cb-error')); ?>
                 </div>
             </div>
@@ -248,7 +248,7 @@ $form = $this->beginWidget('CActiveForm', array(
     <div class="cb-footer">
         <?php echo CHtml::submitButton($model->isNewRecord ? 'Create' : 'Update', array('onclick' => 'loadingDivDisplay();', 'class' => 'cb-submit')); ?>
         <span id="ajaxLoaderMR2" class="ajaxLoaderMR" style="display: none;">
-            <i class="fa fa-spinner fa-spin fa-2x"></i>
+            <i class="fas fa-spinner fa-spin fa-2x"></i>
         </span>
     </div>
     <script type="text/javascript">

@@ -161,7 +161,7 @@ $form = $this->beginWidget('CActiveForm', array(
         <div class="pf-hd-top">
             <div class="pf-hd-title">
                 <div class="pf-hd-title-icon">
-                    <i class="fa fa-user-plus"></i>
+                    <i class="fas fa-user-plus"></i>
                 </div>
                 <div>
                     Add New User
@@ -170,14 +170,14 @@ $form = $this->beginWidget('CActiveForm', array(
             </div>
             <div class="card-tools">
                 <button type="button" class="btn btn-tool" data-card-widget="collapse">
-                    <i class="fa fa-minus"></i>
+                    <i class="fas fa-minus"></i>
                 </button>
             </div>
         </div>
         <div class="pf-hd-chips">
-            <span class="pf-chip" id="chip-account"><i class="fa fa-user"></i> Account</span>
+            <span class="pf-chip" id="chip-account"><i class="fas fa-user"></i> Account</span>
             <?php if (Yii::app()->user->isSuperuser): ?>
-            <span class="pf-chip" id="chip-roles"><i class="fa fa-shield"></i> Roles</span>
+            <span class="pf-chip" id="chip-roles"><i class="fas fa-shield"></i> Roles</span>
             <?php endif; ?>
         </div>
         <div class="pf-prog">
@@ -212,8 +212,8 @@ $form = $this->beginWidget('CActiveForm', array(
                                 <label class="pf-fl-label" for="<?= CHtml::activeId($model, 'username') ?>">
                                     Username <span class="req">*</span>
                                 </label>
-                                <i class="fa fa-user pf-fl-icon"></i>
-                                <i class="fa fa-check pf-fl-tick"></i>
+                                <i class="fas fa-user pf-fl-icon"></i>
+                                <i class="fas fa-check pf-fl-tick"></i>
                             </div>
                             <span class="pf-error"><?= $form->error($model, 'username') ?></span>
                         </div>
@@ -231,11 +231,11 @@ $form = $this->beginWidget('CActiveForm', array(
                                 <label class="pf-fl-label" for="uf-password">
                                     Password <span class="req">*</span>
                                 </label>
-                                <i class="fa fa-lock pf-fl-icon"></i>
+                                <i class="fas fa-lock pf-fl-icon"></i>
                                 <button type="button" class="pf-pw-toggle" id="pf-pw-btn1" tabindex="-1">
-                                    <i class="fa fa-eye" id="pf-pw-icon1"></i>
+                                    <i class="fas fa-eye" id="pf-pw-icon1"></i>
                                 </button>
-                                <i class="fa fa-check pf-fl-tick"></i>
+                                <i class="fas fa-check pf-fl-tick"></i>
                             </div>
                             <span class="pf-error"><?= $form->error($model, 'password') ?></span>
                         </div>
@@ -253,11 +253,11 @@ $form = $this->beginWidget('CActiveForm', array(
                                 <label class="pf-fl-label" for="uf-password2">
                                     Confirm Password <span class="req">*</span>
                                 </label>
-                                <i class="fa fa-lock pf-fl-icon"></i>
+                                <i class="fas fa-lock pf-fl-icon"></i>
                                 <button type="button" class="pf-pw-toggle" id="pf-pw-btn2" tabindex="-1">
-                                    <i class="fa fa-eye" id="pf-pw-icon2"></i>
+                                    <i class="fas fa-eye" id="pf-pw-icon2"></i>
                                 </button>
-                                <i class="fa fa-check pf-fl-tick"></i>
+                                <i class="fas fa-check pf-fl-tick"></i>
                             </div>
                             <span class="pf-error"><?= $form->error($model, 'password2') ?></span>
                         </div>
@@ -280,7 +280,7 @@ $form = $this->beginWidget('CActiveForm', array(
                 <div class="row">
                     <div class="col-md-6">
                         <div class="pf-field">
-                            <label class="pf-label"><i class="fa fa-shield"></i> Roles</label>
+                            <label class="pf-label"><i class="fas fa-shield"></i> Roles</label>
                             <div class="pf-roles-wrap">
                                 <?php
                                 $all_roles = new RAuthItemDataProvider('roles', array('type' => 2));
@@ -314,7 +314,7 @@ $form = $this->beginWidget('CActiveForm', array(
     <!-- ═══ Footer ═══ -->
     <div class="card-footer">
         <?= CHtml::ajaxSubmitButton(
-            '<i class="fa fa-user-plus"></i> Add User',
+            '<i class="fas fa-user-plus"></i> Add User',
             CHtml::normalizeUrl(array('users/create', 'render' => true)),
             array(
                 'dataType'   => 'json',
@@ -349,7 +349,7 @@ $form = $this->beginWidget('CActiveForm', array(
             )
         ) ?>
         <span id="pf-spinner" style="display:none; align-items:center; gap:7px; color:#6366f1; font-size:13px;">
-            <i class="fa fa-spinner fa-spin"></i> Saving&hellip;
+            <i class="fas fa-spinner fa-spin"></i> Saving&hellip;
         </span>
         <span class="pf-req-note">Fields marked <span>*</span> are required</span>
     </div>
@@ -425,10 +425,10 @@ $form = $this->beginWidget('CActiveForm', array(
             btn.addEventListener('click', function () {
                 if (inp.type === 'password') {
                     inp.type = 'text';
-                    icon.className = 'fa fa-eye-slash';
+                    icon.className = 'fas fa-eye-slash';
                 } else {
                     inp.type = 'password';
-                    icon.className = 'fa fa-eye';
+                    icon.className = 'fas fa-eye';
                 }
             });
         }

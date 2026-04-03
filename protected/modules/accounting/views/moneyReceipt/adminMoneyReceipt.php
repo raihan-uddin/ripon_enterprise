@@ -43,10 +43,10 @@ endforeach;
 
     <div class="card-tools">
       <button type="button" class="btn btn-tool" data-card-widget="collapse">
-        <i class="fa fa-minus"></i>
+        <i class="fas fa-minus"></i>
       </button>
       <!--<button type="button" class="btn btn-tool" data-card-widget="remove">
-                    <i class="fa fa-times"></i>
+                    <i class="fas fa-times"></i>
                 </button>-->
             </div>
         </div>
@@ -81,7 +81,7 @@ endforeach;
                         'class' => 'CButtonColumn',
                         'buttons' => array(
                             'createMr' => array(
-                                'label' => '<i class="fa fa-usd fa-2x" style="color: green;"></i>&nbsp;&nbsp;',
+                                'label' => '<i class="fas fa-usd fa-2x" style="color: green;"></i>&nbsp;&nbsp;',
                                 'imageUrl' => false,
                                 'options' => array('rel' => 'tooltip', 'data-bs-toggle' => 'tooltip', 'title' => Yii::t('app', 'Create MR New')),
                                 'url' => 'Yii::app()->controller->createUrl("/accounting/moneyReceipt/createNew",array("id"=>$data->id))',
@@ -98,7 +98,7 @@ endforeach;
 						'class' => 'CButtonColumn',
 						'buttons' => array(
 							'createMr' => array(
-							'label' => '<i class="fa fa-money fa-2x" style="color: green;"></i>&nbsp;&nbsp;',
+							'label' => '<i class="fas fa-money-bill fa-2x" style="color: green;"></i>&nbsp;&nbsp;',
 							'imageUrl' => false,
 							'options' => array('rel' => 'tooltip', 'data-bs-toggle' => 'tooltip', 'title' => Yii::t('app', 'Create MR')),
 							'url' => 'Yii::app()->controller->createUrl("/accounting/moneyReceipt/create",array("id"=>$data->id))',

@@ -537,12 +537,12 @@ if (Yii::app()->user->checkAccess('Inventory.Inventory.VoucherPreview')) {
         <div class="card-header">
             <div class="vp-hd">
                 <div class="vp-hd-title">
-                    <div class="vp-hd-icon"><i class="fa fa-file-text-o"></i></div>
+                    <div class="vp-hd-icon"><i class="fas fa-file-lines"></i></div>
                     Preview Voucher
                 </div>
                 <div class="card-tools">
                     <button type="button" class="btn btn-tool" data-card-widget="collapse">
-                        <i class="fa fa-minus"></i>
+                        <i class="fas fa-minus"></i>
                     </button>
                 </div>
             </div>
@@ -554,7 +554,7 @@ if (Yii::app()->user->checkAccess('Inventory.Inventory.VoucherPreview')) {
             )); ?>
             <div class="row" style="align-items:flex-end;">
                 <div class="col-sm-6 col-md-3" style="margin-bottom:14px;">
-                    <label class="vp-label"><i class="fa fa-barcode" style="color:#6366f1;margin-right:3px;"></i> Challan No</label>
+                    <label class="vp-label"><i class="fas fa-barcode" style="color:#6366f1;margin-right:3px;"></i> Challan No</label>
                     <?php echo $form->textField($model, 'challan_no', array(
                         'maxlength' => 255,
                         'class'     => 'vp-input',
@@ -565,7 +565,7 @@ if (Yii::app()->user->checkAccess('Inventory.Inventory.VoucherPreview')) {
                 <div class="col-sm-6 col-md-3" style="margin-bottom:14px;">
                     <?php
                     echo CHtml::ajaxLink(
-                        '<i class="fa fa-print"></i> Print / Preview',
+                        '<i class="fas fa-print"></i> Print / Preview',
                         Yii::app()->createUrl('/inventory/inventory/voucherPreview'),
                         array(
                             'type'       => 'POST',
@@ -610,10 +610,10 @@ if (Yii::app()->user->checkAccess('Inventory.Inventory.VoucherPreview')) {
 
         <div class="card-tools">
             <button type="button" class="btn btn-tool" data-card-widget="collapse">
-                <i class="fa fa-minus"></i>
+                <i class="fas fa-minus"></i>
             </button>
             <!--<button type="button" class="btn btn-tool" data-card-widget="remove">
-                <i class="fa fa-times"></i>
+                <i class="fas fa-times"></i>
             </button>-->
         </div>
     </div>
@@ -632,10 +632,10 @@ if (Yii::app()->user->checkAccess('Inventory.Inventory.VoucherPreview')) {
                 'class'          => 'CLinkPager',
                 'cssFile'        => false,
                 'header'         => '',
-                'firstPageLabel' => '<i class="fa fa-angle-double-left"></i>',
-                'lastPageLabel'  => '<i class="fa fa-angle-double-right"></i>',
-                'prevPageLabel'  => '<i class="fa fa-angle-left"></i>',
-                'nextPageLabel'  => '<i class="fa fa-angle-right"></i>',
+                'firstPageLabel' => '<i class="fas fa-angle-double-left"></i>',
+                'lastPageLabel'  => '<i class="fas fa-angle-double-right"></i>',
+                'prevPageLabel'  => '<i class="fas fa-angle-left"></i>',
+                'nextPageLabel'  => '<i class="fas fa-angle-right"></i>',
                 'maxButtonCount' => 7,
                 'htmlOptions'    => array('class' => 'pagination pagination-sm', 'style' => 'float:right; margin:4px 0;'),
                 'selectedPageCssClass' => 'active',
@@ -710,7 +710,7 @@ if (Yii::app()->user->checkAccess('Inventory.Inventory.VoucherPreview')) {
                     'htmlOptions' => ['style' => 'width: 100px'],
                     'buttons' => array(
                         'update' => array(
-                            'label' => '<i class="fa fa-pencil-square-o fa-2x" style="color: black;"></i>&nbsp;&nbsp;',
+                            'label' => '<i class="fas fa-pencil-square-o fa-2x" style="color: black;"></i>&nbsp;&nbsp;',
                             'imageUrl' => false,
                             'options' => array('rel' => 'tooltip', 'data-bs-toggle' => 'tooltip', 'title' => Yii::t('app', 'Edit')),
                             'click' => "function( e ){
@@ -723,7 +723,7 @@ if (Yii::app()->user->checkAccess('Inventory.Inventory.VoucherPreview')) {
                               }",
                         ),
                         'delete' => array(
-                            'label' => '<i class="fa fa-trash fa-2x" style="color: red;"></i>&nbsp;&nbsp;',
+                            'label' => '<i class="fas fa-trash fa-2x" style="color: red;"></i>&nbsp;&nbsp;',
                             'imageUrl' => false,
                             'options' => array('rel' => 'tooltip', 'data-bs-toggle' => 'tooltip', 'title' => Yii::t('app', 'Delete')),
 //                            'visible' => '$data->account_type=="1"?TRUE:FALSE',
@@ -744,7 +744,7 @@ if (Yii::app()->user->checkAccess('Inventory.Inventory.VoucherPreview')) {
                 <div class="goto-page-wrap" style="justify-content:flex-end;">
                     <span>Go to page</span>
                     <input type="number" id="goto-page-input" class="form-control" min="1" placeholder="Page #"/>
-                    <button onclick="goToPage()"><i class="fa fa-arrow-right"></i> Go</button>
+                    <button onclick="goToPage()"><i class="fas fa-arrow-right"></i> Go</button>
                 </div>
             </div>
         </div>

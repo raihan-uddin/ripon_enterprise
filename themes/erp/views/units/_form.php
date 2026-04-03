@@ -86,7 +86,7 @@ $form = $this->beginWidget('CActiveForm', array(
     <div class="card-header">
         <div class="un-hd-top">
             <div class="un-hd-title">
-                <div class="un-hd-icon"><i class="fa fa-balance-scale"></i></div>
+                <div class="un-hd-icon"><i class="fas fa-balance-scale"></i></div>
                 <div>
                     <?= $model->isNewRecord ? 'Add New Unit' : 'Update Unit' ?>
                     <div class="un-hd-sub">Measurement unit (kg, pcs, box…)</div>
@@ -94,7 +94,7 @@ $form = $this->beginWidget('CActiveForm', array(
             </div>
             <div class="card-tools">
                 <button type="button" class="btn btn-tool" data-card-widget="collapse">
-                    <i class="fa fa-minus"></i>
+                    <i class="fas fa-minus"></i>
                 </button>
             </div>
         </div>
@@ -112,7 +112,7 @@ $form = $this->beginWidget('CActiveForm', array(
                     <label class="un-fl-label" for="<?= CHtml::activeId($model, 'label') ?>">
                         Unit Label <span style="color:#ef4444;">*</span>
                     </label>
-                    <i class="fa fa-pencil un-fl-icon"></i>
+                    <i class="fas fa-pencil un-fl-icon"></i>
                 </div>
                 <span class="un-error"><?= $form->error($model, 'label') ?></span>
             </div>
@@ -121,7 +121,7 @@ $form = $this->beginWidget('CActiveForm', array(
 
     <div class="card-footer">
         <?= CHtml::ajaxSubmitButton(
-            '<i class="fa fa-save"></i> Save',
+            '<i class="fas fa-save"></i> Save',
             CHtml::normalizeUrl(array('units/create', 'render' => true)),
             array(
                 'dataType'   => 'json',
@@ -143,7 +143,7 @@ $form = $this->beginWidget('CActiveForm', array(
             array('id' => 'un-submit-btn', 'class' => 'un-submit')
         ) ?>
         <span id="ajaxLoaderMR" class="ajaxLoaderMR" style="display:none;">
-            <i class="fa fa-spinner fa-spin fa-2x"></i>
+            <i class="fas fa-spinner fa-spin fa-2x"></i>
         </span>
         <div id="formResult" class="ajaxTargetDiv"></div>
         <div id="formResultError" class="ajaxTargetDivErr"></div>

@@ -11,7 +11,7 @@
 
 <div class="mb-3 mb-0">
     <button type="submit" class="btn btn-success w-100">
-        <i class="fa fa-check"></i> <?php echo Rights::t('core', 'Assign'); ?>
+        <i class="fas fa-check"></i> <?php echo Rights::t('core', 'Assign'); ?>
     </button>
 </div>
 

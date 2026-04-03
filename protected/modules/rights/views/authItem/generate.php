@@ -8,7 +8,7 @@
 
     <div class="card-header">
         <h3 class="card-title">
-            <i class="fa fa-magic"></i>
+            <i class="fas fa-magic"></i>
             <?php echo Rights::t('core', 'Generate items'); ?>
         </h3>
     </div>
@@ -17,19 +17,19 @@
     <div class="rgen-toolbar">
         <div class="rgen-toolbar-left">
             <button type="button" id="rgenSelectAll" class="rgen-tb-btn">
-                <i class="fa fa-check-square-o"></i> <?php echo Rights::t('core', 'Select all'); ?>
+                <i class="fas fa-check-square-o"></i> <?php echo Rights::t('core', 'Select all'); ?>
             </button>
             <button type="button" id="rgenSelectNone" class="rgen-tb-btn rgen-tb-btn-muted">
-                <i class="fa fa-square-o"></i> <?php echo Rights::t('core', 'Select none'); ?>
+                <i class="fas fa-square-o"></i> <?php echo Rights::t('core', 'Select none'); ?>
             </button>
         </div>
         <div class="rgen-toolbar-center">
             <div class="rgen-search-wrap">
-                <i class="fa fa-search rgen-search-icon"></i>
+                <i class="fas fa-search rgen-search-icon"></i>
                 <input type="text" id="rgenSearch" class="rgen-search-input"
                        placeholder="<?php echo Rights::t('core', 'Filter permissions… (press / to focus)'); ?>">
                 <button type="button" id="rgenSearchClear" class="rgen-search-clear" style="display:none;">
-                    <i class="fa fa-times"></i>
+                    <i class="fas fa-times"></i>
                 </button>
             </div>
         </div>
@@ -55,8 +55,8 @@
             <tbody>
                 <tr class="application-heading-row" data-section="app">
                     <th colspan="3">
-                        <span class="rgen-section-toggle"><i class="fa fa-chevron-down"></i></span>
-                        <i class="fa fa-th-large" style="margin-right:7px;opacity:.7;"></i>
+                        <span class="rgen-section-toggle"><i class="fas fa-chevron-down"></i></span>
+                        <i class="fas fa-th-large" style="margin-right:7px;opacity:.7;"></i>
                         <?php echo Rights::t('core', 'Application'); ?>
                         <span class="rgen-section-badge"></span>
                     </th>
@@ -74,14 +74,14 @@
     </div>
 
     <div id="rgenEmpty" class="rgen-empty" style="display:none;">
-        <i class="fa fa-filter" style="font-size:28px;margin-bottom:10px;color:#d1d5db;"></i>
+        <i class="fas fa-filter" style="font-size:28px;margin-bottom:10px;color:#d1d5db;"></i>
         <div style="font-weight:600;color:#6b7280;margin-bottom:4px;"><?php echo Rights::t('core', 'No permissions match'); ?></div>
         <div style="color:#9ca3af;font-size:12px;"><?php echo Rights::t('core', 'Try a different keyword'); ?></div>
     </div>
 
     <div class="card-footer rgen-footer">
         <button type="submit" id="rgenSubmit" class="btn btn-primary">
-            <i class="fa fa-magic"></i> <span id="rgenSubmitLabel"><?php echo Rights::t('core', 'Generate'); ?></span>
+            <i class="fas fa-magic"></i> <span id="rgenSubmitLabel"><?php echo Rights::t('core', 'Generate'); ?></span>
         </button>
         <?php echo CHtml::link(
             Rights::t('core', 'Cancel'),
@@ -447,7 +447,7 @@ $(document).ready(function () {
             var $h = $(this);
             if (!$h.find('.rgen-section-toggle').length) {
                 $h.find('th,td').first().prepend(
-                    '<span class="rgen-section-toggle"><i class="fa fa-chevron-down"></i></span>'
+                    '<span class="rgen-section-toggle"><i class="fas fa-chevron-down"></i></span>'
                 );
             }
             if (!$h.find('.rgen-section-badge').length) {

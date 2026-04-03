@@ -220,7 +220,7 @@ $form = $this->beginWidget('CActiveForm', array(
         <div class="pf-hd-top">
             <div class="pf-hd-title">
                 <div class="pf-hd-title-icon">
-                    <i class="fa fa-<?= $isNew ? 'user-plus' : 'user' ?>"></i>
+                    <i class="fas fa-<?= $isNew ? 'user-plus' : 'user' ?>"></i>
                 </div>
                 <div>
                     <?= $isNew ? 'Create New User' : 'Update User' ?>
@@ -229,15 +229,15 @@ $form = $this->beginWidget('CActiveForm', array(
             </div>
             <div class="card-tools">
                 <button type="button" class="btn btn-tool" data-card-widget="collapse">
-                    <i class="fa fa-minus"></i>
+                    <i class="fas fa-minus"></i>
                 </button>
             </div>
         </div>
         <div class="pf-hd-chips">
-            <span class="pf-chip" id="chip-account"><i class="fa fa-user"></i> Account</span>
-            <span class="pf-chip" id="chip-access"><i class="fa fa-shield"></i> Access</span>
+            <span class="pf-chip" id="chip-account"><i class="fas fa-user"></i> Account</span>
+            <span class="pf-chip" id="chip-access"><i class="fas fa-shield"></i> Access</span>
             <?php if ($profileFields): ?>
-            <span class="pf-chip" id="chip-profile"><i class="fa fa-id-card-o"></i> Profile</span>
+            <span class="pf-chip" id="chip-profile"><i class="fas fa-id-card-o"></i> Profile</span>
             <?php endif; ?>
         </div>
         <div class="pf-prog">
@@ -275,8 +275,8 @@ $form = $this->beginWidget('CActiveForm', array(
                                 <label class="pf-fl-label" for="<?= CHtml::activeId($model, 'username') ?>">
                                     Username <span class="req">*</span>
                                 </label>
-                                <i class="fa fa-user pf-fl-icon"></i>
-                                <i class="fa fa-check pf-fl-tick"></i>
+                                <i class="fas fa-user pf-fl-icon"></i>
+                                <i class="fas fa-check pf-fl-tick"></i>
                             </div>
                             <?= $form->error($model, 'username', array('class' => 'pf-error')) ?>
                         </div>
@@ -295,8 +295,8 @@ $form = $this->beginWidget('CActiveForm', array(
                                 <label class="pf-fl-label" for="<?= CHtml::activeId($model, 'email') ?>">
                                     Email Address <span class="req">*</span>
                                 </label>
-                                <i class="fa fa-envelope pf-fl-icon"></i>
-                                <i class="fa fa-check pf-fl-tick"></i>
+                                <i class="fas fa-envelope pf-fl-icon"></i>
+                                <i class="fas fa-check pf-fl-tick"></i>
                             </div>
                             <?= $form->error($model, 'email', array('class' => 'pf-error')) ?>
                         </div>
@@ -316,14 +316,14 @@ $form = $this->beginWidget('CActiveForm', array(
                                 <label class="pf-fl-label" for="<?= CHtml::activeId($model, 'password') ?>">
                                     Password <?= $isNew ? '<span class="req">*</span>' : '' ?>
                                 </label>
-                                <i class="fa fa-lock pf-fl-icon"></i>
+                                <i class="fas fa-lock pf-fl-icon"></i>
                                 <button type="button" class="pf-pw-toggle" id="pf-pw-btn" tabindex="-1">
-                                    <i class="fa fa-eye" id="pf-pw-icon"></i>
+                                    <i class="fas fa-eye" id="pf-pw-icon"></i>
                                 </button>
-                                <i class="fa fa-check pf-fl-tick"></i>
+                                <i class="fas fa-check pf-fl-tick"></i>
                             </div>
                             <?php if (!$isNew): ?>
-                            <span class="pf-hint"><i class="fa fa-info-circle" style="margin-right:3px;"></i>Leave blank to keep current password</span>
+                            <span class="pf-hint"><i class="fas fa-info-circle" style="margin-right:3px;"></i>Leave blank to keep current password</span>
                             <?php endif; ?>
                             <?= $form->error($model, 'password', array('class' => 'pf-error')) ?>
                         </div>
@@ -346,11 +346,11 @@ $form = $this->beginWidget('CActiveForm', array(
                     <div class="col-md-6">
                         <div class="pf-field" id="field-superuser">
                             <label class="pf-label">
-                                <i class="fa fa-shield"></i>
+                                <i class="fas fa-shield"></i>
                                 Admin Status <span class="req">*</span>
                             </label>
                             <div class="pf-sel-wrap">
-                                <i class="fa fa-shield pf-sel-icon"></i>
+                                <i class="fas fa-shield pf-sel-icon"></i>
                                 <?= CHtml::activeDropDownList($model, 'superuser',
                                     User::itemAlias('AdminStatus'),
                                     array('class' => 'pf-select', 'data-pf-required' => '1')
@@ -362,11 +362,11 @@ $form = $this->beginWidget('CActiveForm', array(
                     <div class="col-md-6">
                         <div class="pf-field" id="field-status">
                             <label class="pf-label">
-                                <i class="fa fa-toggle-on"></i>
+                                <i class="fas fa-toggle-on"></i>
                                 Account Status <span class="req">*</span>
                             </label>
                             <div class="pf-sel-wrap">
-                                <i class="fa fa-toggle-on pf-sel-icon"></i>
+                                <i class="fas fa-toggle-on pf-sel-icon"></i>
                                 <?= CHtml::activeDropDownList($model, 'status',
                                     User::itemAlias('UserStatus'),
                                     array('class' => 'pf-select', 'data-pf-required' => '1')
@@ -402,7 +402,7 @@ $form = $this->beginWidget('CActiveForm', array(
                             <?php elseif ($field->range): ?>
                                 <label class="pf-label"><?= CHtml::encode($label) ?></label>
                                 <div class="pf-sel-wrap">
-                                    <i class="fa fa-list pf-sel-icon"></i>
+                                    <i class="fas fa-list pf-sel-icon"></i>
                                     <?= CHtml::activeDropDownList($profile, $field->varname,
                                         Profile::range($field->range),
                                         array('class' => 'pf-select')
@@ -425,8 +425,8 @@ $form = $this->beginWidget('CActiveForm', array(
                                     <label class="pf-fl-label" for="<?= CHtml::activeId($profile, $field->varname) ?>">
                                         <?= CHtml::encode($label) ?>
                                     </label>
-                                    <i class="fa fa-pencil pf-fl-icon"></i>
-                                    <i class="fa fa-check pf-fl-tick"></i>
+                                    <i class="fas fa-pencil pf-fl-icon"></i>
+                                    <i class="fas fa-check pf-fl-tick"></i>
                                 </div>
                             <?php endif; ?>
                             <?= $form->error($profile, $field->varname, array('class' => 'pf-error')) ?>
@@ -443,14 +443,14 @@ $form = $this->beginWidget('CActiveForm', array(
     <!-- ═══ Footer ═══ -->
     <div class="card-footer">
         <button type="submit" class="pf-submit" id="pf-submit-btn">
-            <i class="fa fa-<?= $isNew ? 'user-plus' : 'save' ?>"></i>
+            <i class="fas fa-<?= $isNew ? 'user-plus' : 'save' ?>"></i>
             <?= $isNew ? UserModule::t('Create User') : UserModule::t('Update User') ?>
         </button>
         <a href="<?= Yii::app()->createUrl('/user/admin/admin') ?>" class="pf-cancel">
-            <i class="fa fa-times"></i> <?= UserModule::t('Cancel') ?>
+            <i class="fas fa-times"></i> <?= UserModule::t('Cancel') ?>
         </a>
         <span id="pf-spinner">
-            <i class="fa fa-spinner fa-spin"></i> Saving&hellip;
+            <i class="fas fa-spinner fa-spin"></i> Saving&hellip;
         </span>
         <span class="pf-req-note">Fields marked <span>*</span> are required</span>
     </div>
@@ -533,10 +533,10 @@ $form = $this->beginWidget('CActiveForm', array(
             var icon = document.getElementById('pf-pw-icon');
             if (inp.type === 'password') {
                 inp.type = 'text';
-                icon.className = 'fa fa-eye-slash';
+                icon.className = 'fas fa-eye-slash';
             } else {
                 inp.type = 'password';
-                icon.className = 'fa fa-eye';
+                icon.className = 'fas fa-eye';
             }
         });
     }

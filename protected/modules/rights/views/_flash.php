@@ -7,14 +7,14 @@ if (!$hasSuccess && !$hasError) return;
 <div id="rightsToastWrap">
     <?php if ($hasSuccess): ?>
         <div class="rights-toast rights-toast-success">
-            <i class="fa fa-check-circle"></i>
+            <i class="fas fa-check-circle"></i>
             <span><?php echo Yii::app()->user->getFlash('RightsSuccess'); ?></span>
             <button class="rights-toast-close" type="button">&times;</button>
         </div>
     <?php endif; ?>
     <?php if ($hasError): ?>
         <div class="rights-toast rights-toast-error">
-            <i class="fa fa-exclamation-circle"></i>
+            <i class="fas fa-exclamation-circle"></i>
             <span><?php echo Yii::app()->user->getFlash('RightsError'); ?></span>
             <button class="rights-toast-close" type="button">&times;</button>
         </div>

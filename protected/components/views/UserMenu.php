@@ -334,7 +334,7 @@ nav.erp-nav .navbar-nav>.nav-item.active>.nav-link:focus{
             <!-- Dashboard -->
             <li class="nav-item<?= $activeDashboard ? ' active' : '' ?>">
                 <a class="nav-link" href="<?= Yii::app()->createUrl('site/dashBoard') ?>">
-                    <i class="fa fa-home mr-1"></i> Dashboard
+                    <i class="fas fa-home mr-1"></i> Dashboard
                 </a>
             </li>
 
@@ -342,16 +342,16 @@ nav.erp-nav .navbar-nav>.nav-item.active>.nav-link:focus{
             <?php if ($showCommon): ?>
             <li class="nav-item dropdown<?= $activeCommon ? ' active' : '' ?>">
                 <a class="nav-link dropdown-toggle" href="#" data-bs-toggle="dropdown" role="button">
-                    <i class="fa fa-cogs mr-1"></i> Settings
+                    <i class="fas fa-cogs mr-1"></i> Settings
                 </a>
                 <div class="dropdown-menu">
                     <?php if ($ca('Users.Admin') || $ca('rights') || $isDev): ?>
-                    <div class="dropdown-header"><i class="fa fa-users"></i> User</div>
+                    <div class="dropdown-header"><i class="fas fa-users"></i> User</div>
                     <?php if ($ca('Users.Admin')): ?>
-                    <a class="dropdown-item" href="<?= Yii::app()->createUrl('/users/admin') ?>"><i class="fa fa-user-circle-o"></i> Manage Users</a>
+                    <a class="dropdown-item" href="<?= Yii::app()->createUrl('/users/admin') ?>"><i class="fas fa-user-circle-o"></i> Manage Users</a>
                     <?php endif; ?>
                     <?php if ($ca('rights')): ?>
-                    <a class="dropdown-item" href="<?= Yii::app()->createUrl('/rights') ?>"><i class="fa fa-lock"></i> Permissions</a>
+                    <a class="dropdown-item" href="<?= Yii::app()->createUrl('/rights') ?>"><i class="fas fa-lock"></i> Permissions</a>
                     <?php endif; ?>
                     <?php endif; ?>
 
@@ -363,46 +363,46 @@ nav.erp-nav .navbar-nav>.nav-item.active>.nav-link:focus{
             <?php if ($showInventory): ?>
             <li class="nav-item dropdown<?= $activeInventory ? ' active' : '' ?>">
                 <a class="nav-link dropdown-toggle" href="#" data-bs-toggle="dropdown" role="button">
-                    <i class="fa fa-cubes mr-1"></i> Inventory
+                    <i class="fas fa-cubes mr-1"></i> Inventory
                 </a>
                 <div class="dropdown-menu">
                     <?php if ($ca('ProdItems.Admin') || $ca('ProdBrands.Admin') || $ca('ProdModels.Admin') || $ca('Units.Admin') || $ca('Companies.Admin')): ?>
-                    <div class="dropdown-header"><i class="fa fa-sliders"></i> Config</div>
+                    <div class="dropdown-header"><i class="fas fa-sliders"></i> Config</div>
                     <?php if ($ca('ProdItems.Admin')): ?>
-                    <a class="dropdown-item" href="<?= Yii::app()->createUrl('/prodItems/admin') ?>"><i class="fa fa-folder-o"></i> Category</a>
+                    <a class="dropdown-item" href="<?= Yii::app()->createUrl('/prodItems/admin') ?>"><i class="fas fa-folder-o"></i> Category</a>
                     <?php endif; ?>
                     <?php if ($ca('ProdBrands.Admin')): ?>
-                    <a class="dropdown-item" href="<?= Yii::app()->createUrl('/prodBrands/admin') ?>"><i class="fa fa-tag"></i> Sub-Category</a>
+                    <a class="dropdown-item" href="<?= Yii::app()->createUrl('/prodBrands/admin') ?>"><i class="fas fa-tag"></i> Sub-Category</a>
                     <?php endif; ?>
                     <?php if ($ca('ProdModels.Create') || $ca('ProdModels.Admin')): ?>
                     <div class="dropdown-submenu">
-                        <a class="dropdown-item" href="#"><i class="fa fa-th-large"></i> Product Setup</a>
+                        <a class="dropdown-item" href="#"><i class="fas fa-th-large"></i> Product Setup</a>
                         <div class="dropdown-menu">
                             <?php if ($ca('ProdModels.Create')): ?>
-                            <a class="dropdown-item" href="<?= Yii::app()->createUrl('/prodModels/create') ?>"><i class="fa fa-plus"></i> Create Product</a>
+                            <a class="dropdown-item" href="<?= Yii::app()->createUrl('/prodModels/create') ?>"><i class="fas fa-plus"></i> Create Product</a>
                             <?php endif; ?>
                             <?php if ($ca('ProdModels.Admin')): ?>
-                            <a class="dropdown-item" href="<?= Yii::app()->createUrl('/prodModels/admin') ?>"><i class="fa fa-list"></i> Manage Products</a>
+                            <a class="dropdown-item" href="<?= Yii::app()->createUrl('/prodModels/admin') ?>"><i class="fas fa-list"></i> Manage Products</a>
                             <?php endif; ?>
                         </div>
                     </div>
                     <?php endif; ?>
                     <?php if ($ca('Units.Admin')): ?>
-                    <a class="dropdown-item" href="<?= Yii::app()->createUrl('/units/admin') ?>"><i class="fa fa-balance-scale"></i> Units</a>
+                    <a class="dropdown-item" href="<?= Yii::app()->createUrl('/units/admin') ?>"><i class="fas fa-balance-scale"></i> Units</a>
                     <?php endif; ?>
                     <?php if ($ca('Companies.Admin')): ?>
-                    <a class="dropdown-item" href="<?= Yii::app()->createUrl('/companies/admin') ?>"><i class="fa fa-industry"></i> Companies</a>
+                    <a class="dropdown-item" href="<?= Yii::app()->createUrl('/companies/admin') ?>"><i class="fas fa-industry"></i> Companies</a>
                     <?php endif; ?>
                     <?php endif; ?>
 
                     <?php if ($ca('Inventory.Inventory.Admin') || $ca('Inventory.Inventory.VerifyProduct')): ?>
                     <div class="dropdown-divider"></div>
-                    <div class="dropdown-header"><i class="fa fa-archive"></i> Stock</div>
+                    <div class="dropdown-header"><i class="fas fa-archive"></i> Stock</div>
                     <?php if ($ca('Inventory.Inventory.Admin')): ?>
-                    <a class="dropdown-item" href="<?= Yii::app()->createUrl('/inventory/inventory/admin') ?>"><i class="fa fa-list"></i> Manage Stock</a>
+                    <a class="dropdown-item" href="<?= Yii::app()->createUrl('/inventory/inventory/admin') ?>"><i class="fas fa-list"></i> Manage Stock</a>
                     <?php endif; ?>
                     <?php if ($ca('Inventory.Inventory.VerifyProduct')): ?>
-                    <a class="dropdown-item" href="<?= Yii::app()->createUrl('/inventory/inventory/verifyProduct') ?>"><i class="fa fa-check-square-o"></i> Verify Product</a>
+                    <a class="dropdown-item" href="<?= Yii::app()->createUrl('/inventory/inventory/verifyProduct') ?>"><i class="fas fa-check-square-o"></i> Verify Product</a>
                     <?php endif; ?>
                     <?php endif; ?>
                 </div>
@@ -413,60 +413,60 @@ nav.erp-nav .navbar-nav>.nav-item.active>.nav-link:focus{
             <?php if ($showSales): ?>
             <li class="nav-item dropdown<?= $activeSales ? ' active' : '' ?>">
                 <a class="nav-link dropdown-toggle" href="#" data-bs-toggle="dropdown" role="button">
-                    <i class="fa fa-shopping-cart mr-1"></i> Sales
+                    <i class="fas fa-shopping-cart mr-1"></i> Sales
                 </a>
                 <div class="dropdown-menu">
                     <?php if ($ca('Sell.Customers.Admin') || $ca('Sell.CrmBank.Admin')): ?>
-                    <div class="dropdown-header"><i class="fa fa-sliders"></i> Config</div>
+                    <div class="dropdown-header"><i class="fas fa-sliders"></i> Config</div>
                     <?php if ($ca('Sell.Customers.Admin')): ?>
-                    <a class="dropdown-item" href="<?= Yii::app()->createUrl('/sell/customers/admin') ?>"><i class="fa fa-users"></i> Customers</a>
+                    <a class="dropdown-item" href="<?= Yii::app()->createUrl('/sell/customers/admin') ?>"><i class="fas fa-users"></i> Customers</a>
                     <?php endif; ?>
                     <?php if ($ca('Sell.CrmBank.Admin')): ?>
-                    <a class="dropdown-item" href="<?= Yii::app()->createUrl('/sell/crmBank/admin') ?>"><i class="fa fa-university"></i> Banks</a>
+                    <a class="dropdown-item" href="<?= Yii::app()->createUrl('/sell/crmBank/admin') ?>"><i class="fas fa-university"></i> Banks</a>
                     <?php endif; ?>
                     <?php endif; ?>
 
                     <?php if ($ca('Sell.SellOrder.Create') || $ca('Sell.SellOrder.Admin')): ?>
                     <div class="dropdown-divider"></div>
-                    <div class="dropdown-header"><i class="fa fa-file-text-o"></i> Orders</div>
+                    <div class="dropdown-header"><i class="fas fa-file-lines"></i> Orders</div>
                     <?php if ($ca('Sell.SellOrder.Create')): ?>
-                    <a class="dropdown-item" href="<?= Yii::app()->createUrl('/sell/sellOrder/create') ?>"><i class="fa fa-plus"></i> New Order</a>
+                    <a class="dropdown-item" href="<?= Yii::app()->createUrl('/sell/sellOrder/create') ?>"><i class="fas fa-plus"></i> New Order</a>
                     <?php endif; ?>
                     <?php if ($ca('Sell.SellOrder.Admin')): ?>
-                    <a class="dropdown-item" href="<?= Yii::app()->createUrl('/sell/sellOrder/admin') ?>"><i class="fa fa-list"></i> Manage Orders</a>
+                    <a class="dropdown-item" href="<?= Yii::app()->createUrl('/sell/sellOrder/admin') ?>"><i class="fas fa-list"></i> Manage Orders</a>
                     <?php endif; ?>
                     <?php endif; ?>
 
                     <?php if ($ca('Sell.SellOrderQuotation.Create') || $ca('Sell.SellOrderQuotation.Admin')): ?>
                     <div class="dropdown-divider"></div>
-                    <div class="dropdown-header"><i class="fa fa-file-o"></i> Draft</div>
+                    <div class="dropdown-header"><i class="fas fa-file"></i> Draft</div>
                     <?php if ($ca('Sell.SellOrderQuotation.Create')): ?>
-                    <a class="dropdown-item" href="<?= Yii::app()->createUrl('/sell/sellOrderQuotation/create') ?>"><i class="fa fa-plus"></i> New Draft</a>
+                    <a class="dropdown-item" href="<?= Yii::app()->createUrl('/sell/sellOrderQuotation/create') ?>"><i class="fas fa-plus"></i> New Draft</a>
                     <?php endif; ?>
                     <?php if ($ca('Sell.SellOrderQuotation.Admin')): ?>
-                    <a class="dropdown-item" href="<?= Yii::app()->createUrl('/sell/sellOrderQuotation/admin') ?>"><i class="fa fa-list"></i> Manage Drafts</a>
+                    <a class="dropdown-item" href="<?= Yii::app()->createUrl('/sell/sellOrderQuotation/admin') ?>"><i class="fas fa-list"></i> Manage Drafts</a>
                     <?php endif; ?>
                     <?php endif; ?>
 
                     <?php if ($ca('Sell.SellReturn.CreateProductReturn') || $ca('Sell.SellReturn.Admin')): ?>
                     <div class="dropdown-divider"></div>
-                    <div class="dropdown-header"><i class="fa fa-reply"></i> Return</div>
+                    <div class="dropdown-header"><i class="fas fa-reply"></i> Return</div>
                     <?php if ($ca('Sell.SellReturn.CreateProductReturn')): ?>
-                    <a class="dropdown-item" href="<?= Yii::app()->createUrl('/sell/sellReturn/createProductReturn') ?>"><i class="fa fa-undo"></i> New Return</a>
+                    <a class="dropdown-item" href="<?= Yii::app()->createUrl('/sell/sellReturn/createProductReturn') ?>"><i class="fas fa-undo"></i> New Return</a>
                     <?php endif; ?>
                     <?php if ($ca('Sell.SellReturn.Admin')): ?>
-                    <a class="dropdown-item" href="<?= Yii::app()->createUrl('/sell/sellReturn/admin') ?>"><i class="fa fa-list"></i> Manage Returns</a>
+                    <a class="dropdown-item" href="<?= Yii::app()->createUrl('/sell/sellReturn/admin') ?>"><i class="fas fa-list"></i> Manage Returns</a>
                     <?php endif; ?>
                     <?php endif; ?>
 
                     <?php if ($ca('Accounting.MoneyReceipt.AdminMoneyReceipt') || $ca('Accounting.MoneyReceipt.Admin')): ?>
                     <div class="dropdown-divider"></div>
-                    <div class="dropdown-header"><i class="fa fa-sign-in"></i> Collection</div>
+                    <div class="dropdown-header"><i class="fas fa-sign-in"></i> Collection</div>
                     <?php if ($ca('Accounting.MoneyReceipt.AdminMoneyReceipt')): ?>
-                    <a class="dropdown-item" href="<?= Yii::app()->createUrl('/accounting/moneyReceipt/adminMoneyReceipt') ?>"><i class="fa fa-plus"></i> New Receipt</a>
+                    <a class="dropdown-item" href="<?= Yii::app()->createUrl('/accounting/moneyReceipt/adminMoneyReceipt') ?>"><i class="fas fa-plus"></i> New Receipt</a>
                     <?php endif; ?>
                     <?php if ($ca('Accounting.MoneyReceipt.Admin')): ?>
-                    <a class="dropdown-item" href="<?= Yii::app()->createUrl('/accounting/moneyReceipt/admin') ?>"><i class="fa fa-list"></i> Manage Receipts</a>
+                    <a class="dropdown-item" href="<?= Yii::app()->createUrl('/accounting/moneyReceipt/admin') ?>"><i class="fas fa-list"></i> Manage Receipts</a>
                     <?php endif; ?>
                     <?php endif; ?>
                 </div>
@@ -477,38 +477,38 @@ nav.erp-nav .navbar-nav>.nav-item.active>.nav-link:focus{
             <?php if ($showPurchase): ?>
             <li class="nav-item dropdown<?= $activePurchase ? ' active' : '' ?>">
                 <a class="nav-link dropdown-toggle" href="#" data-bs-toggle="dropdown" role="button">
-                    <i class="fa fa-truck mr-1"></i> Purchase
+                    <i class="fas fa-truck mr-1"></i> Purchase
                 </a>
                 <div class="dropdown-menu">
                     <?php if ($ca('Commercial.ComBank.Admin') || $ca('Commercial.Suppliers.Admin')): ?>
-                    <div class="dropdown-header"><i class="fa fa-sliders"></i> Config</div>
+                    <div class="dropdown-header"><i class="fas fa-sliders"></i> Config</div>
                     <?php if ($ca('Commercial.ComBank.Admin')): ?>
-                    <a class="dropdown-item" href="<?= Yii::app()->createUrl('/commercial/comBank/admin') ?>"><i class="fa fa-university"></i> Banks</a>
+                    <a class="dropdown-item" href="<?= Yii::app()->createUrl('/commercial/comBank/admin') ?>"><i class="fas fa-university"></i> Banks</a>
                     <?php endif; ?>
                     <?php if ($ca('Commercial.Suppliers.Admin')): ?>
-                    <a class="dropdown-item" href="<?= Yii::app()->createUrl('/commercial/suppliers/admin') ?>"><i class="fa fa-truck"></i> Suppliers</a>
+                    <a class="dropdown-item" href="<?= Yii::app()->createUrl('/commercial/suppliers/admin') ?>"><i class="fas fa-truck"></i> Suppliers</a>
                     <?php endif; ?>
                     <?php endif; ?>
 
                     <?php if ($ca('Commercial.PurchaseOrder.Create') || $ca('Commercial.PurchaseOrder.Admin')): ?>
                     <div class="dropdown-divider"></div>
-                    <div class="dropdown-header"><i class="fa fa-shopping-basket"></i> Orders</div>
+                    <div class="dropdown-header"><i class="fas fa-shopping-basket"></i> Orders</div>
                     <?php if ($ca('Commercial.PurchaseOrder.Create')): ?>
-                    <a class="dropdown-item" href="<?= Yii::app()->createUrl('/commercial/purchaseOrder/create') ?>"><i class="fa fa-plus"></i> New Purchase</a>
+                    <a class="dropdown-item" href="<?= Yii::app()->createUrl('/commercial/purchaseOrder/create') ?>"><i class="fas fa-plus"></i> New Purchase</a>
                     <?php endif; ?>
                     <?php if ($ca('Commercial.PurchaseOrder.Admin')): ?>
-                    <a class="dropdown-item" href="<?= Yii::app()->createUrl('/commercial/purchaseOrder/admin') ?>"><i class="fa fa-list"></i> Manage Purchases</a>
+                    <a class="dropdown-item" href="<?= Yii::app()->createUrl('/commercial/purchaseOrder/admin') ?>"><i class="fas fa-list"></i> Manage Purchases</a>
                     <?php endif; ?>
                     <?php endif; ?>
 
                     <?php if ($ca('Accounting.PaymentReceipt.AdminPaymentReceipt') || $ca('Accounting.PaymentReceipt.Create')): ?>
                     <div class="dropdown-divider"></div>
-                    <div class="dropdown-header"><i class="fa fa-sign-out"></i> Payment</div>
+                    <div class="dropdown-header"><i class="fas fa-sign-out"></i> Payment</div>
                     <?php if ($ca('Accounting.PaymentReceipt.AdminPaymentReceipt')): ?>
-                    <a class="dropdown-item" href="<?= Yii::app()->createUrl('/accounting/paymentReceipt/adminPaymentReceipt') ?>"><i class="fa fa-plus"></i> New Payment</a>
+                    <a class="dropdown-item" href="<?= Yii::app()->createUrl('/accounting/paymentReceipt/adminPaymentReceipt') ?>"><i class="fas fa-plus"></i> New Payment</a>
                     <?php endif; ?>
                     <?php if ($ca('Accounting.PaymentReceipt.Create')): ?>
-                    <a class="dropdown-item" href="<?= Yii::app()->createUrl('/accounting/paymentReceipt/admin') ?>"><i class="fa fa-list"></i> Manage Payments</a>
+                    <a class="dropdown-item" href="<?= Yii::app()->createUrl('/accounting/paymentReceipt/admin') ?>"><i class="fas fa-list"></i> Manage Payments</a>
                     <?php endif; ?>
                     <?php endif; ?>
                 </div>
@@ -519,18 +519,18 @@ nav.erp-nav .navbar-nav>.nav-item.active>.nav-link:focus{
             <?php if ($showExpense): ?>
             <li class="nav-item dropdown<?= $activeExpense ? ' active' : '' ?>">
                 <a class="nav-link dropdown-toggle" href="#" data-bs-toggle="dropdown" role="button">
-                    <i class="fa fa-credit-card mr-1"></i> Expense
+                    <i class="fas fa-credit-card mr-1"></i> Expense
                 </a>
                 <div class="dropdown-menu">
                     <?php if ($ca('Accounting.Expense.Create')): ?>
-                    <a class="dropdown-item" href="<?= Yii::app()->createUrl('/accounting/expense/create') ?>"><i class="fa fa-plus"></i> New Expense</a>
+                    <a class="dropdown-item" href="<?= Yii::app()->createUrl('/accounting/expense/create') ?>"><i class="fas fa-plus"></i> New Expense</a>
                     <?php endif; ?>
                     <?php if ($ca('Accounting.Expense.Admin')): ?>
-                    <a class="dropdown-item" href="<?= Yii::app()->createUrl('/accounting/expense/admin') ?>"><i class="fa fa-list"></i> Manage Expenses</a>
+                    <a class="dropdown-item" href="<?= Yii::app()->createUrl('/accounting/expense/admin') ?>"><i class="fas fa-list"></i> Manage Expenses</a>
                     <?php endif; ?>
                     <?php if ($ca('Accounting.ExpenseHead.Admin')): ?>
                     <div class="dropdown-divider"></div>
-                    <a class="dropdown-item" href="<?= Yii::app()->createUrl('/accounting/expenseHead/admin') ?>"><i class="fa fa-tags"></i> Expense Heads</a>
+                    <a class="dropdown-item" href="<?= Yii::app()->createUrl('/accounting/expenseHead/admin') ?>"><i class="fas fa-tags"></i> Expense Heads</a>
                     <?php endif; ?>
                 </div>
             </li>
@@ -540,13 +540,13 @@ nav.erp-nav .navbar-nav>.nav-item.active>.nav-link:focus{
             <?php if ($ca('Loan.LoanPersons.Admin') || $ca('Loan.LoanTransactions.Admin') || $isDev): ?>
             <li class="nav-item dropdown<?= $activeLoan ? ' active' : '' ?>">
                 <a class="nav-link dropdown-toggle" href="#" data-bs-toggle="dropdown" role="button">
-                    <i class="fa fa-handshake-o mr-1"></i> Loan
+                    <i class="fas fa-handshake-o mr-1"></i> Loan
                 </a>
                 <div class="dropdown-menu">
-                    <a class="dropdown-item" href="<?= Yii::app()->createUrl('/loan/loanPersons/admin') ?>"><i class="fa fa-user-plus"></i> Persons</a>
-                    <a class="dropdown-item" href="<?= Yii::app()->createUrl('/loan/loanTransactions/admin') ?>"><i class="fa fa-exchange"></i> Transactions</a>
+                    <a class="dropdown-item" href="<?= Yii::app()->createUrl('/loan/loanPersons/admin') ?>"><i class="fas fa-user-plus"></i> Persons</a>
+                    <a class="dropdown-item" href="<?= Yii::app()->createUrl('/loan/loanTransactions/admin') ?>"><i class="fas fa-right-left"></i> Transactions</a>
                     <div class="dropdown-divider"></div>
-                    <a class="dropdown-item" href="<?= Yii::app()->createUrl('/report/loanLedger') ?>"><i class="fa fa-book"></i> Person Ledger</a>
+                    <a class="dropdown-item" href="<?= Yii::app()->createUrl('/report/loanLedger') ?>"><i class="fas fa-book"></i> Person Ledger</a>
                 </div>
             </li>
             <?php endif; ?>
@@ -555,76 +555,76 @@ nav.erp-nav .navbar-nav>.nav-item.active>.nav-link:focus{
             <?php if ($showReports): ?>
             <li class="nav-item dropdown<?= $activeReports ? ' active' : '' ?>">
                 <a class="nav-link dropdown-toggle" href="#" data-bs-toggle="dropdown" role="button">
-                    <i class="fa fa-bar-chart mr-1"></i> Reports
+                    <i class="fas fa-chart-bar mr-1"></i> Reports
                 </a>
                 <div class="dropdown-menu" style="min-width:240px">
                     <?php if ($ca('Inventory.Inventory.StockReport') || $ca('Inventory.Inventory.StockReportSupplierWise') || $ca('Report.PriceListView')): ?>
-                    <div class="dropdown-header"><i class="fa fa-archive"></i> Inventory</div>
+                    <div class="dropdown-header"><i class="fas fa-archive"></i> Inventory</div>
                     <?php if ($ca('Inventory.Inventory.StockReport')): ?>
-                    <a class="dropdown-item" href="<?= Yii::app()->createUrl('/inventory/inventory/stockReport') ?>"><i class="fa fa-cube"></i> Stock Report</a>
+                    <a class="dropdown-item" href="<?= Yii::app()->createUrl('/inventory/inventory/stockReport') ?>"><i class="fas fa-cube"></i> Stock Report</a>
                     <?php endif; ?>
                     <?php if ($ca('Inventory.Inventory.StockReportSupplierWise')): ?>
-                    <a class="dropdown-item" href="<?= Yii::app()->createUrl('/inventory/inventory/stockReportSupplierWise') ?>"><i class="fa fa-truck"></i> Stock (Supplier Wise)</a>
+                    <a class="dropdown-item" href="<?= Yii::app()->createUrl('/inventory/inventory/stockReportSupplierWise') ?>"><i class="fas fa-truck"></i> Stock (Supplier Wise)</a>
                     <?php endif; ?>
                     <?php if ($ca('Report.PriceListView')): ?>
-                    <a class="dropdown-item" href="<?= Yii::app()->createUrl('/report/priceListView') ?>"><i class="fa fa-tag"></i> Price List</a>
+                    <a class="dropdown-item" href="<?= Yii::app()->createUrl('/report/priceListView') ?>"><i class="fas fa-tag"></i> Price List</a>
                     <?php endif; ?>
                     <?php endif; ?>
 
                     <?php if ($ca('Report.SalesReport') || $ca('Report.SaleDetailsReport') || $ca('Report.CustomerDueReport') || $ca('Report.CustomerLedger') || $ca('Report.CollectionReport')): ?>
                     <div class="dropdown-divider"></div>
-                    <div class="dropdown-header"><i class="fa fa-shopping-cart"></i> Sales</div>
+                    <div class="dropdown-header"><i class="fas fa-shopping-cart"></i> Sales</div>
                     <?php if ($ca('Report.SalesReport')): ?>
-                    <a class="dropdown-item" href="<?= Yii::app()->createUrl('/report/salesReport') ?>"><i class="fa fa-line-chart"></i> Sales Report</a>
+                    <a class="dropdown-item" href="<?= Yii::app()->createUrl('/report/salesReport') ?>"><i class="fas fa-line-chart"></i> Sales Report</a>
                     <?php endif; ?>
                     <?php if ($ca('Report.SaleDetailsReport')): ?>
-                    <a class="dropdown-item" href="<?= Yii::app()->createUrl('/report/saleDetailsReport') ?>"><i class="fa fa-bar-chart"></i> Sales (Product Wise)</a>
+                    <a class="dropdown-item" href="<?= Yii::app()->createUrl('/report/saleDetailsReport') ?>"><i class="fas fa-chart-bar"></i> Sales (Product Wise)</a>
                     <?php endif; ?>
                     <?php if ($ca('Report.CustomerDueReport')): ?>
-                    <a class="dropdown-item" href="<?= Yii::app()->createUrl('/report/customerDueReport') ?>"><i class="fa fa-exclamation-circle"></i> Customer Due</a>
+                    <a class="dropdown-item" href="<?= Yii::app()->createUrl('/report/customerDueReport') ?>"><i class="fas fa-exclamation-circle"></i> Customer Due</a>
                     <?php endif; ?>
                     <?php if ($ca('Report.CustomerLedger')): ?>
-                    <a class="dropdown-item" href="<?= Yii::app()->createUrl('/report/customerLedger') ?>"><i class="fa fa-list-alt"></i> Customer Ledger</a>
+                    <a class="dropdown-item" href="<?= Yii::app()->createUrl('/report/customerLedger') ?>"><i class="fas fa-list-alt"></i> Customer Ledger</a>
                     <?php endif; ?>
                     <?php if ($ca('Report.CollectionReport')): ?>
-                    <a class="dropdown-item" href="<?= Yii::app()->createUrl('/report/collectionReport') ?>"><i class="fa fa-money"></i> Collection Report</a>
+                    <a class="dropdown-item" href="<?= Yii::app()->createUrl('/report/collectionReport') ?>"><i class="fas fa-money-bill"></i> Collection Report</a>
                     <?php endif; ?>
                     <?php endif; ?>
 
                     <?php if ($ca('Report.PurchaseReport') || $ca('Report.PurchaseDetailsReport') || $ca('Report.SupplierDueReport') || $ca('Report.SupplierLedger') || $ca('Report.PaymentReport')): ?>
                     <div class="dropdown-divider"></div>
-                    <div class="dropdown-header"><i class="fa fa-truck"></i> Purchase</div>
+                    <div class="dropdown-header"><i class="fas fa-truck"></i> Purchase</div>
                     <?php if ($ca('Report.PurchaseReport')): ?>
-                    <a class="dropdown-item" href="<?= Yii::app()->createUrl('/report/purchaseReport') ?>"><i class="fa fa-pie-chart"></i> Purchase Report</a>
+                    <a class="dropdown-item" href="<?= Yii::app()->createUrl('/report/purchaseReport') ?>"><i class="fas fa-chart-pie"></i> Purchase Report</a>
                     <?php endif; ?>
                     <?php if ($ca('Report.PurchaseDetailsReport')): ?>
-                    <a class="dropdown-item" href="<?= Yii::app()->createUrl('/report/purchaseDetailsReport') ?>"><i class="fa fa-area-chart"></i> Purchase (Product Wise)</a>
+                    <a class="dropdown-item" href="<?= Yii::app()->createUrl('/report/purchaseDetailsReport') ?>"><i class="fas fa-chart-area"></i> Purchase (Product Wise)</a>
                     <?php endif; ?>
                     <?php if ($ca('Report.SupplierDueReport')): ?>
-                    <a class="dropdown-item" href="<?= Yii::app()->createUrl('/report/supplierDueReport') ?>"><i class="fa fa-exclamation-triangle"></i> Supplier Due</a>
+                    <a class="dropdown-item" href="<?= Yii::app()->createUrl('/report/supplierDueReport') ?>"><i class="fas fa-exclamation-triangle"></i> Supplier Due</a>
                     <?php endif; ?>
                     <?php if ($ca('Report.SupplierLedger')): ?>
-                    <a class="dropdown-item" href="<?= Yii::app()->createUrl('/report/supplierLedger') ?>"><i class="fa fa-book"></i> Supplier Ledger</a>
+                    <a class="dropdown-item" href="<?= Yii::app()->createUrl('/report/supplierLedger') ?>"><i class="fas fa-book"></i> Supplier Ledger</a>
                     <?php endif; ?>
                     <?php if ($ca('Report.PaymentReport')): ?>
-                    <a class="dropdown-item" href="<?= Yii::app()->createUrl('/report/paymentReport') ?>"><i class="fa fa-credit-card"></i> Payment Report</a>
+                    <a class="dropdown-item" href="<?= Yii::app()->createUrl('/report/paymentReport') ?>"><i class="fas fa-credit-card"></i> Payment Report</a>
                     <?php endif; ?>
                     <?php endif; ?>
 
                     <?php if ($ca('Report.ExpenseSummaryReport') || $ca('Report.ExpenseDetailsReport')): ?>
                     <div class="dropdown-divider"></div>
-                    <div class="dropdown-header"><i class="fa fa-credit-card"></i> Expense</div>
+                    <div class="dropdown-header"><i class="fas fa-credit-card"></i> Expense</div>
                     <?php if ($ca('Report.ExpenseSummaryReport')): ?>
-                    <a class="dropdown-item" href="<?= Yii::app()->createUrl('/report/expenseSummaryReport') ?>"><i class="fa fa-table"></i> Expense Summary</a>
+                    <a class="dropdown-item" href="<?= Yii::app()->createUrl('/report/expenseSummaryReport') ?>"><i class="fas fa-table"></i> Expense Summary</a>
                     <?php endif; ?>
                     <?php if ($ca('Report.ExpenseDetailsReport')): ?>
-                    <a class="dropdown-item" href="<?= Yii::app()->createUrl('/report/expenseDetailsReport') ?>"><i class="fa fa-list"></i> Expense Details</a>
+                    <a class="dropdown-item" href="<?= Yii::app()->createUrl('/report/expenseDetailsReport') ?>"><i class="fas fa-list"></i> Expense Details</a>
                     <?php endif; ?>
                     <?php endif; ?>
 
                     <?php if ($ca('Report.DayInOutReport')): ?>
                     <div class="dropdown-divider"></div>
-                    <a class="dropdown-item" href="<?= Yii::app()->createUrl('/report/dayInOutReport') ?>"><i class="fa fa-calendar-check-o"></i> Day In/Out Report</a>
+                    <a class="dropdown-item" href="<?= Yii::app()->createUrl('/report/dayInOutReport') ?>"><i class="fas fa-calendar-check-o"></i> Day In/Out Report</a>
                     <?php endif; ?>
                 </div>
             </li>
@@ -639,7 +639,7 @@ nav.erp-nav .navbar-nav>.nav-item.active>.nav-link:focus{
             <li class="nav-item dropdown" id="draft-notif-item" style="display:none;">
                 <a class="nav-link" href="#" id="draft-notif-toggle"
                    data-bs-toggle="dropdown" role="button" title="Unsaved Drafts">
-                    <i class="fa fa-pencil-square-o"></i>
+                    <i class="fas fa-pencil-square-o"></i>
                     <span id="draft-notif-count"
                           class="badge bg-danger badge-pill"
                           style="position:absolute; top:6px; right:2px;
@@ -648,11 +648,11 @@ nav.erp-nav .navbar-nav>.nav-item.active>.nav-link:focus{
                 <div class="dropdown-menu dropdown-menu-right"
                      id="draft-notif-menu" style="min-width:300px; max-width:340px;">
                     <div class="dropdown-header" style="justify-content:space-between;">
-                        <span><i class="fa fa-pencil-square-o"></i> Unsaved Drafts</span>
+                        <span><i class="fas fa-pencil-square-o"></i> Unsaved Drafts</span>
                         <a href="#" id="draft-clear-all"
                            style="font-size:10px; font-weight:500; color:rgba(255,255,255,.4);
                                   text-transform:none; letter-spacing:normal;">
-                            <i class="fa fa-trash"></i> Clear all
+                            <i class="fas fa-trash"></i> Clear all
                         </a>
                     </div>
                     <div id="draft-notif-list"></div>
@@ -664,33 +664,33 @@ nav.erp-nav .navbar-nav>.nav-item.active>.nav-link:focus{
                     <span class="d-none d-lg-inline"><?= CHtml::encode($userName) ?></span>
                 </a>
                 <div class="dropdown-menu dropdown-menu-right">
-                    <div class="dropdown-header"><i class="fa fa-user-circle-o"></i> <?= CHtml::encode($userName) ?></div>
+                    <div class="dropdown-header"><i class="fas fa-user-circle-o"></i> <?= CHtml::encode($userName) ?></div>
                     <div class="dropdown-divider"></div>
                     <div class="erp-support-block">
-                        <div class="erp-support-label"><i class="fa fa-headphones"></i> Support</div>
+                        <div class="erp-support-label"><i class="fas fa-headphones"></i> Support</div>
                         <a class="erp-support-call" href="tel:<?= CHtml::encode(preg_replace('/\s+/', '', Yii::app()->params->adminPhone)) ?>">
-                            <i class="fa fa-phone"></i>
+                            <i class="fas fa-phone"></i>
                             <?= CHtml::encode(Yii::app()->params->adminPhone) ?>
                         </a>
                     </div>
                     <div class="erp-connect-block">
-                        <div class="erp-support-label"><i class="fa fa-globe"></i> Connect</div>
+                        <div class="erp-support-label"><i class="fas fa-globe"></i> Connect</div>
                         <a class="erp-connect-item" href="http://raihan-uddin.github.io/" target="_blank" rel="noopener">
-                            <i class="fa fa-globe erp-ci-globe"></i> Portfolio
+                            <i class="fas fa-globe erp-ci-globe"></i> Portfolio
                         </a>
                         <a class="erp-connect-item" href="https://www.linkedin.com/in/raihanuddin2/" target="_blank" rel="noopener">
-                            <i class="fa fa-linkedin-square erp-ci-li"></i> LinkedIn
+                            <i class="fas fa-linkedin-square erp-ci-li"></i> LinkedIn
                         </a>
                         <a class="erp-connect-item" href="https://www.facebook.com/raihan.uddin22" target="_blank" rel="noopener">
-                            <i class="fa fa-facebook-square erp-ci-fb"></i> Facebook
+                            <i class="fas fa-facebook-square erp-ci-fb"></i> Facebook
                         </a>
                     </div>
                     <div class="dropdown-divider"></div>
                     <a class="dropdown-item" href="<?= Yii::app()->createUrl('/user/profile/changepassword') ?>">
-                        <i class="fa fa-key"></i> Change Password
+                        <i class="fas fa-key"></i> Change Password
                     </a>
                     <a class="dropdown-item" href="<?= Yii::app()->createUrl('/site/logout') ?>">
-                        <i class="fa fa-sign-out"></i> Logout
+                        <i class="fas fa-sign-out"></i> Logout
                     </a>
                 </div>
             </li>
@@ -762,7 +762,7 @@ nav.erp-nav .navbar-nav>.nav-item.active>.nav-link:focus{
                     list.push({
                         key:     'expense_draft_create',
                         title:   'Expense',
-                        icon:    'fa-money',
+                        icon:    'fa-money-bill',
                         color:   '#34d399',
                         url:     '<?= Yii::app()->createUrl("/accounting/expense/create") ?>',
                         label:   exRows + ' item' + (exRows !== 1 ? 's' : ''),
@@ -790,7 +790,7 @@ nav.erp-nav .navbar-nav>.nav-item.active>.nav-link:focus{
                     list.push({
                         key:     key,
                         title:   'Money Receipt',
-                        icon:    'fa-money',
+                        icon:    'fa-money-bill',
                         color:   '#34d399',
                         url:     BASE + '/index.php/accounting/moneyReceipt/create/' + customerId,
                         label:   mrParts.join(' — '),
@@ -830,13 +830,13 @@ nav.erp-nav .navbar-nav>.nav-item.active>.nav-link:focus{
                             (entry.label || 'Unsaved draft') +
                         '</div>' +
                         (ts ? '<div style="font-size:10px; color:rgba(255,255,255,.28); margin-top:2px;">' +
-                            '<i class="fa fa-clock-o"></i> ' + ts + '</div>' : '') +
+                            '<i class="fas fa-clock"></i> ' + ts + '</div>' : '') +
                     '</div>' +
                     '<button class="draft-discard-btn ml-2" data-key="' + entry.key + '"' +
                         ' style="background:none; border:1px solid rgba(255,255,255,.18); border-radius:4px;' +
                         ' color:rgba(255,255,255,.45); font-size:10px; padding:2px 6px; flex-shrink:0; cursor:pointer;"' +
                         ' title="Discard draft">' +
-                        '<i class="fa fa-times"></i>' +
+                        '<i class="fas fa-times"></i>' +
                     '</button>' +
                 '</a>'
             );

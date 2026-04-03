@@ -23,10 +23,10 @@ $form = $this->beginWidget('CActiveForm', array(
         <h3 class="card-title">Search Conditions (DAY IN/OUT REPORT)</h3>
         <div class="card-tools">
             <button type="button" class="btn btn-tool" data-card-widget="collapse">
-                <i class="fa fa-minus"></i>
+                <i class="fas fa-minus"></i>
             </button>
             <!--            <button type="button" class="btn btn-tool" data-card-widget="remove">-->
-            <!--                <i class="fa fa-times"></i>-->
+            <!--                <i class="fas fa-times"></i>-->
             <!--            </button>-->
         </div>
     </div>
@@ -98,7 +98,7 @@ $form = $this->beginWidget('CActiveForm', array(
         ?>
 
         <span id="ajaxLoaderMR" class="ajaxLoaderMR" style="display: none;">
-            <i class="fa fa-spinner fa-spin fa-2x"></i>
+            <i class="fas fa-spinner fa-spin fa-2x"></i>
         </span>
     </div>
 </div>

@@ -86,7 +86,7 @@ $form = $this->beginWidget('CActiveForm', array(
     <div class="card-header">
         <div class="pi-hd-top">
             <div class="pi-hd-title">
-                <div class="pi-hd-icon"><i class="fa fa-tags"></i></div>
+                <div class="pi-hd-icon"><i class="fas fa-tags"></i></div>
                 <div>
                     <?= $model->isNewRecord ? 'Add New Category' : 'Update Category' ?>
                     <div class="pi-hd-sub">Product category / item type</div>
@@ -94,7 +94,7 @@ $form = $this->beginWidget('CActiveForm', array(
             </div>
             <div class="card-tools">
                 <button type="button" class="btn btn-tool" data-card-widget="collapse">
-                    <i class="fa fa-minus"></i>
+                    <i class="fas fa-minus"></i>
                 </button>
             </div>
         </div>
@@ -112,7 +112,7 @@ $form = $this->beginWidget('CActiveForm', array(
                     <label class="pi-fl-label" for="<?= CHtml::activeId($model, 'item_name') ?>">
                         Category Name <span style="color:#ef4444;">*</span>
                     </label>
-                    <i class="fa fa-tag pi-fl-icon"></i>
+                    <i class="fas fa-tag pi-fl-icon"></i>
                 </div>
                 <span class="pi-error"><?= $form->error($model, 'item_name') ?></span>
             </div>
@@ -121,7 +121,7 @@ $form = $this->beginWidget('CActiveForm', array(
 
     <div class="card-footer">
         <?= CHtml::ajaxSubmitButton(
-            '<i class="fa fa-save"></i> Save',
+            '<i class="fas fa-save"></i> Save',
             CHtml::normalizeUrl(array('prodItems/create', 'render' => true)),
             array(
                 'dataType'   => 'json',
@@ -143,7 +143,7 @@ $form = $this->beginWidget('CActiveForm', array(
             array('id' => 'pi-submit-btn', 'class' => 'pi-submit')
         ) ?>
         <span id="ajaxLoaderMR" class="ajaxLoaderMR" style="display:none;">
-            <i class="fa fa-spinner fa-spin fa-2x"></i>
+            <i class="fas fa-spinner fa-spin fa-2x"></i>
         </span>
         <div id="formResult" class="ajaxTargetDiv"></div>
         <div id="formResultError" class="ajaxTargetDivErr"></div>

@@ -355,7 +355,7 @@ foreach ($user->getFlashKeys() as $key):
     if ($user->hasFlash($key)): ?>
         <div class="alert alert-<?php echo $key; ?> alert-dismissible fade show" role="alert">
             <button type="button" class="btn-close" data-bs-dismiss="alert" aria-hidden="true">×</button>
-            <i class="fa fa-<?php echo ($key === 'success') ? 'check-circle' : 'exclamation-triangle'; ?>" style="margin-right:6px;"></i>
+            <i class="fas fa-<?php echo ($key === 'success') ? 'check-circle' : 'exclamation-triangle'; ?>" style="margin-right:6px;"></i>
             <?php echo $user->getFlash($key); ?>
         </div>
     <?php
@@ -375,10 +375,10 @@ if (Yii::app()->user->checkAccess('Sell.Order.VoucherPreview')) {
     ?>
     <div class="card card-primary">
         <div class="card-header">
-            <h3 class="card-title"><i class="fa fa-search" style="margin-right:6px;"></i>Preview Order</h3>
+            <h3 class="card-title"><i class="fas fa-search" style="margin-right:6px;"></i>Preview Order</h3>
             <div class="card-tools">
                 <button type="button" class="btn btn-tool" data-card-widget="collapse">
-                    <i class="fa fa-minus"></i>
+                    <i class="fas fa-minus"></i>
                 </button>
             </div>
         </div>
@@ -419,7 +419,7 @@ if (Yii::app()->user->checkAccess('Sell.Order.VoucherPreview')) {
                 <div class="col-md-2 col-sm-12">
                     <?php
                     echo CHtml::ajaxLink(
-                            '<i class="fa fa-print"></i> &nbsp;Preview',
+                            '<i class="fas fa-print"></i> &nbsp;Preview',
                             Yii::app()->createUrl('/sell/sellOrder/voucherPreview'), array(
                             'type' => 'POST',
                             'beforeSend' => "function(){
@@ -463,10 +463,10 @@ if (Yii::app()->user->checkAccess('Sell.Order.VoucherPreview')) {
 
 <div class="card card-primary">
     <div class="card-header">
-        <h3 class="card-title"><i class="fa fa-list" style="margin-right:6px;"></i>Manage Orders</h3>
+        <h3 class="card-title"><i class="fas fa-list" style="margin-right:6px;"></i>Manage Orders</h3>
         <div class="card-tools">
             <button type="button" class="btn btn-tool" data-card-widget="collapse">
-                <i class="fa fa-minus"></i>
+                <i class="fas fa-minus"></i>
             </button>
         </div>
     </div>
@@ -511,7 +511,7 @@ if (Yii::app()->user->checkAccess('Sell.Order.VoucherPreview')) {
                     return '<div class="dst-wrap">'
                         . '<span class="dst-orders">' . $t['count'] . ' order' . ($t['count'] != 1 ? 's' : '') . '</span>'
                         . $body
-                        . '<span class="dst-total"><i class="fa fa-calculator" style="margin-right:4px;"></i>' . number_format($t['grand_total'], 2) . '</span>'
+                        . '<span class="dst-total"><i class="fas fa-calculator" style="margin-right:4px;"></i>' . number_format($t['grand_total'], 2) . '</span>'
                         . '</div>';
                 },
                 'template' => "<div class='row' style='text-align:right; margin-bottom:6px;'>{pager}</div>\n{summary}{items}{summary}\n{pager}",
@@ -524,17 +524,17 @@ if (Yii::app()->user->checkAccess('Sell.Order.VoucherPreview')) {
                             Page {page} of {pages}
                         </span>
                     </div>",
-                'emptyText' => "<div class='alert alert-warning text-center' role='alert'><i class='icon fa fa-exclamation-triangle'></i> No results found.</div>",
+                'emptyText' => "<div class='alert alert-warning text-center' role='alert'><i class='icon fas fa-exclamation-triangle'></i> No results found.</div>",
                 'summaryCssClass' => 'col-sm-12 col-md-6',
                 'pagerCssClass' => 'col-xs-12 text-end',
                 'pager' => array(
                         'class'          => 'CLinkPager',
                         'cssFile'        => false,
                         'header'         => '',
-                        'firstPageLabel' => '<i class="fa fa-angle-double-left"></i>',
-                        'lastPageLabel'  => '<i class="fa fa-angle-double-right"></i>',
-                        'prevPageLabel'  => '<i class="fa fa-angle-left"></i>',
-                        'nextPageLabel'  => '<i class="fa fa-angle-right"></i>',
+                        'firstPageLabel' => '<i class="fas fa-angle-double-left"></i>',
+                        'lastPageLabel'  => '<i class="fas fa-angle-double-right"></i>',
+                        'prevPageLabel'  => '<i class="fas fa-angle-left"></i>',
+                        'nextPageLabel'  => '<i class="fas fa-angle-right"></i>',
                         'maxButtonCount' => 7,
                         'htmlOptions'    => array('class' => 'pagination pagination-sm', 'style' => 'float:right; margin:4px 0;'),
                         'selectedPageCssClass' => 'active',
@@ -646,7 +646,7 @@ if (Yii::app()->user->checkAccess('Sell.Order.VoucherPreview')) {
                                 'afterDelete' => 'function(link,success,data){ if(success) $("#statusMsg").html(data); }',
                                 'buttons' => array(
                                         'singleInvoice' => array(
-                                                'label' => '<i class="fa fa-file-pdf-o"></i>',
+                                                'label' => '<i class="fas fa-file-pdf-o"></i>',
                                                 'imageUrl' => false,
                                                 'options' => array(
                                                         'class' => 'action-btn btn-preview',
@@ -672,7 +672,7 @@ if (Yii::app()->user->checkAccess('Sell.Order.VoucherPreview')) {
                                                 }",
                                         ),
                                         'createMr' => array(
-                                                'label' => '<i class="fa fa-money"></i>',
+                                                'label' => '<i class="fas fa-money-bill"></i>',
                                                 'imageUrl' => false,
                                                 'options' => array(
                                                         'class' => 'action-btn btn-payment',
@@ -684,7 +684,7 @@ if (Yii::app()->user->checkAccess('Sell.Order.VoucherPreview')) {
                                                 'visible' => '$data->total_paid == 0 ? TRUE : FALSE',
                                         ),
                                         'update' => array(
-                                                'label' => '<i class="fa fa-pencil-square-o"></i>',
+                                                'label' => '<i class="fas fa-pencil-square-o"></i>',
                                                 'imageUrl' => false,
                                                 'options' => array(
                                                         'class' => 'action-btn btn-edit',
@@ -694,7 +694,7 @@ if (Yii::app()->user->checkAccess('Sell.Order.VoucherPreview')) {
                                                 ),
                                         ),
                                         'delete' => array(
-                                                'label' => '<i class="fa fa-trash"></i>',
+                                                'label' => '<i class="fas fa-trash"></i>',
                                                 'imageUrl' => false,
                                                 'options' => array(
                                                         'class' => 'action-btn btn-delete',
@@ -735,7 +735,7 @@ if (Yii::app()->user->checkAccess('Sell.Order.VoucherPreview')) {
                 <div class="goto-page-wrap" style="justify-content:flex-end;">
                     <span>Go to page</span>
                     <input type="number" id="goto-page-input" class="form-control" min="1" placeholder="Page #"/>
-                    <button onclick="goToPage()"><i class="fa fa-arrow-right"></i> Go</button>
+                    <button onclick="goToPage()"><i class="fas fa-arrow-right"></i> Go</button>
                 </div>
             </div>
         </div>

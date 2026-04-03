@@ -1,8 +1,8 @@
 <div class="card mt-3 shadow-sm">
     <div class="card-header d-flex justify-content-between align-items-center">
-        <h5 class="mb-0"><i class="fa fa-boxes text-info"></i> Inventory Analytics</h5>
+        <h5 class="mb-0"><i class="fas fa-boxes text-info"></i> Inventory Analytics</h5>
         <button id="load-inventory-stats" class="btn btn-outline-info btn-sm">
-            <i class="fa fa-sync"></i> Load / Refresh
+            <i class="fas fa-sync"></i> Load / Refresh
         </button>
     </div>
     <div class="card-body text-center" id="inventory-charts">
@@ -15,15 +15,15 @@
     $('#load-inventory-stats').on('click', function() {
         const $btn = $(this);
         const $div = $('#inventory-charts');
-        $btn.prop('disabled', true).html('<i class="fa fa-spinner fa-spin"></i> Loading...');
-        $div.html('<p><i class="fa fa-spinner fa-spin"></i> Fetching inventory analytics...</p>');
+        $btn.prop('disabled', true).html('<i class="fas fa-spinner fa-spin"></i> Loading...');
+        $div.html('<p><i class="fas fa-spinner fa-spin"></i> Fetching inventory analytics...</p>');
 
         $.ajax({
             url: '<?= Yii::app()->createUrl("site/inventoryStats") ?>',
             type: 'POST',
             dataType: 'json',
             success: function(res) {
-                $btn.prop('disabled', false).html('<i class="fa fa-sync"></i> Refresh');
+                $btn.prop('disabled', false).html('<i class="fas fa-sync"></i> Refresh');
                 const d = res.data;
                 $div.html(`
               <div class="row">
@@ -96,7 +96,7 @@
             },
             error: function() {
                 $div.html('<p class="text-danger">⚠️ Failed to load inventory stats.</p>');
-                $btn.prop('disabled', false).html('<i class="fa fa-sync"></i> Retry');
+                $btn.prop('disabled', false).html('<i class="fas fa-sync"></i> Retry');
             }
         });
     });

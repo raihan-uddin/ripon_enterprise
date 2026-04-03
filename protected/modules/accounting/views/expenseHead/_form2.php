@@ -52,7 +52,7 @@ $form = $this->beginWidget('CActiveForm', array(
     <div class="eh-card-header">
         <div class="eh-header-row">
             <div class="eh-icon-box">
-                <i class="fa fa-sitemap"></i>
+                <i class="fas fa-sitemap"></i>
             </div>
             <div class="eh-header-text">
                 <h3 class="eh-title"><?php echo($model->isNewRecord ? 'Add New Expense Head' : 'Update Expense Head: ' . $model->title); ?></h3>
@@ -66,7 +66,7 @@ $form = $this->beginWidget('CActiveForm', array(
         <div class="row">
             <div class="col-sm-12 col-md-12 col-lg-12">
                 <div class="eh-fl">
-                    <i class="fa fa-tag eh-fl-icon"></i>
+                    <i class="fas fa-tag eh-fl-icon"></i>
                     <?php echo $form->textField($model, 'title', array('maxlength' => 255, 'class' => 'eh-fl-input', 'placeholder' => ' ')); ?>
                     <label class="eh-fl-label">Title</label>
                 </div>
@@ -75,7 +75,7 @@ $form = $this->beginWidget('CActiveForm', array(
 
             <div class="col-sm-12 col-md-12 col-lg-12">
                 <div class="eh-select-group">
-                    <label class="eh-label"><i class="fa fa-toggle-on" style="margin-right:5px;color:#6366f1"></i>Status</label>
+                    <label class="eh-label"><i class="fas fa-toggle-on" style="margin-right:5px;color:#6366f1"></i>Status</label>
                     <?php echo $form->dropDownList($model, 'status', [ExpenseHead::ACTIVE => 'ACTIVE', ExpenseHead::INACTIVE => 'INACTIVE'], array('class' => 'eh-select')); ?>
                 </div>
                 <?php echo $form->error($model, 'status', array('class' => 'eh-error')); ?>
@@ -87,7 +87,7 @@ $form = $this->beginWidget('CActiveForm', array(
     <div class="eh-card-footer">
         <?php echo CHtml::submitButton($model->isNewRecord ? 'Create' : 'Update', array('onclick' => 'loadingDivDisplay();ehRipple(event)', 'class' => 'eh-submit')); ?>
         <span id="ajaxLoaderMR2" class="ajaxLoaderMR" style="display: none;">
-            <i class="fa fa-spinner fa-spin fa-2x" style="color:#6366f1"></i>
+            <i class="fas fa-spinner fa-spin fa-2x" style="color:#6366f1"></i>
         </span>
     </div>
     <script type="text/javascript">

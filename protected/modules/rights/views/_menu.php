@@ -69,37 +69,37 @@ $isActive = function($c, $a = null) use ($ctrl, $action) {
 
 <nav class="rights-nav">
     <div class="rights-nav-label">
-        <i class="fa fa-shield"></i> Access Control
+        <i class="fas fa-shield"></i> Access Control
     </div>
     <div class="rights-nav-left">
         <a class="rn-link <?php echo $isActive('assignment') ? 'rn-active' : ''; ?>"
            href="<?php echo Yii::app()->createUrl('/rights/assignment/view'); ?>">
-            <i class="fa fa-users"></i> <?php echo Rights::t('core', 'Assignments'); ?>
+            <i class="fas fa-users"></i> <?php echo Rights::t('core', 'Assignments'); ?>
         </a>
         <a class="rn-link <?php echo $isActive('authItem', 'permissions') ? 'rn-active' : ''; ?>"
            href="<?php echo Yii::app()->createUrl('/rights/authItem/permissions'); ?>">
-            <i class="fa fa-lock"></i> <?php echo Rights::t('core', 'Permissions'); ?>
+            <i class="fas fa-lock"></i> <?php echo Rights::t('core', 'Permissions'); ?>
         </a>
         <a class="rn-link <?php echo $isActive('authItem', 'roles') ? 'rn-active' : ''; ?>"
            href="<?php echo Yii::app()->createUrl('/rights/authItem/roles'); ?>">
-            <i class="fa fa-id-badge"></i> <?php echo Rights::t('core', 'Roles'); ?>
+            <i class="fas fa-id-badge"></i> <?php echo Rights::t('core', 'Roles'); ?>
         </a>
         <a class="rn-link <?php echo $isActive('authItem', 'tasks') ? 'rn-active' : ''; ?>"
            href="<?php echo Yii::app()->createUrl('/rights/authItem/tasks'); ?>">
-            <i class="fa fa-tasks"></i> <?php echo Rights::t('core', 'Tasks'); ?>
+            <i class="fas fa-tasks"></i> <?php echo Rights::t('core', 'Tasks'); ?>
         </a>
         <a class="rn-link <?php echo $isActive('authItem', 'operations') ? 'rn-active' : ''; ?>"
            href="<?php echo Yii::app()->createUrl('/rights/authItem/operations'); ?>">
-            <i class="fa fa-cog"></i> <?php echo Rights::t('core', 'Operations'); ?>
+            <i class="fas fa-cog"></i> <?php echo Rights::t('core', 'Operations'); ?>
         </a>
     </div>
     <div class="rights-nav-right">
         <a class="rn-link" href="<?php echo Yii::app()->createUrl('/rights/authItem/generateFile'); ?>"
            title="<?php echo Rights::t('core', 'Update Permission Cache File'); ?>">
-            <i class="fa fa-refresh"></i> Refresh Cache
+            <i class="fas fa-refresh"></i> Refresh Cache
         </a>
         <a class="rn-link" href="<?php echo Yii::app()->createUrl('/site/dashBoard'); ?>">
-            <i class="fa fa-home"></i> Dashboard
+            <i class="fas fa-home"></i> Dashboard
         </a>
     </div>
 </nav>

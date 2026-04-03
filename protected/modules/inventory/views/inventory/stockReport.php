@@ -23,7 +23,7 @@ $form = $this->beginWidget('CActiveForm', array(
         <h3 class="card-title">Search Conditions (STOCK REPORT)</h3>
         <div class="card-tools">
             <button type="button" class="btn btn-tool" data-card-widget="collapse">
-                <i class="fa fa-minus"></i>
+                <i class="fas fa-minus"></i>
             </button>
         </div>
     </div>
@@ -36,7 +36,7 @@ $form = $this->beginWidget('CActiveForm', array(
                     <?php echo $form->labelEx($model, 'date_from', ); ?>
                     <div class="input-group" id="date_from" data-target-input="nearest">
                         <?php echo $form->textField($model, 'date_from', array('class' => 'form-control datetimepicker-input', 'placeholder' => 'YYYY-MM-DD', 'value' => date('Y-m-d'))); ?>
-                            <div class="input-group-text"><i class="fa fa-calendar"></i></div>
+                            <div class="input-group-text"><i class="fas fa-calendar"></i></div>
                         </div>
                     </div>
                     <span class="help-block"
@@ -49,7 +49,7 @@ $form = $this->beginWidget('CActiveForm', array(
                     <?php echo $form->labelEx($model, 'date_to', ); ?>
                     <div class="input-group" id="date_to" data-target-input="nearest">
                         <?php echo $form->textField($model, 'date_to', array('class' => 'form-control datetimepicker-input', 'placeholder' => 'YYYY-MM-DD', 'value' => date('Y-m-d'))); ?>
-                            <div class="input-group-text"><i class="fa fa-calendar"></i></div>
+                            <div class="input-group-text"><i class="fas fa-calendar"></i></div>
                         </div>
                     </div>
                     <span class="help-block"
@@ -126,7 +126,7 @@ $form = $this->beginWidget('CActiveForm', array(
                 <div class="input-group" id="model_id" data-target-input="nearest">
                     <label for="model_id_text"></label><input type="text" id="model_id_text" class="form-control">
                     <?php echo $form->hiddenField($model, 'model_id', array('class' => 'form-control',)); ?>
-                        <div class="input-group-text"><i class="fa fa-refresh"></i></div>
+                        <div class="input-group-text"><i class="fas fa-refresh"></i></div>
                     </div>
                 </div>
                 <span class="help-block"
@@ -216,7 +216,7 @@ $form = $this->beginWidget('CActiveForm', array(
         ?>
 
         <span id="ajaxLoaderMR" class="ajaxLoaderMR" style="display: none;">
-            <i class="fa fa-spinner fa-spin fa-2x"></i>
+            <i class="fas fa-spinner fa-spin fa-2x"></i>
         </span>
     </div>
 </div>

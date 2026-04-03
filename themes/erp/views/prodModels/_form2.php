@@ -394,7 +394,7 @@ $form = $this->beginWidget('CActiveForm', array(
             <div>
                 <div class="pf-hd-title">
                     <div class="pf-hd-title-icon">
-                        <i class="fa fa-pencil"></i>
+                        <i class="fas fa-pencil"></i>
                     </div>
                     <div>
                         Update Product
@@ -404,16 +404,16 @@ $form = $this->beginWidget('CActiveForm', array(
             </div>
             <div class="card-tools">
                 <button type="button" class="btn btn-tool" data-card-widget="collapse">
-                    <i class="fa fa-minus"></i>
+                    <i class="fas fa-minus"></i>
                 </button>
             </div>
         </div>
         <div class="pf-hd-chips">
-            <span class="pf-chip" id="chip-id"><i class="fa fa-tag"></i> Identification</span>
-            <span class="pf-chip" id="chip-price"><i class="fa fa-dollar"></i> Pricing</span>
-            <span class="pf-chip" id="chip-cfg"><i class="fa fa-sliders"></i> Config</span>
-            <span class="pf-chip" id="chip-desc"><i class="fa fa-align-left"></i> Description</span>
-            <span class="pf-chip" id="chip-img"><i class="fa fa-image"></i> Image</span>
+            <span class="pf-chip" id="chip-id"><i class="fas fa-tag"></i> Identification</span>
+            <span class="pf-chip" id="chip-price"><i class="fas fa-dollar"></i> Pricing</span>
+            <span class="pf-chip" id="chip-cfg"><i class="fas fa-sliders"></i> Config</span>
+            <span class="pf-chip" id="chip-desc"><i class="fas fa-align-left"></i> Description</span>
+            <span class="pf-chip" id="chip-img"><i class="fas fa-image"></i> Image</span>
         </div>
         <div class="pf-prog">
             <div class="pf-prog-bg"><div class="pf-prog-fill" id="pfProg"></div></div>
@@ -441,7 +441,7 @@ $form = $this->beginWidget('CActiveForm', array(
                         </div>
                         <div class="pf-addon">
                             <div class="pf-sel-wrap">
-                                <i class="fa fa-list pf-sel-icon"></i>
+                                <i class="fas fa-list pf-sel-icon"></i>
                                 <?php echo $form->dropDownList($model, 'item_id',
                                     CHtml::listData(ProdItems::model()->findAll(array('order'=>'item_name ASC')), 'id', 'item_name'),
                                     array(
@@ -459,7 +459,7 @@ $form = $this->beginWidget('CActiveForm', array(
                             </div>
                             <button type="button" class="pf-add-btn"
                                     onclick="addProdItem(); $('#dialogAddProdItem').dialog('open');">
-                                <i class="fa fa-plus"></i>
+                                <i class="fas fa-plus"></i>
                             </button>
                         </div>
                         <span class="pf-error"><?php echo $form->error($model, 'item_id'); ?></span>
@@ -471,7 +471,7 @@ $form = $this->beginWidget('CActiveForm', array(
                         </div>
                         <div class="pf-addon">
                             <div class="pf-sel-wrap">
-                                <i class="fa fa-bookmark pf-sel-icon"></i>
+                                <i class="fas fa-bookmark pf-sel-icon"></i>
                                 <?php echo $form->dropDownList($model, 'brand_id',
                                     CHtml::listData(ProdBrands::model()->findAll(array('order'=>'brand_name ASC')), 'id', 'brand_name'),
                                     array('prompt' => 'Select sub-category…', 'class' => 'pf-select')
@@ -479,7 +479,7 @@ $form = $this->beginWidget('CActiveForm', array(
                             </div>
                             <button type="button" class="pf-add-btn"
                                     onclick="addProdBrand(); $('#dialogAddProdBrand').dialog('open');">
-                                <i class="fa fa-plus"></i>
+                                <i class="fas fa-plus"></i>
                             </button>
                         </div>
                         <span class="pf-error"><?php echo $form->error($model, 'brand_id'); ?></span>
@@ -490,12 +490,12 @@ $form = $this->beginWidget('CActiveForm', array(
                             <?php echo $model->getAttributeLabel('model_name'); ?> <span class="req">*</span>
                         </div>
                         <div class="pf-fl">
-                            <i class="fa fa-cube pf-fl-icon"></i>
+                            <i class="fas fa-cube pf-fl-icon"></i>
                             <?php echo $form->textField($model, 'model_name',
                                 array('maxlength'=>255, 'class'=>'pf-fl-input', 'placeholder'=>' ')
                             ); ?>
                             <label class="pf-fl-label" for="ProdModels_model_name">Product name…</label>
-                            <span class="pf-fl-tick"><i class="fa fa-check-circle"></i></span>
+                            <span class="pf-fl-tick"><i class="fas fa-check-circle"></i></span>
                         </div>
                         <span class="pf-error"><?php echo $form->error($model, 'model_name'); ?></span>
                     </div>
@@ -505,12 +505,12 @@ $form = $this->beginWidget('CActiveForm', array(
                             <?php echo $model->getAttributeLabel('code'); ?> <span class="req">*</span>
                         </div>
                         <div class="pf-fl">
-                            <i class="fa fa-barcode pf-fl-icon"></i>
+                            <i class="fas fa-barcode pf-fl-icon"></i>
                             <?php echo $form->textField($model, 'code',
                                 array('maxlength'=>255, 'class'=>'pf-fl-input', 'placeholder'=>' ')
                             ); ?>
                             <label class="pf-fl-label" for="ProdModels_code">Barcode / SKU…</label>
-                            <span class="pf-fl-tick"><i class="fa fa-check-circle"></i></span>
+                            <span class="pf-fl-tick"><i class="fas fa-check-circle"></i></span>
                         </div>
                         <span class="pf-error"><?php echo $form->error($model, 'code'); ?></span>
                     </div>
@@ -533,7 +533,7 @@ $form = $this->beginWidget('CActiveForm', array(
 
                     <div class="col-md-8 pf-field">
                         <div class="pf-price-card">
-                            <div class="pf-price-title"><i class="fa fa-dollar"></i> Pricing</div>
+                            <div class="pf-price-title"><i class="fas fa-dollar"></i> Pricing</div>
                             <div class="pf-price-row">
                                 <div>
                                     <div class="pf-label" style="text-transform:none;letter-spacing:0;font-size:12px;margin-bottom:4px">
@@ -579,7 +579,7 @@ $form = $this->beginWidget('CActiveForm', array(
                         </div>
                         <div class="pf-addon">
                             <div class="pf-sel-wrap">
-                                <i class="fa fa-balance-scale pf-sel-icon"></i>
+                                <i class="fas fa-balance-scale pf-sel-icon"></i>
                                 <?php echo $form->dropDownList($model, 'unit_id',
                                     CHtml::listData(Units::model()->findAll(array('order'=>'label ASC')), 'id', 'label'),
                                     array('prompt' => 'Select unit…', 'class' => 'pf-select')
@@ -587,7 +587,7 @@ $form = $this->beginWidget('CActiveForm', array(
                             </div>
                             <button type="button" class="pf-add-btn"
                                     onclick="addUnit(); $('#dialogAddUnit').dialog('open');">
-                                <i class="fa fa-plus"></i>
+                                <i class="fas fa-plus"></i>
                             </button>
                         </div>
                         <span class="pf-error"><?php echo $form->error($model, 'unit_id'); ?></span>
@@ -596,7 +596,7 @@ $form = $this->beginWidget('CActiveForm', array(
                     <div class="col-md-4 pf-field" data-sec="2">
                         <div class="pf-label"><?php echo $model->getAttributeLabel('min_order_qty'); ?></div>
                         <div class="pf-fl">
-                            <i class="fa fa-bell pf-fl-icon"></i>
+                            <i class="fas fa-bell pf-fl-icon"></i>
                             <?php echo $form->textField($model, 'min_order_qty',
                                 array('maxlength'=>255, 'class'=>'pf-fl-input', 'placeholder'=>' ')
                             ); ?>
@@ -624,7 +624,7 @@ $form = $this->beginWidget('CActiveForm', array(
                     <div class="col-md-5 pf-field" data-sec="3">
                         <div class="pf-label"><?php echo $model->getAttributeLabel('manufacturer_id'); ?></div>
                         <div class="pf-sel-wrap">
-                            <i class="fa fa-industry pf-sel-icon"></i>
+                            <i class="fas fa-industry pf-sel-icon"></i>
                             <?php echo $form->dropDownList($model, 'manufacturer_id',
                                 CHtml::listData(Company::model()->findAll(array('order'=>'name ASC')), 'id', 'name'),
                                 array('prompt' => 'Select manufacturer…', 'class' => 'pf-select')
@@ -741,7 +741,7 @@ $form = $this->beginWidget('CActiveForm', array(
                         ?>
                         <!-- Drop zone (hidden when preview is shown) -->
                         <div class="pf-img-zone" id="pfImgZone" <?php echo $currentImg ? 'style="display:none"' : ''; ?>>
-                            <div class="pf-img-zone-icon"><i class="fa fa-cloud-upload"></i></div>
+                            <div class="pf-img-zone-icon"><i class="fas fa-cloud-upload"></i></div>
                             <div class="pf-img-zone-text">Click or drag &amp; drop</div>
                             <div class="pf-img-zone-sub">PNG, JPG, JPEG — max 2 MB</div>
                             <?php echo $form->fileField($model, 'image2', array(
@@ -754,7 +754,7 @@ $form = $this->beginWidget('CActiveForm', array(
                             <div class="pf-img-preview-wrap">
                                 <img src="<?php echo $currentImg ?: ''; ?>" alt="Product image" class="pf-img-preview" id="pfImgPreview">
                                 <button type="button" class="pf-img-remove" id="pfImgRemove" title="Remove image">
-                                    <i class="fa fa-times"></i>
+                                    <i class="fas fa-times"></i>
                                 </button>
                             </div>
                             <div class="pf-img-fname" id="pfImgFname">
@@ -764,7 +764,7 @@ $form = $this->beginWidget('CActiveForm', array(
                     </div>
                     <div class="col-md-7" style="display:flex;align-items:center;">
                         <div style="color:#94a3b8;font-size:12px;line-height:1.8;padding-left:10px;">
-                            <i class="fa fa-info-circle" style="color:#6366f1;margin-right:4px;"></i>
+                            <i class="fas fa-info-circle" style="color:#6366f1;margin-right:4px;"></i>
                             <strong style="color:#374151;">Tips:</strong><br>
                             Use a white or transparent background.<br>
                             Square images work best (e.g. 400×400 px).<br>
@@ -780,12 +780,12 @@ $form = $this->beginWidget('CActiveForm', array(
     <!-- ═══ Footer ═══ -->
     <div class="card-footer">
         <button type="submit" class="pf-submit" id="pfSubmitBtn" onclick="pfSubmit(event)">
-            <i class="fa fa-save"></i>
+            <i class="fas fa-save"></i>
             Update Product
         </button>
-        <?php echo CHtml::link('<i class="fa fa-times"></i> Cancel', array('admin'), array('class'=>'pf-cancel')); ?>
+        <?php echo CHtml::link('<i class="fas fa-times"></i> Cancel', array('admin'), array('class'=>'pf-cancel')); ?>
         <span id="pf-spinner">
-            <i class="fa fa-spinner fa-spin"></i> Saving…
+            <i class="fas fa-spinner fa-spin"></i> Saving…
         </span>
         <span class="pf-req-note"><span>*</span> Required fields</span>
     </div>
@@ -802,7 +802,7 @@ $form = $this->beginWidget('CActiveForm', array(
 )); ?>
 <div class="divForForm">
     <div class="ajaxLoaderFormLoad" style="display:none;padding:24px;text-align:center;">
-        <i class="fa fa-spinner fa-spin fa-2x" style="color:#6366f1;"></i>
+        <i class="fas fa-spinner fa-spin fa-2x" style="color:#6366f1;"></i>
     </div>
 </div>
 <?php $this->endWidget(); ?>
@@ -813,7 +813,7 @@ $form = $this->beginWidget('CActiveForm', array(
 )); ?>
 <div class="divForForm">
     <div class="ajaxLoaderFormLoad" style="display:none;padding:24px;text-align:center;">
-        <i class="fa fa-spinner fa-spin fa-2x" style="color:#6366f1;"></i>
+        <i class="fas fa-spinner fa-spin fa-2x" style="color:#6366f1;"></i>
     </div>
 </div>
 <?php $this->endWidget(); ?>
@@ -824,7 +824,7 @@ $form = $this->beginWidget('CActiveForm', array(
 )); ?>
 <div class="divForForm">
     <div class="ajaxLoaderFormLoad" style="display:none;padding:24px;text-align:center;">
-        <i class="fa fa-spinner fa-spin fa-2x" style="color:#6366f1;"></i>
+        <i class="fas fa-spinner fa-spin fa-2x" style="color:#6366f1;"></i>
     </div>
 </div>
 <?php $this->endWidget(); ?>
@@ -892,7 +892,7 @@ $(function () {
         $.each(secMap, function (sec, map) {
             var $reqFields = $('.pf-field[data-required][data-sec="' + sec + '"]');
             if ($reqFields.length === 0) {
-                $(map.badge).html('<i class="fa fa-check"></i>');
+                $(map.badge).html('<i class="fas fa-check"></i>');
                 $(map.secEl).addClass('is-complete');
                 $(map.chip).addClass('done');
                 return;
@@ -903,7 +903,7 @@ $(function () {
             }).length === $reqFields.length;
 
             if (allFilled) {
-                $(map.badge).html('<i class="fa fa-check"></i>');
+                $(map.badge).html('<i class="fas fa-check"></i>');
                 $(map.secEl).addClass('is-complete');
                 $(map.chip).addClass('done');
             } else {
@@ -955,7 +955,7 @@ $(function () {
             $('#pfImgFname').text(file.name);
             $('#pfImgZone').hide();
             $('#pfImgPreviewArea').show();
-            $('#badge-5').html('<i class="fa fa-check"></i>');
+            $('#badge-5').html('<i class="fas fa-check"></i>');
             $('#sec-img').addClass('is-complete');
             $('#chip-img').addClass('done');
         };
@@ -993,7 +993,7 @@ $(function () {
 
     /* ── Mark image section done on load if editing with existing image ── */
     if ($('#pfImgPreviewArea').is(':visible')) {
-        $('#badge-5').html('<i class="fa fa-check"></i>');
+        $('#badge-5').html('<i class="fas fa-check"></i>');
         $('#sec-img').addClass('is-complete');
         $('#chip-img').addClass('done');
     }

@@ -11,7 +11,7 @@
 
 <div class="mb-3 mb-0">
     <button type="submit" class="btn btn-success btn-sm">
-        <i class="fa fa-plus"></i> <?php echo Rights::t('core', 'Add Child'); ?>
+        <i class="fas fa-plus"></i> <?php echo Rights::t('core', 'Add Child'); ?>
     </button>
 </div>
 

@@ -5,10 +5,10 @@
 
 <div class="card card-primary">
     <div class="card-header">
-        <h3 class="card-title"><i class="fa fa-id-badge"></i> <?php echo Rights::t('core', 'Roles'); ?></h3>
+        <h3 class="card-title"><i class="fas fa-id-badge"></i> <?php echo Rights::t('core', 'Roles'); ?></h3>
         <div class="card-tools">
             <?php echo CHtml::link(
-                '<i class="fa fa-plus"></i> ' . Rights::t('core', 'New Role'),
+                '<i class="fas fa-plus"></i> ' . Rights::t('core', 'New Role'),
                 array('authItem/create', 'type' => CAuthItem::TYPE_ROLE),
                 array('class' => 'btn btn-sm btn-light')
             ); ?>

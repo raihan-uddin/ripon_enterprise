@@ -10,7 +10,7 @@
         <div class="card card-primary">
             <div class="card-header">
                 <h3 class="card-title">
-                    <i class="fa fa-shield"></i>
+                    <i class="fas fa-shield"></i>
                     <?php echo Rights::t('core', 'Assignments for :username', array(':username' => $model->getName())); ?>
                 </h3>
             </div>
@@ -34,7 +34,7 @@
     <div class="col-md-4">
         <div class="card card-info">
             <div class="card-header">
-                <h3 class="card-title"><i class="fa fa-plus-circle"></i> <?php echo Rights::t('core', 'Assign item'); ?></h3>
+                <h3 class="card-title"><i class="fas fa-plus-circle"></i> <?php echo Rights::t('core', 'Assign item'); ?></h3>
             </div>
             <div class="card-body">
                 <?php if ($formModel !== null): ?>

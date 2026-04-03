@@ -356,7 +356,7 @@ $closing_class = $row_closing < 0 ? 'negative' : 'positive';
         if (!$rowFound) {
             echo "<tr><td colspan='7'>
                     <div class='alert alert-warning' style='text-align:center; font-weight:600;'>
-                        <i class='fa fa-exclamation-triangle'></i> No result found!
+                        <i class='fas fa-exclamation-triangle'></i> No result found!
                     </div>
                   </td></tr>";
         }

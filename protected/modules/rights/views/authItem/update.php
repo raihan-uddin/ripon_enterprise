@@ -12,7 +12,7 @@ $this->breadcrumbs = array(
         <div class="card card-primary">
             <div class="card-header">
                 <h3 class="card-title">
-                    <i class="fa fa-pencil"></i>
+                    <i class="fas fa-pencil"></i>
                     <?php echo Rights::t('core', 'Update :name', array(':name' => $model->name)); ?>
                 </h3>
             </div>
@@ -21,7 +21,7 @@ $this->breadcrumbs = array(
             </div>
             <div class="card-footer">
                 <button type="submit" class="btn btn-primary" form="yw0">
-                    <i class="fa fa-save"></i> <?php echo Rights::t('core', 'Save'); ?>
+                    <i class="fas fa-save"></i> <?php echo Rights::t('core', 'Save'); ?>
                 </button>
                 <?php echo CHtml::link(
                     Rights::t('core', 'Cancel'),
@@ -38,13 +38,13 @@ $this->breadcrumbs = array(
 
             <div class="card card-info">
                 <div class="card-header">
-                    <h3 class="card-title"><i class="fa fa-sitemap"></i> <?php echo Rights::t('core', 'Relations'); ?></h3>
+                    <h3 class="card-title"><i class="fas fa-sitemap"></i> <?php echo Rights::t('core', 'Relations'); ?></h3>
                 </div>
                 <div class="card-body">
 
                     <?php if ($childFormModel !== null): ?>
                         <h6 class="text-muted text-uppercase font-weight-bold" style="font-size:11px;letter-spacing:.5px;margin-bottom:10px;">
-                            <i class="fa fa-plus"></i> <?php echo Rights::t('core', 'Add Child'); ?>
+                            <i class="fas fa-plus"></i> <?php echo Rights::t('core', 'Add Child'); ?>
                         </h6>
                         <?php $this->renderPartial('_childForm', array(
                             'model'                => $childFormModel,
@@ -57,7 +57,7 @@ $this->breadcrumbs = array(
                     <?php endif; ?>
 
                     <h6 class="text-muted text-uppercase font-weight-bold" style="font-size:11px;letter-spacing:.5px;margin:18px 0 10px;">
-                        <i class="fa fa-arrow-down"></i> <?php echo Rights::t('core', 'Children'); ?>
+                        <i class="fas fa-arrow-down"></i> <?php echo Rights::t('core', 'Children'); ?>
                     </h6>
                     <?php $this->widget('zii.widgets.grid.CGridView', array(
                         'dataProvider' => $childDataProvider,
@@ -73,7 +73,7 @@ $this->breadcrumbs = array(
                     )); ?>
 
                     <h6 class="text-muted text-uppercase font-weight-bold" style="font-size:11px;letter-spacing:.5px;margin:18px 0 10px;">
-                        <i class="fa fa-arrow-up"></i> <?php echo Rights::t('core', 'Parents'); ?>
+                        <i class="fas fa-arrow-up"></i> <?php echo Rights::t('core', 'Parents'); ?>
                     </h6>
                     <?php $this->widget('zii.widgets.grid.CGridView', array(
                         'dataProvider' => $parentDataProvider,
@@ -95,7 +95,7 @@ $this->breadcrumbs = array(
 
             <div class="card card-secondary">
                 <div class="card-header">
-                    <h3 class="card-title"><i class="fa fa-info-circle"></i> <?php echo Rights::t('core', 'Relations'); ?></h3>
+                    <h3 class="card-title"><i class="fas fa-info-circle"></i> <?php echo Rights::t('core', 'Relations'); ?></h3>
                 </div>
                 <div class="card-body">
                     <p class="text-muted mb-0">

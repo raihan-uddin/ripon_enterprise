@@ -24,7 +24,7 @@
                 &nbsp;&mdash;&nbsp; All rights reserved.
             </span>
             <span class="erp-footer-version">
-                <i class="fa fa-code-fork"></i> v<?php echo Yii::app()->params->version; ?>
+                <i class="fas fa-code-branch"></i> v<?php echo Yii::app()->params->version; ?>
             </span>
         </div>
     </footer>

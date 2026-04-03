@@ -247,7 +247,7 @@ echo "</div>";
         let model_id = $(this).data('id');
         let currentText = $(this).text();
         let $this = $(this);
-        $this.html('<i class="fa fa-spinner fa-spin"></i>');
+        $this.html('<i class="fas fa-spinner fa-spin"></i>');
         $.ajax({
             url: '<?= Yii::app()->createUrl("report/productStockLedgerView") ?>',
             type: 'POST',

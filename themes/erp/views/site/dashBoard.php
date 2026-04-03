@@ -270,7 +270,7 @@ $this->widget('application.components.BreadCrumb', array(
 <div class="db-section db-animate db-animate-d2">
     <div class="db-section-head">
         <h6>Quick Actions &mdash; <?= date('F Y') ?></h6>
-        <button class="db-section-toggle" data-bs-target="sec-actions" title="Collapse"><i class="fa fa-chevron-down"></i></button>
+        <button class="db-section-toggle" data-bs-target="sec-actions" title="Collapse"><i class="fas fa-chevron-down"></i></button>
     </div>
     <div class="db-section-body" id="sec-actions">
         <?php $this->renderPartial('shortcut-link'); ?>
@@ -281,27 +281,27 @@ $this->widget('application.components.BreadCrumb', array(
 <div class="db-section db-animate db-animate-d2" style="animation-delay:.08s">
     <div class="db-section-head">
         <h6>Today's Snapshot &mdash; <?= date('d M Y') ?></h6>
-        <button class="db-section-toggle" data-bs-target="sec-today" title="Collapse"><i class="fa fa-chevron-down"></i></button>
+        <button class="db-section-toggle" data-bs-target="sec-today" title="Collapse"><i class="fas fa-chevron-down"></i></button>
     </div>
     <div class="db-section-body" id="sec-today">
         <div class="db-today-strip" id="db-today-strip">
             <div class="db-today-tile ts-indigo">
-                <div class="db-today-label"><i class="fa fa-shopping-cart"></i> Today's Orders</div>
+                <div class="db-today-label"><i class="fas fa-shopping-cart"></i> Today's Orders</div>
                 <div class="db-today-val" id="ts-orders">—</div>
                 <div class="db-today-sub" id="ts-orders-sub">Loading…</div>
             </div>
             <div class="db-today-tile ts-green">
-                <div class="db-today-label"><i class="fa fa-line-chart"></i> Today's Sales</div>
+                <div class="db-today-label"><i class="fas fa-line-chart"></i> Today's Sales</div>
                 <div class="db-today-val" id="ts-sales">—</div>
                 <div class="db-today-sub" id="ts-sales-sub">Loading…</div>
             </div>
             <div class="db-today-tile ts-amber">
-                <div class="db-today-label"><i class="fa fa-sign-in"></i> Today's Collection</div>
+                <div class="db-today-label"><i class="fas fa-sign-in"></i> Today's Collection</div>
                 <div class="db-today-val" id="ts-collection">—</div>
                 <div class="db-today-sub">&nbsp;</div>
             </div>
             <div class="db-today-tile ts-red">
-                <div class="db-today-label"><i class="fa fa-credit-card"></i> Today's Expense</div>
+                <div class="db-today-label"><i class="fas fa-credit-card"></i> Today's Expense</div>
                 <div class="db-today-val" id="ts-expense">—</div>
                 <div class="db-today-sub">&nbsp;</div>
             </div>
@@ -313,7 +313,7 @@ $this->widget('application.components.BreadCrumb', array(
 <div class="db-section db-animate db-animate-d1">
     <div class="db-section-head">
         <h6>Overview</h6>
-        <button class="db-section-toggle" data-bs-target="sec-overview" title="Collapse"><i class="fa fa-chevron-down"></i></button>
+        <button class="db-section-toggle" data-bs-target="sec-overview" title="Collapse"><i class="fas fa-chevron-down"></i></button>
     </div>
     <div class="db-section-body" id="sec-overview">
         <?php $this->renderPartial('block-widget'); ?>
@@ -324,7 +324,7 @@ $this->widget('application.components.BreadCrumb', array(
 <div class="db-section db-animate db-animate-d3">
     <div class="db-section-head">
         <h6>Reports</h6>
-        <button class="db-section-toggle" data-bs-target="sec-reports" title="Collapse"><i class="fa fa-chevron-down"></i></button>
+        <button class="db-section-toggle" data-bs-target="sec-reports" title="Collapse"><i class="fas fa-chevron-down"></i></button>
     </div>
     <div class="db-section-body" id="sec-reports">
         <?php $this->renderPartial('report-shortcut'); ?>
@@ -337,7 +337,7 @@ $this->widget('application.components.BreadCrumb', array(
 <div class="db-section db-animate db-animate-d4">
     <div class="db-section-head">
         <h6>Profit &amp; Loss Analysis</h6>
-        <button class="db-section-toggle" data-bs-target="sec-pl" title="Collapse"><i class="fa fa-chevron-down"></i></button>
+        <button class="db-section-toggle" data-bs-target="sec-pl" title="Collapse"><i class="fas fa-chevron-down"></i></button>
     </div>
     <div class="db-section-body" id="sec-pl">
         <?php $this->renderPartial('summary-widget'); ?>
@@ -348,7 +348,7 @@ $this->widget('application.components.BreadCrumb', array(
 <div class="db-section db-animate" style="animation-delay:.26s">
     <div class="db-section-head">
         <h6>Analytics</h6>
-        <button class="db-section-toggle" data-bs-target="sec-analytics" title="Collapse"><i class="fa fa-chevron-down"></i></button>
+        <button class="db-section-toggle" data-bs-target="sec-analytics" title="Collapse"><i class="fas fa-chevron-down"></i></button>
     </div>
     <div class="db-section-body" id="sec-analytics">
         <?php $this->renderPartial('_graph'); ?>

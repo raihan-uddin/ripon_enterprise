@@ -43,10 +43,10 @@ endforeach;
 
             <div class="card-tools">
                 <button type="button" class="btn btn-tool" data-card-widget="collapse">
-                    <i class="fa fa-minus"></i>
+                    <i class="fas fa-minus"></i>
                 </button>
                 <!--<button type="button" class="btn btn-tool" data-card-widget="remove">
-                    <i class="fa fa-times"></i>
+                    <i class="fas fa-times"></i>
                 </button>-->
             </div>
         </div>
@@ -60,7 +60,7 @@ endforeach;
                 'cssFile' => Yii::app()->theme->baseUrl . '/css/gridview/styles.css',
                 'htmlOptions' => array('class' => 'table-responsive grid-view'),
                 'itemsCssClass' => 'table table-sm table-hover table-striped table-condensed table-bordered dataTable dtr-inline',
-//            'loadingCssClass' => 'fa fa-spinner fa-spin fa-2x',
+//            'loadingCssClass' => 'fas fa-spinner fa-spin fa-2x',
 //                'pager' => array(            //  pager like twitter bootstrap
 //                    'htmlOptions' => array('class' => 'pagination  justify-content-end'),
 ////                'header'=>'',
@@ -94,13 +94,13 @@ endforeach;
                         'class' => 'CButtonColumn',
                         'buttons' => array(
                             'createPr' => array(
-                                'label' => '<i class="fa fa-money fa-2x" style="color: green;"></i>&nbsp;&nbsp;',
+                                'label' => '<i class="fas fa-money-bill fa-2x" style="color: green;"></i>&nbsp;&nbsp;',
                                 'imageUrl' => false,
                                 'options' => array('rel' => 'tooltip', 'data-bs-toggle' => 'tooltip', 'title' => Yii::t('app', 'Create PR')),
                                 'url' => 'Yii::app()->controller->createUrl("/accounting/paymentReceipt/create",array("id"=>$data->id))',
                             ),
                             'customDelete' => array(
-                                'label' => '<i class="fa fa-trash fa-2x" style="color: red;"></i>&nbsp;&nbsp;',
+                                'label' => '<i class="fas fa-trash fa-2x" style="color: red;"></i>&nbsp;&nbsp;',
                                 'imageUrl' => false,
                                 'options' => array('rel' => 'tooltip', 'data-bs-toggle' => 'tooltip', 'title' => Yii::t('app', 'Delete')),
                                 'url' => 'Yii::app()->controller->createUrl("suppliers/delete",array("id"=>$data->id))',
@@ -125,7 +125,7 @@ endforeach;
 
                             ),
                             'update' => array(
-                                'label' => '<i class="fa fa-pencil-square-o fa-2x" style="color: black;"></i>&nbsp;&nbsp;',
+                                'label' => '<i class="fas fa-pencil-square-o fa-2x" style="color: black;"></i>&nbsp;&nbsp;',
                                 'imageUrl' => false,
                                 'options' => array('rel' => 'tooltip', 'data-bs-toggle' => 'tooltip', 'title' => Yii::t('app', 'Edit')),
                                 'click' => "function( e ){

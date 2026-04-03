@@ -190,9 +190,9 @@
 </style>
 
 <?php if ($data === null): ?>
-    <div class="alert alert-info"><i class="fa fa-info-circle"></i> অনুসন্ধান করুন।</div>
+    <div class="alert alert-info"><i class="fas fa-info-circle"></i> অনুসন্ধান করুন।</div>
 <?php elseif (empty($data) && $opening == 0): ?>
-    <div class="alert alert-warning"><i class="fa fa-exclamation-triangle"></i> এই সময়কালে কোনো লেনদেন বা ব্যালেন্স পাওয়া যায়নি। (No transactions or balance found)</div>
+    <div class="alert alert-warning"><i class="fas fa-exclamation-triangle"></i> এই সময়কালে কোনো লেনদেন বা ব্যালেন্স পাওয়া যায়নি। (No transactions or balance found)</div>
 <?php else: ?>
 
 

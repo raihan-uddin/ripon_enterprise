@@ -121,7 +121,7 @@ $form = $this->beginWidget('CActiveForm', array(
     <div class="card-header">
         <div class="pb-hd-top">
             <div class="pb-hd-title">
-                <div class="pb-hd-icon"><i class="fa fa-bookmark"></i></div>
+                <div class="pb-hd-icon"><i class="fas fa-bookmark"></i></div>
                 <div>
                     <?= $model->isNewRecord ? 'Add New Sub-Category' : 'Update Sub-Category' ?>
                     <div class="pb-hd-sub">Brand / sub-category under a product category</div>
@@ -129,7 +129,7 @@ $form = $this->beginWidget('CActiveForm', array(
             </div>
             <div class="card-tools">
                 <button type="button" class="btn btn-tool" data-card-widget="collapse">
-                    <i class="fa fa-minus"></i>
+                    <i class="fas fa-minus"></i>
                 </button>
             </div>
         </div>
@@ -141,10 +141,10 @@ $form = $this->beginWidget('CActiveForm', array(
             <!-- Category dropdown + add-new -->
             <div class="col-md-6">
                 <div style="margin-bottom:14px;">
-                    <label class="pb-label"><i class="fa fa-tags"></i> Category <span class="req">*</span></label>
+                    <label class="pb-label"><i class="fas fa-tags"></i> Category <span class="req">*</span></label>
                     <div class="pb-addon">
                         <div class="pb-sel-wrap">
-                            <i class="fa fa-tags pb-sel-icon"></i>
+                            <i class="fas fa-tags pb-sel-icon"></i>
                             <?= $form->dropDownList(
                                 $model, 'item_id',
                                 CHtml::listData(ProdItems::model()->findAll(array('order' => 'item_name ASC')), 'id', 'item_name'),
@@ -152,7 +152,7 @@ $form = $this->beginWidget('CActiveForm', array(
                             ) ?>
                         </div>
                         <a href="#" class="pb-add-btn" onclick="addProdItem(); $('#dialogAddProdItem').dialog('open'); return false;">
-                            <i class="fa fa-plus"></i> New
+                            <i class="fas fa-plus"></i> New
                         </a>
                     </div>
                     <span class="pb-error"><?= $form->error($model, 'item_id') ?></span>
@@ -162,7 +162,7 @@ $form = $this->beginWidget('CActiveForm', array(
             <!-- Sub-category name -->
             <div class="col-md-6">
                 <div style="margin-bottom:14px;">
-                    <label class="pb-label"><i class="fa fa-bookmark-o"></i> Sub-Category Name <span class="req">*</span></label>
+                    <label class="pb-label"><i class="fas fa-bookmark-o"></i> Sub-Category Name <span class="req">*</span></label>
                     <div class="pb-fl">
                         <?= CHtml::activeTextField($model, 'brand_name', array(
                             'class'       => 'pb-fl-input',
@@ -172,7 +172,7 @@ $form = $this->beginWidget('CActiveForm', array(
                         <label class="pb-fl-label" for="<?= CHtml::activeId($model, 'brand_name') ?>">
                             Sub-Category Name <span style="color:#ef4444;">*</span>
                         </label>
-                        <i class="fa fa-bookmark-o pb-fl-icon"></i>
+                        <i class="fas fa-bookmark-o pb-fl-icon"></i>
                     </div>
                     <span class="pb-error"><?= $form->error($model, 'brand_name') ?></span>
                 </div>
@@ -183,7 +183,7 @@ $form = $this->beginWidget('CActiveForm', array(
 
     <div class="card-footer">
         <?= CHtml::ajaxSubmitButton(
-            '<i class="fa fa-save"></i> Save',
+            '<i class="fas fa-save"></i> Save',
             CHtml::normalizeUrl(array('prodBrands/create', 'render' => true)),
             array(
                 'dataType'   => 'json',

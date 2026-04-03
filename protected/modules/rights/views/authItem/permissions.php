@@ -6,10 +6,10 @@
 <div class="card card-primary perm-card">
 
     <div class="card-header">
-        <h3 class="card-title"><i class="fa fa-lock"></i> <?php echo Rights::t('core', 'Permissions'); ?></h3>
+        <h3 class="card-title"><i class="fas fa-lock"></i> <?php echo Rights::t('core', 'Permissions'); ?></h3>
         <div class="card-tools">
             <?php echo CHtml::link(
-                '<i class="fa fa-magic"></i> ' . Rights::t('core', 'Generate items'),
+                '<i class="fas fa-magic"></i> ' . Rights::t('core', 'Generate items'),
                 array('authItem/generate'),
                 array('class' => 'btn btn-sm btn-light')
             ); ?>
@@ -20,11 +20,11 @@
     <div class="perm-toolbar">
         <div class="perm-toolbar-search">
             <div class="perm-search-wrap">
-                <i class="fa fa-search perm-search-icon"></i>
+                <i class="fas fa-search perm-search-icon"></i>
                 <input type="text" id="search" class="perm-search-input"
                        placeholder="<?php echo Rights::t('core', 'Filter permissions…'); ?>">
                 <button type="button" id="permSearchClear" class="perm-search-clear" style="display:none;">
-                    <i class="fa fa-times"></i>
+                    <i class="fas fa-times"></i>
                 </button>
             </div>
         </div>
@@ -43,7 +43,7 @@
         </div>
         <div class="perm-toolbar-actions">
             <button type="button" id="assignRevokeBtn" class="perm-ar-btn" disabled>
-                <i class="fa fa-exchange"></i>
+                <i class="fas fa-right-left"></i>
                 <span><?php echo Rights::t('core', 'Assign / Revoke'); ?></span>
             </button>
             <span id="permStats" class="perm-stats"></span>
@@ -69,7 +69,7 @@
 
     <div class="card-footer perm-footer">
         <small class="text-muted">
-            <i class="fa fa-info-circle text-info"></i>
+            <i class="fas fa-info-circle text-info"></i>
             <?php echo Rights::t('core', 'Hover <span class="perm-inherited-sample">Inherited *</span> to see the source.'); ?>
             &nbsp;&middot;&nbsp;
             <?php echo Rights::t('core', 'Manage items under {roleLink}, {taskLink} and {operationLink}.', array(

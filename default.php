@@ -215,16 +215,16 @@
         <div class="collapse navbar-collapse" id="myNavbar">
             <ul class="nav navbar-nav navbar-right">
                 <li>
-                    <a href="https://www.hostinger.com/tutorials" rel="nofollow"><i aria-hidden="true" class="fa fa-graduation-cap"></i> Tutorials</a>
+                    <a href="https://www.hostinger.com/tutorials" rel="nofollow"><i aria-hidden="true" class="fas fa-graduation-cap"></i> Tutorials</a>
                 </li>
                 <li>
-                    <a href="https://www.hostinger.com/make-money-online" rel="nofollow"><i aria-hidden="true" class="fa fa-trophy"></i> Earn with us</a>
+                    <a href="https://www.hostinger.com/make-money-online" rel="nofollow"><i aria-hidden="true" class="fas fa-trophy"></i> Earn with us</a>
                 </li>
                 <li>
-                    <a href="https://www.hostinger.com/affiliates" rel="nofollow"><i aria-hidden="true" class="fa fa-user"></i> Affiliates</a>
+                    <a href="https://www.hostinger.com/affiliates" rel="nofollow"><i aria-hidden="true" class="fas fa-user"></i> Affiliates</a>
                 </li>
                 <li>
-                    <a href="https://cpanel.hostinger.com" rel="nofollow"><i aria-hidden="true" class="fa fa-lock"></i> Login</a>
+                    <a href="https://cpanel.hostinger.com" rel="nofollow"><i aria-hidden="true" class="fas fa-lock"></i> Login</a>
                 </li>
             </ul>
         </div>

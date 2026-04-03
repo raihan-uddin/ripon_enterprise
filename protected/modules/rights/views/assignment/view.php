@@ -5,11 +5,11 @@
 
 <div class="card card-primary">
     <div class="card-header">
-        <h3 class="card-title"><i class="fa fa-users"></i> <?php echo Rights::t('core', 'Assignments'); ?></h3>
+        <h3 class="card-title"><i class="fas fa-users"></i> <?php echo Rights::t('core', 'Assignments'); ?></h3>
         <div class="card-tools">
             <div class="input-group input-group-sm" style="width:220px;">
                 <input type="text" id="search" class="form-control" placeholder="Search users…">
-                    <span class="input-group-text"><i class="fa fa-search"></i></span>
+                    <span class="input-group-text"><i class="fas fa-search"></i></span>
                 </div>
             </div>
         </div>

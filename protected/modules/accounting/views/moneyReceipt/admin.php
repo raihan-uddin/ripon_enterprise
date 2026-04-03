@@ -497,10 +497,10 @@ if (Yii::app()->user->checkAccess('Accounting.MoneyReceipt.VoucherPreview')) {
 
             <div class="card-tools">
                 <button type="button" class="btn btn-tool" data-card-widget="collapse">
-                    <i class="fa fa-minus"></i>
+                    <i class="fas fa-minus"></i>
                 </button>
                 <!--<button type="button" class="btn btn-tool" data-card-widget="remove">
-                    <i class="fa fa-times"></i>
+                    <i class="fas fa-times"></i>
                 </button>-->
             </div>
         </div>
@@ -573,7 +573,7 @@ if (Yii::app()->user->checkAccess('Accounting.MoneyReceipt.VoucherPreview')) {
 
         <div class="card-tools">
             <button type="button" class="btn btn-tool" data-card-widget="collapse">
-                <i class="fa fa-minus"></i>
+                <i class="fas fa-minus"></i>
             </button>
         </div>
     </div>
@@ -591,10 +591,10 @@ if (Yii::app()->user->checkAccess('Accounting.MoneyReceipt.VoucherPreview')) {
                 'class'          => 'CLinkPager',
                 'cssFile'        => false,
                 'header'         => '',
-                'firstPageLabel' => '<i class="fa fa-angle-double-left"></i>',
-                'lastPageLabel'  => '<i class="fa fa-angle-double-right"></i>',
-                'prevPageLabel'  => '<i class="fa fa-angle-left"></i>',
-                'nextPageLabel'  => '<i class="fa fa-angle-right"></i>',
+                'firstPageLabel' => '<i class="fas fa-angle-double-left"></i>',
+                'lastPageLabel'  => '<i class="fas fa-angle-double-right"></i>',
+                'prevPageLabel'  => '<i class="fas fa-angle-left"></i>',
+                'nextPageLabel'  => '<i class="fas fa-angle-right"></i>',
                 'maxButtonCount' => 7,
                 'htmlOptions'    => array('class' => 'pagination pagination-sm', 'style' => 'float:right; margin:4px 0;'),
                 'selectedPageCssClass' => 'active',
@@ -673,13 +673,13 @@ if (Yii::app()->user->checkAccess('Accounting.MoneyReceipt.VoucherPreview')) {
                     'htmlOptions' => ['class' => 'actions-cell'],
                     'buttons' => array(
                         'update' => array(
-                            'label' => '<i class="fa fa-pencil"></i>',
+                            'label' => '<i class="fas fa-pencil"></i>',
                             'imageUrl' => false,
                             'url' => 'Yii::app()->createUrl("/accounting/moneyReceipt/update", array("id" => $data->id))',
                             'options' => array('class' => 'action-btn btn-edit', 'rel' => 'tooltip', 'data-bs-toggle' => 'tooltip', 'title' => 'Edit'),
                         ),
                         'delete' => array(
-                            'label' => '<i class="fa fa-trash"></i>',
+                            'label' => '<i class="fas fa-trash"></i>',
                             'imageUrl' => false,
                             'url' => 'Yii::app()->controller->createUrl("delete", array("id" => $data->id))',
                             'options' => array('class' => 'action-btn btn-delete', 'rel' => 'tooltip', 'data-bs-toggle' => 'tooltip', 'title' => Yii::t('app', 'Delete')),
@@ -715,7 +715,7 @@ if (Yii::app()->user->checkAccess('Accounting.MoneyReceipt.VoucherPreview')) {
                 <div class="goto-page-wrap" style="justify-content:flex-end;">
                     <span>Go to page</span>
                     <input type="number" id="goto-page-input" class="form-control" min="1" placeholder="Page #"/>
-                    <button onclick="goToPage()"><i class="fa fa-arrow-right"></i> Go</button>
+                    <button onclick="goToPage()"><i class="fas fa-arrow-right"></i> Go</button>
                 </div>
             </div>
         </div>

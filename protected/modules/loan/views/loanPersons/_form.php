@@ -81,7 +81,7 @@
     <div class="lp-card-header">
         <div class="lp-header-row">
             <div class="lp-header-icon">
-                <i class="fa fa-user"></i>
+                <i class="fas fa-user"></i>
             </div>
             <div>
                 <div class="lp-header-title">
@@ -101,7 +101,7 @@
             <!-- Name -->
             <div class="lp-col-half">
                 <div class="lp-fl">
-                    <i class="fa fa-user-o lp-fl-icon"></i>
+                    <i class="fas fa-user-o lp-fl-icon"></i>
                     <?= $form->textField($model, 'name', [
                             'class' => 'lp-fl-input',
                             'placeholder' => ' ',
@@ -114,7 +114,7 @@
             <!-- Phone -->
             <div class="lp-col-half">
                 <div class="lp-fl">
-                    <i class="fa fa-phone lp-fl-icon"></i>
+                    <i class="fas fa-phone lp-fl-icon"></i>
                     <?= $form->textField($model, 'phone', [
                             'class' => 'lp-fl-input',
                             'placeholder' => ' ',
@@ -127,7 +127,7 @@
             <!-- Email -->
             <div class="lp-col-half">
                 <div class="lp-fl">
-                    <i class="fa fa-envelope-o lp-fl-icon"></i>
+                    <i class="fas fa-envelope lp-fl-icon"></i>
                     <?= $form->textField($model, 'email', [
                             'class' => 'lp-fl-input',
                             'placeholder' => ' ',
@@ -142,7 +142,7 @@
                 <div class="lp-select-group">
                     <label class="lp-label">Status</label>
                     <div class="lp-select-wrap">
-                        <i class="fa fa-toggle-on lp-select-icon"></i>
+                        <i class="fas fa-toggle-on lp-select-icon"></i>
                         <?= $form->dropDownList(
                                 $model,
                                 'status',
@@ -157,7 +157,7 @@
             <!-- Note -->
             <div class="lp-col-full">
                 <div class="lp-fl">
-                    <i class="fa fa-sticky-note-o lp-fl-icon"></i>
+                    <i class="fas fa-sticky-note-o lp-fl-icon"></i>
                     <?= $form->textArea($model, 'note', [
                             'class' => 'lp-fl-input',
                             'rows' => 3,
@@ -207,7 +207,7 @@
             ?>
 
             <span id="ajaxLoader" class="lp-loader">
-                <i class="fa fa-spinner fa-spin"></i>
+                <i class="fas fa-spinner fa-spin"></i>
             </span>
         </div>
 

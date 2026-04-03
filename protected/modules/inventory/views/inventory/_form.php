@@ -215,7 +215,7 @@ $form = $this->beginWidget('CActiveForm', array(
     <div class="card-header">
         <div class="inv-hd-top">
             <div class="inv-hd-title">
-                <div class="inv-hd-icon"><i class="fa fa-cubes"></i></div>
+                <div class="inv-hd-icon"><i class="fas fa-cubes"></i></div>
                 <div>
                     <?= $model->isNewRecord ? 'Add Stock Entry' : 'Update Stock Entry' ?>
                     <div class="inv-hd-sub">Record product stock movement — in or out</div>
@@ -223,13 +223,13 @@ $form = $this->beginWidget('CActiveForm', array(
             </div>
             <div class="card-tools">
                 <button type="button" class="btn btn-tool" data-card-widget="collapse">
-                    <i class="fa fa-minus"></i>
+                    <i class="fas fa-minus"></i>
                 </button>
             </div>
         </div>
         <div class="inv-hd-chips">
-            <span class="inv-chip"><i class="fa fa-calendar"></i> Date &amp; Type</span>
-            <span class="inv-chip"><i class="fa fa-th-list"></i> Product Lines</span>
+            <span class="inv-chip"><i class="fas fa-calendar"></i> Date &amp; Type</span>
+            <span class="inv-chip"><i class="fas fa-th-list"></i> Product Lines</span>
         </div>
     </div>
 
@@ -250,7 +250,7 @@ $form = $this->beginWidget('CActiveForm', array(
                     <!-- Date -->
                     <div class="col-sm-6 col-md-3" style="margin-bottom:14px;">
                         <div class="inv-field">
-                            <label class="inv-label"><i class="fa fa-calendar" style="color:#6366f1;margin-right:3px;"></i> Date <span style="color:#ef4444;">*</span></label>
+                            <label class="inv-label"><i class="fas fa-calendar" style="color:#6366f1;margin-right:3px;"></i> Date <span style="color:#ef4444;">*</span></label>
                             <div id="entry_date" data-target-input="nearest">
                                 <?= $form->textField($model, 'date', array(
                                     'class'       => 'inv-input datetimepicker-input',
@@ -265,13 +265,13 @@ $form = $this->beginWidget('CActiveForm', array(
                     <!-- Transaction type — pill toggle -->
                     <div class="col-sm-6 col-md-3" style="margin-bottom:14px;">
                         <div class="inv-field">
-                            <label class="inv-label"><i class="fa fa-exchange" style="color:#6366f1;margin-right:3px;"></i> Transaction Type <span style="color:#ef4444;">*</span></label>
+                            <label class="inv-label"><i class="fas fa-right-left" style="color:#6366f1;margin-right:3px;"></i> Transaction Type <span style="color:#ef4444;">*</span></label>
                             <div class="inv-type-pills">
                                 <div class="inv-type-pill active-in" id="pill-in" onclick="setType(<?= Inventory::STOCK_IN ?>)">
-                                    <i class="fa fa-arrow-circle-down"></i> Stock In
+                                    <i class="fas fa-circle-arrow-down"></i> Stock In
                                 </div>
                                 <div class="inv-type-pill" id="pill-out" onclick="setType(<?= Inventory::STOCK_OUT ?>)">
-                                    <i class="fa fa-arrow-circle-up"></i> Stock Out
+                                    <i class="fas fa-circle-arrow-up"></i> Stock Out
                                 </div>
                             </div>
                             <?= $form->dropDownList($model, 't_type',
@@ -285,7 +285,7 @@ $form = $this->beginWidget('CActiveForm', array(
                     <!-- Remarks -->
                     <div class="col-sm-12 col-md-6" style="margin-bottom:14px;">
                         <div class="inv-field">
-                            <label class="inv-label"><i class="fa fa-comment-o" style="color:#6366f1;margin-right:3px;"></i> Remarks</label>
+                            <label class="inv-label"><i class="fas fa-comment-o" style="color:#6366f1;margin-right:3px;"></i> Remarks</label>
                             <?= $form->textArea($model, 'remarks', array('class' => 'inv-textarea', 'placeholder' => 'Optional note about this entry…')) ?>
                             <?= $form->error($model, 'remarks', array('class' => 'inv-error')) ?>
                         </div>
@@ -312,7 +312,7 @@ $form = $this->beginWidget('CActiveForm', array(
                     <!-- Product autocomplete -->
                     <div class="col-sm-6 col-md-3 col-lg-3" style="margin-bottom:14px;">
                         <div class="inv-field">
-                            <label class="inv-label"><i class="fa fa-search" style="color:#6366f1;margin-right:3px;"></i> Product <span style="color:#ef4444;">*</span></label>
+                            <label class="inv-label"><i class="fas fa-search" style="color:#6366f1;margin-right:3px;"></i> Product <span style="color:#ef4444;">*</span></label>
                             <input type="text" id="model_id_text" class="inv-input" placeholder="Type to search…" autocomplete="off">
                             <?= $form->hiddenField($model, 'model_id',   array('maxlength' => 255)) ?>
                             <?= $form->hiddenField($model, 'sell_price', array('maxlength' => 255)) ?>
@@ -330,7 +330,7 @@ $form = $this->beginWidget('CActiveForm', array(
                     <!-- Stock In -->
                     <div class="col-sm-6 col-md-2 col-lg-2 stock-in" style="margin-bottom:14px;">
                         <div class="inv-field">
-                            <label class="inv-label"><i class="fa fa-arrow-circle-down" style="color:#22c55e;margin-right:3px;"></i> Qty In <span style="color:#ef4444;">*</span></label>
+                            <label class="inv-label"><i class="fas fa-circle-arrow-down" style="color:#22c55e;margin-right:3px;"></i> Qty In <span style="color:#ef4444;">*</span></label>
                             <div class="inv-igroup">
                                 <?= $form->textField($model, 'stock_in', array(
                                     'maxlength' => 255,
@@ -347,7 +347,7 @@ $form = $this->beginWidget('CActiveForm', array(
                     <!-- Stock Out (hidden by default) -->
                     <div class="col-sm-6 col-md-2 col-lg-2 stock-out" style="display:none;margin-bottom:14px;">
                         <div class="inv-field">
-                            <label class="inv-label"><i class="fa fa-arrow-circle-up" style="color:#ef4444;margin-right:3px;"></i> Qty Out <span style="color:#ef4444;">*</span></label>
+                            <label class="inv-label"><i class="fas fa-circle-arrow-up" style="color:#ef4444;margin-right:3px;"></i> Qty Out <span style="color:#ef4444;">*</span></label>
                             <div class="inv-igroup">
                                 <?= $form->textField($model, 'stock_out', array(
                                     'maxlength' => 255,
@@ -363,7 +363,7 @@ $form = $this->beginWidget('CActiveForm', array(
                     <!-- Closing Stock (hidden, readonly) -->
                     <div class="col-sm-6 col-md-2 col-lg-2 stock-out" style="display:none;margin-bottom:14px;">
                         <div class="inv-field">
-                            <label class="inv-label"><i class="fa fa-archive" style="color:#94a3b8;margin-right:3px;"></i> Current Stock</label>
+                            <label class="inv-label"><i class="fas fa-archive" style="color:#94a3b8;margin-right:3px;"></i> Current Stock</label>
                             <div class="inv-igroup">
                                 <?= $form->textField($model, 'closing_stock', array(
                                     'maxlength' => 255,
@@ -379,7 +379,7 @@ $form = $this->beginWidget('CActiveForm', array(
                     <!-- Add button -->
                     <div class="col-sm-12 col-md-1 col-lg-1" style="margin-bottom:14px;">
                         <button class="inv-add-btn" onclick="addToList()" type="button">
-                            <i class="fa fa-plus"></i> Add
+                            <i class="fas fa-plus"></i> Add
                         </button>
                     </div>
 
@@ -399,7 +399,7 @@ $form = $this->beginWidget('CActiveForm', array(
                         <tbody>
                             <tr id="inv-empty-row">
                                 <td colspan="5" class="inv-table-empty">
-                                    <i class="fa fa-inbox" style="font-size:20px;display:block;margin-bottom:6px;color:#c7d2fe;"></i>
+                                    <i class="fas fa-inbox" style="font-size:20px;display:block;margin-bottom:6px;color:#c7d2fe;"></i>
                                     No products added yet — search and add above
                                 </td>
                             </tr>
@@ -415,7 +415,7 @@ $form = $this->beginWidget('CActiveForm', array(
     <!-- ═══ Footer ═══ -->
     <div class="card-footer">
         <?= CHtml::ajaxSubmitButton(
-            '<i class="fa fa-save"></i> Save Entry',
+            '<i class="fas fa-save"></i> Save Entry',
             CHtml::normalizeUrl(array('inventory/create', 'render' => true)),
             array(
                 'dataType'   => 'text',
@@ -456,7 +456,7 @@ $form = $this->beginWidget('CActiveForm', array(
             array('id' => 'inv-submit-btn', 'class' => 'inv-submit')
         ) ?>
         <span id="ajaxLoaderMR" class="ajaxLoaderMR" style="display:none;">
-            <i class="fa fa-spinner fa-spin" style="color:#6366f1;font-size:18px;"></i>
+            <i class="fas fa-spinner fa-spin" style="color:#6366f1;font-size:18px;"></i>
         </span>
         <div id="formResult" class="ajaxTargetDiv"></div>
         <div id="formResultError" class="ajaxTargetDivErr"></div>
@@ -569,7 +569,7 @@ function addToList(){
                     ${t_type == <?= Inventory::STOCK_IN ?> ? 'readonly' : ''}>
             </td>
             <td class="text-center">
-                <button type="button" class="inv-dlt-btn dlt"><i class="fa fa-trash-o"></i></button>
+                <button type="button" class="inv-dlt-btn dlt"><i class="fas fa-trash-can"></i></button>
                 <input type="hidden" value="${model_id}"   name="Inventory[temp_model_id][]">
                 <input type="hidden" value="${unit_price}" name="Inventory[temp_sell_price][]">
             </td>

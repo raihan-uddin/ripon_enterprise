@@ -133,7 +133,7 @@ foreach ($rows as $r) { if ($r->stock_in > $maxQty) $maxQty = $r->stock_in; }
 <div class="cs-hdr">
   <div class="cs-hdr-inner">
     <div class="cs-hdr-left">
-      <div class="cs-hdr-icon"><i class="fa fa-cubes"></i></div>
+      <div class="cs-hdr-icon"><i class="fas fa-cubes"></i></div>
       <div>
         <p class="cs-hdr-title"><?= $product ? CHtml::encode($product->model_name) : 'Current Stock' ?></p>
         <p class="cs-hdr-sub">Batch-Wise Current Stock Levels</p>
@@ -141,7 +141,7 @@ foreach ($rows as $r) { if ($r->stock_in > $maxQty) $maxQty = $r->stock_in; }
     </div>
     <div style="display:flex;gap:8px;flex-wrap:wrap;">
       <?php if ($product && $product->code): ?>
-      <div class="cs-pill"><i class="fa fa-tag"></i><?= CHtml::encode($product->code) ?></div>
+      <div class="cs-pill"><i class="fas fa-tag"></i><?= CHtml::encode($product->code) ?></div>
       <?php endif; ?>
     </div>
   </div>
@@ -151,31 +151,31 @@ foreach ($rows as $r) { if ($r->stock_in > $maxQty) $maxQty = $r->stock_in; }
 <div class="cs-meta">
   <?php if ($manufacturer): ?>
   <div class="cs-meta-item">
-    <span class="cs-meta-lbl"><i class="fa fa-building-o"></i> Company</span>
+    <span class="cs-meta-lbl"><i class="fas fa-building-o"></i> Company</span>
     <span class="cs-meta-val"><?= CHtml::encode($manufacturer->name) ?></span>
   </div>
   <?php endif; ?>
   <?php if ($category): ?>
   <div class="cs-meta-item">
-    <span class="cs-meta-lbl"><i class="fa fa-folder-o"></i> Category</span>
+    <span class="cs-meta-lbl"><i class="fas fa-folder-o"></i> Category</span>
     <span class="cs-meta-val"><?= CHtml::encode($category->item_name) ?></span>
   </div>
   <?php endif; ?>
   <?php if ($subCategory): ?>
   <div class="cs-meta-item">
-    <span class="cs-meta-lbl"><i class="fa fa-tag"></i> Sub-Category</span>
+    <span class="cs-meta-lbl"><i class="fas fa-tag"></i> Sub-Category</span>
     <span class="cs-meta-val"><?= CHtml::encode($subCategory->brand_name) ?></span>
   </div>
   <?php endif; ?>
   <?php if ($product && $product->purchase_price > 0): ?>
   <div class="cs-meta-item">
-    <span class="cs-meta-lbl"><i class="fa fa-shopping-cart"></i> Purchase Price</span>
+    <span class="cs-meta-lbl"><i class="fas fa-shopping-cart"></i> Purchase Price</span>
     <span class="cs-meta-val cs-meta-pp"><?= number_format($product->purchase_price, 2) ?></span>
   </div>
   <?php endif; ?>
   <?php if ($product && $product->sell_price > 0): ?>
   <div class="cs-meta-item">
-    <span class="cs-meta-lbl"><i class="fa fa-money"></i> Sale Price</span>
+    <span class="cs-meta-lbl"><i class="fas fa-money-bill"></i> Sale Price</span>
     <span class="cs-meta-val cs-meta-sp"><?= number_format($product->sell_price, 2) ?></span>
   </div>
   <?php endif; ?>
@@ -186,23 +186,23 @@ foreach ($rows as $r) { if ($r->stock_in > $maxQty) $maxQty = $r->stock_in; }
   <div class="cs-stat indigo">
     <div class="cs-stat-val"><?= count($rows) ?></div>
     <div class="cs-stat-lbl">Serial Batches</div>
-    <i class="fa fa-th cs-stat-icon"></i>
+    <i class="fas fa-th cs-stat-icon"></i>
   </div>
   <div class="cs-stat green">
     <div class="cs-stat-val"><?= number_format($total) ?></div>
     <div class="cs-stat-lbl">Total Stock</div>
-    <i class="fa fa-cubes cs-stat-icon"></i>
+    <i class="fas fa-cubes cs-stat-icon"></i>
   </div>
   <div class="cs-stat green">
     <div class="cs-stat-val"><?= number_format($totalPositive) ?></div>
     <div class="cs-stat-lbl">In Stock</div>
-    <i class="fa fa-arrow-up cs-stat-icon"></i>
+    <i class="fas fa-arrow-up cs-stat-icon"></i>
   </div>
   <?php if ($totalNegative < 0): ?>
   <div class="cs-stat red">
     <div class="cs-stat-val"><?= number_format(abs($totalNegative)) ?></div>
     <div class="cs-stat-lbl">Negative Batches</div>
-    <i class="fa fa-warning cs-stat-icon"></i>
+    <i class="fas fa-triangle-exclamation cs-stat-icon"></i>
   </div>
   <?php endif; ?>
 </div>
@@ -221,7 +221,7 @@ foreach ($rows as $r) { if ($r->stock_in > $maxQty) $maxQty = $r->stock_in; }
   <tbody>
   <?php if (empty($rows)): ?>
     <tr><td colspan="4" class="cc-no-data">
-      <i class="fa fa-inbox"></i>No stock records found for this product.
+      <i class="fas fa-inbox"></i>No stock records found for this product.
     </td></tr>
   <?php else:
     $sl = 1;
@@ -235,7 +235,7 @@ foreach ($rows as $r) { if ($r->stock_in > $maxQty) $maxQty = $r->stock_in; }
         <?php if ($d->product_sl_no): ?>
           <span class="cc-serial"><?= CHtml::encode($d->product_sl_no) ?></span>
         <?php else: ?>
-          <span class="cc-serial-na"><i class="fa fa-minus-circle"></i> No Serial / Bulk</span>
+          <span class="cc-serial-na"><i class="fas fa-minus-circle"></i> No Serial / Bulk</span>
         <?php endif; ?>
       </td>
       <td>

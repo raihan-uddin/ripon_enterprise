@@ -119,12 +119,12 @@ Yii::app()->clientScript->registerCoreScript("jquery.ui");
     <div class="pr-card">
         <div class="pr-card-header">
             <div class="pr-title-row">
-                <div class="pr-icon-box"><i class="fa fa-money"></i></div>
+                <div class="pr-icon-box"><i class="fas fa-money-bill"></i></div>
                 <div>
                     <h3 class="pr-title"><?php echo($model->isNewRecord ? 'Create Return/Replacement' : 'Update Return/Replacement'); ?></h3>
                     <p class="pr-subtitle">Cash return or replacement processing</p>
                 </div>
-                <button type="button" class="pr-collapse-btn" data-card-widget="collapse"><i class="fa fa-minus"></i></button>
+                <button type="button" class="pr-collapse-btn" data-card-widget="collapse"><i class="fas fa-minus"></i></button>
             </div>
         </div>
         <div class="pr-card-body">
@@ -151,23 +151,23 @@ Yii::app()->clientScript->registerCoreScript("jquery.ui");
                 <!-- Return Date -->
                 <div>
                     <div class="pr-fl">
-                        <i class="fa fa-calendar pr-fl-icon"></i>
+                        <i class="fas fa-calendar pr-fl-icon"></i>
                         <?php echo $form->textField($model, 'return_date', array('class' => 'pr-fl-input datetimepicker-input', 'placeholder' => ' ', 'value' => date('Y-m-d'), 'id' => 'SellReturn_return_date')); ?>
                         <label class="pr-fl-label">Return Date</label>
-                            <div class="input-group-text"><i class="fa fa-calendar"></i></div>
+                            <div class="input-group-text"><i class="fas fa-calendar"></i></div>
                         </div>
                         <?php echo $form->error($model, 'return_date', array('class' => 'pr-error')); ?>
                     </div>
 
                     <!-- Customer -->
                     <div class="pr-fl">
-                        <i class="fa fa-user pr-fl-icon"></i>
+                        <i class="fas fa-user pr-fl-icon"></i>
                         <input type="text" id="customer_id_text" class="pr-fl-input" placeholder=" ">
                         <?php echo $form->hiddenField($model, 'customer_id', array('maxlength' => 255, 'class' => 'form-control')); ?>
                         <label class="pr-fl-label">Customer</label>
                             <div class="input-group-text">
                                 <?php
-                                echo CHtml::link(' <i class="fa fa-plus"></i>', "",
+                                echo CHtml::link(' <i class="fas fa-plus"></i>', "",
                                     array(
                                         'onclick' => "{addDistributor(); $('#dialogAddDistributor').dialog('open');}"));
                                 ?>
@@ -268,7 +268,7 @@ Yii::app()->clientScript->registerCoreScript("jquery.ui");
                 <div>
                     <!-- Discount -->
                     <div class="pr-fl">
-                        <i class="fa fa-percent pr-fl-icon"></i>
+                        <i class="fas fa-percent pr-fl-icon"></i>
                         <?php echo $form->textField($model, 'discount', array('maxlength' => 255, 'class' => 'pr-fl-input', 'onkeyup' => 'addDiscount();', 'placeholder' => ' ')); ?>
                         <label class="pr-fl-label">Discount</label>
                         <?php echo $form->error($model, 'discount', array('class' => 'pr-error')); ?>
@@ -276,7 +276,7 @@ Yii::app()->clientScript->registerCoreScript("jquery.ui");
 
                     <!-- Return Amount -->
                     <div class="pr-fl cash-return">
-                        <i class="fa fa-money pr-fl-icon"></i>
+                        <i class="fas fa-money-bill pr-fl-icon"></i>
                         <?php echo $form->textField($model, 'return_amount', array('maxlength' => 255, 'class' => 'pr-fl-input', 'placeholder' => ' ', 'readonly' => true)); ?>
                         <label class="pr-fl-label">Return Amount</label>
                         <?php echo $form->error($model, 'return_amount', array('class' => 'pr-error')); ?>
@@ -287,21 +287,21 @@ Yii::app()->clientScript->registerCoreScript("jquery.ui");
             <!-- Items Card -->
             <div class="pr-inner-card">
                 <div class="pr-inner-header">
-                    <h4 class="pr-inner-title"><i class="fa fa-cubes" style="margin-right:6px"></i>Items</h4>
-                    <button type="button" class="pr-collapse-btn" data-card-widget="collapse"><i class="fa fa-minus"></i></button>
+                    <h4 class="pr-inner-title"><i class="fas fa-cubes" style="margin-right:6px"></i>Items</h4>
+                    <button type="button" class="pr-collapse-btn" data-card-widget="collapse"><i class="fas fa-minus"></i></button>
                 </div>
                 <div class="pr-inner-body">
                     <div class="pr-grid pr-grid-items" style="align-items:end">
                         <!-- Product -->
                         <div class="pr-fl" style="margin-bottom:0">
-                            <i class="fa fa-cube pr-fl-icon"></i>
+                            <i class="fas fa-cube pr-fl-icon"></i>
                             <input type="text" id="model_id_text" class="pr-fl-input" placeholder=" ">
                             <?php echo $form->hiddenField($model2, 'model_id', array('maxlength' => 255, 'class' => 'form-control', 'readonly' => true)); ?>
                             <label class="pr-fl-label">Product</label>
                             
                                 <div class="input-group-text" style="display:flex;gap:2px">
                                     <?php
-                                    echo CHtml::link(' <i class="fa fa-plus"></i>', "",
+                                    echo CHtml::link(' <i class="fas fa-plus"></i>', "",
                                         array(
                                             'onclick' => "{addProdModel(); $('#dialogAddProdModel').dialog('open');}"));
                                     ?>
@@ -364,7 +364,7 @@ Yii::app()->clientScript->registerCoreScript("jquery.ui");
                                         }
                                     </script>
                                 </div>
-                                <span class="input-group-text" onclick="resetProduct()"><i class="fa fa-refresh"></i></span>
+                                <span class="input-group-text" onclick="resetProduct()"><i class="fas fa-refresh"></i></span>
                             </div>
                             <?php echo $form->error($model, 'model_id', array('class' => 'pr-error')); ?>
 
@@ -430,11 +430,11 @@ Yii::app()->clientScript->registerCoreScript("jquery.ui");
 
                         <!-- Product SL No -->
                         <div class="pr-fl" style="margin-bottom:0">
-                            <i class="fa fa-barcode pr-fl-icon"></i>
+                            <i class="fas fa-barcode pr-fl-icon"></i>
                             <input type="text" id="product_sl_no" class="pr-fl-input" placeholder=" ">
                             <label class="pr-fl-label">Product SL No</label>
                                 <button class="btn btn-warning btn-sm" type="button" onclick="verifyProductSlNo()" style="position:absolute;right:36px;top:50%;transform:translateY(-50%);padding:2px 8px;font-size:11px;border-radius:5px">Verify</button>
-                                <span class="input-group-text" onclick="resetProductSlNo()"><i class="fa fa-refresh"></i></span>
+                                <span class="input-group-text" onclick="resetProductSlNo()"><i class="fas fa-refresh"></i></span>
                             </div>
                             <?php echo $form->error($model, 'product_sl_no', array('class' => 'pr-error')); ?>
 
@@ -534,10 +534,10 @@ Yii::app()->clientScript->registerCoreScript("jquery.ui");
                         <!-- Action buttons -->
                         <div class="pr-action-col" style="display:flex;gap:8px;padding-bottom:14px;align-items:flex-start;padding-top:4px">
                             <button class="pr-btn-success" onclick="addToList()" type="button" title="ADD TO LIST">
-                                <i class="fa fa-cart-arrow-down" aria-hidden="true"></i>
+                                <i class="fas fa-cart-arrow-down" aria-hidden="true"></i>
                             </button>
                             <button class="pr-btn-danger" onclick="resetDynamicItem()" type="button" title="RESET">
-                                <i class="fa fa-refresh" aria-hidden="true"></i>
+                                <i class="fas fa-refresh" aria-hidden="true"></i>
                             </button>
                         </div>
                     </div>
@@ -629,7 +629,7 @@ Yii::app()->clientScript->registerCoreScript("jquery.ui");
                     ), array('class' => 'pr-submit', 'onclick' => 'prRipple(event,this)'));
                     ?>
                     <span id="ajaxLoaderMR" class="pr-loader">
-                        <i class="fa fa-spinner fa-spin fa-2x" style="color:#6366f1"></i>
+                        <i class="fas fa-spinner fa-spin fa-2x" style="color:#6366f1"></i>
                     </span>
                     <div id="formResult" class="pr-result"></div>
                     <div id="formResultError" class="pr-result alert alert-danger d-none" role="alert"></div>
@@ -807,7 +807,7 @@ Yii::app()->clientScript->registerCoreScript("jquery.ui");
                     <input type="text" name="SellReturnDetails[row_total][]" class="form-control row-total text-end" value="${row_total}">
                 </td>
                 <td>
-                    <button type="button" class="pr-btn-danger dlt" style="padding:5px 9px"><i class="fa fa-trash"></i></button>
+                    <button type="button" class="pr-btn-danger dlt" style="padding:5px 9px"><i class="fas fa-trash"></i></button>
                 </td>
             </tr>`;
         $('#list tbody').prepend(html);

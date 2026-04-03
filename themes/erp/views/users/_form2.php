@@ -107,7 +107,7 @@ Yii::app()->clientScript->registerCoreScript('jquery.ui');
     <!-- ═══ Header ═══ -->
     <div class="card-header">
         <div class="pf2-hd-title">
-            <div class="pf2-hd-icon"><i class="fa fa-pencil"></i></div>
+            <div class="pf2-hd-icon"><i class="fas fa-pencil"></i></div>
             <div>
                 Update User: <strong><?= CHtml::encode($model->username) ?></strong>
                 <div class="pf2-hd-sub">Modify credentials or account status</div>
@@ -131,7 +131,7 @@ Yii::app()->clientScript->registerCoreScript('jquery.ui');
                         <label class="pf2-fl-label" for="<?= CHtml::activeId($model, 'username') ?>">
                             Username <span class="req">*</span>
                         </label>
-                        <i class="fa fa-user pf2-fl-icon"></i>
+                        <i class="fas fa-user pf2-fl-icon"></i>
                     </div>
                     <span class="pf2-error"><?= $form->error($model, 'username') ?></span>
                 </div>
@@ -140,9 +140,9 @@ Yii::app()->clientScript->registerCoreScript('jquery.ui');
             <!-- Status -->
             <div class="col-sm-6">
                 <div class="pf2-field">
-                    <label class="pf2-label"><i class="fa fa-toggle-on"></i> Account Status <span class="req">*</span></label>
+                    <label class="pf2-label"><i class="fas fa-toggle-on"></i> Account Status <span class="req">*</span></label>
                     <div class="pf2-sel-wrap">
-                        <i class="fa fa-toggle-on pf2-sel-icon"></i>
+                        <i class="fas fa-toggle-on pf2-sel-icon"></i>
                         <?= CHtml::activeDropDownList($model, 'status',
                             array(1 => 'Active', 0 => 'Inactive'),
                             array('class' => 'pf2-select')
@@ -164,12 +164,12 @@ Yii::app()->clientScript->registerCoreScript('jquery.ui');
                             'id'          => 'uf2-password',
                         )) ?>
                         <label class="pf2-fl-label" for="uf2-password">New Password</label>
-                        <i class="fa fa-lock pf2-fl-icon"></i>
+                        <i class="fas fa-lock pf2-fl-icon"></i>
                         <button type="button" class="pf2-pw-toggle" id="pf2-pw-btn1" tabindex="-1">
-                            <i class="fa fa-eye" id="pf2-pw-icon1"></i>
+                            <i class="fas fa-eye" id="pf2-pw-icon1"></i>
                         </button>
                     </div>
-                    <span class="pf2-hint"><i class="fa fa-info-circle" style="margin-right:3px;"></i>Leave blank to keep current password</span>
+                    <span class="pf2-hint"><i class="fas fa-info-circle" style="margin-right:3px;"></i>Leave blank to keep current password</span>
                     <span class="pf2-error"><?= $form->error($model, 'password') ?></span>
                 </div>
             </div>
@@ -186,9 +186,9 @@ Yii::app()->clientScript->registerCoreScript('jquery.ui');
                             'id'          => 'uf2-password2',
                         )) ?>
                         <label class="pf2-fl-label" for="uf2-password2">Confirm Password</label>
-                        <i class="fa fa-lock pf2-fl-icon"></i>
+                        <i class="fas fa-lock pf2-fl-icon"></i>
                         <button type="button" class="pf2-pw-toggle" id="pf2-pw-btn2" tabindex="-1">
-                            <i class="fa fa-eye" id="pf2-pw-icon2"></i>
+                            <i class="fas fa-eye" id="pf2-pw-icon2"></i>
                         </button>
                     </div>
                     <span class="pf2-error"><?= $form->error($model, 'password2') ?></span>
@@ -206,7 +206,7 @@ Yii::app()->clientScript->registerCoreScript('jquery.ui');
             'id'      => 'pf2-submit-btn',
         )) ?>
         <span id="ajaxLoaderMR2" style="display:none; align-items:center; gap:6px; color:#6366f1; font-size:13px;">
-            <i class="fa fa-spinner fa-spin"></i> Saving&hellip;
+            <i class="fas fa-spinner fa-spin"></i> Saving&hellip;
         </span>
     </div>
 
@@ -231,10 +231,10 @@ function loadingDivDisplay2() {
             btn.addEventListener('click', function () {
                 if (inp.type === 'password') {
                     inp.type = 'text';
-                    icon.className = 'fa fa-eye-slash';
+                    icon.className = 'fas fa-eye-slash';
                 } else {
                     inp.type = 'password';
-                    icon.className = 'fa fa-eye';
+                    icon.className = 'fas fa-eye';
                 }
             });
         }

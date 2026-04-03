@@ -54,7 +54,7 @@
         <div class="eh-card-header">
             <div class="eh-header-row">
                 <div class="eh-icon-box">
-                    <i class="fa fa-sitemap"></i>
+                    <i class="fas fa-sitemap"></i>
                 </div>
                 <div class="eh-header-text">
                     <h3 class="eh-title"><?php echo($model->isNewRecord ? 'Add New Expense Head' : 'Update Expense Head'); ?></h3>
@@ -68,7 +68,7 @@
             <div class="row">
                 <div class="col-xs-12 col-sm-6 col-lg-4">
                     <div class="eh-fl">
-                        <i class="fa fa-tag eh-fl-icon"></i>
+                        <i class="fas fa-tag eh-fl-icon"></i>
                         <?php echo $form->textField($model, 'title', array('maxlength' => 255, 'class' => 'eh-fl-input', 'placeholder' => ' ')); ?>
                         <label class="eh-fl-label">Title</label>
                     </div>
@@ -109,7 +109,7 @@
             ?>
 
             <span id="ajaxLoaderMR" class="ajaxLoaderMR" style="display: none;">
-                <i class="fa fa-spinner fa-spin fa-2x" style="color:#6366f1"></i>
+                <i class="fas fa-spinner fa-spin fa-2x" style="color:#6366f1"></i>
             </span>
 
             <div id="formResult" class="ajaxTargetDiv"></div>

@@ -82,7 +82,7 @@ $form = $this->beginWidget('CActiveForm', array(
     <div class="card-header">
         <div class="pi-hd-top">
             <div class="pi-hd-title">
-                <div class="pi-hd-icon"><i class="fa fa-tags"></i></div>
+                <div class="pi-hd-icon"><i class="fas fa-tags"></i></div>
                 <div>
                     <?= $model->isNewRecord ? 'Add New Category' : 'Update Category: ' . CHtml::encode($model->item_name) ?>
                     <div class="pi-hd-sub">Product category / item type</div>
@@ -90,7 +90,7 @@ $form = $this->beginWidget('CActiveForm', array(
             </div>
             <div class="card-tools">
                 <button type="button" class="btn btn-tool" data-card-widget="collapse">
-                    <i class="fa fa-minus"></i>
+                    <i class="fas fa-minus"></i>
                 </button>
             </div>
         </div>
@@ -108,7 +108,7 @@ $form = $this->beginWidget('CActiveForm', array(
                     <label class="pi-fl-label" for="<?= CHtml::activeId($model, 'item_name') ?>">
                         Category Name <span style="color:#ef4444;">*</span>
                     </label>
-                    <i class="fa fa-tag pi-fl-icon"></i>
+                    <i class="fas fa-tag pi-fl-icon"></i>
                 </div>
                 <span class="pi-error"><?= $form->error($model, 'item_name') ?></span>
             </div>
@@ -117,7 +117,7 @@ $form = $this->beginWidget('CActiveForm', array(
 
     <div class="card-footer">
         <?= CHtml::submitButton(
-            $model->isNewRecord ? '<i class="fa fa-plus"></i> Create' : '<i class="fa fa-save"></i> Update',
+            $model->isNewRecord ? '<i class="fas fa-plus"></i> Create' : '<i class="fas fa-save"></i> Update',
             array(
                 'id'      => 'pi-submit-btn2',
                 'class'   => 'pi-submit',
@@ -125,7 +125,7 @@ $form = $this->beginWidget('CActiveForm', array(
             )
         ) ?>
         <span id="ajaxLoaderMR2" class="ajaxLoaderMR" style="display:none;">
-            <i class="fa fa-spinner fa-spin fa-2x"></i>
+            <i class="fas fa-spinner fa-spin fa-2x"></i>
         </span>
     </div>
 

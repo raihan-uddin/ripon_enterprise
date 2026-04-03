@@ -272,7 +272,7 @@ echo "</div>";
         anyLedgerCall = true;
 
         var invoiceId = element.innerHTML;
-        element.innerHTML = '<i class="fa fa-spinner fa-spin"></i>';
+        element.innerHTML = '<i class="fas fa-spinner fa-spin"></i>';
         $.ajax({
             url: '<?= Yii::app()->createUrl("inventory/inventory/currentStockReportBatchWiseView") ?>',
             type: 'GET',
@@ -302,7 +302,7 @@ echo "</div>";
         anyLedgerCall = true;
 
         var invoiceId = element.innerHTML;
-        element.innerHTML = '<i class="fa fa-spinner fa-spin"></i>';
+        element.innerHTML = '<i class="fas fa-spinner fa-spin"></i>';
         $.ajax({
             url: '<?= Yii::app()->createUrl("inventory/inventory/currentStockOutReportBatchWiseView") ?>',
             type: 'GET',
@@ -334,7 +334,7 @@ echo "</div>";
         }
 
         var invoiceId = element.innerHTML;
-        element.innerHTML = '<i class="fa fa-spinner fa-spin"></i>';
+        element.innerHTML = '<i class="fas fa-spinner fa-spin"></i>';
         $.ajax({
             url: '<?= Yii::app()->createUrl("inventory/inventory/currentStockInReportBatchWiseView") ?>',
             type: 'GET',
@@ -370,7 +370,7 @@ echo "</div>";
         let model_id = $(this).data('id');
         let currentText = $(this).text();
         let $this = $(this);
-        $this.html('<i class="fa fa-spinner fa-spin"></i>');
+        $this.html('<i class="fas fa-spinner fa-spin"></i>');
         $.ajax({
             url: '<?= Yii::app()->createUrl("report/productStockLedgerView") ?>',
             type: 'POST',

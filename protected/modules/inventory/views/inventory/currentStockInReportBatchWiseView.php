@@ -172,7 +172,7 @@ $uniqueDays = $isSingleDay ? 1 : ceil(($end_date - $start_date) / 86400) + 1;
 <div class="si-hdr">
   <div class="si-hdr-inner">
     <div class="si-hdr-left">
-      <div class="si-hdr-icon"><i class="fa fa-arrow-circle-down"></i></div>
+      <div class="si-hdr-icon"><i class="fas fa-circle-arrow-down"></i></div>
       <div>
         <p class="si-hdr-title">Stock-In Report — Batch Wise</p>
         <p class="si-hdr-sub">
@@ -182,7 +182,7 @@ $uniqueDays = $isSingleDay ? 1 : ceil(($end_date - $start_date) / 86400) + 1;
       </div>
     </div>
     <div class="si-hdr-right">
-      <div class="si-pill"><i class="fa fa-calendar"></i><?= $dateLabel ?></div>
+      <div class="si-pill"><i class="fas fa-calendar"></i><?= $dateLabel ?></div>
     </div>
   </div>
 </div>
@@ -191,31 +191,31 @@ $uniqueDays = $isSingleDay ? 1 : ceil(($end_date - $start_date) / 86400) + 1;
 <div class="si-meta">
   <?php if ($manufacturer): ?>
   <div class="si-meta-item">
-    <span class="si-meta-lbl"><i class="fa fa-building-o"></i> Company</span>
+    <span class="si-meta-lbl"><i class="fas fa-building-o"></i> Company</span>
     <span class="si-meta-val"><?= CHtml::encode($manufacturer->name) ?></span>
   </div>
   <?php endif; ?>
   <?php if ($category): ?>
   <div class="si-meta-item">
-    <span class="si-meta-lbl"><i class="fa fa-folder-o"></i> Category</span>
+    <span class="si-meta-lbl"><i class="fas fa-folder-o"></i> Category</span>
     <span class="si-meta-val"><?= CHtml::encode($category->item_name) ?></span>
   </div>
   <?php endif; ?>
   <?php if ($subCategory): ?>
   <div class="si-meta-item">
-    <span class="si-meta-lbl"><i class="fa fa-tag"></i> Sub-Category</span>
+    <span class="si-meta-lbl"><i class="fas fa-tag"></i> Sub-Category</span>
     <span class="si-meta-val"><?= CHtml::encode($subCategory->brand_name) ?></span>
   </div>
   <?php endif; ?>
   <?php if ($product && $product->purchase_price > 0): ?>
   <div class="si-meta-item">
-    <span class="si-meta-lbl"><i class="fa fa-shopping-cart"></i> Purchase Price</span>
+    <span class="si-meta-lbl"><i class="fas fa-shopping-cart"></i> Purchase Price</span>
     <span class="si-meta-val si-meta-pp"><?= number_format($product->purchase_price, 2) ?></span>
   </div>
   <?php endif; ?>
   <?php if ($product && $product->sell_price > 0): ?>
   <div class="si-meta-item">
-    <span class="si-meta-lbl"><i class="fa fa-money"></i> Sale Price</span>
+    <span class="si-meta-lbl"><i class="fas fa-money-bill"></i> Sale Price</span>
     <span class="si-meta-val si-meta-sp"><?= number_format($product->sell_price, 2) ?></span>
   </div>
   <?php endif; ?>
@@ -226,22 +226,22 @@ $uniqueDays = $isSingleDay ? 1 : ceil(($end_date - $start_date) / 86400) + 1;
   <div class="si-stat blue">
     <div class="si-stat-val"><?= count($rows) ?></div>
     <div class="si-stat-lbl">Transactions</div>
-    <i class="fa fa-list si-stat-icon"></i>
+    <i class="fas fa-list si-stat-icon"></i>
   </div>
   <div class="si-stat green">
     <div class="si-stat-val"><?= number_format($total) ?></div>
     <div class="si-stat-lbl">Total Qty In</div>
-    <i class="fa fa-cubes si-stat-icon"></i>
+    <i class="fas fa-cubes si-stat-icon"></i>
   </div>
   <div class="si-stat indigo">
     <div class="si-stat-val"><?= number_format($totalValue, 0) ?></div>
     <div class="si-stat-lbl">Total Value</div>
-    <i class="fa fa-money si-stat-icon"></i>
+    <i class="fas fa-money-bill si-stat-icon"></i>
   </div>
   <div class="si-stat slate">
     <div class="si-stat-val"><?= $uniqueDays ?></div>
     <div class="si-stat-lbl"><?= $isSingleDay ? 'Single Day' : 'Days' ?></div>
-    <i class="fa fa-calendar-o si-stat-icon"></i>
+    <i class="fas fa-calendar si-stat-icon"></i>
   </div>
 </div>
 
@@ -265,7 +265,7 @@ $uniqueDays = $isSingleDay ? 1 : ceil(($end_date - $start_date) / 86400) + 1;
   <tbody>
   <?php if (empty($rows)): ?>
     <tr><td colspan="10" class="c-no-data">
-      <i class="fa fa-inbox"></i>No stock-in records found for this selection.
+      <i class="fas fa-inbox"></i>No stock-in records found for this selection.
     </td></tr>
   <?php else:
     $sl = 1; $running = 0;
@@ -299,11 +299,11 @@ $uniqueDays = $isSingleDay ? 1 : ceil(($end_date - $start_date) / 86400) + 1;
       </div></td>
       <td><div class="c-ref">
         <div class="c-ref-main"><?= CHtml::encode($poNo) ?></div>
-        <?php if ($d->challan_no): ?><div class="c-ref-sub"><i class="fa fa-file-text-o"></i> <?= CHtml::encode($d->challan_no) ?></div><?php endif; ?>
+        <?php if ($d->challan_no): ?><div class="c-ref-sub"><i class="fas fa-file-lines"></i> <?= CHtml::encode($d->challan_no) ?></div><?php endif; ?>
       </div></td>
       <td><div class="c-party">
         <div class="c-party-name"><?= CHtml::encode($supplierName) ?></div>
-        <?php if ($supplierContact): ?><div class="c-party-contact"><i class="fa fa-phone" style="font-size:10px;margin-right:3px;"></i><?= CHtml::encode($supplierContact) ?></div><?php endif; ?>
+        <?php if ($supplierContact): ?><div class="c-party-contact"><i class="fas fa-phone" style="font-size:10px;margin-right:3px;"></i><?= CHtml::encode($supplierContact) ?></div><?php endif; ?>
       </div></td>
       <td><span class="si-badge <?= $badgeClass ?>"><?= CHtml::encode($statusLabel ?: 'Entry') ?></span></td>
       <td class="c-price"><?= $d->purchase_price > 0 ? number_format($d->purchase_price, 2) : '—' ?></td>

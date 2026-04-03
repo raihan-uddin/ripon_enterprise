@@ -47,10 +47,10 @@ endforeach;
 
         <div class="card-tools">
             <button type="button" class="btn btn-tool" data-card-widget="collapse">
-                <i class="fa fa-minus"></i>
+                <i class="fas fa-minus"></i>
             </button>
             <!--            <button type="button" class="btn btn-tool" data-card-widget="remove">-->
-            <!--                <i class="fa fa-times"></i>-->
+            <!--                <i class="fas fa-times"></i>-->
             <!--            </button>-->
         </div>
     </div>
@@ -65,7 +65,7 @@ endforeach;
             'cssFile' => Yii::app()->theme->baseUrl . '/css/gridview/styles.css',
             'htmlOptions' => array('class' => 'table-responsive grid-view'),
             'itemsCssClass' => 'table table-sm table-hover table-striped table-condensed table-bordered dataTable dtr-inline',
-//            'loadingCssClass' => 'fa fa-spinner fa-spin fa-2x',
+//            'loadingCssClass' => 'fas fa-spinner fa-spin fa-2x',
 //            'pager' => array(            //  pager like twitter bootstrap
 //                'htmlOptions' => array('class' => 'pagination  justify-content-end'),
 //                'header' => '',
@@ -88,7 +88,7 @@ endforeach;
             'summaryText' => "<div class='dataTables_info' role='status' aria-live='polite'><p>Displaying {start}-{end} of {page} result(s)</p></div>",
             'summaryCssClass' => 'col-sm-12 col-md-5',
             'pagerCssClass' => 'col-sm-12 col-md-7 pager',
-            'emptyText' => "<div class='alert alert-warning text-center' role='alert'><i class='icon fa fa-exclamation-triangle'></i>No results found.</div>",
+            'emptyText' => "<div class='alert alert-warning text-center' role='alert'><i class='icon fas fa-exclamation-triangle'></i>No results found.</div>",
             'columns' => array(
 //            array(
 //                    'name' => 'barcode_image',
@@ -123,7 +123,7 @@ endforeach;
                     'htmlOptions' => ['style' => 'width: 120px'],
                     'buttons' => array(
                         'sellPriceHistory' => array(
-                            'label' => '<i class="fa fa-history fa-2x" style="color: black;"></i>&nbsp;&nbsp;',
+                            'label' => '<i class="fas fa-history fa-2x" style="color: black;"></i>&nbsp;&nbsp;',
                             'imageUrl' => false,
                             'options' => array('rel' => 'tooltip', 'data-bs-toggle' => 'tooltip', 'title' => Yii::t('app', 'Sell Price History')),
                             'url' => 'Yii::app()->controller->createUrl("sellPrice/priceHistory",array("model_id"=>$data->id))',
@@ -147,7 +147,7 @@ endforeach;
                      ",
                         ),
                         'addSellPrice' => array(
-                            'label' => '<i class="fa fa-plus fa-2x" style="color: green;"></i>&nbsp;&nbsp;',
+                            'label' => '<i class="fas fa-plus fa-2x" style="color: green;"></i>&nbsp;&nbsp;',
                             'imageUrl' => false,
                             'options' => array('rel' => 'tooltip', 'data-bs-toggle' => 'tooltip', 'title' => Yii::t('app', 'Add Sell Price')),
                             'url' => 'Yii::app()->controller->createUrl("sellPrice/addSellPrice",array("model_id"=>$data->id))',
@@ -160,7 +160,7 @@ endforeach;
                                   .dialog( 'open' ); }",
                         ),
                         'view' => array(
-                            'label' => '<i class="fa fa-eye fa-2x" style="color: black;"></i>&nbsp;&nbsp;',
+                            'label' => '<i class="fas fa-eye fa-2x" style="color: black;"></i>&nbsp;&nbsp;',
                             'imageUrl' => false,
                             'options' => array('rel' => 'tooltip', 'data-bs-toggle' => 'tooltip', 'title' => Yii::t('app', 'Add Sell Price')),
                             'url' => 'Yii::app()->controller->createUrl("view",array("id"=>$data->id))',

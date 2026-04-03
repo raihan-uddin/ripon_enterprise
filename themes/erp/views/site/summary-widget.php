@@ -1,5 +1,5 @@
 <div class="db-pl-card">
-    <div class="db-pl-icon"><i class="fa fa-line-chart"></i></div>
+    <div class="db-pl-icon"><i class="fas fa-line-chart"></i></div>
     <div>
         <div class="db-pl-label">Profit &amp; Loss Summary</div>
         <small class="text-muted" style="font-size:11px;">Select a date range to analyse P&amp;L</small>
@@ -10,7 +10,7 @@
                value="<?= sprintf("%s - %s", date('d/m/Y'), date('d/m/Y')) ?>"
                aria-label="Select Date Range">
             <button class="btn btn-primary" type="button" id="profit-loss-summary-btn">
-                <i class="fa fa-search"></i> Search
+                <i class="fas fa-search"></i> Search
             </button>
         </div>
     </div>
@@ -23,7 +23,7 @@
         <div class="modal-content" style="border-radius:14px; overflow:hidden;">
             <div class="modal-header" style="background:#6366f1; color:#fff; border:none;">
                 <h5 class="modal-title" id="exampleModalLabel" style="font-size:15px; font-weight:600;">
-                    <i class="fa fa-line-chart mr-2"></i> Profit &amp; Loss Summary
+                    <i class="fas fa-line-chart mr-2"></i> Profit &amp; Loss Summary
                 </h5>
                 <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"
                         style="color:#fff; opacity:0.8;">
@@ -68,16 +68,16 @@ $('#profit-loss-summary-btn').on('click', function () {
         success: function (response) {
             $('#profit-loss-summary-modal .modal-body').html(response);
             $('#profit-loss-summary-btn').prop('disabled', false)
-                .html('<i class="fa fa-search"></i> Search');
+                .html('<i class="fas fa-search"></i> Search');
             bootstrap.Modal.getOrCreateInstance(document.getElementById('profit-loss-summary-modal')).show();
             $('#profit-loss-summary-modal .modal-title').html(
-                '<i class="fa fa-line-chart mr-2"></i> Summary for (' + dateRange + ')'
+                '<i class="fas fa-line-chart mr-2"></i> Summary for (' + dateRange + ')'
             );
         },
         error: function () {
             toastr.error('An error occurred. Please try again later.');
             $('#profit-loss-summary-btn').prop('disabled', false)
-                .html('<i class="fa fa-search"></i> Search');
+                .html('<i class="fas fa-search"></i> Search');
         }
     });
 });

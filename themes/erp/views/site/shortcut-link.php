@@ -7,7 +7,7 @@ $endDate   = date('Y-m-t');
     <?php if (Yii::app()->user->checkAccess('ProdModels.Admin') || Yii::app()->user->checkAccess('ProdModels.Create') || Yii::app()->user->checkAccess('ProdModels.Update')): ?>
     <a class="db-action-card t-gray" href="<?= Yii::app()->createUrl('prodModels/create') ?>">
         <span class="db-action-badge"><?= ProdModels::model()->count() ?></span>
-        <div class="db-action-icon"><i class="fa fa-th-large"></i></div>
+        <div class="db-action-icon"><i class="fas fa-th-large"></i></div>
         <div class="db-action-label">Products</div>
     </a>
     <?php endif; ?>
@@ -15,7 +15,7 @@ $endDate   = date('Y-m-t');
     <?php if (Yii::app()->user->checkAccess('Sell.Customers.Admin')): ?>
     <a class="db-action-card t-green" href="<?= Yii::app()->createUrl('sell/customers/admin') ?>">
         <span class="db-action-badge"><?= Customers::model()->count() ?></span>
-        <div class="db-action-icon"><i class="fa fa-user-circle-o"></i></div>
+        <div class="db-action-icon"><i class="fas fa-user-circle-o"></i></div>
         <div class="db-action-label">Customers</div>
     </a>
     <?php endif; ?>
@@ -29,7 +29,7 @@ $endDate   = date('Y-m-t');
                 ->where('date BETWEEN :s AND :e', [':s' => $startDate, ':e' => $endDate])
                 ->queryScalar();
         ?></span>
-        <div class="db-action-icon"><i class="fa fa-file-text-o"></i></div>
+        <div class="db-action-icon"><i class="fas fa-file-lines"></i></div>
         <div class="db-action-label">Draft<small>Ctrl+D</small></div>
     </a>
     <?php endif; ?>
@@ -44,7 +44,7 @@ $endDate   = date('Y-m-t');
                     [':type' => SellOrder::NEW_ORDER, ':s' => $startDate, ':e' => $endDate])
                 ->queryScalar();
         ?></span>
-        <div class="db-action-icon"><i class="fa fa-shopping-cart"></i></div>
+        <div class="db-action-icon"><i class="fas fa-shopping-cart"></i></div>
         <div class="db-action-label">Orders<small>Ctrl+S</small></div>
     </a>
     <?php endif; ?>
@@ -58,7 +58,7 @@ $endDate   = date('Y-m-t');
                 ->where('return_date BETWEEN :s AND :e', [':s' => $startDate, ':e' => $endDate])
                 ->queryScalar();
         ?></span>
-        <div class="db-action-icon"><i class="fa fa-reply"></i></div>
+        <div class="db-action-icon"><i class="fas fa-reply"></i></div>
         <div class="db-action-label">Return</div>
     </a>
     <?php endif; ?>
@@ -72,7 +72,7 @@ $endDate   = date('Y-m-t');
                 ->where('date BETWEEN :s AND :e', [':s' => $startDate, ':e' => $endDate])
                 ->queryScalar();
         ?></span>
-        <div class="db-action-icon"><i class="fa fa-truck"></i></div>
+        <div class="db-action-icon"><i class="fas fa-truck"></i></div>
         <div class="db-action-label">Purchase<small>Ctrl+P</small></div>
     </a>
     <?php endif; ?>
@@ -86,7 +86,7 @@ $endDate   = date('Y-m-t');
                 ->where('date BETWEEN :s AND :e', [':s' => $startDate, ':e' => $endDate])
                 ->queryScalar();
         ?></span>
-        <div class="db-action-icon"><i class="fa fa-credit-card"></i></div>
+        <div class="db-action-icon"><i class="fas fa-credit-card"></i></div>
         <div class="db-action-label">Expense</div>
     </a>
     <?php endif; ?>
@@ -100,7 +100,7 @@ $endDate   = date('Y-m-t');
                 ->where('transaction_date BETWEEN :s AND :e', [':s' => $startDate, ':e' => $endDate])
                 ->queryScalar();
         ?></span>
-        <div class="db-action-icon"><i class="fa fa-university"></i></div>
+        <div class="db-action-icon"><i class="fas fa-university"></i></div>
         <div class="db-action-label">Loan</div>
     </a>
     <?php endif; ?>
@@ -114,7 +114,7 @@ $endDate   = date('Y-m-t');
                 ->where('date BETWEEN :s AND :e', [':s' => $startDate, ':e' => $endDate])
                 ->queryScalar();
         ?></span>
-        <div class="db-action-icon"><i class="fa fa-sign-in"></i></div>
+        <div class="db-action-icon"><i class="fas fa-sign-in"></i></div>
         <div class="db-action-label">Collection</div>
     </a>
     <?php endif; ?>
@@ -128,7 +128,7 @@ $endDate   = date('Y-m-t');
                 ->where('date BETWEEN :s AND :e', [':s' => $startDate, ':e' => $endDate])
                 ->queryScalar();
         ?></span>
-        <div class="db-action-icon"><i class="fa fa-sign-out"></i></div>
+        <div class="db-action-icon"><i class="fas fa-sign-out"></i></div>
         <div class="db-action-label">Payment</div>
     </a>
     <?php endif; ?>

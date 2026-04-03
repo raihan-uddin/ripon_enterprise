@@ -218,7 +218,7 @@ echo "</div>";
         if (!$rowFound) {
             echo "<tr>
                     <td colspan='9 ' style='text-align: center; font-size: 18px; text-transform: uppercase; font-weight: bold;'>
-                        <div class='alert alert-warning'><i class='fa fa-exclamation-triangle'></i> No result found!</div>
+                        <div class='alert alert-warning'><i class='fas fa-exclamation-triangle'></i> No result found!</div>
                     </td>
                 </tr>";
         }
@@ -274,7 +274,7 @@ echo "</div>";
 
         var invoiceId = $(this).text();
         var $this = $(this);
-        $this.html('<i class="fa fa-spinner fa-spin"></i>');
+        $this.html('<i class="fas fa-spinner fa-spin"></i>');
         $.ajax({
             url: '<?= Yii::app()->createUrl("sell/sellOrder/voucherPreview") ?>',
             type: 'POST',

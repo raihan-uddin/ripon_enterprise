@@ -184,15 +184,15 @@ Yii::app()->clientScript->registerCoreScript("jquery.ui");
     <!-- ── Header ── -->
     <div class="ex-card-header">
         <div class="ex-header-row">
-            <div class="ex-header-icon"><i class="fa fa-pencil-square-o"></i></div>
+            <div class="ex-header-icon"><i class="fas fa-pencil-square-o"></i></div>
             <div class="ex-header-text">
                 <p class="ex-title"><?php echo($model->isNewRecord ? 'Create Expense' : 'Update Expense'); ?></p>
                 <p class="ex-subtitle">Editing expense entry #<?php echo $model->entry_no; ?></p>
             </div>
         </div>
         <div class="ex-hd-chips">
-            <span class="ex-chip" id="ex-chip-items"><i class="fa fa-list-ul"></i> Items <span id="ex-chip-count" style="margin-left:2px;background:rgba(255,255,255,.25);border-radius:99px;padding:0 6px;font-size:10px;">0</span></span>
-            <span class="ex-chip" id="ex-chip-total"><i class="fa fa-calculator"></i> Total: <span id="ex-chip-total-val">0.00</span></span>
+            <span class="ex-chip" id="ex-chip-items"><i class="fas fa-list-ul"></i> Items <span id="ex-chip-count" style="margin-left:2px;background:rgba(255,255,255,.25);border-radius:99px;padding:0 6px;font-size:10px;">0</span></span>
+            <span class="ex-chip" id="ex-chip-total"><i class="fas fa-calculator"></i> Total: <span id="ex-chip-total-val">0.00</span></span>
         </div>
     </div>
 
@@ -204,7 +204,7 @@ Yii::app()->clientScript->registerCoreScript("jquery.ui");
             <!-- Date -->
             <div style="flex:1;min-width:170px">
                 <div class="ex-fl">
-                    <i class="fa fa-calendar ex-fl-icon"></i>
+                    <i class="fas fa-calendar ex-fl-icon"></i>
                     <?php echo $form->textField($model, 'date', array(
                         'class' => 'ex-fl-input datetimepicker-input',
                         'placeholder' => ' ',
@@ -219,7 +219,7 @@ Yii::app()->clientScript->registerCoreScript("jquery.ui");
             <!-- Remarks -->
             <div style="flex:2;min-width:200px">
                 <div class="ex-fl">
-                    <i class="fa fa-list ex-fl-icon"></i>
+                    <i class="fas fa-list ex-fl-icon"></i>
                     <?php echo $form->textField($model, 'remarks', array(
                         'class' => 'ex-fl-input',
                         'placeholder' => ' ',
@@ -232,7 +232,7 @@ Yii::app()->clientScript->registerCoreScript("jquery.ui");
             <!-- Created By -->
             <div style="flex:1.5;min-width:190px">
                 <div class="ex-fl">
-                    <i class="fa fa-user ex-fl-icon"></i>
+                    <i class="fas fa-user ex-fl-icon"></i>
                     <?php echo $form->textField($model, 'created_by_text', array(
                         'class' => 'ex-fl-input',
                         'placeholder' => ' ',
@@ -248,19 +248,19 @@ Yii::app()->clientScript->registerCoreScript("jquery.ui");
         <!-- ── Items Sub-Card ── -->
         <div class="ex-items-card">
             <div class="ex-items-header">
-                <div class="ex-items-header-icon"><i class="fa fa-list-ul"></i></div>
+                <div class="ex-items-header-icon"><i class="fas fa-list-ul"></i></div>
                 <p class="ex-items-header-title">Expense Items</p>
             </div>
             <div class="ex-items-body">
                 <div class="ex-items-row">
                     <!-- Expense Head -->
                     <div class="ex-fl" style="flex:2;min-width:190px">
-                        <i class="fa fa-tag ex-fl-icon"></i>
+                        <i class="fas fa-tag ex-fl-icon"></i>
                         <input type="text" id="expense_head_id_text" class="ex-fl-input" placeholder=" ">
                         <?php echo $form->hiddenField($model2, 'expense_head_id', array('maxlength' => 255, 'class' => 'form-control', 'readonly' => true)); ?>
                         <label class="ex-fl-label">Expense Head</label>
                         <div style="position:absolute;right:8px;top:50%;transform:translateY(-50%);z-index:2">
-                            <?php echo CHtml::link('<i class="fa fa-plus" style="color:#6366f1;font-size:12px"></i>', "", array('onclick' => "{addProdModel(); $('#dialogAddProdModel').dialog('open');}", 'style' => 'display:inline-flex;align-items:center;justify-content:center;width:26px;height:26px;border-radius:6px;background:rgba(99,102,241,.08);text-decoration:none')); ?>
+                            <?php echo CHtml::link('<i class="fas fa-plus" style="color:#6366f1;font-size:12px"></i>', "", array('onclick' => "{addProdModel(); $('#dialogAddProdModel').dialog('open');}", 'style' => 'display:inline-flex;align-items:center;justify-content:center;width:26px;height:26px;border-radius:6px;background:rgba(99,102,241,.08);text-decoration:none')); ?>
 
                             <?php
                             $this->beginWidget('zii.widgets.jui.CJuiDialog', array(// the dialog
@@ -350,7 +350,7 @@ Yii::app()->clientScript->registerCoreScript("jquery.ui");
 
                     <!-- Amount -->
                     <div class="ex-fl" style="flex:1;min-width:130px">
-                        <i class="fa fa-money ex-fl-icon"></i>
+                        <i class="fas fa-money-bill ex-fl-icon"></i>
                         <?php echo $form->textField($model2, 'amount', array('maxlength' => 255, 'class' => 'ex-fl-input qty-amount', 'placeholder' => ' ')); ?>
                         <label class="ex-fl-label">Amount</label>
                         <?php echo $form->error($model2, 'amount', array('class' => 'ex-error')); ?>
@@ -358,7 +358,7 @@ Yii::app()->clientScript->registerCoreScript("jquery.ui");
 
                     <!-- Remarks -->
                     <div class="ex-fl" style="flex:1;min-width:130px">
-                        <i class="fa fa-pencil ex-fl-icon"></i>
+                        <i class="fas fa-pencil ex-fl-icon"></i>
                         <?php echo $form->textField($model2, 'remarks', array('maxlength' => 255, 'class' => 'ex-fl-input', 'placeholder' => ' ')); ?>
                         <label class="ex-fl-label">Note</label>
                         <?php echo $form->error($model2, 'remarks', array('class' => 'ex-error')); ?>
@@ -367,7 +367,7 @@ Yii::app()->clientScript->registerCoreScript("jquery.ui");
                     <!-- Add Button -->
                     <div style="flex:0 0 auto">
                         <button class="ex-add-btn" onclick="addToList()" type="button">
-                            <i class="fa fa-plus"></i> Add
+                            <i class="fas fa-plus"></i> Add
                         </button>
                     </div>
                 </div>
@@ -409,7 +409,7 @@ Yii::app()->clientScript->registerCoreScript("jquery.ui");
                                     </td>
                                     <td class="text-center">
                                         <button type="button" class="ex-dlt-btn dlt"><i
-                                                    class="fa fa-trash-o"></i>
+                                                    class="fas fa-trash-can"></i>
                                         </button>
                                     </td>
                                 </tr>
@@ -421,7 +421,7 @@ Yii::app()->clientScript->registerCoreScript("jquery.ui");
                         <tfoot>
                         <tr>
                             <th colspan="3" class="text-end" style="vertical-align:middle;font-size:11.5px">
-                                <i class="fa fa-calculator" style="color:#6366f1;margin-right:4px"></i> Grand Total
+                                <i class="fas fa-calculator" style="color:#6366f1;margin-right:4px"></i> Grand Total
                             </th>
                             <th style="vertical-align:middle">
                                 <?php echo $form->textField($model, 'amount', array('maxlength' => 255, 'class' => 'ex-grand-input grand_total', 'readonly' => true)); ?>
@@ -518,7 +518,7 @@ Yii::app()->clientScript->registerCoreScript("jquery.ui");
         ?>
 
         <span id="ajaxLoaderMR" class="ajaxLoaderMR" style="display: none;">
-            <i class="fa fa-spinner fa-spin fa-2x" style="color:#6366f1"></i>
+            <i class="fas fa-spinner fa-spin fa-2x" style="color:#6366f1"></i>
         </span>
 
         <div id="formResult" class="ajaxTargetDiv"></div>
@@ -634,7 +634,7 @@ Yii::app()->clientScript->registerCoreScript("jquery.ui");
                                    class="ex-tbl-input text-end temp-amount" value="${amount}">
                         </td>
                         <td class="text-center">
-                            <button type="button" class="ex-dlt-btn dlt"><i class="fa fa-trash-o"></i>
+                            <button type="button" class="ex-dlt-btn dlt"><i class="fas fa-trash-can"></i>
                             </button>
                         </td>
                     </tr>

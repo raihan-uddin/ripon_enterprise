@@ -71,12 +71,12 @@ Yii::app()->clientScript->registerCoreScript("jquery.ui");
     <div class="pr-card">
         <div class="pr-card-header">
             <div class="pr-title-row">
-                <div class="pr-icon-box"><i class="fa fa-check-circle"></i></div>
+                <div class="pr-icon-box"><i class="fas fa-check-circle"></i></div>
                 <div>
                     <h3 class="pr-title">Approve Return Request #<?php echo CHtml::encode($model->id); ?></h3>
                     <p class="pr-subtitle">Review and approve product return</p>
                 </div>
-                <button type="button" class="pr-collapse-btn" data-card-widget="collapse"><i class="fa fa-minus"></i></button>
+                <button type="button" class="pr-collapse-btn" data-card-widget="collapse"><i class="fas fa-minus"></i></button>
             </div>
         </div>
 

@@ -93,7 +93,7 @@ $form = $this->beginWidget('CActiveForm', array(
     <div class="card-header">
         <div class="vfy-hd">
             <div class="vfy-hd-title">
-                <div class="vfy-hd-icon"><i class="fa fa-barcode"></i></div>
+                <div class="vfy-hd-icon"><i class="fas fa-barcode"></i></div>
                 <div>
                     Verify Product
                     <div class="vfy-hd-sub">Scan or type a serial number to look up product history</div>
@@ -101,7 +101,7 @@ $form = $this->beginWidget('CActiveForm', array(
             </div>
             <div class="card-tools">
                 <button type="button" class="btn btn-tool" data-card-widget="collapse">
-                    <i class="fa fa-minus"></i>
+                    <i class="fas fa-minus"></i>
                 </button>
             </div>
         </div>
@@ -111,20 +111,20 @@ $form = $this->beginWidget('CActiveForm', array(
         <div class="row">
             <div class="col-md-6">
                 <label class="vfy-label">
-                    <i class="fa fa-barcode" style="color:#6366f1;margin-right:3px;"></i>
+                    <i class="fas fa-barcode" style="color:#6366f1;margin-right:3px;"></i>
                     Product Serial No <span style="color:#ef4444;">*</span>
                 </label>
                 <div class="vfy-igroup">
-                    <div class="vfy-igroup-icon"><i class="fa fa-barcode"></i></div>
+                    <div class="vfy-igroup-icon"><i class="fas fa-barcode"></i></div>
                     <input type="text" id="product_sl_no_text" class="vfy-input"
                            placeholder="Scan barcode or type serial number…" autocomplete="off">
                     <?= $form->hiddenField($model, 'product_sl_no', array('maxlength' => 255)) ?>
                     <button class="vfy-search-btn" type="button" onclick="verifyProductSlNo()">
-                        <i class="fa fa-search"></i> Search
+                        <i class="fas fa-search"></i> Search
                     </button>
                 </div>
                 <?= $form->error($model, 'product_sl_no', array('class' => 'vfy-error')) ?>
-                <span class="vfy-hint"><i class="fa fa-keyboard-o"></i> Press Enter to search</span>
+                <span class="vfy-hint"><i class="fas fa-keyboard-o"></i> Press Enter to search</span>
             </div>
         </div>
     </div>

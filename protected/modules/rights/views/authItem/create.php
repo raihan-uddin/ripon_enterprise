@@ -8,7 +8,7 @@
         <div class="card card-primary">
             <div class="card-header">
                 <h3 class="card-title">
-                    <i class="fa fa-plus-circle"></i>
+                    <i class="fas fa-plus-circle"></i>
                     <?php echo Rights::t('core', 'Create :type', array(':type' => Rights::getAuthItemTypeName($_GET['type']))); ?>
                 </h3>
             </div>
@@ -17,7 +17,7 @@
             </div>
             <div class="card-footer">
                 <button type="submit" class="btn btn-primary" form="yw0">
-                    <i class="fa fa-save"></i> <?php echo Rights::t('core', 'Save'); ?>
+                    <i class="fas fa-save"></i> <?php echo Rights::t('core', 'Save'); ?>
                 </button>
                 <?php echo CHtml::link(
                     Rights::t('core', 'Cancel'),

@@ -273,10 +273,10 @@
 
 <div class="card card-primary">
     <div class="card-header">
-        <h3 class="card-title"><i class="fa fa-file-text-o" style="margin-right:6px;"></i>Payment Receipt Preview</h3>
+        <h3 class="card-title"><i class="fas fa-file-lines" style="margin-right:6px;"></i>Payment Receipt Preview</h3>
         <div class="card-tools">
             <button type="button" class="btn btn-tool" data-card-widget="collapse">
-                <i class="fa fa-minus"></i>
+                <i class="fas fa-minus"></i>
             </button>
         </div>
     </div>
@@ -487,7 +487,7 @@
 
         <?php else: ?>
         <div class="alert alert-danger">
-            <i class="fa fa-exclamation-circle" style="margin-right:6px;"></i>No result found!
+            <i class="fas fa-exclamation-circle" style="margin-right:6px;"></i>No result found!
         </div>
         <?php endif; ?>
     </div>

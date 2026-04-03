@@ -186,7 +186,7 @@ echo "</div>";
 
         var invoiceId = $(this).text();
         var $this = $(this);
-        $this.html('<i class="fa fa-spinner fa-spin"></i>');
+        $this.html('<i class="fas fa-spinner fa-spin"></i>');
         $.ajax({
             url: '<?= Yii::app()->createUrl("accounting/expense/voucherPreview") ?>',
             type: 'POST',

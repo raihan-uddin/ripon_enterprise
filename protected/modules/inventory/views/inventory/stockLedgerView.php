@@ -191,7 +191,7 @@ echo "</div>";
             <tr>
                 <td colspan="13"
                     style='text-align: center; font-size: 18px; text-transform: uppercase; font-weight: bold;'>
-                    <div class="alert alert-warning"><i class="fa fa-exclamation-triangle"></i> No result found !</div>
+                    <div class="alert alert-warning"><i class="fas fa-exclamation-triangle"></i> No result found !</div>
                 </td>
             </tr>
             <?php
@@ -267,7 +267,7 @@ echo "</div>";
 
     function currentStockPreview(element, product_id, start_date, end_date) {
         var invoiceId = element.innerHTML;
-        element.innerHTML = '<i class="fa fa-spinner fa-spin"></i>';
+        element.innerHTML = '<i class="fas fa-spinner fa-spin"></i>';
         $.ajax({
             url: '<?= Yii::app()->createUrl("inventory/inventory/currentStockReportBatchWiseView") ?>',
             type: 'GET',
@@ -288,7 +288,7 @@ echo "</div>";
 
     function currentStockOutPreview(element, product_id, start_date, end_date) {
         var invoiceId = element.innerHTML;
-        element.innerHTML = '<i class="fa fa-spinner fa-spin"></i>';
+        element.innerHTML = '<i class="fas fa-spinner fa-spin"></i>';
         $.ajax({
             url: '<?= Yii::app()->createUrl("inventory/inventory/currentStockOutReportBatchWiseView") ?>',
             type: 'GET',
@@ -312,7 +312,7 @@ echo "</div>";
     function currentStockInPreview(element, product_id, start_date, end_date) {
 
         var invoiceId = element.innerHTML;
-        element.innerHTML = '<i class="fa fa-spinner fa-spin"></i>';
+        element.innerHTML = '<i class="fas fa-spinner fa-spin"></i>';
         $.ajax({
             url: '<?= Yii::app()->createUrl("inventory/inventory/currentStockInReportBatchWiseView") ?>',
             type: 'GET',

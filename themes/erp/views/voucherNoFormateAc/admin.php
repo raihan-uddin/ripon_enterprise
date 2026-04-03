@@ -45,10 +45,10 @@ endforeach;
 
         <div class="card-tools">
             <button type="button" class="btn btn-tool" data-card-widget="collapse">
-                <i class="fa fa-minus"></i>
+                <i class="fas fa-minus"></i>
             </button>
             <button type="button" class="btn btn-tool" data-card-widget="remove">
-                <i class="fa fa-times"></i>
+                <i class="fas fa-times"></i>
             </button>
         </div>
     </div>
@@ -62,7 +62,7 @@ endforeach;
         'cssFile' => Yii::app()->theme->baseUrl . '/css/gridview/styles.css',
         'htmlOptions' => array('class' => 'table-responsive grid-view'),
         'itemsCssClass' => 'table table-sm table-hover table-striped table-condensed table-bordered dataTable dtr-inline',
-//            'loadingCssClass' => 'fa fa-spinner fa-spin fa-2x',
+//            'loadingCssClass' => 'fas fa-spinner fa-spin fa-2x',
 //        'pager' => array('htmlOptions' => array('class' => 'pagination pagination-sm justify-content-end')), // set whatever css class you want
 //        'template' => "{pager}{summary}{items}{summary}{pager}",
         'columns' => array(
@@ -80,7 +80,7 @@ endforeach;
                 'class' => 'CButtonColumn',
                 'buttons' => array(
                     'update' => array(
-                        'label' => '<i class="fa fa-pencil-square-o fa-2x" style="color: black;"></i>&nbsp;&nbsp;',
+                        'label' => '<i class="fas fa-pencil-square-o fa-2x" style="color: black;"></i>&nbsp;&nbsp;',
                         'imageUrl' => false,
                         'options' => array('rel' => 'tooltip', 'data-bs-toggle' => 'tooltip', 'title' => Yii::t('app', 'Edit')),
                         'click' => "function( e ){

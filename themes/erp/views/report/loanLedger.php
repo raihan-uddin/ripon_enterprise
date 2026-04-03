@@ -21,10 +21,10 @@ $this->widget('application.components.BreadCrumb', array(
 
 <div class="card card-primary">
     <div class="card-header">
-        <h3 class="card-title"><i class="fa fa-book" style="margin-right:6px;"></i>Loan Person Ledger</h3>
+        <h3 class="card-title"><i class="fas fa-book" style="margin-right:6px;"></i>Loan Person Ledger</h3>
         <div class="card-tools">
             <button type="button" class="btn btn-tool" data-card-widget="collapse">
-                <i class="fa fa-minus"></i>
+                <i class="fas fa-minus"></i>
             </button>
         </div>
     </div>
@@ -60,7 +60,7 @@ $this->widget('application.components.BreadCrumb', array(
             <div class="col-sm-12 col-md-2" style="display:flex; align-items:flex-end;">
                 <div class="mb-3" style="width:100%;">
                     <button id="loanLedgerSearchBtn" class="btn btn-success w-100" onclick="loadLoanLedger()">
-                        <i class="fa fa-search"></i> Search
+                        <i class="fas fa-search"></i> Search
                     </button>
                 </div>
             </div>
@@ -70,7 +70,7 @@ $this->widget('application.components.BreadCrumb', array(
                     $this->widget('ext.mPrint.mPrint', array(
                         'title'      => ' ',
                         'tooltip'    => 'Print Report',
-                        'text'       => '<i class="fa fa-print"></i> Print',
+                        'text'       => '<i class="fas fa-print"></i> Print',
                         'showIcon'   => false,
                         'element'    => '.loan-ledger-print-area',
                         'exceptions' => array(),
@@ -91,7 +91,7 @@ $this->widget('application.components.BreadCrumb', array(
     <div class="card-body">
         <div id="loanLedgerResult">
             <div class="text-center text-muted" style="padding:40px 0; font-size:13px;">
-                <i class="fa fa-arrow-up fa-2x" style="display:block; margin-bottom:8px; opacity:0.3;"></i>
+                <i class="fas fa-arrow-up fa-2x" style="display:block; margin-bottom:8px; opacity:0.3;"></i>
                 তারিখ সিলেক্ট করুন এবং Search চাপুন
             </div>
         </div>
@@ -110,7 +110,7 @@ function loadLoanLedger() {
     }
 
     var btn = $('#loanLedgerSearchBtn');
-    btn.prop('disabled', true).html('<i class="fa fa-spinner fa-spin"></i> Loading...');
+    btn.prop('disabled', true).html('<i class="fas fa-spinner fa-spin"></i> Loading...');
     $('#loanPrintBtnWrapper').hide();
 
     $.post('<?= CController::createUrl('/report/loanLedgerView') ?>', {
@@ -123,7 +123,7 @@ function loadLoanLedger() {
     }).fail(function (xhr) {
         toastr.error('Error: ' + xhr.responseText);
     }).always(function () {
-        btn.prop('disabled', false).html('<i class="fa fa-search"></i> Search');
+        btn.prop('disabled', false).html('<i class="fas fa-search"></i> Search');
     });
 }
 

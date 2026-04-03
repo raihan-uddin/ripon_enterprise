@@ -195,7 +195,7 @@ $this->widget('application.components.BreadCrumb', array(
 </style>
 <?php echo $this->renderPartial('_form', array('model' => $model)); ?>
 
-<?php //echo CHtml::link('<i class="fa fa-users"></i> Manage Contact Persons', array('/sell/customerContactPersons/admin'), array('class' => 'btn btn-warning mb-2')); ?>
+<?php //echo CHtml::link('<i class="fas fa-users"></i> Manage Contact Persons', array('/sell/customerContactPersons/admin'), array('class' => 'btn btn-warning mb-2')); ?>
 
 <?php
 $user = Yii::app()->getUser();
@@ -203,7 +203,7 @@ foreach ($user->getFlashKeys() as $key):
     if ($user->hasFlash($key)): ?>
         <div class="alert alert-<?php echo $key; ?> alert-dismissible fade show" role="alert">
             <button type="button" class="btn-close" data-bs-dismiss="alert" aria-hidden="true">×</button>
-            <i class="fa fa-<?php echo ($key === 'success') ? 'check-circle' : 'exclamation-triangle'; ?>" style="margin-right:6px;"></i>
+            <i class="fas fa-<?php echo ($key === 'success') ? 'check-circle' : 'exclamation-triangle'; ?>" style="margin-right:6px;"></i>
             <?php echo $user->getFlash($key); ?>
         </div>
     <?php
@@ -220,10 +220,10 @@ endforeach;
 
 <div class="card card-primary">
     <div class="card-header">
-        <h3 class="card-title"><i class="fa fa-users" style="margin-right:6px;"></i>Manage Customers</h3>
+        <h3 class="card-title"><i class="fas fa-users" style="margin-right:6px;"></i>Manage Customers</h3>
         <div class="card-tools">
             <button type="button" class="btn btn-tool" data-card-widget="collapse">
-                <i class="fa fa-minus"></i>
+                <i class="fas fa-minus"></i>
             </button>
         </div>
     </div>
@@ -240,10 +240,10 @@ endforeach;
                 'class'               => 'CLinkPager',
                 'cssFile'             => false,
                 'header'              => '',
-                'firstPageLabel'      => '<i class="fa fa-angle-double-left"></i>',
-                'lastPageLabel'       => '<i class="fa fa-angle-double-right"></i>',
-                'prevPageLabel'       => '<i class="fa fa-angle-left"></i>',
-                'nextPageLabel'       => '<i class="fa fa-angle-right"></i>',
+                'firstPageLabel'      => '<i class="fas fa-angle-double-left"></i>',
+                'lastPageLabel'       => '<i class="fas fa-angle-double-right"></i>',
+                'prevPageLabel'       => '<i class="fas fa-angle-left"></i>',
+                'nextPageLabel'       => '<i class="fas fa-angle-right"></i>',
                 'maxButtonCount'      => 7,
                 'htmlOptions'         => array('class' => 'pagination pagination-sm', 'style' => 'float:right; margin:4px 0;'),
                 'selectedPageCssClass' => 'active',
@@ -259,7 +259,7 @@ endforeach;
                         Page {page} of {pages}
                     </span>
                 </div>",
-            'emptyText'      => "<div class='alert alert-warning text-center' role='alert'><i class='icon fa fa-exclamation-triangle'></i> No results found.</div>",
+            'emptyText'      => "<div class='alert alert-warning text-center' role='alert'><i class='icon fas fa-exclamation-triangle'></i> No results found.</div>",
             'summaryCssClass' => 'col-sm-12 col-md-6',
             'pagerCssClass'   => 'col-xs-12 text-end',
             'columns' => array(
@@ -307,7 +307,7 @@ endforeach;
                     'afterDelete' => 'function(link,success,data){ if(success) $("#statusMsg").html(data); }',
                     'buttons' => array(
                         'update' => array(
-                            'label'    => '<i class="fa fa-pencil-square-o"></i>',
+                            'label'    => '<i class="fas fa-pencil-square-o"></i>',
                             'imageUrl' => false,
                             'options'  => array(
                                 'class'       => 'action-btn btn-edit',
@@ -323,7 +323,7 @@ endforeach;
                             }",
                         ),
                         'customDelete' => array(
-                            'label'    => '<i class="fa fa-trash"></i>',
+                            'label'    => '<i class="fas fa-trash"></i>',
                             'imageUrl' => false,
                             'options'  => array(
                                 'class'       => 'action-btn btn-delete',
@@ -357,7 +357,7 @@ endforeach;
                 <div class="goto-page-wrap" style="justify-content:flex-end;">
                     <span>Go to page</span>
                     <input type="number" id="goto-page-input" class="form-control" min="1" placeholder="Page #"/>
-                    <button onclick="goToPage()"><i class="fa fa-arrow-right"></i> Go</button>
+                    <button onclick="goToPage()"><i class="fas fa-arrow-right"></i> Go</button>
                 </div>
             </div>
         </div>

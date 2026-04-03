@@ -14,7 +14,7 @@
     <ol>
         <li class="bc-item">
             <a href="<?= Yii::app()->createUrl('site/dashBoard') ?>">
-                <i class="fa fa-home bc-home-icon"></i>
+                <i class="fas fa-home bc-home-icon"></i>
             </a>
         </li>
         <?php foreach ($this->crumbs as $crumb): ?>

@@ -103,7 +103,7 @@
 
 <div class="ch-toolbar">
     <div>
-        <div class="ch-toolbar-title"><i class="fa fa-line-chart" style="color:#6366f1;margin-right:7px"></i>Statistical Dashboard</div>
+        <div class="ch-toolbar-title"><i class="fas fa-line-chart" style="color:#6366f1;margin-right:7px"></i>Statistical Dashboard</div>
         <div class="ch-toolbar-sub" id="ch-period-label">Current month</div>
     </div>
     <div class="ch-toolbar-right">
@@ -114,7 +114,7 @@
             <button class="ch-date-tab" data-range="year">This Year</button>
         </div>
         <button id="load-dashboard-stats" class="ch-refresh-btn">
-            <i class="fa fa-refresh"></i> Refresh
+            <i class="fas fa-refresh"></i> Refresh
         </button>
     </div>
 </div>
@@ -190,36 +190,36 @@
     function renderCharts(d){
         var html=
             '<div class="ch-kpi-row" id="ch-kpi-row">'+
-            '<div class="ch-kpi k-sales"   style="animation-delay:.05s"><div class="ch-kpi-label"><i class="fa fa-shopping-cart"></i> Total Sales</div><div class="ch-kpi-val" id="kpi-sales">—</div></div>'+
-            '<div class="ch-kpi k-purchase" style="animation-delay:.10s"><div class="ch-kpi-label"><i class="fa fa-truck"></i> Total Purchase</div><div class="ch-kpi-val" id="kpi-purchase">—</div></div>'+
-            '<div class="ch-kpi k-expense"  style="animation-delay:.15s"><div class="ch-kpi-label"><i class="fa fa-credit-card"></i> Total Expense</div><div class="ch-kpi-val" id="kpi-expense">—</div></div>'+
-            '<div class="ch-kpi k-profit"   style="animation-delay:.20s"><div class="ch-kpi-label"><i class="fa fa-line-chart"></i> Net Profit</div><div class="ch-kpi-val" id="kpi-profit">—</div></div>'+
+            '<div class="ch-kpi k-sales"   style="animation-delay:.05s"><div class="ch-kpi-label"><i class="fas fa-shopping-cart"></i> Total Sales</div><div class="ch-kpi-val" id="kpi-sales">—</div></div>'+
+            '<div class="ch-kpi k-purchase" style="animation-delay:.10s"><div class="ch-kpi-label"><i class="fas fa-truck"></i> Total Purchase</div><div class="ch-kpi-val" id="kpi-purchase">—</div></div>'+
+            '<div class="ch-kpi k-expense"  style="animation-delay:.15s"><div class="ch-kpi-label"><i class="fas fa-credit-card"></i> Total Expense</div><div class="ch-kpi-val" id="kpi-expense">—</div></div>'+
+            '<div class="ch-kpi k-profit"   style="animation-delay:.20s"><div class="ch-kpi-label"><i class="fas fa-line-chart"></i> Net Profit</div><div class="ch-kpi-val" id="kpi-profit">—</div></div>'+
             '</div>'+
             '<div class="row no-gutters" style="margin-bottom:20px">'+
             '<div class="col-12 col-md-7" style="padding-right:10px;padding-bottom:0"><div class="ch-card" style="animation-delay:.1s;margin-bottom:0">'+
-            '<div class="ch-card-head"><div class="ch-card-icon" style="background:rgba(99,102,241,.1);color:#6366f1"><i class="fa fa-bar-chart"></i></div>'+
+            '<div class="ch-card-head"><div class="ch-card-icon" style="background:rgba(99,102,241,.1);color:#6366f1"><i class="fas fa-chart-bar"></i></div>'+
             '<div><div class="ch-card-title">Revenue Summary</div><div class="ch-card-sub">Sales · Purchase · Expense</div></div>'+
             '<div class="ch-card-actions"><button class="ch-toggle-btn active" data-chart="summary" data-type="bar">Bar</button><button class="ch-toggle-btn" data-chart="summary" data-type="line">Line</button></div>'+
             '</div><div class="ch-card-body"><div id="chart-summary"></div></div></div></div>'+
             '<div class="col-12 col-md-5" style="padding-left:10px;padding-top:'+( isMobile?'16':'0')+'px"><div class="ch-card" style="animation-delay:.15s;margin-bottom:0">'+
-            '<div class="ch-card-head"><div class="ch-card-icon" style="background:rgba(34,197,94,.1);color:#16a34a"><i class="fa fa-pie-chart"></i></div>'+
+            '<div class="ch-card-head"><div class="ch-card-icon" style="background:rgba(34,197,94,.1);color:#16a34a"><i class="fas fa-chart-pie"></i></div>'+
             '<div><div class="ch-card-title">Finance Overview</div><div class="ch-card-sub">Collection · Payment · Profit</div></div>'+
             '<div class="ch-card-actions"><button class="ch-toggle-btn active" data-chart="finance" data-type="donut">Donut</button><button class="ch-toggle-btn" data-chart="finance" data-type="pie">Pie</button></div>'+
             '</div><div class="ch-card-body"><div id="chart-finance"></div></div></div></div>'+
             '</div>'+
             '<div class="row no-gutters" style="margin-bottom:20px">'+
             '<div class="col-12 col-md-8" style="padding-right:10px;padding-bottom:0"><div class="ch-card" style="animation-delay:.2s;margin-bottom:0">'+
-            '<div class="ch-card-head"><div class="ch-card-icon" style="background:rgba(59,130,246,.1);color:#2563eb"><i class="fa fa-line-chart"></i></div>'+
+            '<div class="ch-card-head"><div class="ch-card-icon" style="background:rgba(59,130,246,.1);color:#2563eb"><i class="fas fa-line-chart"></i></div>'+
             '<div><div class="ch-card-title">Trend Analysis</div><div class="ch-card-sub">Sales · Purchase · Expense over time</div></div>'+
             '<div class="ch-card-actions"><button class="ch-toggle-btn active" data-chart="trend" data-type="area">Area</button><button class="ch-toggle-btn" data-chart="trend" data-type="line">Line</button><button class="ch-toggle-btn" data-chart="trend" data-type="bar">Bar</button></div>'+
             '</div><div class="ch-card-body"><div id="chart-trend"></div></div></div></div>'+
             '<div class="col-12 col-md-4" style="padding-left:10px;padding-top:'+(isMobile?'16':'0')+'px"><div class="ch-card" style="animation-delay:.25s;margin-bottom:0">'+
-            '<div class="ch-card-head"><div class="ch-card-icon" style="background:rgba(239,68,68,.1);color:#dc2626"><i class="fa fa-undo"></i></div>'+
+            '<div class="ch-card-head"><div class="ch-card-icon" style="background:rgba(239,68,68,.1);color:#dc2626"><i class="fas fa-undo"></i></div>'+
             '<div><div class="ch-card-title">Return Ratio</div><div class="ch-card-sub">Sales vs returns</div></div>'+
             '</div><div class="ch-card-body"><div id="chart-ratio"></div></div></div></div>'+
             '</div>'+
             '<div class="ch-card" style="animation-delay:.3s;margin-bottom:0">'+
-            '<div class="ch-card-head"><div class="ch-card-icon" style="background:rgba(245,158,11,.1);color:#d97706"><i class="fa fa-exchange"></i></div>'+
+            '<div class="ch-card-head"><div class="ch-card-icon" style="background:rgba(245,158,11,.1);color:#d97706"><i class="fas fa-right-left"></i></div>'+
             '<div><div class="ch-card-title">Cash Flow</div><div class="ch-card-sub">Inflow vs Outflow comparison</div></div>'+
             '<div class="ch-card-actions"><button class="ch-toggle-btn active" data-chart="cashflow" data-type="bar">Bar</button><button class="ch-toggle-btn" data-chart="cashflow" data-type="line">Line</button></div>'+
             '</div><div class="ch-card-body"><div id="chart-cashflow"></div></div></div>';
@@ -344,14 +344,14 @@
             success:function(res){
                 if(btn){btn.classList.remove('loading');btn.disabled=false;}
                 if(!res||!res.success){
-                    container.innerHTML='<p class="text-danger" style="padding:20px"><i class="fa fa-exclamation-triangle mr-2"></i>Failed to load statistics.</p>';
+                    container.innerHTML='<p class="text-danger" style="padding:20px"><i class="fas fa-exclamation-triangle mr-2"></i>Failed to load statistics.</p>';
                     return;
                 }
                 renderCharts(res.data);
             },
             error:function(){
                 if(btn){btn.classList.remove('loading');btn.disabled=false;}
-                container.innerHTML='<p class="text-danger" style="padding:20px"><i class="fa fa-exclamation-triangle mr-2"></i>Failed to fetch data.</p>';
+                container.innerHTML='<p class="text-danger" style="padding:20px"><i class="fas fa-exclamation-triangle mr-2"></i>Failed to fetch data.</p>';
             }
         });
     }

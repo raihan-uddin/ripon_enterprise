@@ -172,16 +172,16 @@ foreach ($dataAsc as $r) {
 <div class="pl-hdr">
   <div class="pl-hdr-inner">
     <div class="pl-hdr-left">
-      <div class="pl-hdr-icon"><i class="fa fa-book"></i></div>
+      <div class="pl-hdr-icon"><i class="fas fa-book"></i></div>
       <div>
         <p class="pl-hdr-title"><?= CHtml::encode($model_name) ?></p>
         <p class="pl-hdr-sub">Product Stock Ledger</p>
       </div>
     </div>
     <div class="pl-hdr-right">
-      <?php if ($code): ?><div class="pl-pill"><i class="fa fa-tag"></i><?= CHtml::encode($code) ?></div><?php endif; ?>
+      <?php if ($code): ?><div class="pl-pill"><i class="fas fa-tag"></i><?= CHtml::encode($code) ?></div><?php endif; ?>
       <div class="pl-pill">
-        <i class="fa fa-calendar"></i>
+        <i class="fas fa-calendar"></i>
         <?php if ($dateFrom && $dateTo): ?>
           <?= date('d M Y', strtotime($dateFrom)) ?> – <?= date('d M Y', strtotime($dateTo)) ?>
         <?php else: ?>
@@ -195,13 +195,13 @@ foreach ($dataAsc as $r) {
 <?php if (empty($data)): ?>
 <!-- Empty state -->
 <div class="pl-empty">
-  <div class="pl-empty-icon"><i class="fa fa-search"></i></div>
+  <div class="pl-empty-icon"><i class="fas fa-search"></i></div>
   <p class="pl-empty-title">No Records Found</p>
   <p class="pl-empty-sub">No stock ledger entries match your search criteria.</p>
   <div class="pl-empty-params">
-    <span class="pl-empty-param"><i class="fa fa-cube" style="margin-right:5px;"></i>Product ID: <?= (int)$model_id ?></span>
-    <?php if ($dateFrom): ?><span class="pl-empty-param"><i class="fa fa-calendar" style="margin-right:5px;"></i>From: <?= CHtml::encode($dateFrom) ?></span><?php endif; ?>
-    <?php if ($dateTo): ?><span class="pl-empty-param"><i class="fa fa-calendar" style="margin-right:5px;"></i>To: <?= CHtml::encode($dateTo) ?></span><?php endif; ?>
+    <span class="pl-empty-param"><i class="fas fa-cube" style="margin-right:5px;"></i>Product ID: <?= (int)$model_id ?></span>
+    <?php if ($dateFrom): ?><span class="pl-empty-param"><i class="fas fa-calendar" style="margin-right:5px;"></i>From: <?= CHtml::encode($dateFrom) ?></span><?php endif; ?>
+    <?php if ($dateTo): ?><span class="pl-empty-param"><i class="fas fa-calendar" style="margin-right:5px;"></i>To: <?= CHtml::encode($dateTo) ?></span><?php endif; ?>
   </div>
 </div>
 <?php else: ?>
@@ -209,31 +209,31 @@ foreach ($dataAsc as $r) {
 <div class="pl-meta">
   <?php if ($manufacturer): ?>
   <div class="pl-meta-item">
-    <span class="pl-meta-lbl"><i class="fa fa-building-o"></i> Company</span>
+    <span class="pl-meta-lbl"><i class="fas fa-building-o"></i> Company</span>
     <span class="pl-meta-val"><?= CHtml::encode($manufacturer->name) ?></span>
   </div>
   <?php endif; ?>
   <?php if ($category): ?>
   <div class="pl-meta-item">
-    <span class="pl-meta-lbl"><i class="fa fa-folder-o"></i> Category</span>
+    <span class="pl-meta-lbl"><i class="fas fa-folder-o"></i> Category</span>
     <span class="pl-meta-val"><?= CHtml::encode($category->item_name) ?></span>
   </div>
   <?php endif; ?>
   <?php if ($subCategory): ?>
   <div class="pl-meta-item">
-    <span class="pl-meta-lbl"><i class="fa fa-tag"></i> Sub-Category</span>
+    <span class="pl-meta-lbl"><i class="fas fa-tag"></i> Sub-Category</span>
     <span class="pl-meta-val"><?= CHtml::encode($subCategory->brand_name) ?></span>
   </div>
   <?php endif; ?>
   <?php if ($product && $product->purchase_price > 0): ?>
   <div class="pl-meta-item">
-    <span class="pl-meta-lbl"><i class="fa fa-shopping-cart"></i> Purchase Price</span>
+    <span class="pl-meta-lbl"><i class="fas fa-shopping-cart"></i> Purchase Price</span>
     <span class="pl-meta-val pl-meta-pp"><?= number_format($product->purchase_price, 2) ?></span>
   </div>
   <?php endif; ?>
   <?php if ($product && $product->sell_price > 0): ?>
   <div class="pl-meta-item">
-    <span class="pl-meta-lbl"><i class="fa fa-money"></i> Sale Price</span>
+    <span class="pl-meta-lbl"><i class="fas fa-money-bill"></i> Sale Price</span>
     <span class="pl-meta-val pl-meta-sp"><?= number_format($product->sell_price, 2) ?></span>
   </div>
   <?php endif; ?>
@@ -244,32 +244,32 @@ foreach ($dataAsc as $r) {
   <div class="pl-stat teal">
     <div class="pl-stat-val"><?= count($data) ?></div>
     <div class="pl-stat-lbl">Transactions</div>
-    <i class="fa fa-list pl-stat-icon"></i>
+    <i class="fas fa-list pl-stat-icon"></i>
   </div>
   <div class="pl-stat green">
     <div class="pl-stat-val"><?= number_format($totalIn) ?></div>
     <div class="pl-stat-lbl">Total Stock In</div>
-    <i class="fa fa-arrow-down pl-stat-icon"></i>
+    <i class="fas fa-arrow-down pl-stat-icon"></i>
   </div>
   <div class="pl-stat red">
     <div class="pl-stat-val"><?= number_format($totalOut) ?></div>
     <div class="pl-stat-lbl">Total Stock Out</div>
-    <i class="fa fa-arrow-up pl-stat-icon"></i>
+    <i class="fas fa-arrow-up pl-stat-icon"></i>
   </div>
   <div class="pl-stat blue">
     <div class="pl-stat-val" style="color:<?= $balance >= 0 ? 'var(--pl-green)' : 'var(--pl-red)' ?>"><?= number_format($balance) ?></div>
     <div class="pl-stat-lbl">Balance</div>
-    <i class="fa fa-balance-scale pl-stat-icon"></i>
+    <i class="fas fa-balance-scale pl-stat-icon"></i>
   </div>
   <div class="pl-stat green">
     <div class="pl-stat-val" style="font-size:16px;"><?= number_format($totalInValue, 0) ?></div>
     <div class="pl-stat-lbl">In Value</div>
-    <i class="fa fa-money pl-stat-icon"></i>
+    <i class="fas fa-money-bill pl-stat-icon"></i>
   </div>
   <div class="pl-stat amber">
     <div class="pl-stat-val" style="font-size:16px;"><?= number_format($totalOutValue, 0) ?></div>
     <div class="pl-stat-lbl">Out Value</div>
-    <i class="fa fa-money pl-stat-icon"></i>
+    <i class="fas fa-money-bill pl-stat-icon"></i>
   </div>
 </div>
 
@@ -325,22 +325,22 @@ foreach ($dataAsc as $r) {
       <td>
         <?php if ($d->supplier_id > 0): ?>
           <div style="display:flex;align-items:flex-start;">
-            <span class="pc-type-chip pc-type-chip-s"><i class="fa fa-truck"></i></span>
+            <span class="pc-type-chip pc-type-chip-s"><i class="fas fa-truck"></i></span>
             <div>
               <div class="pc-party-name supplier_ledger" data-id="<?= $d->supplier_id ?>" style="cursor:pointer;">
                 <?= CHtml::encode($d->supplier_name) ?>
               </div>
-              <?php if ($d->supplier_contact_no): ?><div class="pc-party-contact"><i class="fa fa-phone" style="font-size:9px;margin-right:3px;"></i><?= CHtml::encode($d->supplier_contact_no) ?></div><?php endif; ?>
+              <?php if ($d->supplier_contact_no): ?><div class="pc-party-contact"><i class="fas fa-phone" style="font-size:9px;margin-right:3px;"></i><?= CHtml::encode($d->supplier_contact_no) ?></div><?php endif; ?>
             </div>
           </div>
         <?php elseif ($d->customer_id > 0): ?>
           <div style="display:flex;align-items:flex-start;">
-            <span class="pc-type-chip pc-type-chip-c"><i class="fa fa-user"></i></span>
+            <span class="pc-type-chip pc-type-chip-c"><i class="fas fa-user"></i></span>
             <div>
               <div class="pc-party-name customer_ledger" data-id="<?= $d->customer_id ?>" style="cursor:pointer;">
                 <?= CHtml::encode($d->customer_name) ?>
               </div>
-              <?php if ($d->customer_contact_no): ?><div class="pc-party-contact"><i class="fa fa-phone" style="font-size:9px;margin-right:3px;"></i><?= CHtml::encode($d->customer_contact_no) ?></div><?php endif; ?>
+              <?php if ($d->customer_contact_no): ?><div class="pc-party-contact"><i class="fas fa-phone" style="font-size:9px;margin-right:3px;"></i><?= CHtml::encode($d->customer_contact_no) ?></div><?php endif; ?>
             </div>
           </div>
         <?php else: ?>

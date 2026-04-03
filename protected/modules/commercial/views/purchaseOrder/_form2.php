@@ -24,17 +24,17 @@ Yii::app()->clientScript->registerCoreScript('jquery.ui');
 <!-- ── Action bar ──────────────────────────────────────────────────────────── -->
 <div class="d-flex align-items-center gap-2 mb-3 flex-wrap">
     <a class="btn btn-sm btn-outline-secondary" href="<?= Yii::app()->request->requestUri ?>">
-        <i class="fa fa-refresh"></i> Reload
+        <i class="fas fa-refresh"></i> Reload
     </a>
     <a class="btn btn-sm btn-outline-secondary"
        href="<?= Yii::app()->baseUrl ?>/index.php/commercial/purchaseOrder/admin">
-        <i class="fa fa-list"></i> Manage Orders
+        <i class="fas fa-list"></i> Manage Orders
     </a>
     <span id="po-dirty-indicator" class="badge"
           style="display:none; background:rgba(234,179,8,.18); color:#ca8a04;
                  border:1px solid rgba(234,179,8,.35); font-size:11px; padding:4px 8px;
                  border-radius:6px;">
-        <i class="fa fa-circle" style="font-size:7px;"></i> Unsaved changes
+        <i class="fas fa-circle" style="font-size:7px;"></i> Unsaved changes
     </span>
 </div>
 
@@ -46,7 +46,7 @@ Yii::app()->clientScript->registerCoreScript('jquery.ui');
         <div class="card shadow-sm h-100">
             <div class="card-header text-white"
                  style="background:linear-gradient(135deg,#6366f1,#4f46e5); padding:10px 16px;">
-                <i class="fa fa-file-text-o mr-1"></i> Order Details
+                <i class="fas fa-file-lines mr-1"></i> Order Details
             </div>
             <div class="card-body">
 
@@ -94,7 +94,7 @@ Yii::app()->clientScript->registerCoreScript('jquery.ui');
         <div class="card shadow-sm h-100">
             <div class="card-header text-white"
                  style="background:linear-gradient(135deg,#6366f1,#4f46e5); padding:10px 16px;">
-                <i class="fa fa-truck mr-1"></i> Supplier
+                <i class="fas fa-truck mr-1"></i> Supplier
             </div>
             <div class="card-body">
 
@@ -108,7 +108,7 @@ Yii::app()->clientScript->registerCoreScript('jquery.ui');
                             <button type="button" class="btn btn-outline-secondary"
                                     onclick="addSupplier(); $('#addSupplierDialog').dialog('open');"
                                     title="Add new supplier">
-                                <i class="fa fa-plus"></i>
+                                <i class="fas fa-plus"></i>
                             </button>
                         </div>
                     </div>
@@ -191,14 +191,14 @@ Yii::app()->clientScript->registerCoreScript('jquery.ui');
         <div class="card shadow-sm h-100">
             <div class="card-header text-white"
                  style="background:linear-gradient(135deg,#6366f1,#4f46e5); padding:10px 16px;">
-                <i class="fa fa-calculator mr-1"></i> Financials
+                <i class="fas fa-calculator mr-1"></i> Financials
             </div>
             <div class="card-body">
 
                 <div class="mb-3">
                     <?php echo $form->labelEx($model, 'total_amount'); ?>
                     <div class="input-group">
-                            <span class="input-group-text"><i class="fa fa-money"></i></span>
+                            <span class="input-group-text"><i class="fas fa-money-bill"></i></span>
                         </div>
                         <?php echo $form->textField($model, 'total_amount', array(
                             'class'    => 'form-control',
@@ -224,7 +224,7 @@ Yii::app()->clientScript->registerCoreScript('jquery.ui');
                         </div>
                         <div class="col">
                             <div class="input-group">
-                                    <span class="input-group-text"><i class="fa fa-money"></i></span>
+                                    <span class="input-group-text"><i class="fas fa-money-bill"></i></span>
                                 </div>
                                 <?php echo $form->textField($model, 'vat_amount', array(
                                     'class'    => 'form-control',
@@ -252,7 +252,7 @@ Yii::app()->clientScript->registerCoreScript('jquery.ui');
                         </div>
                         <div class="col">
                             <div class="input-group">
-                                    <span class="input-group-text"><i class="fa fa-money"></i></span>
+                                    <span class="input-group-text"><i class="fas fa-money-bill"></i></span>
                                 </div>
                                 <?php echo $form->textField($model, 'discount', array(
                                     'class'    => 'form-control',
@@ -270,7 +270,7 @@ Yii::app()->clientScript->registerCoreScript('jquery.ui');
                         
                             <span class="input-group-text"
                                   style="background:#6366f1; border-color:#6366f1; color:#fff;">
-                                <i class="fa fa-money"></i>
+                                <i class="fas fa-money-bill"></i>
                             </span>
                         </div>
                         <?php echo $form->textField($model, 'grand_total', array(
@@ -294,7 +294,7 @@ Yii::app()->clientScript->registerCoreScript('jquery.ui');
 <div class="card shadow-sm mb-4">
     <div class="card-header d-flex align-items-center justify-content-between"
          style="background:linear-gradient(135deg,#6366f1,#4f46e5); color:#fff; padding:10px 16px;">
-        <span><i class="fa fa-th-list mr-1"></i> Items</span>
+        <span><i class="fas fa-th-list mr-1"></i> Items</span>
         <span id="item-count-badge"
               style="background:rgba(255,255,255,.2); font-size:11px; padding:2px 10px;
                      border-radius:20px; font-weight:600;">0 items</span>
@@ -429,7 +429,7 @@ Yii::app()->clientScript->registerCoreScript('jquery.ui');
         <div class="d-flex align-items-center" style="gap:8px;">
             <div id="formResultError" class="alert alert-danger d-none mb-0" role="alert" style="font-size:13px;"></div>
             <span id="ajaxLoader" style="display:none; color:#6366f1;">
-                <i class="fa fa-spinner fa-spin"></i> Saving…
+                <i class="fas fa-spinner fa-spin"></i> Saving…
             </span>
             <?php
             echo CHtml::ajaxSubmitButton(
@@ -512,7 +512,7 @@ Yii::app()->clientScript->registerCoreScript('jquery.ui');
         <div class="modal-content">
             <div class="modal-header"
                  style="background:linear-gradient(135deg,#6366f1,#4f46e5); color:#fff;">
-                <h5 class="modal-title"><i class="fa fa-file-text-o mr-1"></i> Purchase Order Voucher</h5>
+                <h5 class="modal-title"><i class="fas fa-file-lines mr-1"></i> Purchase Order Voucher</h5>
                 <button type="button" class="close text-white" data-bs-dismiss="modal">
                     <span>&times;</span>
                 </button>
@@ -522,7 +522,7 @@ Yii::app()->clientScript->registerCoreScript('jquery.ui');
             </div>
             <div class="modal-footer">
                 <button type="button" class="btn btn-secondary btn-sm" data-bs-dismiss="modal">
-                    <i class="fa fa-times mr-1"></i> Close
+                    <i class="fas fa-times mr-1"></i> Close
                 </button>
             </div>
         </div>

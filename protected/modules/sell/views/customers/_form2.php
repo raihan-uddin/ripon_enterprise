@@ -219,7 +219,7 @@ $form = $this->beginWidget('CActiveForm', array(
     <div class="card-header">
         <div class="cu-header-inner">
             <div class="cu-header-icon">
-                <i class="fa fa-pencil-square-o"></i>
+                <i class="fas fa-pencil-square-o"></i>
             </div>
             <div>
                 <div class="cu-header-title"><?php echo($model->isNewRecord ? 'Add New Customer' : 'Update Customer'); ?></div>
@@ -228,7 +228,7 @@ $form = $this->beginWidget('CActiveForm', array(
         </div>
         <div class="card-tools">
             <button type="button" class="btn btn-tool" data-card-widget="collapse">
-                <i class="fa fa-minus"></i>
+                <i class="fas fa-minus"></i>
             </button>
         </div>
     </div>
@@ -244,7 +244,7 @@ $form = $this->beginWidget('CActiveForm', array(
                         'placeholder' => ' ',
                     )); ?>
                     <label class="cu-fl-label">Company Name <span style="color:#ef4444">*</span></label>
-                    <span class="cu-fl-icon"><i class="fa fa-building-o"></i></span>
+                    <span class="cu-fl-icon"><i class="fas fa-building-o"></i></span>
                 </div>
                 <?php echo $form->error($model, 'company_name', array('class' => 'cu-error')); ?>
             </div>
@@ -257,7 +257,7 @@ $form = $this->beginWidget('CActiveForm', array(
                         'placeholder' => ' ',
                     )); ?>
                     <label class="cu-fl-label">Owner / Contact Person</label>
-                    <span class="cu-fl-icon"><i class="fa fa-user-o"></i></span>
+                    <span class="cu-fl-icon"><i class="fas fa-user-o"></i></span>
                 </div>
                 <?php echo $form->error($model, 'owner_person', array('class' => 'cu-error')); ?>
             </div>
@@ -270,7 +270,7 @@ $form = $this->beginWidget('CActiveForm', array(
                         'placeholder' => ' ',
                     )); ?>
                     <label class="cu-fl-label">Mobile Number</label>
-                    <span class="cu-fl-icon"><i class="fa fa-phone"></i></span>
+                    <span class="cu-fl-icon"><i class="fas fa-phone"></i></span>
                 </div>
                 <?php echo $form->error($model, 'owner_mobile_no', array('class' => 'cu-error')); ?>
             </div>
@@ -283,7 +283,7 @@ $form = $this->beginWidget('CActiveForm', array(
                         'placeholder' => ' ',
                     )); ?>
                     <label class="cu-fl-label">Company Address</label>
-                    <span class="cu-fl-icon"><i class="fa fa-map-marker"></i></span>
+                    <span class="cu-fl-icon"><i class="fas fa-map-marker"></i></span>
                 </div>
                 <?php echo $form->error($model, 'company_address', array('class' => 'cu-error')); ?>
             </div>
@@ -296,7 +296,7 @@ $form = $this->beginWidget('CActiveForm', array(
                         'placeholder' => ' ',
                     )); ?>
                     <label class="cu-fl-label">Opening Balance</label>
-                    <span class="cu-fl-icon"><i class="fa fa-money"></i></span>
+                    <span class="cu-fl-icon"><i class="fas fa-money-bill"></i></span>
                 </div>
                 <?php echo $form->error($model, 'opening_amount', array('class' => 'cu-error')); ?>
             </div>
@@ -309,7 +309,7 @@ $form = $this->beginWidget('CActiveForm', array(
                         'placeholder' => ' ',
                     )); ?>
                     <label class="cu-fl-label">Email Address</label>
-                    <span class="cu-fl-icon"><i class="fa fa-envelope-o"></i></span>
+                    <span class="cu-fl-icon"><i class="fas fa-envelope"></i></span>
                 </div>
                 <?php echo $form->error($model, 'company_email', array('class' => 'cu-error')); ?>
             </div>
@@ -322,7 +322,7 @@ $form = $this->beginWidget('CActiveForm', array(
                         'placeholder' => ' ',
                     )); ?>
                     <label class="cu-fl-label">Website</label>
-                    <span class="cu-fl-icon"><i class="fa fa-globe"></i></span>
+                    <span class="cu-fl-icon"><i class="fas fa-globe"></i></span>
                 </div>
                 <?php echo $form->error($model, 'company_web', array('class' => 'cu-error')); ?>
             </div>
@@ -332,7 +332,7 @@ $form = $this->beginWidget('CActiveForm', array(
                 <div class="cu-fl">
                     <?php echo $form->textField($model, 'zip', array('maxlength' => 255, 'class' => 'cu-fl-input', 'placeholder' => ' ')); ?>
                     <label class="cu-fl-label">ZIP Code</label>
-                    <span class="cu-fl-icon"><i class="fa fa-hashtag"></i></span>
+                    <span class="cu-fl-icon"><i class="fas fa-hashtag"></i></span>
                 </div>
                 <?php echo $form->error($model, 'zip', array('class' => 'cu-error')); ?>
             </div>
@@ -341,7 +341,7 @@ $form = $this->beginWidget('CActiveForm', array(
                 <div class="cu-fl">
                     <?php echo $form->textField($model, 'state', array('maxlength' => 255, 'class' => 'cu-fl-input', 'placeholder' => ' ')); ?>
                     <label class="cu-fl-label">State</label>
-                    <span class="cu-fl-icon"><i class="fa fa-map-o"></i></span>
+                    <span class="cu-fl-icon"><i class="fas fa-map-o"></i></span>
                 </div>
                 <?php echo $form->error($model, 'state', array('class' => 'cu-error')); ?>
             </div>
@@ -350,7 +350,7 @@ $form = $this->beginWidget('CActiveForm', array(
                 <div class="cu-fl">
                     <?php echo $form->textField($model, 'city', array('maxlength' => 255, 'class' => 'cu-fl-input', 'placeholder' => ' ')); ?>
                     <label class="cu-fl-label">City</label>
-                    <span class="cu-fl-icon"><i class="fa fa-map-pin"></i></span>
+                    <span class="cu-fl-icon"><i class="fas fa-map-pin"></i></span>
                 </div>
                 <?php echo $form->error($model, 'city', array('class' => 'cu-error')); ?>
             </div>
@@ -363,7 +363,7 @@ $form = $this->beginWidget('CActiveForm', array(
                         'placeholder' => ' ',
                     )); ?>
                     <label class="cu-fl-label">TRN No.</label>
-                    <span class="cu-fl-icon"><i class="fa fa-id-card-o"></i></span>
+                    <span class="cu-fl-icon"><i class="fas fa-id-card-o"></i></span>
                 </div>
                 <?php echo $form->error($model, 'trn_no', array('class' => 'cu-error')); ?>
             </div>
@@ -374,7 +374,7 @@ $form = $this->beginWidget('CActiveForm', array(
     <div class="card-footer">
         <?php echo CHtml::submitButton($model->isNewRecord ? 'Create' : 'Update', array('onclick' => 'loadingDivDisplay();', 'class' => 'cu-submit')); ?>
         <span id="ajaxLoaderMR2" class="ajaxLoaderMR" style="display: none;">
-            <i class="fa fa-spinner fa-spin fa-2x" style="color:#6366f1;"></i>
+            <i class="fas fa-spinner fa-spin fa-2x" style="color:#6366f1;"></i>
         </span>
     </div>
 

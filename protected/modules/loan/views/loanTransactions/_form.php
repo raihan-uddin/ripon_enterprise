@@ -95,7 +95,7 @@
     <!-- ── Header ────────────────────────────────── -->
     <div class="lt-card-header">
         <div class="lt-header-row">
-            <div class="lt-header-icon"><i class="fa fa-exchange"></i></div>
+            <div class="lt-header-icon"><i class="fas fa-right-left"></i></div>
             <div>
                 <div class="lt-header-title"><?= $model->isNewRecord ? 'New Transaction' : 'Update Transaction'; ?></div>
                 <div class="lt-header-sub">Record a loan give / receive entry</div>
@@ -110,10 +110,10 @@
             <!-- Person -->
             <div>
                 <label class="lt-label" for="LoanTransactions_person_id">
-                    <i class="fa fa-user" style="margin-right:4px;font-size:10px;color:#6366f1"></i> Person
+                    <i class="fas fa-user" style="margin-right:4px;font-size:10px;color:#6366f1"></i> Person
                 </label>
                 <div class="lt-sel-wrap">
-                    <i class="fa fa-user lt-sel-icon"></i>
+                    <i class="fas fa-user lt-sel-icon"></i>
                     <?= $form->dropDownList(
                             $model, 'person_id',
                             CHtml::listData(LoanPersons::model()->findAll(['order' => 'name ASC']), 'id', 'name'),
@@ -137,10 +137,10 @@
             <!-- Transaction Type -->
             <div>
                 <label class="lt-label" for="LoanTransactions_transaction_type">
-                    <i class="fa fa-random" style="margin-right:4px;font-size:10px;color:#6366f1"></i> Transaction Type
+                    <i class="fas fa-random" style="margin-right:4px;font-size:10px;color:#6366f1"></i> Transaction Type
                 </label>
                 <div class="lt-sel-wrap">
-                    <i class="fa fa-random lt-sel-icon"></i>
+                    <i class="fas fa-random lt-sel-icon"></i>
                     <?= $form->dropDownList(
                             $model, 'transaction_type',
                             [
@@ -157,7 +157,7 @@
 
             <!-- Amount -->
             <div class="lt-fl">
-                <i class="fa fa-money lt-fl-icon"></i>
+                <i class="fas fa-money-bill lt-fl-icon"></i>
                 <?= $form->textField($model, 'amount', ['class' => 'lt-fl-input', 'placeholder' => ' ', 'autocomplete' => 'off']); ?>
                 <label class="lt-fl-label" for="LoanTransactions_amount">Amount</label>
                 <?= $form->error($model, 'amount', array('class' => 'lt-error')); ?>
@@ -165,7 +165,7 @@
 
             <!-- Transaction Date -->
             <div class="lt-fl">
-                <i class="fa fa-calendar lt-fl-icon"></i>
+                <i class="fas fa-calendar lt-fl-icon"></i>
                 <?php echo $form->textField($model, 'transaction_date', array('class' => 'lt-fl-input datetimepicker-input', 'placeholder' => ' ', 'value' => $model->isNewRecord ? date('Y-m-d') : $model->transaction_date, 'id' => 'LoanTransactions_transaction_date')); ?>
                 <label class="lt-fl-label" for="LoanTransactions_transaction_date">Transaction Date</label>
                 <div id="entry_date" data-target-input="nearest"></div>
@@ -174,7 +174,7 @@
 
             <!-- Note -->
             <div class="lt-fl lt-col-full">
-                <i class="fa fa-pencil lt-fl-icon" style="top:18px;transform:none"></i>
+                <i class="fas fa-pencil lt-fl-icon" style="top:18px;transform:none"></i>
                 <?= $form->textArea($model, 'note', ['class' => 'lt-fl-textarea', 'rows' => 2, 'placeholder' => ' ']); ?>
                 <label class="lt-fl-label" for="LoanTransactions_note">Note (optional)</label>
                 <?= $form->error($model, 'note', array('class' => 'lt-error')); ?>

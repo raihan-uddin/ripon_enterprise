@@ -258,7 +258,7 @@ if (is_file($logoPath)) {
                     <td colspan="8">
                         <div class="supplier-box">
                             <div class="supplier-name">
-                                <i class="fa fa-industry"></i> <?= $sup['supplier_name'] ?>
+                                <i class="fas fa-industry"></i> <?= $sup['supplier_name'] ?>
                             </div>
                         </div>
                     </td>
@@ -311,7 +311,7 @@ if (is_file($logoPath)) {
 
             <tr>
                 <td colspan="8" style='text-align:center; font-size:18px;'>
-                    <div class="alert alert-warning"><i class="fa fa-exclamation-triangle"></i> No result found!</div>
+                    <div class="alert alert-warning"><i class="fas fa-exclamation-triangle"></i> No result found!</div>
                 </td>
             </tr>
 
@@ -468,7 +468,7 @@ if (is_file($logoPath)) {
         anyLedgerCallSw = true;
 
         var invoiceId = element.innerHTML;
-        element.innerHTML = '<i class="fa fa-spinner fa-spin"></i>';
+        element.innerHTML = '<i class="fas fa-spinner fa-spin"></i>';
         $.ajax({
             url: '<?= Yii::app()->createUrl("inventory/inventory/currentStockReportBatchWiseView") ?>',
             type: 'GET',
@@ -494,7 +494,7 @@ if (is_file($logoPath)) {
         anyLedgerCallSw = true;
 
         var invoiceId = element.innerHTML;
-        element.innerHTML = '<i class="fa fa-spinner fa-spin"></i>';
+        element.innerHTML = '<i class="fas fa-spinner fa-spin"></i>';
         $.ajax({
             url: '<?= Yii::app()->createUrl("inventory/inventory/currentStockOutReportBatchWiseView") ?>',
             type: 'GET',
@@ -519,7 +519,7 @@ if (is_file($logoPath)) {
         }
 
         var invoiceId = element.innerHTML;
-        element.innerHTML = '<i class="fa fa-spinner fa-spin"></i>';
+        element.innerHTML = '<i class="fas fa-spinner fa-spin"></i>';
         $.ajax({
             url: '<?= Yii::app()->createUrl("inventory/inventory/currentStockInReportBatchWiseView") ?>',
             type: 'GET',
@@ -548,7 +548,7 @@ if (is_file($logoPath)) {
         let model_id = $(this).data('id');
         let currentText = $(this).text();
         let $this = $(this);
-        $this.html('<i class="fa fa-spinner fa-spin"></i>');
+        $this.html('<i class="fas fa-spinner fa-spin"></i>');
         $.ajax({
             url: '<?= Yii::app()->createUrl("report/productStockLedgerView") ?>',
             type: 'POST',

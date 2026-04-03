@@ -4,10 +4,10 @@
 
         <div class="card-tools">
             <button type="button" class="btn btn-tool" data-card-widget="collapse">
-                <i class="fa fa-minus"></i>
+                <i class="fas fa-minus"></i>
             </button>
 <!--            <button type="button" class="btn btn-tool" data-card-widget="remove">-->
-<!--                <i class="fa fa-times"></i>-->
+<!--                <i class="fas fa-times"></i>-->
 <!--            </button>-->
         </div>
     </div>

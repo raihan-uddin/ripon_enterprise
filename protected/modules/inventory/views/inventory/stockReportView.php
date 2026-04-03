@@ -338,7 +338,7 @@ if (is_file($logoPath)) {
             <tr>
                 <td colspan="14"
                     style='text-align: center; font-size: 18px; text-transform: uppercase; font-weight: bold;'>
-                    <div class="alert alert-warning"><i class="fa fa-exclamation-triangle"></i> No result found !</div>
+                    <div class="alert alert-warning"><i class="fas fa-exclamation-triangle"></i> No result found !</div>
                 </td>
             </tr>
             <?php
@@ -512,7 +512,7 @@ if (is_file($logoPath)) {
         anyLedgerCall = true;
         srFlashRow(element);
         var $el = $(element), saved = $el.html();
-        $el.html('<i class="fa fa-spinner fa-spin"></i>');
+        $el.html('<i class="fas fa-spinner fa-spin"></i>');
         srOpenLoading('Stock Preview');
         $.ajax({
             url: '<?= Yii::app()->createUrl("inventory/inventory/currentStockReportBatchWiseView") ?>',
@@ -528,7 +528,7 @@ if (is_file($logoPath)) {
         anyLedgerCall = true;
         srFlashRow(element);
         var $el = $(element), saved = $el.html();
-        $el.html('<i class="fa fa-spinner fa-spin"></i>');
+        $el.html('<i class="fas fa-spinner fa-spin"></i>');
         srOpenLoading('Stock Out Detail');
         $.ajax({
             url: '<?= Yii::app()->createUrl("inventory/inventory/currentStockOutReportBatchWiseView") ?>',
@@ -544,7 +544,7 @@ if (is_file($logoPath)) {
         anyLedgerCall = true;
         srFlashRow(element);
         var $el = $(element), saved = $el.html();
-        $el.html('<i class="fa fa-spinner fa-spin"></i>');
+        $el.html('<i class="fas fa-spinner fa-spin"></i>');
         srOpenLoading('Stock In Detail');
         $.ajax({
             url: '<?= Yii::app()->createUrl("inventory/inventory/currentStockInReportBatchWiseView") ?>',
@@ -580,7 +580,7 @@ if (is_file($logoPath)) {
         srFlashRow(this);
         let $this = $(this), saved = $this.html();
         let model_id = $this.data('id');
-        $this.html('<i class="fa fa-spinner fa-spin"></i>');
+        $this.html('<i class="fas fa-spinner fa-spin"></i>');
         srOpenLoading('Product Ledger');
         $.ajax({
             url: '<?= Yii::app()->createUrl("report/productStockLedgerView") ?>',

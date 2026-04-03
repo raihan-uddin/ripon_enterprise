@@ -180,7 +180,7 @@ class InventoryController extends RController
                     .vfr-nf-msg{font-size:12.5px;color:#64748b;margin:0}
                 </style>
                 <div class="vfr-not-found">
-                    <div class="vfr-nf-icon"><i class="fa fa-exclamation-circle"></i></div>
+                    <div class="vfr-nf-icon"><i class="fas fa-exclamation-circle"></i></div>
                     <div class="vfr-nf-title">Not Found</div>
                     <div class="vfr-nf-chip">' . htmlspecialchars($product_sl) . '</div>
                     <p class="vfr-nf-msg">No records found for this serial number</p>

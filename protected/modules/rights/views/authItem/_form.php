@@ -25,7 +25,7 @@
                 'style'     => 'background:#f8f9fa;color:#6c757d;',
             )); ?>
             <small class="form-text text-muted">
-                <i class="fa fa-info-circle"></i>
+                <i class="fas fa-info-circle"></i>
                 <?php echo Rights::t('core', 'Do not change the name unless you know what you are doing.'); ?>
             </small>
         <?php else: ?>

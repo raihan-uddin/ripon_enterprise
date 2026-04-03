@@ -65,7 +65,7 @@ $form = $this->beginWidget('CActiveForm', array(
     <!-- Header -->
     <div class="su-card-header">
         <div class="su-header-row">
-            <div class="su-header-icon"><i class="fa fa-truck"></i></div>
+            <div class="su-header-icon"><i class="fas fa-truck"></i></div>
             <div class="su-header-text">
                 <p class="su-title"><?php echo($model->isNewRecord ? 'Add New Supplier' : 'Update Supplier'); ?></p>
                 <p class="su-subtitle">Fill in the supplier company details below</p>
@@ -80,7 +80,7 @@ $form = $this->beginWidget('CActiveForm', array(
             <!-- Company Name -->
             <div class="su-col-4">
                 <div class="su-fl">
-                    <i class="fa fa-building su-fl-icon"></i>
+                    <i class="fas fa-building su-fl-icon"></i>
                     <?php echo $form->textField($model, 'company_name', array('maxlength' => 255, 'class' => 'su-fl-input', 'placeholder' => ' ')); ?>
                     <label class="su-fl-label">Company Name <span style="color:#ef4444">*</span></label>
                     <?php echo $form->error($model, 'company_name', array('class' => 'su-error')); ?>
@@ -90,7 +90,7 @@ $form = $this->beginWidget('CActiveForm', array(
             <!-- Contact No -->
             <div class="su-col-4">
                 <div class="su-fl">
-                    <i class="fa fa-phone su-fl-icon"></i>
+                    <i class="fas fa-phone su-fl-icon"></i>
                     <?php echo $form->textField($model, 'company_contact_no', array('maxlength' => 255, 'class' => 'su-fl-input', 'placeholder' => ' ')); ?>
                     <label class="su-fl-label">Contact Number</label>
                     <?php echo $form->error($model, 'company_contact_no', array('class' => 'su-error')); ?>
@@ -100,7 +100,7 @@ $form = $this->beginWidget('CActiveForm', array(
             <!-- Opening Amount -->
             <div class="su-col-4">
                 <div class="su-fl">
-                    <i class="fa fa-money su-fl-icon"></i>
+                    <i class="fas fa-money-bill su-fl-icon"></i>
                     <?php echo $form->textField($model, 'opening_amount', array('maxlength' => 255, 'class' => 'su-fl-input', 'placeholder' => ' ')); ?>
                     <label class="su-fl-label">Opening Amount</label>
                     <?php echo $form->error($model, 'contact_number_2', array('class' => 'su-error')); ?>
@@ -110,7 +110,7 @@ $form = $this->beginWidget('CActiveForm', array(
             <!-- Fax -->
             <div class="su-col-4">
                 <div class="su-fl">
-                    <i class="fa fa-fax su-fl-icon"></i>
+                    <i class="fas fa-fax su-fl-icon"></i>
                     <?php echo $form->textField($model, 'company_fax', array('maxlength' => 255, 'class' => 'su-fl-input', 'placeholder' => ' ')); ?>
                     <label class="su-fl-label">Fax Number</label>
                     <?php echo $form->error($model, 'company_fax', array('class' => 'su-error')); ?>
@@ -120,7 +120,7 @@ $form = $this->beginWidget('CActiveForm', array(
             <!-- Email -->
             <div class="su-col-4">
                 <div class="su-fl">
-                    <i class="fa fa-envelope su-fl-icon"></i>
+                    <i class="fas fa-envelope su-fl-icon"></i>
                     <?php echo $form->textField($model, 'company_email', array('maxlength' => 255, 'class' => 'su-fl-input', 'placeholder' => ' ')); ?>
                     <label class="su-fl-label">Email Address</label>
                     <?php echo $form->error($model, 'company_email', array('class' => 'su-error')); ?>
@@ -130,7 +130,7 @@ $form = $this->beginWidget('CActiveForm', array(
             <!-- Website -->
             <div class="su-col-4">
                 <div class="su-fl">
-                    <i class="fa fa-globe su-fl-icon"></i>
+                    <i class="fas fa-globe su-fl-icon"></i>
                     <?php echo $form->textField($model, 'company_web', array('maxlength' => 255, 'class' => 'su-fl-input', 'placeholder' => ' ')); ?>
                     <label class="su-fl-label">Website</label>
                     <?php echo $form->error($model, 'company_web', array('class' => 'su-error')); ?>
@@ -140,7 +140,7 @@ $form = $this->beginWidget('CActiveForm', array(
             <!-- Address -->
             <div class="su-col-12">
                 <div class="su-fl su-fl--ta">
-                    <i class="fa fa-map-marker su-fl-icon"></i>
+                    <i class="fas fa-map-marker su-fl-icon"></i>
                     <?php echo $form->textArea($model, 'company_address', array('class' => 'su-fl-input', 'placeholder' => ' ')); ?>
                     <label class="su-fl-label">Company Address</label>
                     <?php echo $form->error($model, 'company_address', array('class' => 'su-error')); ?>
@@ -182,7 +182,7 @@ $form = $this->beginWidget('CActiveForm', array(
         ?>
 
         <span id="ajaxLoaderMR" class="ajaxLoaderMR" style="display: none;">
-            <i class="fa fa-spinner fa-spin fa-2x" style="color:#6366f1"></i>
+            <i class="fas fa-spinner fa-spin fa-2x" style="color:#6366f1"></i>
         </span>
 
         <div id="formResult" class="ajaxTargetDiv"></div>

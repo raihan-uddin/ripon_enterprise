@@ -53,14 +53,14 @@ $form = $this->beginWidget('CActiveForm', array(
     <div class="mb-3 d-flex justify-content-between align-items-center">
         <div>
             <a class="btn btn-warning mr-2" href="<?= Yii::app()->request->requestUri ?>">
-                <i class="fa fa-refresh"></i> Reload
+                <i class="fas fa-refresh"></i> Reload
             </a>
             <a class="btn btn-success" href="<?= Yii::app()->baseUrl ?>/index.php/accounting/moneyReceipt/admin">
-                <i class="fa fa-home"></i> MR Manage
+                <i class="fas fa-home"></i> MR Manage
             </a>
         </div>
         <small class="text-muted">
-            <i class="fa fa-keyboard-o"></i> Tip: <kbd>Ctrl</kbd>+<kbd>Enter</kbd> to save
+            <i class="fas fa-keyboard-o"></i> Tip: <kbd>Ctrl</kbd>+<kbd>Enter</kbd> to save
         </small>
     </div>
 
@@ -69,7 +69,7 @@ $form = $this->beginWidget('CActiveForm', array(
         <!-- Card header -->
         <div class="card-header bg-primary text-white d-flex align-items-center justify-content-between">
             <h5 class="mb-0">
-                <span id="header_payment_icon" class="mr-2"><i class="fa fa-money"></i></span>
+                <span id="header_payment_icon" class="mr-2"><i class="fas fa-money-bill"></i></span>
                 Create Money Receipt
                 <span id="header_mr_badge"
                       title="Click to copy MR#"
@@ -81,7 +81,7 @@ $form = $this->beginWidget('CActiveForm', array(
             </h5>
             <div class="card-tools">
                 <button type="button" class="btn btn-tool text-white" data-card-widget="collapse">
-                    <i class="fa fa-minus"></i>
+                    <i class="fas fa-minus"></i>
                 </button>
             </div>
         </div>
@@ -93,7 +93,7 @@ $form = $this->beginWidget('CActiveForm', array(
                 <div class="col-md-4 mb-2">
                     <div class="d-flex align-items-center p-3 rounded"
                          style="background:#e8f4fd; border-left:4px solid #3490dc;">
-                        <i class="fa fa-shopping-cart fa-2x mr-3" style="color:#3490dc;"></i>
+                        <i class="fas fa-shopping-cart fa-2x mr-3" style="color:#3490dc;"></i>
                         <div>
                             <div style="font-size:10px; color:#666; text-transform:uppercase; letter-spacing:1px;">Total Billed</div>
                             <div style="font-size:20px; font-weight:700; color:#1a3a5c;"><?= number_format($totalSellAmount, 2) ?></div>
@@ -103,7 +103,7 @@ $form = $this->beginWidget('CActiveForm', array(
                 <div class="col-md-4 mb-2">
                     <div class="d-flex align-items-center p-3 rounded"
                          style="background:#e8f8e8; border-left:4px solid #28a745;">
-                        <i class="fa fa-check-circle fa-2x mr-3" style="color:#28a745;"></i>
+                        <i class="fas fa-check-circle fa-2x mr-3" style="color:#28a745;"></i>
                         <div>
                             <div style="font-size:10px; color:#666; text-transform:uppercase; letter-spacing:1px;">Total Paid</div>
                             <div style="font-size:20px; font-weight:700; color:#155724;"><?= number_format($totalMoneyReceipt, 2) ?></div>
@@ -114,7 +114,7 @@ $form = $this->beginWidget('CActiveForm', array(
                     <div class="d-flex align-items-center p-3 rounded"
                          style="background:<?= $currentDueAmount > 0 ? '#fff3cd' : '#e8f8e8' ?>;
                                 border-left:4px solid <?= $currentDueAmount > 0 ? '#ffc107' : '#28a745' ?>;">
-                        <i class="fa fa-<?= $currentDueAmount > 0 ? 'exclamation-circle' : 'check-circle' ?> fa-2x mr-3"
+                        <i class="fas fa-<?= $currentDueAmount > 0 ? 'exclamation-circle' : 'check-circle' ?> fa-2x mr-3"
                            style="color:<?= $currentDueAmount > 0 ? '#e65100' : '#28a745' ?>;"></i>
                         <div>
                             <div style="font-size:10px; color:#666; text-transform:uppercase; letter-spacing:1px;">Outstanding</div>
@@ -143,7 +143,7 @@ $form = $this->beginWidget('CActiveForm', array(
                             )) ?>
                             
                                 <span class="input-group-text" id="date_icon">
-                                    <i class="fa fa-check-circle text-success"></i>
+                                    <i class="fas fa-check-circle text-success"></i>
                                 </span>
                             </div>
                         </div>
@@ -159,13 +159,13 @@ $form = $this->beginWidget('CActiveForm', array(
                                 'value'    => $model2->company_name,
                             )) ?>
                             <?= $form->hiddenField($model, 'customer_id', array('value' => $model2->id)) ?>
-                                <span class="input-group-text"><i class="fa fa-user"></i></span>
+                                <span class="input-group-text"><i class="fas fa-user"></i></span>
                             </div>
                         </div>
                         <?= $form->error($model, 'customer_id', array('class' => 'text-danger')) ?>
                         <?php if ($lastPayment): ?>
                         <small class="text-muted mt-1 d-block">
-                            <i class="fa fa-history"></i>
+                            <i class="fas fa-history"></i>
                             Last paid <strong><?= number_format((float)$lastPayment->amount, 2) ?></strong>
                             on <strong><?= date('d M Y', strtotime($lastPayment->date)) ?></strong>
                             <span class="badge bg-secondary" style="font-family:monospace; font-size:10px;">
@@ -174,7 +174,7 @@ $form = $this->beginWidget('CActiveForm', array(
                         </small>
                         <?php else: ?>
                         <small class="text-muted mt-1 d-block">
-                            <i class="fa fa-info-circle"></i> No previous payments found.
+                            <i class="fas fa-info-circle"></i> No previous payments found.
                         </small>
                         <?php endif; ?>
                     </div>
@@ -205,7 +205,7 @@ $form = $this->beginWidget('CActiveForm', array(
                             <input type="text" class="form-control font-weight-bold"
                                    id="current_due_amt"
                                    value="<?= number_format((float)$currentDueAmount, 2) ?>" readonly>
-                                <span class="input-group-text"><i class="fa fa-balance-scale"></i></span>
+                                <span class="input-group-text"><i class="fas fa-balance-scale"></i></span>
                             </div>
                         </div>
                     </div>
@@ -217,7 +217,7 @@ $form = $this->beginWidget('CActiveForm', array(
                         </label>
                         <div class="btn-group btn-group-sm w-100">
                             <button type="button" class="btn btn-outline-primary" onclick="fillAmount(100)">
-                                <i class="fa fa-check-circle"></i> Full Due
+                                <i class="fas fa-check-circle"></i> Full Due
                             </button>
                             <button type="button" class="btn btn-outline-secondary" onclick="fillAmount(50)">50%</button>
                             <button type="button" class="btn btn-outline-secondary" onclick="fillAmount(25)">25%</button>
@@ -234,7 +234,7 @@ $form = $this->beginWidget('CActiveForm', array(
                             )) ?>
                             
                                 <span class="input-group-text" id="amount_icon">
-                                    <i class="fa fa-money"></i>
+                                    <i class="fas fa-money-bill"></i>
                                 </span>
                             </div>
                         </div>
@@ -262,7 +262,7 @@ $form = $this->beginWidget('CActiveForm', array(
                                 'placeholder' => '0.00',
                                 'id'          => 'MoneyReceipt_discount',
                             )) ?>
-                                <span class="input-group-text"><i class="fa fa-tag"></i></span>
+                                <span class="input-group-text"><i class="fas fa-tag"></i></span>
                             </div>
                         </div>
                         <?= $form->error($model, 'discount', array('class' => 'text-danger')) ?>
@@ -276,7 +276,7 @@ $form = $this->beginWidget('CActiveForm', array(
                                    value="<?= number_format((float)$currentDueAmount, 2) ?>" disabled>
                             
                                 <span class="input-group-text" id="remaining_icon">
-                                    <i class="fa fa-balance-scale"></i>
+                                    <i class="fas fa-balance-scale"></i>
                                 </span>
                             </div>
                         </div>
@@ -291,7 +291,7 @@ $form = $this->beginWidget('CActiveForm', array(
                         <?= $form->labelEx($model, 'payment_type') ?>
                         <div class="input-group">
                                 <span class="input-group-text">
-                                    <i class="fa fa-money" id="payment_type_icon"></i>
+                                    <i class="fas fa-money-bill" id="payment_type_icon"></i>
                                 </span>
                             </div>
                             <?= $form->dropDownList($model, 'payment_type',
@@ -300,7 +300,7 @@ $form = $this->beginWidget('CActiveForm', array(
                             ) ?>
                             
                                 <span class="input-group-text" id="payment_valid_icon">
-                                    <i class="fa fa-circle-o text-muted"></i>
+                                    <i class="fas fa-circle-o text-muted"></i>
                                 </span>
                             </div>
                         </div>
@@ -316,7 +316,7 @@ $form = $this->beginWidget('CActiveForm', array(
                             ) ?>
                                 <button type="button" class="btn btn-outline-secondary"
                                         onclick="addBankDialog()" title="Add Bank">
-                                    <i class="fa fa-plus"></i>
+                                    <i class="fas fa-plus"></i>
                                 </button>
                             </div>
                         </div>
@@ -330,7 +330,7 @@ $form = $this->beginWidget('CActiveForm', array(
                                 'class'       => 'form-control',
                                 'placeholder' => 'Cheque number',
                             )) ?>
-                                <span class="input-group-text"><i class="fa fa-credit-card-alt"></i></span>
+                                <span class="input-group-text"><i class="fas fa-credit-card-alt"></i></span>
                             </div>
                         </div>
                         <?= $form->error($model, 'cheque_no', array('class' => 'text-danger')) ?>
@@ -343,7 +343,7 @@ $form = $this->beginWidget('CActiveForm', array(
                                 'class'       => 'form-control datetimepicker-input',
                                 'placeholder' => 'YYYY-MM-DD',
                             )) ?>
-                                <span class="input-group-text"><i class="fa fa-calendar"></i></span>
+                                <span class="input-group-text"><i class="fas fa-calendar"></i></span>
                             </div>
                         </div>
                         <?= $form->error($model, 'cheque_date', array('class' => 'text-danger')) ?>
@@ -354,7 +354,7 @@ $form = $this->beginWidget('CActiveForm', array(
                 <!-- ── Column 4: Live receipt preview ─────────────────────── -->
                 <div class="col-md-3 mb-3">
                     <label style="font-size:11px; color:#888; text-transform:uppercase; letter-spacing:1px;">
-                        <i class="fa fa-eye"></i> Live Preview
+                        <i class="fas fa-eye"></i> Live Preview
                     </label>
                     <div id="receipt_preview" class="rounded p-3"
                          style="background:#fffdf0; border:1px dashed #ccc; font-size:12px; min-height:300px;">
@@ -504,7 +504,7 @@ $form = $this->beginWidget('CActiveForm', array(
             <div class="modal-footer">
                 <button type="button" class="btn btn-info"
                         onclick="window.print()">
-                    <i class="fa fa-print"></i> Print
+                    <i class="fas fa-print"></i> Print
                 </button>
                 <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
             </div>
@@ -541,8 +541,8 @@ paymentLabels[CHECK]  = 'Cheque';
 paymentLabels[ONLINE] = 'Online Transfer';
 
 var paymentIcons = {};
-paymentIcons[CASH]   = 'fa-money';
-paymentIcons[CHECK]  = 'fa-file-text-o';
+paymentIcons[CASH]   = 'fa-money-bill';
+paymentIcons[CHECK]  = 'fa-file-lines';
 paymentIcons[ONLINE] = 'fa-university';
 
 // ── Amount in words (Bangladeshi style) ───────────────────────────────────────
@@ -683,14 +683,14 @@ function validateAmountField() {
         .toggleClass('is-valid',   valid)
         .toggleClass('is-invalid', !valid && a !== 0);
     $('#amount_icon i')
-        .attr('class', valid ? 'fa fa-check-circle text-success' : 'fa fa-money');
+        .attr('class', valid ? 'fas fa-check-circle text-success' : 'fas fa-money-bill');
 }
 
 function validateDateField() {
     var v = $('#MoneyReceipt_date').val();
     var valid = /^\d{4}-\d{2}-\d{2}$/.test(v);
     $('#MoneyReceipt_date').toggleClass('is-valid', valid);
-    $('#date_icon i').attr('class', valid ? 'fa fa-check-circle text-success' : 'fa fa-calendar');
+    $('#date_icon i').attr('class', valid ? 'fas fa-check-circle text-success' : 'fas fa-calendar');
 }
 
 // ── Update live preview ───────────────────────────────────────────────────────
@@ -734,9 +734,9 @@ function resetAfterSave() {
     $('#progress_pct').text('0%');
     $('#amount_in_words').text('');
     $('#prev_amount_words').text('');
-    $('#header_payment_icon i').attr('class', 'fa fa-money');
-    $('#payment_type_icon').attr('class', 'fa fa-money');
-    $('#payment_valid_icon i').attr('class', 'fa fa-circle-o text-muted');
+    $('#header_payment_icon i').attr('class', 'fas fa-money-bill');
+    $('#payment_type_icon').attr('class', 'fas fa-money-bill');
+    $('#payment_valid_icon i').attr('class', 'fas fa-circle-o text-muted');
     $('#remarks_counter').text('0 / 200');
     updatePreview();
 }
@@ -813,15 +813,15 @@ $(document).ready(function() {
         }
 
         // Update icons
-        var icon = paymentIcons[t] || 'fa-money';
+        var icon = paymentIcons[t] || 'fa-money-bill';
         $('#header_payment_icon i').attr('class', 'fa ' + icon);
         $('#payment_type_icon').attr('class', 'fa ' + icon);
 
         // Validation checkmark
         if (t) {
-            $('#payment_valid_icon i').attr('class', 'fa fa-check-circle text-success');
+            $('#payment_valid_icon i').attr('class', 'fas fa-check-circle text-success');
         } else {
-            $('#payment_valid_icon i').attr('class', 'fa fa-circle-o text-muted');
+            $('#payment_valid_icon i').attr('class', 'fas fa-circle-o text-muted');
         }
 
         formDirty = true;
@@ -887,7 +887,7 @@ $(document).ready(function() {
         var mrNo = $(this).text().trim();
         if (navigator.clipboard) {
             navigator.clipboard.writeText(mrNo).then(function() {
-                toastr.info('<i class="fa fa-copy"></i> <strong>' + mrNo + '</strong> copied to clipboard!', '', {enableHtml: true, timeOut: 2000});
+                toastr.info('<i class="fas fa-copy"></i> <strong>' + mrNo + '</strong> copied to clipboard!', '', {enableHtml: true, timeOut: 2000});
             });
         } else {
             // Fallback

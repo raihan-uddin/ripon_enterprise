@@ -216,25 +216,25 @@ $netCashFlow = $totalMoneyReceiptValue - $totalPaymentValue - $totalExpenseValue
     <div class="col-md-12 mt-3">
         <div class="card card-info shadow-sm border-0">
             <div class="card-header d-flex align-items-center justify-content-between bg-gradient-info text-white">
-                <h3 class="card-title mb-0"><i class="fa fa-chart-line me-2"></i>Financial KPIs</h3>
+                <h3 class="card-title mb-0"><i class="fas fa-chart-line me-2"></i>Financial KPIs</h3>
                 <small class="text-white-50">Performance Ratios Overview</small>
             </div>
 
             <div class="card-body text-center small d-flex flex-wrap justify-content-around gap-3 py-3">
                 <div class="kpi-item" title="Expense ÷ Sales × 100">
-                    <i class="fa fa-shopping-cart kpi-icon text-danger"></i>
+                    <i class="fas fa-shopping-cart kpi-icon text-danger"></i>
                     <div class="kpi-label">Expense Ratio</div>
                     <div class="kpi-value text-danger fw-bold"><?= number_format((float)$expenseRatio, 2); ?>%</div>
                 </div>
 
                 <div class="kpi-item" title="Return ÷ Sales × 100">
-                    <i class="fa fa-undo kpi-icon text-warning"></i>
+                    <i class="fas fa-undo kpi-icon text-warning"></i>
                     <div class="kpi-label">Return Ratio</div>
                     <div class="kpi-value text-warning fw-bold"><?= number_format((float)$returnRatio, 2); ?>%</div>
                 </div>
 
                 <div class="kpi-item" title="Collection ÷ Sales × 100">
-                    <i class="fa fa-money kpi-icon text-success"></i>
+                    <i class="fas fa-money-bill kpi-icon text-success"></i>
                     <div class="kpi-label">Collection Efficiency</div>
                     <div class="kpi-value text-success fw-bold"><?= number_format((float)$collectionEfficiency, 2); ?>
                         %
@@ -242,7 +242,7 @@ $netCashFlow = $totalMoneyReceiptValue - $totalPaymentValue - $totalExpenseValue
                 </div>
 
                 <div class="kpi-item" title="Payment ÷ Purchase × 100">
-                    <i class="fa fa-credit-card kpi-icon text-info"></i>
+                    <i class="fas fa-credit-card kpi-icon text-info"></i>
                     <div class="kpi-label">Payment Coverage</div>
                     <div class="kpi-value text-info fw-bold"><?= number_format((float)$paymentToPurchaseRatio, 2); ?>%
                     </div>
@@ -254,7 +254,7 @@ $netCashFlow = $totalMoneyReceiptValue - $totalPaymentValue - $totalExpenseValue
     <div class="col-md-12 mt-4">
         <div class="card border-0 shadow-sm">
             <div class="card-header bg-gradient-light fw-semibold">
-                <i class="fa fa-chart-bar text-primary me-2"></i> Period Comparison Summary
+                <i class="fas fa-chart-bar text-primary me-2"></i> Period Comparison Summary
             </div>
 
             <div class="card-body d-flex flex-wrap justify-content-around gap-3 py-3">
@@ -266,7 +266,7 @@ $netCashFlow = $totalMoneyReceiptValue - $totalPaymentValue - $totalExpenseValue
                 ?>
                 <div class="metric-box <?= $salesUp ? 'border-success' : 'border-danger'; ?>">
                     <div class="metric-icon">
-                        <i class="fa fa-bar-chart <?= $salesUp ? 'text-success' : 'text-danger'; ?>"></i>
+                        <i class="fas fa-chart-bar <?= $salesUp ? 'text-success' : 'text-danger'; ?>"></i>
                     </div>
                     <div class="metric-title">Sales</div>
                     <div class="metric-current"><?= number_format((float)$totalSalesValue, 2); ?></div>
@@ -285,7 +285,7 @@ $netCashFlow = $totalMoneyReceiptValue - $totalPaymentValue - $totalExpenseValue
                 ?>
                 <div class="metric-box <?= $expUp ? 'border-success' : 'border-danger'; ?>">
                     <div class="metric-icon">
-                        <i class="fa fa-bars <?= $expUp ? 'text-success' : 'text-danger'; ?>"></i>
+                        <i class="fas fa-bars <?= $expUp ? 'text-success' : 'text-danger'; ?>"></i>
                     </div>
                     <div class="metric-title">Expense</div>
                     <div class="metric-current"><?= number_format((float)$totalExpenseValue, 2); ?></div>
@@ -303,7 +303,7 @@ $netCashFlow = $totalMoneyReceiptValue - $totalPaymentValue - $totalExpenseValue
                 ?>
                 <div class="metric-box <?= $profitUp ? 'border-success' : 'border-danger'; ?>">
                     <div class="metric-icon">
-                        <i class="fa fa-money <?= $profitUp ? 'text-success' : 'text-danger'; ?>"></i>
+                        <i class="fas fa-money-bill <?= $profitUp ? 'text-success' : 'text-danger'; ?>"></i>
                     </div>
                     <div class="metric-title">Net Profit</div>
                     <div class="metric-current"><?= number_format((float)$profit, 2); ?></div>
