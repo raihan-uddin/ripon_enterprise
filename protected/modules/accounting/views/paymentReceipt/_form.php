@@ -231,7 +231,7 @@ $form = $this->beginWidget('CActiveForm', [
                             $("#list tbody").empty();
                             $("#soReportDialogBox").dialog("open");
                             $("#AjFlashReportSo").html(data.soReportInfo).show();
-                            bootstrap.Modal.getOrCreateInstance(document.getElementById('information-modal-money-receipt')).show();
+                            bootstrap.Modal.getOrCreateInstance(document.getElementById("information-modal-money-receipt")).show();
                             $("#information-modal-money-receipt .modal-body").html(data.soReportInfo); 
                         }else{
                             $("#formResultError").html("Data not saved. Please solve the following errors.");
@@ -352,10 +352,10 @@ $this->beginWidget('zii.widgets.jui.CJuiDialog', array(
     $(document).ready(function () {
 
         /* var picker = new Lightpick({
-             field: document.getElementById('PaymentReceipt_date'),
+             field: document.getElementById("PaymentReceipt_date"),
              minDate: moment(),
              onSelect: function (date) {
-                 document.getElementById('PaymentReceipt_date').value = date.format('YYYY-MM-DD');
+                 document.getElementById("PaymentReceipt_date").value = date.format('YYYY-MM-DD');
              },
 
          });*/

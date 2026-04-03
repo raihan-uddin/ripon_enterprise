@@ -486,7 +486,7 @@ Yii::app()->clientScript->registerCoreScript("jquery.ui");
                         if(typeof updateChips==="function") updateChips();
 //                        $("#soReportDialogBox").dialog("open");
 //                        $("#AjFlashReportSo").html(data.soReportInfo).show();
-                        bootstrap.Modal.getOrCreateInstance(document.getElementById('information-modal')).show();
+                        bootstrap.Modal.getOrCreateInstance(document.getElementById("information-modal")).show();
                         $("#information-modal .modal-body").html(data.soReportInfo);
                     }else{
                         $("#formResultError").html("Data not saved. Please solve the following errors.");
@@ -620,10 +620,10 @@ Yii::app()->clientScript->registerCoreScript("jquery.ui");
 
     let sl = 1;
     var picker = new Lightpick({
-        field: document.getElementById('Expense_date'),
+        field: document.getElementById("Expense_date"),
         defaultDate: moment(),
         onSelect: function (date) {
-            document.getElementById('Expense_date').value = date.format('YYYY-MM-DD');
+            document.getElementById("Expense_date").value = date.format('YYYY-MM-DD');
             updateChips();
             markDirty();
         }

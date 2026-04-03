@@ -463,7 +463,7 @@ $form = $this->beginWidget('CActiveForm', array(
                             toastr.success("Money receipt saved successfully.");
                             $("#money-receipt-form")[0].reset();
                             resetAfterSave();
-                            bootstrap.Modal.getOrCreateInstance(document.getElementById('information-modal-money-receipt')).show();
+                            bootstrap.Modal.getOrCreateInstance(document.getElementById("information-modal-money-receipt")).show();
                             $("#information-modal-money-receipt .modal-body").html(data.soReportInfo);
                         } else {
                             $.each(data, function(key, val){
@@ -769,18 +769,18 @@ $(document).ready(function() {
 
     // Date pickers
     new Lightpick({
-        field: document.getElementById('entry_date'),
+        field: document.getElementById("entry_date"),
         onSelect: function(d) {
-            document.getElementById('MoneyReceipt_date').value = d.format('YYYY-MM-DD');
+            document.getElementById("MoneyReceipt_date").value = d.format('YYYY-MM-DD');
             validateDateField();
             updatePreview();
             saveDraft();
         }
     });
     new Lightpick({
-        field: document.getElementById('cheque_date_picker'),
+        field: document.getElementById("cheque_date_picker"),
         onSelect: function(d) {
-            document.getElementById('MoneyReceipt_cheque_date').value = d.format('YYYY-MM-DD');
+            document.getElementById("MoneyReceipt_cheque_date").value = d.format('YYYY-MM-DD');
             saveDraft();
         }
     });

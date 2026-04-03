@@ -815,7 +815,7 @@ Yii::app()->clientScript->registerCoreScript("jquery.ui");
                         toastr.success("Data saved successfully.");
                         $("#bom-form")[0].reset();
                         $("#formResult").animate({opacity:1.0},1000).fadeOut("slow");
-                        bootstrap.Modal.getOrCreateInstance(document.getElementById('information-modal')).show();
+                        bootstrap.Modal.getOrCreateInstance(document.getElementById("information-modal")).show();
                         $("#information-modal .modal-body").html(data.soReportInfo);
                     }else{
                         $.each(data, function(key, val) {
@@ -881,9 +881,9 @@ Yii::app()->clientScript->registerCoreScript("jquery.ui");
 
 <script>
     var picker = new Lightpick({
-        field: document.getElementById('SellOrderQuotation_date'),
+        field: document.getElementById("SellOrderQuotation_date"),
         onSelect: function (date) {
-            document.getElementById('SellOrderQuotation_date').value = date.format('YYYY-MM-DD');
+            document.getElementById("SellOrderQuotation_date").value = date.format('YYYY-MM-DD');
         }
     });
 

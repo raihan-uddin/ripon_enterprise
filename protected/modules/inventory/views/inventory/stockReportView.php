@@ -494,7 +494,7 @@ if (is_file($logoPath)) {
     }
 
     function srErrorLoading($el, savedHtml) {
-        bootstrap.Modal.getOrCreateInstance(document.getElementById('information-modal')).hide();
+        bootstrap.Modal.getOrCreateInstance(document.getElementById("information-modal")).hide();
         if ($el) $el.html(savedHtml);
         toastr.error('Something went wrong');
         anyLedgerCall = false;

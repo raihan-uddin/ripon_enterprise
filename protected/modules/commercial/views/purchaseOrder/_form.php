@@ -418,7 +418,7 @@ Yii::app()->clientScript->registerCoreScript('jquery.ui');
                             $("#table-empty-row").show();
                             updateItemBadge();
                             calculateTotal();
-                            bootstrap.Modal.getOrCreateInstance(document.getElementById('information-modal')).show();
+                            bootstrap.Modal.getOrCreateInstance(document.getElementById("information-modal")).show();
                             $("#information-modal .modal-body").html(data.soReportInfo);
                         } else {
                             $.each(data, function(key, val){
@@ -737,9 +737,9 @@ $(document).on('keypress', function(e){
 
 /* ── Date picker ─────────────────────────────────────────────────────────── */
 new Lightpick({
-    field: document.getElementById('PurchaseOrder_date'),
+    field: document.getElementById("PurchaseOrder_date"),
     onSelect: function(date){
-        document.getElementById('PurchaseOrder_date').value = date.format('YYYY-MM-DD');
+        document.getElementById("PurchaseOrder_date").value = date.format('YYYY-MM-DD');
         markDirty();
     },
 });

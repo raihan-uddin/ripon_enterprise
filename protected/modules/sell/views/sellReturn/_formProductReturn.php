@@ -657,11 +657,11 @@ Yii::app()->clientScript->registerCoreScript("jquery.ui");
     }
 
     var picker = new Lightpick({
-        field: document.getElementById('entry_date'),
+        field: document.getElementById("entry_date"),
         singleDate: true,
         format: 'YYYY-MM-DD',
         onSelect: function (date) {
-            document.getElementById('SellReturn_return_date').value = date.format('YYYY-MM-DD');
+            document.getElementById("SellReturn_return_date").value = date.format('YYYY-MM-DD');
         }
     });
 
@@ -726,7 +726,7 @@ Yii::app()->clientScript->registerCoreScript("jquery.ui");
             url: '<?php echo $this->createUrl('/inventory/inventory/verifyProduct') ?>',
             data: {product_sl: product_sl},
             success: function (data) {
-                bootstrap.Modal.getOrCreateInstance(document.getElementById('information-modal')).show();
+                bootstrap.Modal.getOrCreateInstance(document.getElementById("information-modal")).show();
                 $('#information-modal .modal-body').html(data);
 
                 $('#overlay').fadeOut();

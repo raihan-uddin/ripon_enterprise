@@ -352,7 +352,7 @@ endforeach;
                         } else {
                              //$('#viewDialog').dialog('open');   
                              //$('#AjFlash').html(data).show();    
-                             bootstrap.Modal.getOrCreateInstance(document.getElementById('information-modal')).show();
+                             bootstrap.Modal.getOrCreateInstance(document.getElementById("information-modal")).show();
                              $('#information-modal .modal-body').html(data);   
                         }      
                         $('#overlay').fadeOut(300);                                                  

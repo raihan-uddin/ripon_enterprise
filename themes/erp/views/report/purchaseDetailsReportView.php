@@ -201,7 +201,7 @@ echo "</div>";
                 invoiceId: invoiceId
             },
             success: function (response) {
-                bootstrap.Modal.getOrCreateInstance(document.getElementById('information-modal')).show();
+                bootstrap.Modal.getOrCreateInstance(document.getElementById("information-modal")).show();
                 $('#information-modal .modal-body').html(response);
                 $this.html(invoiceId);
             },

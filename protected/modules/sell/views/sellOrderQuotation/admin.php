@@ -374,7 +374,7 @@ if (Yii::app()->user->checkAccess('Sell.SellOrderQuotation.VoucherPreview')) {
                             if(data.status=='error'){
                                 toastr.error('No data found!');
                             } else {
-                                bootstrap.Modal.getOrCreateInstance(document.getElementById('information-modal')).show();
+                                bootstrap.Modal.getOrCreateInstance(document.getElementById("information-modal")).show();
                                 $('#information-modal .modal-body').html(data);    
                             }      
                             $('#overlay').fadeOut(300);　                                                         
@@ -493,7 +493,7 @@ if (Yii::app()->user->checkAccess('Sell.SellOrderQuotation.VoucherPreview')) {
                                 $.post('" . Yii::app()->controller->createUrl('voucherPreview') . "', { invoiceId: invoiceId })
                                     .done(function(data) {
                                         $('#ajaxLoaderView').hide();  
-                                         bootstrap.Modal.getOrCreateInstance(document.getElementById('information-modal')).show();
+                                         bootstrap.Modal.getOrCreateInstance(document.getElementById("information-modal")).show();
                                               $('#information-modal .modal-body').html(data);   
                                     })
                                     .fail(function(xhr) {

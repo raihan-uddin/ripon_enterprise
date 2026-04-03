@@ -238,7 +238,7 @@ Yii::app()->clientScript->registerCoreScript("jquery.ui");
                             $("#sell-return-form")[0].reset();
                             $("#formResult").animate({opacity:1.0},1000).fadeOut("slow");
                             $("#list tbody").html("");
-                            bootstrap.Modal.getOrCreateInstance(document.getElementById('information-modal')).show();
+                            bootstrap.Modal.getOrCreateInstance(document.getElementById("information-modal")).show();
                             $("#information-modal .modal-body").html(data.voucherPreview);
                         }else{
                             toastr.error("Data not saved. Please solve the following errors.");

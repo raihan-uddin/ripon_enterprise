@@ -1198,7 +1198,7 @@ Yii::app()->clientScript->registerCoreScript("jquery.ui");
                             $("#formResult").animate({opacity:1.0},1000).fadeOut("slow");
                             // $("#soReportDialogBox").dialog("open");
                             //$("#AjFlashReportSo").html(data.soReportInfo).show();
-                            bootstrap.Modal.getOrCreateInstance(document.getElementById('information-modal')).show();
+                            bootstrap.Modal.getOrCreateInstance(document.getElementById("information-modal")).show();
                             $("#information-modal .modal-body").html(data.soReportInfo);  
                         }else{
                             //$("#formResultError").html("Data not saved. Please solve the following errors.");
@@ -1270,10 +1270,10 @@ Yii::app()->clientScript->registerCoreScript("jquery.ui");
 <script>
 
     var picker = new Lightpick({
-        field: document.getElementById('entry_date'),
+        field: document.getElementById("entry_date"),
         // minDate: moment(),
         onSelect: function (date) {
-            document.getElementById('SellOrder_date').value = date.format('YYYY-MM-DD');
+            document.getElementById("SellOrder_date").value = date.format('YYYY-MM-DD');
             setTimeout(saveDraft, 100);
         }
     });

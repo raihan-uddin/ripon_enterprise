@@ -43,7 +43,7 @@
 
 <script>
 var picker = new Lightpick({
-    field: document.getElementById('summary-daterange'),
+    field: document.getElementById("summary-daterange"),
     singleDate: false, inline: false,
     numberOfMonths: 2, numberOfColumns: 2, selectForward: true,
     onSelect: function (start, end) {}
@@ -69,7 +69,7 @@ $('#profit-loss-summary-btn').on('click', function () {
             $('#profit-loss-summary-modal .modal-body').html(response);
             $('#profit-loss-summary-btn').prop('disabled', false)
                 .html('<i class="fas fa-search"></i> Search');
-            bootstrap.Modal.getOrCreateInstance(document.getElementById('profit-loss-summary-modal')).show();
+            bootstrap.Modal.getOrCreateInstance(document.getElementById("profit-loss-summary-modal")).show();
             $('#profit-loss-summary-modal .modal-title').html(
                 '<i class="fas fa-line-chart mr-2"></i> Summary for (' + dateRange + ')'
             );

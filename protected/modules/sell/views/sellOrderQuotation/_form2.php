@@ -938,7 +938,7 @@ Yii::app()->clientScript->registerCoreScript("jquery.ui");
                             $("#formResult").html("Data saved successfully.");
                             toastr.success("Data saved successfully.");
                             $("#formResult").animate({opacity:1.0},1000).fadeOut("slow");
-                            bootstrap.Modal.getOrCreateInstance(document.getElementById('information-modal')).show();
+                            bootstrap.Modal.getOrCreateInstance(document.getElementById("information-modal")).show();
                             $("#information-modal .modal-body").html(data.soReportInfo);
                         }else{
                             $.each(data, function(key, val) {
@@ -1382,9 +1382,9 @@ Yii::app()->clientScript->registerCoreScript("jquery.ui");
 
     /* ── Date picker ─────────────────────────────────────────────────────── */
     var soqDatePicker = new Lightpick({
-        field: document.getElementById('entry_date'),
+        field: document.getElementById("entry_date"),
         onSelect: function(date){
-            document.getElementById('SellOrderQuotation_date').value = date.format('YYYY-MM-DD');
+            document.getElementById("SellOrderQuotation_date").value = date.format('YYYY-MM-DD');
         }
     });
     var savedDate = '<?php echo CHtml::encode($model->date); ?>';
