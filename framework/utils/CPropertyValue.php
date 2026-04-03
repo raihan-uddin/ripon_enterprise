@@ -55,7 +55,7 @@ class CPropertyValue
 		if (is_string($value))
 			return !strcasecmp($value,'true') || ($value!=0 && $value!=='' && is_numeric($value));
 		else
-			return (boolean)$value;
+			return (bool)$value;
 	}
 
 	/**
@@ -80,7 +80,7 @@ class CPropertyValue
 	 */
 	public static function ensureInteger($value)
 	{
-		return (integer)$value;
+		return (int)$value;
 	}
 
 	/**
@@ -107,6 +107,8 @@ class CPropertyValue
 	 */
 	public static function ensureArray($value)
 	{
+		if($value===null)
+			return array();
 		if(is_string($value))
 		{
 			$value = trim($value);

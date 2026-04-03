@@ -752,6 +752,26 @@ nav.erp-nav .navbar-nav>.nav-item.active>.nav-link:focus{
             }
         } catch (e) { localStorage.removeItem('so_draft_create'); }
 
+        // Expense draft
+        try {
+            var ex = localStorage.getItem('expense_draft_create');
+            if (ex) {
+                var ed = JSON.parse(ex);
+                var exRows = ed.rows ? ed.rows.length : 0;
+                if (exRows > 0 || ed.date || ed.remarks) {
+                    list.push({
+                        key:     'expense_draft_create',
+                        title:   'Expense',
+                        icon:    'fa-money',
+                        color:   '#34d399',
+                        url:     '<?= Yii::app()->createUrl("/accounting/expense/create") ?>',
+                        label:   exRows + ' item' + (exRows !== 1 ? 's' : ''),
+                        savedAt: ed.saved_at || ''
+                    });
+                }
+            }
+        } catch (e) { localStorage.removeItem('expense_draft_create'); }
+
         // Money Receipt drafts (one per customer)
         for (var i = 0; i < localStorage.length; i++) {
             var key = localStorage.key(i);

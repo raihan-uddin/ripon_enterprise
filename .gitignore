@@ -30,3 +30,8 @@ uploads/*
 *.rar
 *.tar
 
+### Claude Code
+.claude/settings.local.json
+.claude/worktrees/
+.claude/data/
+

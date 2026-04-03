@@ -691,13 +691,15 @@ $(document).on('keypress', function(e){
 });
 
 /* ── Date picker ─────────────────────────────────────────────────────────── */
-new Lightpick({
+var poDatePicker = new Lightpick({
     field: document.getElementById('PurchaseOrder_date'),
     onSelect: function(date){
         document.getElementById('PurchaseOrder_date').value = date.format('YYYY-MM-DD');
         markDirty();
     },
 });
+var savedDate = '<?php echo CHtml::encode($model->date); ?>';
+if(savedDate){ poDatePicker.setStartDate(moment(savedDate)); }
 
 /* ── Init on load ─────────────────────────────────────────────────────────── */
 $(function(){

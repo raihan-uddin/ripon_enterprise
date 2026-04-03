@@ -10,7 +10,7 @@ This is a PHP/Yii 1.x enterprise ERP system for inventory management with integr
 
 ## Running the Application
 
-**Requirements:** PHP 5.3+, MySQL, Apache/Nginx
+**Requirements:** PHP 8.x, MySQL, Apache/Nginx
 
 1. Place the project in your web server root (Apache `DocumentRoot`)
 2. Configure `protected/config/db.php` with MySQL credentials (default: `localhost`, db: `ripon_ent`, user: `root`, no password)
@@ -22,6 +22,16 @@ This is a PHP/Yii 1.x enterprise ERP system for inventory management with integr
 **Qodana static analysis:** configured in `qodana.yaml` for PHP 8.0 (run via JetBrains Qodana CLI).
 
 ## Architecture
+
+> **Detailed architecture docs:** See `docs/architecture/` for in-depth documentation:
+> - `overview.md` — Project structure, request flow, configuration
+> - `modules.md` — All 7 modules with controllers, models, views
+> - `data-model.md` — Entity relationships, inter-module data flow, inventory source IDs
+> - `dashboard.md` — Dashboard AJAX endpoints, profit/loss calculation
+> - `auth-and-rbac.md` — Authentication flow, RBAC system, permission caching
+> - `views-and-theming.md` — Theme structure, layouts, CSS/JS architecture, report views
+> - `extensions.md` — All extensions, components, helpers, vendor packages
+> - `framework-compat.md` — PHP 8.x compatibility patches applied to Yii 1.x framework files
 
 ### Request Flow
 
@@ -183,3 +193,51 @@ All dropdowns and UI elements must use these exact values — do not use Bootstr
 ### Icon-Only Nav Links
 
 Nav links that contain only an icon (no text) must use `display:flex; align-items:center; justify-content:center` — otherwise the icon sits on the text baseline and appears vertically misaligned. Define this in the `<style>` block with the element's ID selector, not as an inline style.
+
+## Skills
+
+All skills are in `.claude/skills/`. Claude uses subagents automatically for complex tasks.
+
+### `/done` — Session Wrap-Up
+
+Use `/done` or `/done "commit message"` to wrap up a coding session.
+
+**What it does:**
+1. Gathers session context (files touched, git diff)
+2. Updates architecture docs in `docs/architecture/`
+3. Creates bug fix docs in `docs/bug-fixes/` (if a bug was fixed)
+4. Runs PHP syntax lint on session files (`php -l`)
+5. Runs code review (security, patterns, quality) on session files
+6. Scans file size distribution (if 3+ files modified)
+7. Commits all changes with a session productivity summary
+8. Outputs ASCII art and a fun goodbye message
+
+**Scripts:** `gather-context.sh`, `lint.sh`, `file-sizes.sh`, `session-stats.sh`, `commit.sh`
+
+### `/review` — Code Review
+
+Use `/review` or `/review path/to/file.php` to review code changes.
+
+**Checks:** PHP syntax, SQL injection, XSS, CSRF, mass assignment, Yii patterns (RController, RBAC, transactions), code quality (dead code, duplication, large files).
+
+### `/report` — Scaffold a Report
+
+Use `/report "Report Name"` to scaffold a new report.
+
+**Creates:** Controller action pair (filter + AJAX view), filter form view with Lightpick date pickers, result table view with print/Excel export, nav menu entry.
+
+### `/db` — Database Helper
+
+Use `/db table_name` to explore the database schema.
+
+**Features:** Describe tables, list tables, find columns, check indexes, run queries (read-only by default), cross-reference with Yii models, schema vs model comparison.
+
+### `/crud` — Scaffold CRUD Entity
+
+Use `/crud EntityName table_name [module]` to scaffold a complete CRUD.
+
+**Creates:** CActiveRecord model (from DB schema), RController with CRUD + AJAX actions, admin.php grid view, _form.php/_form2.php with floating-label inputs, create/update wrappers, nav menu entry.
+
+### Subagents (automatic)
+
+Claude automatically uses parallel subagents when tasks span multiple modules, require deep exploration, or have independent subtasks. See `.claude/skills/agents/SKILL.md` for patterns.

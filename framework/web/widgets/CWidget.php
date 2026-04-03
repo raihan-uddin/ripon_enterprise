@@ -203,7 +203,7 @@ class CWidget extends CBaseController
 			$extension=$renderer->fileExtension;
 		else
 			$extension='.php';
-		if(strpos($viewName,'.')) // a path alias
+		if(strpos($viewName,'.')!==false) // a path alias
 			$viewFile=Yii::getPathOfAlias($viewName);
 		else
 		{

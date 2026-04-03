@@ -1380,6 +1380,16 @@ Yii::app()->clientScript->registerCoreScript("jquery.ui");
         }, 100);
 
     });
+
+    /* ── Date picker ─────────────────────────────────────────────────────── */
+    var soqDatePicker = new Lightpick({
+        field: document.getElementById('entry_date'),
+        onSelect: function(date){
+            document.getElementById('SellOrderQuotation_date').value = date.format('YYYY-MM-DD');
+        }
+    });
+    var savedDate = '<?php echo CHtml::encode($model->date); ?>';
+    if(savedDate){ soqDatePicker.setStartDate(moment(savedDate)); }
 </script>
 
 <?php $this->endWidget(); ?>

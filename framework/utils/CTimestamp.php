@@ -112,8 +112,8 @@ class CTimestamp
 	protected static function digitCheck($y)
 	{
 		if ($y < 100){
-			$yr = (integer) date("Y");
-			$century = (integer) ($yr /100);
+			$yr = (int) date("Y");
+			$century = (int) ($yr /100);
 
 			if ($yr%100 > 50) {
 				$c1 = $century + 1;
@@ -215,6 +215,8 @@ class CTimestamp
 	 */
 	public static function formatDate($fmt,$d=false,$is_gmt=false)
 	{
+		if ($fmt === null)
+			$fmt = '';
 		if ($d === false)
 			return ($is_gmt)? @gmdate($fmt): @date($fmt);
 
@@ -269,7 +271,7 @@ class CTimestamp
 				break;
 
 			case 'Y': $dates .= $year; break;
-			case 'y': $dates .= substr($year,strlen($year)-2,2); break;
+			case 'y': $dates .= substr((string)$year,strlen((string)$year)-2,2); break;
 			// MONTH
 			case 'm': if ($month<10) $dates .= '0'.$month; else $dates .= $month; break;
 			case 'Q': $dates .= ($month+3)>>2; break;

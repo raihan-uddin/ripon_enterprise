@@ -1,74 +1,200 @@
 <?php
 $form = $this->beginWidget('CActiveForm', array(
-    'id' => 'prod-brands-form',
-    'enableAjaxValidation' => false,
+    'id'                     => 'prod-brands-form',
+    'enableAjaxValidation'   => false,
     'enableClientValidation' => true,
-    'clientOptions' => array('validateOnSubmit' => true),
+    'clientOptions'          => array('validateOnSubmit' => true),
 ));
 ?>
+<style>
+/* ── prodBrands update form — prodModels palette ── */
+.pb-card{border:none;border-radius:16px;overflow:hidden;
+    box-shadow:0 4px 6px rgba(0,0,0,.04),0 12px 36px rgba(0,0,0,.10);}
+.pb-card>.card-header{
+    background:linear-gradient(135deg,#4f46e5 0%,#7c3aed 100%);
+    border:none;padding:20px 26px;position:relative;overflow:hidden;}
+.pb-card>.card-header::before{
+    content:'';position:absolute;inset:0;pointer-events:none;
+    background-image:radial-gradient(rgba(255,255,255,.18) 1.2px,transparent 1.2px);
+    background-size:22px 22px;}
+.pb-card>.card-header::after{
+    content:'';position:absolute;top:-50px;right:-50px;
+    width:150px;height:150px;border-radius:50%;
+    background:rgba(255,255,255,.07);pointer-events:none;}
+.pb-hd-top{display:flex;align-items:flex-start;justify-content:space-between;position:relative;z-index:1;}
+.pb-hd-title{font-size:16px;font-weight:800;color:#fff;letter-spacing:-.2px;
+    display:flex;align-items:center;gap:9px;}
+.pb-hd-icon{width:32px;height:32px;border-radius:9px;
+    background:rgba(255,255,255,.2);display:flex;align-items:center;justify-content:center;
+    font-size:14px;color:#fff;flex-shrink:0;}
+.pb-hd-sub{font-size:11.5px;color:rgba(255,255,255,.65);margin-top:3px;font-weight:400;}
+.card-tools .btn-tool{color:rgba(255,255,255,.6);transition:color .15s;}
+.card-tools .btn-tool:hover{color:#fff;}
+.pb-card>.card-body{padding:22px 26px;background:#fff;}
+.pb-card>.card-footer{background:#f8fafc;border-top:1px solid #f1f5f9;
+    padding:14px 26px;display:flex;align-items:center;gap:10px;}
 
-<div class="card card-primary">
+/* Floating label */
+.pb-fl{position:relative;}
+.pb-fl-input{
+    width:100%;border:1.5px solid #e2e8f0;border-radius:8px;
+    padding:18px 12px 6px 38px;font-size:13.5px;color:#1e293b;
+    outline:none;background:#fff;line-height:1.4;
+    transition:border-color .18s,box-shadow .18s,transform .15s;
+    -webkit-appearance:none;}
+.pb-fl-input:focus{
+    border-color:#6366f1;
+    box-shadow:0 0 0 3.5px rgba(99,102,241,.12);
+    transform:translateY(-1px);}
+.pb-fl-input:hover:not(:focus){border-color:#94a3b8;}
+.pb-fl-label{
+    position:absolute;left:38px;top:12px;
+    font-size:13px;color:#94a3b8;font-weight:500;
+    pointer-events:none;
+    transition:all .18s cubic-bezier(.4,0,.2,1);}
+.pb-fl-input:focus+.pb-fl-label,
+.pb-fl-input:not(:placeholder-shown)+.pb-fl-label{
+    top:5px;font-size:9.5px;font-weight:700;color:#6366f1;
+    letter-spacing:.5px;text-transform:uppercase;}
+.pb-fl-icon{
+    position:absolute;left:12px;top:50%;transform:translateY(-50%);
+    color:#cbd5e1;font-size:13px;pointer-events:none;transition:color .18s;}
+.pb-fl:focus-within .pb-fl-icon{color:#6366f1;}
+.pb-error{font-size:11.5px;color:#ef4444;margin-top:5px;display:block;}
+
+/* Label + select */
+.pb-label{
+    display:flex;align-items:center;gap:5px;
+    font-size:11px;font-weight:700;color:#475569;
+    margin-bottom:6px;text-transform:uppercase;letter-spacing:.4px;}
+.pb-label .req{color:#ef4444;}
+.pb-sel-wrap{position:relative;flex:1;}
+.pb-sel-icon{
+    position:absolute;left:11px;top:50%;transform:translateY(-50%);
+    color:#cbd5e1;font-size:12px;pointer-events:none;transition:color .18s;}
+.pb-sel-wrap:focus-within .pb-sel-icon{color:#6366f1;}
+.pb-select{
+    width:100%;border:1.5px solid #e2e8f0;border-radius:8px;
+    padding:10px 28px 10px 32px;font-size:13px;color:#1e293b;background:#fff;
+    outline:none;-webkit-appearance:none;cursor:pointer;
+    background-image:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='10' height='6'%3E%3Cpath d='M0 0l5 6 5-6z' fill='%2394a3b8'/%3E%3C/svg%3E");
+    background-repeat:no-repeat;background-position:right 10px center;
+    transition:border-color .18s,box-shadow .18s;}
+.pb-select:focus{border-color:#6366f1;box-shadow:0 0 0 3.5px rgba(99,102,241,.12);}
+.pb-select:hover:not(:focus){border-color:#94a3b8;}
+
+/* Submit */
+.pb-submit{
+    position:relative;overflow:hidden;
+    display:inline-flex;align-items:center;gap:8px;
+    padding:10px 24px;border-radius:9px;font-size:13.5px;font-weight:700;
+    background:linear-gradient(135deg,#6366f1,#7c3aed);color:#fff;border:none;
+    cursor:pointer;box-shadow:0 4px 14px rgba(99,102,241,.4);
+    transition:box-shadow .18s,transform .15s;}
+.pb-submit:hover{box-shadow:0 6px 20px rgba(99,102,241,.5);transform:translateY(-2px);}
+.pb-submit:active{transform:translateY(0);}
+.pb-ripple{position:absolute;border-radius:50%;background:rgba(255,255,255,.38);
+    transform:scale(0);animation:pbRipple .6s linear;pointer-events:none;}
+@keyframes pbRipple{to{transform:scale(4);opacity:0;}}
+</style>
+
+<div class="card pb-card">
+
     <div class="card-header">
-        <h3 class="card-title"><?php echo($model->isNewRecord ? 'Add New Sub-Category' : 'Update Sub-Category'); ?></h3>
-
-        <div class="card-tools">
-            <button type="button" class="btn btn-tool" data-card-widget="collapse">
-                <i class="fa fa-minus"></i>
-            </button>
-            <!--            <button type="button" class="btn btn-tool" data-card-widget="remove">-->
-            <!--                <i class="fa fa-times"></i>-->
-            <!--            </button>-->
+        <div class="pb-hd-top">
+            <div class="pb-hd-title">
+                <div class="pb-hd-icon"><i class="fa fa-bookmark"></i></div>
+                <div>
+                    <?= $model->isNewRecord ? 'Add New Sub-Category' : 'Update Sub-Category' ?>
+                    <div class="pb-hd-sub">Brand / sub-category under a product category</div>
+                </div>
+            </div>
+            <div class="card-tools">
+                <button type="button" class="btn btn-tool" data-card-widget="collapse">
+                    <i class="fa fa-minus"></i>
+                </button>
+            </div>
         </div>
     </div>
+
     <div class="card-body">
-        <div class="table-responsive">
-            <table>
-                <tr>
-                    <td><?php echo $form->labelEx($model, 'item_id'); ?></td>
-                    <td>
-                        <?php
-                        echo $form->dropDownList(
-                            $model, 'item_id', CHtml::listData(ProdItems::model()->findAll(array('order' => 'item_name ASC')), 'id', 'item_name'), array(
-                            'prompt' => 'Select',
-                            'class' => 'form-control',
-                        ));
-                        ?>
-                    </td>
-                </tr>
-                <tr>
-                    <td></td>
-                    <td>
-                         <span class="help-block"
-                               style="color: red; width: 100%"> <?php echo $form->error($model, 'item_id'); ?></span>
-                    </td>
-                </tr>
-                <tr>
-                    <td><?php echo $form->labelEx($model, 'brand_name'); ?></td>
-                    <td><?php echo $form->textField($model, 'brand_name', array('maxlength' => 255, 'class' => 'form-control')); ?></td>
-                </tr>
-                <tr>
-                    <td></td>
-                    <td>
-                         <span class="help-block"
-                               style="color: red; width: 100%"> <?php echo $form->error($model, 'brand_name'); ?></span>
-                    </td>
-                </tr>
-            </table>
+        <div class="row">
+
+            <!-- Category dropdown -->
+            <div class="col-md-6">
+                <div style="margin-bottom:14px;">
+                    <label class="pb-label"><i class="fa fa-tags"></i> Category <span class="req">*</span></label>
+                    <div class="pb-sel-wrap">
+                        <i class="fa fa-tags pb-sel-icon"></i>
+                        <?= $form->dropDownList(
+                            $model, 'item_id',
+                            CHtml::listData(ProdItems::model()->findAll(array('order' => 'item_name ASC')), 'id', 'item_name'),
+                            array('prompt' => 'Select category…', 'class' => 'pb-select')
+                        ) ?>
+                    </div>
+                    <span class="pb-error"><?= $form->error($model, 'item_id') ?></span>
+                </div>
+            </div>
+
+            <!-- Sub-category name -->
+            <div class="col-md-6">
+                <div style="margin-bottom:14px;">
+                    <label class="pb-label"><i class="fa fa-bookmark-o"></i> Sub-Category Name <span class="req">*</span></label>
+                    <div class="pb-fl">
+                        <?= $form->textField($model, 'brand_name', array(
+                            'class'       => 'pb-fl-input',
+                            'maxlength'   => 255,
+                            'placeholder' => ' ',
+                        )) ?>
+                        <label class="pb-fl-label" for="<?= CHtml::activeId($model, 'brand_name') ?>">
+                            Sub-Category Name <span style="color:#ef4444;">*</span>
+                        </label>
+                        <i class="fa fa-bookmark-o pb-fl-icon"></i>
+                    </div>
+                    <span class="pb-error"><?= $form->error($model, 'brand_name') ?></span>
+                </div>
+            </div>
+
         </div>
     </div>
 
     <div class="card-footer">
-        <?php echo CHtml::submitButton($model->isNewRecord ? 'Create' : 'Update', array('onclick' => 'loadingDivDisplay();', 'class' => 'btn btn-primary btn-md')); ?>
-        <span id="ajaxLoaderMR2" class="ajaxLoaderMR" style="display: none;">
-            <i class="fa fa-spinner fa-spin fa-2x"></i>
+        <?= CHtml::submitButton(
+            $model->isNewRecord ? 'Create' : 'Update',
+            array(
+                'id'      => 'pb-submit-btn2',
+                'class'   => 'pb-submit',
+                'onclick' => 'loadingDivDisplay2();',
+            )
+        ) ?>
+        <span id="ajaxLoaderMR2" class="ajaxLoaderMR" style="display:none;">
+            <i class="fa fa-spinner fa-spin fa-2x" style="color:#6366f1;"></i>
         </span>
     </div>
-    <script type="text/javascript">
-        function loadingDivDisplay() {
-            $("#ajaxLoaderMR2").show();
-        }
-    </script>
 
 </div>
 
 <?php $this->endWidget(); ?>
+
+<script>
+function loadingDivDisplay2() {
+    $("#ajaxLoaderMR2").show();
+}
+
+(function(){
+    var btn = document.getElementById('pb-submit-btn2');
+    if (btn) {
+        btn.addEventListener('click', function(e){
+            var r = document.createElement('span');
+            r.className = 'pb-ripple';
+            var rect = this.getBoundingClientRect();
+            var sz = Math.max(rect.width, rect.height);
+            r.style.cssText = 'width:'+sz+'px;height:'+sz+'px;'
+                +'left:'+(e.clientX-rect.left-sz/2)+'px;'
+                +'top:'+(e.clientY-rect.top-sz/2)+'px;';
+            this.appendChild(r);
+            setTimeout(function(){ r.remove(); }, 700);
+        });
+    }
+}());
+</script>

@@ -706,7 +706,7 @@ class CController extends CBaseController
 			else
 				$viewFile=$moduleViewPath.$viewName;
 		}
-		elseif(strpos($viewName,'.'))
+		elseif(strpos($viewName,'.')!==false)
 			$viewFile=Yii::getPathOfAlias($viewName);
 		else
 			$viewFile=$viewPath.DIRECTORY_SEPARATOR.$viewName;

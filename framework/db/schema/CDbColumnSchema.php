@@ -111,7 +111,7 @@ class CDbColumnSchema extends CComponent
 	 */
 	protected function extractLimit($dbType)
 	{
-		if(strpos($dbType,'(') && preg_match('/\((.*)\)/',$dbType,$matches))
+		if(strpos($dbType,'(')!==false && preg_match('/\((.*)\)/',$dbType,$matches))
 		{
 			$values=explode(',',$matches[1]);
 			$this->size=$this->precision=(int)$values[0];
@@ -144,8 +144,8 @@ class CDbColumnSchema extends CComponent
 		switch($this->type)
 		{
 			case 'string': return (string)$value;
-			case 'integer': return (integer)$value;
-			case 'boolean': return (boolean)$value;
+			case 'integer': return (int)$value;
+			case 'boolean': return (bool)$value;
 			case 'double':
 			default: return $value;
 		}

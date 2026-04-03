@@ -1708,6 +1708,16 @@ Yii::app()->clientScript->registerCoreScript("jquery.ui");
         }, 100);
 
     });
+
+    /* ── Date picker ─────────────────────────────────────────────────────── */
+    var soDatePicker = new Lightpick({
+        field: document.getElementById('entry_date'),
+        onSelect: function(date){
+            document.getElementById('SellOrder_date').value = date.format('YYYY-MM-DD');
+        }
+    });
+    var savedDate = '<?php echo CHtml::encode($model->date); ?>';
+    if(savedDate){ soDatePicker.setStartDate(moment(savedDate)); }
 </script>
 
 <?php $this->endWidget(); ?>

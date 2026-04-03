@@ -362,8 +362,8 @@ class CJSON
 					// return (float)$str;
 
 					// Return float or int, as appropriate
-					return ((float)$str == (integer)$str)
-						? (integer)$str
+					return ((float)$str == (int)$str)
+						? (int)$str
 						: (float)$str;
 
 				} elseif (preg_match('/^("|\').+(\1)$/s', $str, $m) && $m[1] == $m[2]) {
@@ -626,7 +626,7 @@ class CJSON
 		$values = array();
 		$lookingFor = 1;
 
-		for ($i = 0; $i < strlen( $str ); $i++ )
+		for ($i = 0; $i < strlen( (string)$str ); $i++ )
 		{
 			$thisValue = ord( $str[ $i ] );
 			if ( $thisValue < 128 )
