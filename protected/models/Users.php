@@ -252,9 +252,10 @@ class Users extends CActiveRecord
 
     public static function superuserStatus($user_id)
     {
-        $sql = "SELECT * from AuthAssignment WHERE userid = '$user_id' and itemname = 'Admin'";
+        $sql = "SELECT * from AuthAssignment WHERE userid = :user_id and itemname = 'Admin'";
         $connection = Yii::app()->db;
         $command = $connection->createCommand($sql);
+        $command->bindValue(':user_id', (int)$user_id, PDO::PARAM_INT);
         $rowCount = $command->execute();
         if ($rowCount >= 1) {
             return true;

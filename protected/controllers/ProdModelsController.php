@@ -31,9 +31,10 @@ class ProdModelsController extends RController
 
     public function actionJquery_getCompanyProducts()
     {
-        $company_id = isset($_REQUEST['company_id']) ? trim($_REQUEST['company_id']) : '';
+        $company_id = isset($_REQUEST['company_id']) ? (int)$_REQUEST['company_id'] : 0;
         $criteria = new CDbCriteria();
-        $criteria->addCondition("t.manufacturer_id = $company_id"); // 'status' => ProdModels::ACTIVE
+        $criteria->addCondition('t.manufacturer_id = :company_id');
+        $criteria->params[':company_id'] = $company_id; // 'status' => ProdModels::ACTIVE
         $criteria->order = "t.item_id, t.brand_id, t.model_name asc";
         $criteria->join = " INNER JOIN prod_items pi ON pi.id = t.item_id ";
         $criteria->join .= " INNER JOIN prod_brands pb ON pb.id = t.brand_id ";

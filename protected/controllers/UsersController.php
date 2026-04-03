@@ -126,10 +126,11 @@ class UsersController extends RController
             // Stop jQuery from re-initialization
             Yii::app()->clientScript->scriptMap['jquery.js'] = false;
             try {
-                $user_id = $id;
-                $sql = "INSERT INTO `AuthAssignment` (`itemname`, `userid`, `bizrule`, `data`) VALUES ('Admin', '$user_id', NULL, 'N;');";
+                $user_id = (int)$id;
+                $sql = "INSERT INTO `AuthAssignment` (`itemname`, `userid`, `bizrule`, `data`) VALUES ('Admin', :user_id, NULL, 'N;');";
                 $connection = Yii::app()->db;
                 $command = $connection->createCommand($sql);
+                $command->bindValue(':user_id', $user_id, PDO::PARAM_INT);
                 $rowCount = $command->execute();
                 if ($rowCount > 0) {
                     Yii::app()->user->setFlash('success', 'This user is now superadmin!');
@@ -154,10 +155,11 @@ class UsersController extends RController
             // Stop jQuery from re-initialization
             Yii::app()->clientScript->scriptMap['jquery.js'] = false;
             try {
-                $user_id = $id;
-                $sql = "DELETE FROM AuthAssignment WHERE itemname ='Admin' AND userid = '$user_id'";
+                $user_id = (int)$id;
+                $sql = "DELETE FROM AuthAssignment WHERE itemname ='Admin' AND userid = :user_id";
                 $connection = Yii::app()->db;
                 $command = $connection->createCommand($sql);
+                $command->bindValue(':user_id', $user_id, PDO::PARAM_INT);
                 $rowCount = $command->execute();
                 if ($rowCount > 0) {
                     Yii::app()->user->setFlash('success', 'This user is now not a superadmin!');
@@ -198,51 +200,45 @@ class UsersController extends RController
 
     public function actionDbBackup()
     {
-        $this->backup_Database1('localhost', 'root', 'OF1YKK4HxtLSFUtF', 'erp');
+        $this->backup_Database1();
     }
 
-    function backup_Database1($hostName, $userName, $password, $DbName)
+    function backup_Database1()
     {
-        // CONNECT TO THE DATABASE
-        $con = mysqli_connect($hostName, $userName, $password) or die(mysqli_error());
-        mysqli_select_db($DbName, $con) or die(mysqli_error());
-        $tables = '*';
+        // USE YII'S DB CONNECTION INSTEAD OF HARDCODED CREDENTIALS
+        $db = Yii::app()->db;
+        $con = $db->getPdoInstance();
+        $DbName = preg_match('/dbname=([^;]+)/', $db->connectionString, $m) ? $m[1] : '';
         // GET ALL TABLES
-        if ($tables == '*') {
-            $tables = array();
-            $result = mysqli_query('SHOW TABLES');
-            while ($row = mysqli_fetch_row($result)) {
-                $tables[] = $row[0];
-            }
-        } else {
-            $tables = is_array($tables) ? $tables : explode(',', $tables);
+        $tables = array();
+        $result = $con->query('SHOW TABLES');
+        while ($row = $result->fetch(PDO::FETCH_NUM)) {
+            $tables[] = $row[0];
         }
 
         $data = '';
         foreach ($tables as $table) {
-            $result = mysqli_query('SELECT * FROM ' . $table) or die(mysqli_error());
-            $num_fields = mysqli_num_fields($result) or die(mysqli_error());
-            $data .= 'DROP TABLE IF EXISTS ' . $table . ';';
-            $row2 = mysqli_fetch_row(mysqli_query('SHOW CREATE TABLE ' . $table));
+            $result = $con->query('SELECT * FROM `' . $table . '`');
+            $num_fields = $result->columnCount();
+            $data .= 'DROP TABLE IF EXISTS `' . $table . '`;';
+            $row2 = $con->query('SHOW CREATE TABLE `' . $table . '`')->fetch(PDO::FETCH_NUM);
             $data .= "\n\n" . $row2[1] . ";\n\n";
 
-            for ($i = 0; $i < $num_fields; $i++) {
-                while ($row = mysqli_fetch_row($result)) {
-                    $data .= 'INSERT INTO ' . $table . ' VALUES(';
-                    for ($x = 0; $x < $num_fields; $x++) {
+            while ($row = $result->fetch(PDO::FETCH_NUM)) {
+                $data .= 'INSERT INTO `' . $table . '` VALUES(';
+                for ($x = 0; $x < $num_fields; $x++) {
+                    if (isset($row[$x])) {
                         $row[$x] = addslashes($row[$x]);
                         $row[$x] = $this->clean($row[$x]);
-                        if (isset($row[$x])) {
-                            $data .= '"' . $row[$x] . '"';
-                        } else {
-                            $data .= '""';
-                        }
-                        if ($x < ($num_fields - 1)) {
-                            $data .= ',';
-                        }
+                        $data .= '"' . $row[$x] . '"';
+                    } else {
+                        $data .= 'NULL';
                     }
-                    $data .= ");\n";
+                    if ($x < ($num_fields - 1)) {
+                        $data .= ',';
+                    }
                 }
+                $data .= ");\n";
             }
             $data .= "\n\n\n";
         }

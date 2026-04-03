@@ -1,7 +1,13 @@
 <?php
-ini_set('display_errors', '1');
-ini_set('display_startup_errors', '1');
-error_reporting(E_ALL);
+if (YII_DEBUG) {
+    ini_set('display_errors', '1');
+    ini_set('display_startup_errors', '1');
+    error_reporting(E_ALL);
+} else {
+    ini_set('display_errors', '0');
+    ini_set('display_startup_errors', '0');
+    error_reporting(0);
+}
 date_default_timezone_set('Asia/Dhaka');
 return array(
     'basePath' => dirname(__FILE__) . DIRECTORY_SEPARATOR . '..',
@@ -81,6 +87,7 @@ return array(
         'gii' => array(
             'class' => 'system.gii.GiiModule',
             'password' => 'admin',
+            'ipFilters' => array('127.0.0.1', '::1'),
         ),
         'accounting',
         'inventory',
@@ -120,16 +127,18 @@ return array(
 //            'connectionID' => 'db',
 //            'autoCreateSessionTable' => true,
             'autoStart' => true, // Whether to automatically start the session when the application starts
-            'timeout' => 60 * 60 * 24 * 60, // Set the session timeout to 60 days
+            'timeout' => 1800, // 30 minutes
             'cookieMode' => 'only', // Set to 'only' to allow only cookies to store session IDs, 'allow' to allow both cookies and URL parameters, 'none' to disable session cookies
             'cookieParams' => array(
-                'lifetime' => 60 * 60 * 24 * 60, // Set the cookie lifetime to 60 days
+                'lifetime' => 1800, // 30 minutes
+                'httpOnly' => true,
+                'sameSite' => 'Lax',
             ),
 
         ),
         'user' => array(
             'class' => 'RWebUser',
-            'authTimeout' => 60 * 60 * 24 * 60, // 60 days
+            'authTimeout' => 1800, // 30 minutes
             'allowAutoLogin' => true,
 //            'autoUpdateFlash' => true, // add this line to disable the flash counter
             'loginUrl' => array('/site/login'),

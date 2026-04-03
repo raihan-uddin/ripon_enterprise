@@ -116,7 +116,7 @@
 *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
 
 /* ── Page ── */
-body.hold-transition.login-page {
+body.login-page {
     background: #f0f4ff;
     height: 100vh;
     overflow: hidden;

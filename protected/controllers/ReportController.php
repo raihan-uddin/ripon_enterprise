@@ -46,7 +46,7 @@ class ReportController extends RController
         date_default_timezone_set("Asia/Dhaka");
         $dateFrom = $_POST['Inventory']['date_from'];
         $dateTo = $_POST['Inventory']['date_to'];
-        $customer_id = $_POST['Inventory']['customer_id'];
+        $customer_id = (int)$_POST['Inventory']['customer_id'];
 
         $message = "";
         $data = NULL;
@@ -58,92 +58,102 @@ class ReportController extends RController
             $criteriaOpSell = new CDbCriteria();
             $criteriaOpSell->select = " sum(grand_total) as grand_total";
             $criteriaOpSell->addColumnCondition(['customer_id' => $customer_id, 't.is_deleted' => 0,]);
-            $criteriaOpSell->addCondition(" date < '$dateFrom'");
+            $criteriaOpSell->addCondition('date < :dateFrom');
+            $criteriaOpSell->params[':dateFrom'] = $dateFrom;
             $data_opening_sell = SellOrder::model()->findByAttributes([], $criteriaOpSell);
 
             $criteriaOpMr = new CDbCriteria();
             $criteriaOpMr->select = " sum(amount+discount) as amount";
             $criteriaOpMr->addColumnCondition(['customer_id' => $customer_id, 't.is_deleted' => 0]);
-            $criteriaOpMr->addCondition(" date < '$dateFrom'");
+            $criteriaOpMr->addCondition('date < :dateFrom');
+            $criteriaOpMr->params[':dateFrom'] = $dateFrom;
             $data_opening_mr = MoneyReceipt::model()->findByAttributes([], $criteriaOpMr);
             $opening = ($data_opening_sell ? $data_opening_sell->grand_total : 0) - ($data_opening_mr ? $data_opening_mr->amount : 0);
 
             $criteriaOpReturn = new CDbCriteria();
             $criteriaOpReturn->select = " sum(return_amount) as return_amount";
             $criteriaOpReturn->addColumnCondition(['customer_id' => $customer_id, 't.is_deleted' => 0]);
-            $criteriaOpReturn->addCondition(" return_date < '$dateFrom'");
+            $criteriaOpReturn->addCondition('return_date < :dateFrom');
+            $criteriaOpReturn->params[':dateFrom'] = $dateFrom;
             $data_opening_return = SellReturn::model()->findByAttributes([], $criteriaOpReturn);
             $opening -= ($data_opening_return ? $data_opening_return->return_amount : 0);
+
+            $customerCond = $customer_id > 0 ? " AND customer_id = :customer_id" : "";
 
             $sql = "
                 SELECT temp.*
                 FROM (
                     -- Sales
-                    SELECT 
-                        id, 
-                        date, 
-                        so_no AS order_no, 
-                        customer_id, 
-                        grand_total AS amount, 
-                        'sale' AS trx_type, 
-                        created_at, 
-                        '' AS payment_type, 
-                        '' AS bank_id, 
-                        '' AS cheque_no, 
+                    SELECT
+                        id,
+                        date,
+                        so_no AS order_no,
+                        customer_id,
+                        grand_total AS amount,
+                        'sale' AS trx_type,
+                        created_at,
+                        '' AS payment_type,
+                        '' AS bank_id,
+                        '' AS cheque_no,
                         '' AS cheque_date
                     FROM sell_order
-                    WHERE 
-                        date BETWEEN '$dateFrom' AND '$dateTo'
-                        " . ($customer_id > 0 ? " AND customer_id = $customer_id" : "") . "
+                    WHERE
+                        date BETWEEN :dateFrom AND :dateTo
+                        $customerCond
                         AND is_deleted = 0
-            
+
                     UNION ALL
-            
+
                     -- Collections (Money Receipts)
-                    SELECT 
-                        GROUP_CONCAT(DISTINCT id SEPARATOR ',') AS id, 
-                        date, 
-                        GROUP_CONCAT(DISTINCT invoice_id SEPARATOR ',') AS order_no, 
-                        customer_id, 
-                        SUM(COALESCE(amount, 0)) + SUM(COALESCE(discount, 0)) AS amount, 
-                        'collection' AS trx_type, 
-                        MAX(created_at) AS created_at, 
-                        payment_type, 
-                        bank_id, 
-                        cheque_no, 
+                    SELECT
+                        GROUP_CONCAT(DISTINCT id SEPARATOR ',') AS id,
+                        date,
+                        GROUP_CONCAT(DISTINCT invoice_id SEPARATOR ',') AS order_no,
+                        customer_id,
+                        SUM(COALESCE(amount, 0)) + SUM(COALESCE(discount, 0)) AS amount,
+                        'collection' AS trx_type,
+                        MAX(created_at) AS created_at,
+                        payment_type,
+                        bank_id,
+                        cheque_no,
                         cheque_date
                     FROM money_receipt
-                    WHERE 
-                        date BETWEEN '$dateFrom' AND '$dateTo'
-                        " . ($customer_id > 0 ? " AND customer_id = $customer_id" : "") . "
+                    WHERE
+                        date BETWEEN :dateFrom AND :dateTo
+                        $customerCond
                         AND is_deleted = 0
                     GROUP BY customer_id, date, payment_type, bank_id, cheque_no, cheque_date, max_sl_no, created_by
-            
+
                     UNION ALL
-            
+
                     -- Returns
-                    SELECT 
-                        id, 
-                        return_date AS date, 
-                        sell_id AS order_no, 
-                        customer_id, 
-                        return_amount AS amount, 
-                        'return' AS trx_type, 
-                        created_at, 
-                        '' AS payment_type, 
-                        '' AS bank_id, 
-                        '' AS cheque_no, 
+                    SELECT
+                        id,
+                        return_date AS date,
+                        sell_id AS order_no,
+                        customer_id,
+                        return_amount AS amount,
+                        'return' AS trx_type,
+                        created_at,
+                        '' AS payment_type,
+                        '' AS bank_id,
+                        '' AS cheque_no,
                         '' AS cheque_date
                     FROM sell_return
-                    WHERE 
-                        return_date BETWEEN '$dateFrom' AND '$dateTo'
-                        " . ($customer_id > 0 ? " AND customer_id = $customer_id" : "") . "
+                    WHERE
+                        return_date BETWEEN :dateFrom AND :dateTo
+                        $customerCond
                         AND is_deleted = 0
                 ) AS temp
                 ORDER BY created_at ASC;
             ";
 
             $command = Yii::app()->db->createCommand($sql);
+            $command->bindValue(':dateFrom', $dateFrom);
+            $command->bindValue(':dateTo', $dateTo);
+            if ($customer_id > 0) {
+                $command->bindValue(':customer_id', $customer_id, PDO::PARAM_INT);
+            }
             $data = $command->queryAll();
         }
         echo $this->renderPartial('customerLedgerView', array(
@@ -169,7 +179,7 @@ class ReportController extends RController
         }
 
         date_default_timezone_set("Asia/Dhaka");
-        $customer_id = $_POST['Inventory']['customer_id'];
+        $customer_id = (int)$_POST['Inventory']['customer_id'];
 
         $message = "";
         $data = NULL;
@@ -177,8 +187,10 @@ class ReportController extends RController
 
         $message .= "DUE REPORT";
 
-        $sql = "SELECT 
-            customer_id, 
+        $customerCond = $customer_id > 0 ? " AND customer_id = :customer_id" : "";
+
+        $sql = "SELECT
+            customer_id,
             c.company_name,
             c.company_contact_no,
             ROUND(SUM(t.sale_amount), 2) AS total_sale_amount,
@@ -193,61 +205,64 @@ class ReportController extends RController
                 WHEN DATEDIFF(CURDATE(), MAX(t.activity_date)) >= 30 THEN 'Warning'
                 ELSE 'Active'
             END AS customer_status,
-            CASE 
+            CASE
                 WHEN SUM(t.sale_amount) = 0 THEN 0
                 ELSE ROUND((SUM(t.receipt_amount) / SUM(t.sale_amount)) * 100, 2)
             END AS payment_ratio
 
-        FROM 
-            (SELECT 
-                customer_id, 
+        FROM
+            (SELECT
+                customer_id,
                 grand_total AS sale_amount,
                 0 AS receipt_amount,
                 0 AS return_amount,
                 grand_total AS amount,
                 date as activity_date
-            FROM 
+            FROM
                 sell_order
-            WHERE 
-                is_deleted = 0 
-                " . ($customer_id > 0 ? " AND customer_id = $customer_id" : "") . "
+            WHERE
+                is_deleted = 0
+                $customerCond
             UNION ALL
-            SELECT 
-                customer_id, 
+            SELECT
+                customer_id,
                 0 AS sale_amount,
                 (amount + discount) AS receipt_amount,
                 0 AS return_amount,
                 -(amount + discount) AS amount,
                 date as activity_date
-            FROM 
+            FROM
                 money_receipt
-            WHERE 
+            WHERE
                 is_deleted = 0
-                " . ($customer_id > 0 ? " AND customer_id = $customer_id" : "") . "
+                $customerCond
             UNION ALL
-            SELECT 
+            SELECT
                 customer_id,
                 0 AS sale_amount,
                 0 AS receipt_amount,
                 return_amount AS return_amount,
                 -return_amount AS amount,
                 return_date as activity_date
-            FROM 
+            FROM
                 sell_return
-            WHERE 
+            WHERE
                 is_deleted = 0
-                " . ($customer_id > 0 ? " AND customer_id = $customer_id" : "") . "
+                $customerCond
             ) AS t
-        LEFT JOIN 
+        LEFT JOIN
             customers c ON t.customer_id = c.id
-        GROUP BY 
+        GROUP BY
             customer_id
-        HAVING 
+        HAVING
             due_amount <> 0
-        ORDER BY 
+        ORDER BY
             c.company_name;";
 
         $command = Yii::app()->db->createCommand($sql);
+        if ($customer_id > 0) {
+            $command->bindValue(':customer_id', $customer_id, PDO::PARAM_INT);
+        }
         $data = $command->queryAll();
 
         echo $this->renderPartial('customerDueReportView', array(
@@ -274,7 +289,7 @@ class ReportController extends RController
         date_default_timezone_set("Asia/Dhaka");
         $dateFrom = $_POST['Inventory']['date_from'];
         $dateTo = $_POST['Inventory']['date_to'];
-        $customer_id = $_POST['Inventory']['supplier_id'];
+        $customer_id = (int)$_POST['Inventory']['supplier_id'];
 
         $message = "";
         $data = NULL;
@@ -286,28 +301,37 @@ class ReportController extends RController
             $criteriaOpSell = new CDbCriteria();
             $criteriaOpSell->select = " sum(grand_total) as total_amount";
             $criteriaOpSell->addColumnCondition(['supplier_id' => $customer_id, 't.is_deleted' => 0]);
-            $criteriaOpSell->addCondition(" date < '$dateFrom'");
+            $criteriaOpSell->addCondition('date < :dateFrom');
+            $criteriaOpSell->params[':dateFrom'] = $dateFrom;
             $data_opening_purchase = PurchaseOrder::model()->findByAttributes([], $criteriaOpSell);
 
             $criteriaOpPr = new CDbCriteria();
             $criteriaOpPr->select = " sum(amount) as amount";
             $criteriaOpPr->addColumnCondition(['supplier_id' => $customer_id, 't.is_deleted' => 0]);
-            $criteriaOpPr->addCondition(" date < '$dateFrom'");
+            $criteriaOpPr->addCondition('date < :dateFrom');
+            $criteriaOpPr->params[':dateFrom'] = $dateFrom;
             $data_opening_pr = PaymentReceipt::model()->findByAttributes([], $criteriaOpPr);
             $opening = ($data_opening_purchase ? $data_opening_purchase->total_amount : 0) - ($data_opening_pr ? $data_opening_pr->amount : 0);
+
+            $supplierCond = $customer_id > 0 ? " AND supplier_id = :supplier_id AND is_deleted = 0" : "";
 
             $sql = "SELECT temp.* FROM (
                     SELECT id, date, po_no AS order_no, supplier_id, grand_total AS amount, 'purchase' as trx_type, created_at, '' AS payment_type, '' AS bank_id, '' AS cheque_no, '' AS cheque_date
                     FROM purchase_order
-                    WHERE date BETWEEN '$dateFrom' AND '$dateTo' " . ($customer_id > 0 ? " AND supplier_id = $customer_id AND is_deleted = 0" : "") . "
+                    WHERE date BETWEEN :dateFrom AND :dateTo $supplierCond
                     UNION
                     SELECT id, date, pr_no AS order_no, supplier_id, SUM(amount) as amount, 'payment', created_at, payment_type, bank_id, cheque_no, cheque_date
                     FROM payment_receipt
-                    WHERE date BETWEEN '$dateFrom' AND '$dateTo' " . ($customer_id > 0 ? " AND supplier_id = $customer_id AND is_deleted = 0" : "") . " GROUP BY date, pr_no, supplier_id, created_by
+                    WHERE date BETWEEN :dateFrom AND :dateTo $supplierCond GROUP BY date, pr_no, supplier_id, created_by
                 ) temp
-                
+
                 ORDER BY created_at ASC;";
             $command = Yii::app()->db->createCommand($sql);
+            $command->bindValue(':dateFrom', $dateFrom);
+            $command->bindValue(':dateTo', $dateTo);
+            if ($customer_id > 0) {
+                $command->bindValue(':supplier_id', $customer_id, PDO::PARAM_INT);
+            }
             $data = $command->queryAll();
         }
         echo $this->renderPartial('supplierLedgerView', array(
@@ -337,7 +361,7 @@ class ReportController extends RController
         date_default_timezone_set("Asia/Dhaka");
         $dateFrom = $_POST['Inventory']['date_from'];
         $dateTo = $_POST['Inventory']['date_to'];
-        $customer_id = $_POST['Inventory']['supplier_id'];
+        $customer_id = (int)$_POST['Inventory']['supplier_id'];
 
         $message = "";
         $data = NULL;
@@ -345,41 +369,46 @@ class ReportController extends RController
 
         $message .= "DUE REPORT";
 
-        $sql = "SELECT 
-                supplier_id, 
+        $supplierCond = $customer_id > 0 ? " AND supplier_id = :supplier_id" : "";
+
+        $sql = "SELECT
+                supplier_id,
                 s.company_name,
                 s.company_contact_no,
                 ROUND(SUM(t.purchase_amount), 2) AS total_purchase_amount,
                 ROUND(SUM(t.payment_amount), 2) AS total_payment_amount,
                 ROUND(SUM(amount), 2) AS due_amount
-            FROM 
-                (SELECT 
-                    supplier_id, 
+            FROM
+                (SELECT
+                    supplier_id,
                     grand_total as purchase_amount,
                     0 as payment_amount,
-                    grand_total as amount 
-                FROM 
+                    grand_total as amount
+                FROM
                     purchase_order
                         WHERE is_deleted = 0
-                    " . ($customer_id > 0 ? " AND supplier_id = $customer_id" : "") . "
+                    $supplierCond
                 UNION ALL
-                SELECT 
-                    supplier_id, 
+                SELECT
+                    supplier_id,
                     0 as purchase_amount,
                     amount as payment_amount,
-                    -amount 
-                FROM 
+                    -amount
+                FROM
                     payment_receipt
                         WHERE is_deleted = 0
-                    " . ($customer_id > 0 ? " AND supplier_id = $customer_id" : "") . "
+                    $supplierCond
                 ) AS t
             inner join suppliers s on t.supplier_id = s.id
-            GROUP BY 
+            GROUP BY
                 supplier_id
-            HAVING 
+            HAVING
                 due_amount <> 0
             ORDER BY s.company_name;";
         $command = Yii::app()->db->createCommand($sql);
+        if ($customer_id > 0) {
+            $command->bindValue(':supplier_id', $customer_id, PDO::PARAM_INT);
+        }
         $data = $command->queryAll();
 
         echo $this->renderPartial('supplierDueReportView', array(
@@ -417,46 +446,51 @@ class ReportController extends RController
             $criteriaOpMr = new CDbCriteria();
             $criteriaOpMr->select = " sum(amount) as amount";
             $criteriaOpMr->addColumnCondition(['is_deleted' => 0]);
-            $criteriaOpMr->addCondition(" date < '$dateFrom'");
+            $criteriaOpMr->addCondition('date < :dateFrom');
+            $criteriaOpMr->params[':dateFrom'] = $dateFrom;
             $data_opening_mr = MoneyReceipt::model()->findByAttributes([], $criteriaOpMr);
 
             $criteriaOpPr = new CDbCriteria();
             $criteriaOpPr->select = " sum(amount) as amount";
             $criteriaOpPr->addColumnCondition(['is_deleted' => 0]);
-            $criteriaOpPr->addCondition(" date < '$dateFrom'");
+            $criteriaOpPr->addCondition('date < :dateFrom');
+            $criteriaOpPr->params[':dateFrom'] = $dateFrom;
             $data_opening_pr = PaymentReceipt::model()->findByAttributes([], $criteriaOpPr);
 
             $criteriaOpExp = new CDbCriteria();
             $criteriaOpExp->select = " sum(amount) as amount";
-            $criteriaOpPr->addColumnCondition(['is_deleted' => 0]);
-            $criteriaOpExp->addCondition(" date < '$dateFrom'");
+            $criteriaOpExp->addColumnCondition(['is_deleted' => 0]);
+            $criteriaOpExp->addCondition('date < :dateFrom');
+            $criteriaOpExp->params[':dateFrom'] = $dateFrom;
             $data_opening_exp = Expense::model()->findByAttributes([], $criteriaOpExp);
 
             $opening = ($data_opening_mr ? $data_opening_mr->amount : 0) - (($data_opening_pr ? $data_opening_pr->amount : 0) + ($data_opening_exp ? $data_opening_exp->amount : 0));
 
-            $sql = "SELECT date, 
-               SUM(CASE WHEN transaction_type = 'Expense' THEN amount ELSE 0 END) AS expense, 
-               SUM(CASE WHEN transaction_type = 'Income' THEN amount ELSE 0 END) AS income, 
-               SUM(CASE WHEN transaction_type = 'Outgoing Payment' THEN amount ELSE 0 END) AS payment 
+            $sql = "SELECT date,
+               SUM(CASE WHEN transaction_type = 'Expense' THEN amount ELSE 0 END) AS expense,
+               SUM(CASE WHEN transaction_type = 'Income' THEN amount ELSE 0 END) AS income,
+               SUM(CASE WHEN transaction_type = 'Outgoing Payment' THEN amount ELSE 0 END) AS payment
                 FROM (
                         (SELECT 'Expense' AS transaction_type, date, amount
                          FROM expense
-                         WHERE date BETWEEN '$dateFrom' AND '$dateTo' AND is_deleted = 0)
-                
+                         WHERE date BETWEEN :dateFrom AND :dateTo AND is_deleted = 0)
+
                          UNION ALL
-                
+
                          (SELECT 'Income' AS transaction_type, date, amount
                          FROM money_receipt
-                         WHERE date BETWEEN '$dateFrom' AND '$dateTo' AND is_deleted = 0)
-                
+                         WHERE date BETWEEN :dateFrom AND :dateTo AND is_deleted = 0)
+
                          UNION ALL
-                
+
                          (SELECT 'Outgoing Payment' AS transaction_type, date, amount
                          FROM payment_receipt
-                         WHERE date BETWEEN '$dateFrom' AND '$dateTo' AND is_deleted = 0)
+                         WHERE date BETWEEN :dateFrom AND :dateTo AND is_deleted = 0)
                      ) AS t
                 GROUP BY date ORDER BY date ASC;";
             $command = Yii::app()->db->createCommand($sql);
+            $command->bindValue(':dateFrom', $dateFrom);
+            $command->bindValue(':dateTo', $dateTo);
             $data = $command->queryAll();
         }
         echo $this->renderPartial('dayInOutReportView', array(
@@ -1138,15 +1172,17 @@ class ReportController extends RController
                     t.sell_price,
                     t.purchase_price,
                     c.name as manufacturer_name,
-                    SUM(CASE WHEN (inv.date BETWEEN '$dateFrom' AND '$dateTo') 
+                    SUM(CASE WHEN (inv.date BETWEEN :dateFrom AND :dateTo)
                         THEN inv.stock_out ELSE 0 END) AS total_stock_out,
-        
-                    SUM(CASE WHEN (inv.date BETWEEN '$dateFrom' AND '$dateTo') 
+
+                    SUM(CASE WHEN (inv.date BETWEEN :dateFrom AND :dateTo)
                         THEN inv.stock_out * inv.purchase_price ELSE 0 END) AS total_out_value,
-        
-                    SUM(CASE WHEN (inv.date BETWEEN '$dateFrom' AND '$dateTo') 
+
+                    SUM(CASE WHEN (inv.date BETWEEN :dateFrom AND :dateTo)
                         THEN inv.stock_out * t.sell_price ELSE 0 END) AS sale_value
                 ";
+            $criteria->params[':dateFrom'] = $dateFrom;
+            $criteria->params[':dateTo'] = $dateTo;
 
             $criteria->join = " LEFT JOIN inventory inv ON inv.model_id = t.id AND inv.is_deleted = 0 ";
             $criteria->join .= " LEFT JOIN companies c ON t.manufacturer_id = c.id ";
@@ -1209,6 +1245,8 @@ class ReportController extends RController
 
             $criteria = new CDbCriteria();
 
+            $criteria->params[':dateFrom'] = $dateFrom;
+            $criteria->params[':dateTo'] = $dateTo;
             $criteria->select = "
             t.model_name,
             t.code,
@@ -1218,44 +1256,44 @@ class ReportController extends RController
 
             -- opening stock calc
             IFNULL((SELECT SUM(stock_in - stock_out)
-                    FROM inventory op 
-                    WHERE op.model_id = t.id 
-                    AND op.date < '$dateFrom'
+                    FROM inventory op
+                    WHERE op.model_id = t.id
+                    AND op.date < :dateFrom
                     AND op.is_deleted = 0), 0) AS opening_stock,
 
             -- stock in / out inside range
-            SUM(CASE WHEN (inv.date BETWEEN '$dateFrom' AND '$dateTo') 
+            SUM(CASE WHEN (inv.date BETWEEN :dateFrom AND :dateTo)
                 THEN inv.stock_in ELSE 0 END) AS stock_in,
 
-            SUM(CASE WHEN (inv.date BETWEEN '$dateFrom' AND '$dateTo') 
+            SUM(CASE WHEN (inv.date BETWEEN :dateFrom AND :dateTo)
                 THEN inv.stock_out ELSE 0 END) AS stock_out,
 
             -- closing stock
             (IFNULL((SELECT SUM(stock_in - stock_out)
-                    FROM inventory op 
-                    WHERE op.model_id = t.id 
-                    AND op.date < '$dateFrom'
+                    FROM inventory op
+                    WHERE op.model_id = t.id
+                    AND op.date < :dateFrom
                     AND op.is_deleted = 0), 0)
              +
-             SUM(CASE WHEN (inv.date BETWEEN '$dateFrom' AND '$dateTo') 
+             SUM(CASE WHEN (inv.date BETWEEN :dateFrom AND :dateTo)
                 THEN inv.stock_in ELSE 0 END)
              -
-             SUM(CASE WHEN (inv.date BETWEEN '$dateFrom' AND '$dateTo') 
+             SUM(CASE WHEN (inv.date BETWEEN :dateFrom AND :dateTo)
                 THEN inv.stock_out ELSE 0 END)
             ) AS closing_stock,
 
             -- stock value
             t.purchase_price * (
                 IFNULL((SELECT SUM(stock_in - stock_out)
-                    FROM inventory op 
-                    WHERE op.model_id = t.id 
-                    AND op.date < '$dateFrom'
+                    FROM inventory op
+                    WHERE op.model_id = t.id
+                    AND op.date < :dateFrom
                     AND op.is_deleted = 0), 0)
                 +
-                SUM(CASE WHEN (inv.date BETWEEN '$dateFrom' AND '$dateTo') 
+                SUM(CASE WHEN (inv.date BETWEEN :dateFrom AND :dateTo)
                     THEN inv.stock_in ELSE 0 END)
                 -
-                SUM(CASE WHEN (inv.date BETWEEN '$dateFrom' AND '$dateTo') 
+                SUM(CASE WHEN (inv.date BETWEEN :dateFrom AND :dateTo)
                     THEN inv.stock_out ELSE 0 END)
             ) AS stock_value
         ";
@@ -1333,27 +1371,33 @@ class ReportController extends RController
             foreach ($products as $p) {
 
                 // get closing stock
-                $closingStock = Yii::app()->db->createCommand("
+                $closingCmd = Yii::app()->db->createCommand("
                 SELECT SUM(stock_in - stock_out) AS closing_stock
                 FROM inventory
-                WHERE model_id = {$p->id}
-                AND date <= '$dateTo'
+                WHERE model_id = :model_id
+                AND date <= :dateTo
                 AND is_deleted = 0
-            ")->queryScalar();
+            ");
+                $closingCmd->bindValue(':model_id', (int)$p->id, PDO::PARAM_INT);
+                $closingCmd->bindValue(':dateTo', $dateTo);
+                $closingStock = $closingCmd->queryScalar();
 
                 if ($closingStock <= 0) continue; // skip items without stock
 
                 // fetch FIFO purchase batches
-                $batches = Yii::app()->db->createCommand("
+                $batchCmd = Yii::app()->db->createCommand("
                 SELECT id, date, stock_in, stock_out, purchase_price,
                 (stock_in - stock_out) AS qty_available
                 FROM inventory
-                WHERE model_id = {$p->id}
+                WHERE model_id = :model_id
                 AND stock_in > 0
-                AND date <= '$dateTo'
+                AND date <= :dateTo
                 AND is_deleted = 0
                 ORDER BY date ASC
-            ")->queryAll();
+            ");
+                $batchCmd->bindValue(':model_id', (int)$p->id, PDO::PARAM_INT);
+                $batchCmd->bindValue(':dateTo', $dateTo);
+                $batches = $batchCmd->queryAll();
 
                 $remaining = $closingStock;
 
@@ -1429,15 +1473,15 @@ class ReportController extends RController
         $message = '';
 
         if ($dateFrom && $dateTo) {
-            $personCond = $personId > 0 ? " AND t.person_id = $personId" : '';
+            $personCond = $personId > 0 ? " AND t.person_id = :personId" : '';
 
             // Opening balance (all transactions before the date range)
             $openSql = "SELECT SUM(CASE WHEN transaction_type = 'lend' THEN amount ELSE -amount END) AS balance
                         FROM loan_transactions t
-                        WHERE t.transaction_date < :dateFrom" . ($personId > 0 ? " AND t.person_id = :personId" : "");
+                        WHERE t.transaction_date < :dateFrom" . $personCond;
             $openCmd = Yii::app()->db->createCommand($openSql);
             $openCmd->bindValue(':dateFrom', $dateFrom);
-            if ($personId > 0) $openCmd->bindValue(':personId', $personId);
+            if ($personId > 0) $openCmd->bindValue(':personId', $personId, PDO::PARAM_INT);
             $openRow = $openCmd->queryRow();
             $opening = $openRow ? (float)$openRow['balance'] : 0;
 
@@ -1452,6 +1496,7 @@ class ReportController extends RController
             $cmd = Yii::app()->db->createCommand($sql);
             $cmd->bindValue(':dateFrom', $dateFrom);
             $cmd->bindValue(':dateTo', $dateTo);
+            if ($personId > 0) $cmd->bindValue(':personId', $personId, PDO::PARAM_INT);
             $data = $cmd->queryAll();
 
             if ($personId > 0) {

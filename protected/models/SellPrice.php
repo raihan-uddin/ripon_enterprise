@@ -215,9 +215,10 @@ class SellPrice extends CActiveRecord
     public function getSellPriceByModelId($model_id)
     {
         $sellPrice = 0;
-        $sql = "SELECT * FROM sell_price where model_id = {$model_id} order by id desc limit 1";
+        $sql = "SELECT * FROM sell_price where model_id = :model_id order by id desc limit 1";
         $connection = Yii::app()->db;
         $command = $connection->createCommand($sql);
+        $command->bindValue(':model_id', (int)$model_id, PDO::PARAM_INT);
         $data = $command->queryRow();
         if ($data)
             $sellPrice = $data['sell_price'];
