@@ -18,7 +18,6 @@ class InventoryController extends RController
             'rights
             -VoucherPreview
             -Jquery_showprodSlNoSearch
-            -removeProductSlFromCurrentStock
             -fetchProductPrice
             -Jquery_getStockQty',
         );
@@ -51,47 +50,57 @@ class InventoryController extends RController
         // Uncomment the following line if AJAX validation is needed
         // $this->performAjaxValidation($model);
 
-        if (isset($_POST['Inventory'])) {
-            $model->attributes = $_POST['Inventory'];
+        $postData = Yii::app()->request->getPost('Inventory');
+        if ($postData !== null) {
+            $model->attributes = $postData;
             $model->sl_no = $sl_no = Inventory::maxSlNo();
             $model->model_id = 1;//dummy for save
             $model->challan_no = str_pad($sl_no, 6, '0', STR_PAD_LEFT);
             $model->stock_status = Inventory::MANUAL_ENTRY;
 
-            $t_type = $_POST['Inventory']['t_type'];
+            $t_type = $postData['t_type'];
             if ($t_type == Inventory::STOCK_IN) {
                 $challan_no = "GRN-" . $model->challan_no;
             } else {
                 $challan_no = "GI-" . $model->challan_no;
             }
             if ($model->validate()) {
-                foreach ($_POST['Inventory']['temp_model_id'] as $key => $model_id) {
-                    $prodmodel = ProdModels::model()->findByPk($model_id);
-                    $purchase_price = $prodmodel->purchase_price;
-                    $model2 = new Inventory();
-                    $model2->sl_no = $sl_no;
-                    $model2->challan_no = $challan_no;
-                    $model2->model_id = $model_id;
-                    $model2->date = $_POST['Inventory']['date'];
-                    $model2->purchase_price = $purchase_price;
-                    if ($t_type == Inventory::STOCK_IN) {
-                        $model2->stock_in = $_POST['Inventory']['temp_stock_in'][$key] > 0 ? $_POST['Inventory']['temp_stock_in'][$key] : $_POST['Inventory']['temp_stock_out'][$key];
-                    } else {
-                        $model2->stock_out = $_POST['Inventory']['temp_stock_out'][$key] > 0 ? $_POST['Inventory']['temp_stock_out'][$key] : $_POST['Inventory']['temp_stock_in'][$key];
+                $transaction = Yii::app()->db->beginTransaction();
+                try {
+                    foreach ($postData['temp_model_id'] as $key => $model_id) {
+                        $prodmodel = ProdModels::model()->findByPk($model_id);
+                        $purchase_price = $prodmodel->purchase_price;
+                        $model2 = new Inventory();
+                        $model2->sl_no = $sl_no;
+                        $model2->challan_no = $challan_no;
+                        $model2->model_id = $model_id;
+                        $model2->date = $postData['date'];
+                        $model2->purchase_price = $purchase_price;
+                        if ($t_type == Inventory::STOCK_IN) {
+                            $model2->stock_in = $postData['temp_stock_in'][$key] > 0 ? $postData['temp_stock_in'][$key] : $postData['temp_stock_out'][$key];
+                        } else {
+                            $model2->stock_out = $postData['temp_stock_out'][$key] > 0 ? $postData['temp_stock_out'][$key] : $postData['temp_stock_in'][$key];
+                        }
+                        $model2->sell_price = $postData['temp_sell_price'][$key];
+                        $model2->row_total = $model2->stock_in > 0 ? round($model2->stock_in * $model2->sell_price, 2) : round($model2->stock_out * $model2->sell_price, 2);
+                        $model2->stock_status = Inventory::MANUAL_ENTRY;
+                        $model2->source_id = Inventory::SOURCE_DEFAULT;
+                        if (!$model2->save()) {
+                            throw new CException(CJSON::encode($model2->getErrors()));
+                        }
                     }
-                    $model2->sell_price = $_POST['Inventory']['temp_sell_price'][$key];
-                    $model2->row_total = $model2->stock_in > 0 ? round($model2->stock_in * $model2->sell_price, 2) : round($model2->stock_out * $model2->sell_price, 2);
-                    $model2->stock_status = Inventory::MANUAL_ENTRY;
-                    $model2->source_id = Inventory::SOURCE_DEFAULT;
-                    if (!$model2->save()) {
-                        var_dump($model2->getErrors());
-                        exit;
-                    }
+                    $transaction->commit();
+                    echo CJSON::encode(array(
+                        'status' => 'success',
+                        'message' => 'Saved successfully!',
+                    ));
+                } catch (Exception $e) {
+                    $transaction->rollback();
+                    echo CJSON::encode(array(
+                        'status' => 'error',
+                        'message' => 'Failed to save inventory records.',
+                    ));
                 }
-                echo CJSON::encode(array(
-                    'status' => 'success',
-                    'message' => 'Saved successfully!',
-                ));
                 Yii::app()->end();
             } else {
                 $error = CActiveForm::validate($model);
@@ -118,8 +127,8 @@ class InventoryController extends RController
         $this->loadModel($id)->delete();
 
         // if AJAX request (triggered by deletion via admin grid view), we should not redirect the browser
-        if (!isset($_GET['ajax']))
-            $this->redirect(isset($_POST['returnUrl']) ? $_POST['returnUrl'] : array('admin'));
+        if (!Yii::app()->request->getQuery('ajax'))
+            $this->redirect(array('admin'));
     }
 
 
@@ -130,8 +139,9 @@ class InventoryController extends RController
     {
         $model = new Inventory('search');
         $model->unsetAttributes();  // clear any default values
-        if (isset($_GET['Inventory']))
-            $model->attributes = $_GET['Inventory'];
+        $searchParams = Yii::app()->request->getQuery('Inventory');
+        if ($searchParams !== null)
+            $model->attributes = $searchParams;
 
         $this->pageTitle = "INVENTORY";
         $this->render('admin', array(
@@ -144,7 +154,7 @@ class InventoryController extends RController
         $model = new Inventory('search');
         // check if request is ajax
         if (Yii::app()->request->isAjaxRequest) {
-            $product_sl = isset($_POST['product_sl']) ? $_POST['product_sl'] : "";
+            $product_sl = Yii::app()->request->getPost('product_sl', '');
             $criteria = new CDbCriteria();
             $criteria->select = "t.*, pm.model_name, 
                                 c.company_name as customer_name, c.id as customer_id, c.customer_code, c.owner_mobile_no as customer_contact_no,
@@ -206,7 +216,7 @@ class InventoryController extends RController
      */
     protected function performAjaxValidation($model)
     {
-        if (isset($_POST['ajax']) && $_POST['ajax'] === 'inventory-form') {
+        if (Yii::app()->request->getPost('ajax') === 'inventory-form') {
             echo CActiveForm::validate($model);
             Yii::app()->end();
         }
@@ -215,7 +225,7 @@ class InventoryController extends RController
 
     public function actionVoucherPreview()
     {
-        $challan_no = isset($_POST['challan_no']) ? ($_POST['challan_no']) : "";
+        $challan_no = Yii::app()->request->getPost('challan_no', '');
 
         if ($challan_no != "") {
             $criteria = new CDbCriteria;
@@ -241,8 +251,8 @@ class InventoryController extends RController
 
     public function actionJquery_getStockQty()
     {
-        $model_id = isset($_POST['model_id']) ? $_POST['model_id'] : 0;
-        $product_sl_no = isset($_POST['product_sl_no']) ? $_POST['product_sl_no'] : "";
+        $model_id = Yii::app()->request->getPost('model_id', 0);
+        $product_sl_no = Yii::app()->request->getPost('product_sl_no', '');
         $stock = Inventory::model()->closingStock($model_id, $product_sl_no);
         echo json_encode($stock);
         Yii::app()->end();
@@ -251,9 +261,9 @@ class InventoryController extends RController
 
     public function actionJquery_showprodSlNoSearch()
     {
-        $search_prodName = trim($_POST['q']);
-        $model_id = isset($_POST['model_id']) ? trim($_POST['model_id']) : 0;
-        $show_all = isset($_POST['show_all']) ? trim($_POST['show_all']) : Inventory::SHOW_ALL_PRODUCT_SL_NO;
+        $search_prodName = trim(Yii::app()->request->getPost('q', ''));
+        $model_id = trim(Yii::app()->request->getPost('model_id', 0));
+        $show_all = trim(Yii::app()->request->getPost('show_all', Inventory::SHOW_ALL_PRODUCT_SL_NO));
 
         $criteria2 = new CDbCriteria();
         $criteria2->compare('product_sl_no', $search_prodName);
@@ -349,32 +359,35 @@ class InventoryController extends RController
         }
 
         date_default_timezone_set("Asia/Dhaka");
-        $dateFrom = $_POST['Inventory']['date_from'];
-        $dateTo = $_POST['Inventory']['date_to'];
-        $model_id = $_POST['Inventory']['model_id'];
-        $manufacturer_id = $_POST['Inventory']['manufacturer_id'];
-        $item_id = $_POST['Inventory']['item_id'];
-        $brand_id = $_POST['Inventory']['brand_id'];
+        $postData = Yii::app()->request->getPost('Inventory', array());
+        $dateFrom = isset($postData['date_from']) ? $postData['date_from'] : '';
+        $dateTo = isset($postData['date_to']) ? $postData['date_to'] : '';
+        $model_id = isset($postData['model_id']) ? $postData['model_id'] : 0;
+        $manufacturer_id = isset($postData['manufacturer_id']) ? $postData['manufacturer_id'] : 0;
+        $item_id = isset($postData['item_id']) ? $postData['item_id'] : 0;
+        $brand_id = isset($postData['brand_id']) ? $postData['brand_id'] : 0;
 
         $message = "";
         $data = "";
 
         if ($dateFrom != "" && $dateTo != '') {
             $criteria = new CDbCriteria;
+            $criteria->params[':dateFrom'] = $dateFrom;
+            $criteria->params[':dateTo'] = $dateTo;
             $criteria->select = "
-            t.model_name, t.code, inv.model_id, t.sell_price, t.purchase_price as cpp, 
+            t.model_name, t.code, inv.model_id, t.sell_price, t.purchase_price as cpp,
             c.name as manufacturer_name,
-            IFNULL((SELECT (SUM(op.stock_in) - SUM(op.stock_out)) FROM inventory op where op.date < '$dateFrom' AND op.model_id = t.id AND op.is_deleted = 0), 0) as opening_stock,
-            IFNULL((SELECT (SUM(op.stock_in*op.purchase_price) - SUM(op.stock_out*op.purchase_price)) FROM inventory op where op.date < '$dateFrom' AND op.model_id = t.id  AND op.is_deleted = 0), 0) as opening_stock_value,
-            SUM(CASE WHEN (inv.date BETWEEN '$dateFrom' AND '$dateTo') THEN inv.stock_in ELSE 0 END) as stock_in, 
-            SUM(CASE WHEN (inv.date BETWEEN '$dateFrom' AND '$dateTo') THEN inv.stock_out ELSE 0 END) as stock_out,
-            SUM(CASE WHEN (inv.date BETWEEN '$dateFrom' AND '$dateTo') THEN (inv.stock_in * inv.purchase_price) ELSE 0 END) as stock_in_value, 
-            SUM(CASE WHEN (inv.date BETWEEN '$dateFrom' AND '$dateTo') THEN (inv.stock_out * inv.purchase_price) ELSE 0 END) as stock_out_value,
+            IFNULL((SELECT (SUM(op.stock_in) - SUM(op.stock_out)) FROM inventory op where op.date < :dateFrom AND op.model_id = t.id AND op.is_deleted = 0), 0) as opening_stock,
+            IFNULL((SELECT (SUM(op.stock_in*op.purchase_price) - SUM(op.stock_out*op.purchase_price)) FROM inventory op where op.date < :dateFrom AND op.model_id = t.id  AND op.is_deleted = 0), 0) as opening_stock_value,
+            SUM(CASE WHEN (inv.date BETWEEN :dateFrom AND :dateTo) THEN inv.stock_in ELSE 0 END) as stock_in,
+            SUM(CASE WHEN (inv.date BETWEEN :dateFrom AND :dateTo) THEN inv.stock_out ELSE 0 END) as stock_out,
+            SUM(CASE WHEN (inv.date BETWEEN :dateFrom AND :dateTo) THEN (inv.stock_in * inv.purchase_price) ELSE 0 END) as stock_in_value,
+            SUM(CASE WHEN (inv.date BETWEEN :dateFrom AND :dateTo) THEN (inv.stock_out * inv.purchase_price) ELSE 0 END) as stock_out_value,
             AVG(CASE WHEN inv.stock_status = 1 THEN inv.purchase_price END) AS avg_purchase_price
             ";
             // get the purchase avg price if stock_status = 1
 
-            $message .= "Stock Report from  $dateFrom To $dateTo";
+            $message .= "Stock Report from  " . CHtml::encode($dateFrom) . " To " . CHtml::encode($dateTo);
 
             $criteria->addColumnCondition(['stockable' => 1]);
 
@@ -425,11 +438,12 @@ class InventoryController extends RController
         }
 
         date_default_timezone_set("Asia/Dhaka");
-        $model_id = $_POST['Inventory']['model_id'];
-        $manufacturer_id = $_POST['Inventory']['manufacturer_id'];
-        $item_id = $_POST['Inventory']['item_id'];
-        $brand_id = $_POST['Inventory']['brand_id'];
-        $selectedSupplierId = $_POST['Inventory']['supplier_id'];
+        $postData = Yii::app()->request->getPost('Inventory', array());
+        $model_id = isset($postData['model_id']) ? $postData['model_id'] : 0;
+        $manufacturer_id = isset($postData['manufacturer_id']) ? $postData['manufacturer_id'] : 0;
+        $item_id = isset($postData['item_id']) ? $postData['item_id'] : 0;
+        $brand_id = isset($postData['brand_id']) ? $postData['brand_id'] : 0;
+        $selectedSupplierId = isset($postData['supplier_id']) ? $postData['supplier_id'] : 0;
 
         $message = "";
         $data = "";
@@ -544,14 +558,8 @@ class InventoryController extends RController
             Yii::app()->clientScript->scriptMap['jquery.js'] = false;
         }
 
-        $data = '';
-        $condition = '';
-        if ($_GET['product_id'] != "") {
-            $message = "";
-        } else {
-            $message = "<div class='flash-error'>Please select a product!</div>";
-        }
-        $model_id = $_GET['product_id'];
+        $model_id = Yii::app()->request->getQuery('product_id', '');
+        $message = ($model_id != '') ? '' : "<div class='flash-error'>Please select a product!</div>";
 
         echo $this->renderPartial('currentStockReportBatchWiseView', array(
             'model_id' => $model_id,
@@ -568,16 +576,10 @@ class InventoryController extends RController
             Yii::app()->clientScript->scriptMap['jquery.js'] = false;
         }
 
-        $data = '';
-        $condition = '';
-        if ($_GET['product_id'] != "") {
-            $message = "";
-        } else {
-            $message = "<div class='flash-error'>Please select a product!</div>";
-        }
-        $start_date = $_GET['start_date'];
-        $end_date = $_GET['end_date'];
-        $model_id = $_GET['product_id'];
+        $model_id = Yii::app()->request->getQuery('product_id', '');
+        $start_date = Yii::app()->request->getQuery('start_date', '');
+        $end_date = Yii::app()->request->getQuery('end_date', '');
+        $message = ($model_id != '') ? '' : "<div class='flash-error'>Please select a product!</div>";
 
         echo $this->renderPartial('currentStockOutReportBatchWiseView', array(
             'model_id' => $model_id,
@@ -597,16 +599,10 @@ class InventoryController extends RController
             Yii::app()->clientScript->scriptMap['jquery.js'] = false;
         }
 
-        $data = '';
-        $condition = '';
-        if ($_GET['product_id'] != "") {
-            $message = "";
-        } else {
-            $message = "<div class='flash-error'>Please select a product!</div>";
-        }
-        $start_date = $_GET['start_date'];
-        $end_date = $_GET['end_date'];
-        $model_id = $_GET['product_id'];
+        $model_id = Yii::app()->request->getQuery('product_id', '');
+        $start_date = Yii::app()->request->getQuery('start_date', '');
+        $end_date = Yii::app()->request->getQuery('end_date', '');
+        $message = ($model_id != '') ? '' : "<div class='flash-error'>Please select a product!</div>";
 
         echo $this->renderPartial('currentStockInReportBatchWiseView', array(
             'model_id' => $model_id,
@@ -619,11 +615,11 @@ class InventoryController extends RController
 
     public function actionRemoveProductSlFromCurrentStock()
     {
-        $model_id = isset($_POST['model_id']) ? $_POST['model_id'] : 0;
-        $product_sl_no = isset($_POST['product_sl_no']) ? $_POST['product_sl_no'] : "";
-        $physical_stock = isset($_POST['physical_stock']) ? $_POST['physical_stock'] : 0;
-        $modify_stock_flag = isset($_POST['modify_stock']) ? $_POST['modify_stock'] : 0;
-        $remarks = isset($_POST['remarks']) ? $_POST['remarks'] : "";
+        $model_id = Yii::app()->request->getPost('model_id', 0);
+        $product_sl_no = Yii::app()->request->getPost('product_sl_no', '');
+        $physical_stock = Yii::app()->request->getPost('physical_stock', 0);
+        $modify_stock_flag = Yii::app()->request->getPost('modify_stock', 0);
+        $remarks = Yii::app()->request->getPost('remarks', '');
         $criteria = new CDbCriteria();
         $criteria->select = "SUM(stock_in - stock_out) as closing_stock";
         $criteria->addColumnCondition(['model_id' => $model_id]);
@@ -663,13 +659,19 @@ class InventoryController extends RController
             $model->row_total = $model->stock_in > 0 ? round($model->stock_in * $model->sell_price, 2) : round($model->stock_out * $model->sell_price, 2);
             $model->remarks = $remarks ? $remarks : "Serial No: $product_sl_no removed from current stock! ";
             if ($model->stock_in > 0 || $model->stock_out > 0) {
-                $model->save();
-                $model->save();
-                echo CJSON::encode(array(
-                    'status' => 'success',
-                    'remove_rows' => $remove_rows,
-                    'message' => $message
-                ));
+                if ($model->save()) {
+                    echo CJSON::encode(array(
+                        'status' => 'success',
+                        'remove_rows' => $remove_rows,
+                        'message' => $message
+                    ));
+                } else {
+                    echo CJSON::encode(array(
+                        'status' => 'error',
+                        'message' => 'Failed to save adjustment.',
+                        'remove_rows' => false,
+                    ));
+                }
             } else {
                 echo CJSON::encode(array(
                     'status' => 'error',
@@ -696,46 +698,49 @@ class InventoryController extends RController
         $criteria->join = " INNER JOIN prod_models pm on t.model_id = pm.id ";
         $data = Inventory::model()->findAll($criteria);
         if ($data) {
-            $total_fix = 0;
-            foreach ($data as $dt) {
-                $saved = false;
-                if ($dt->stock_in > 0) {
-                    $purchase_price = $dt->purchase_price > 0 ? $dt->purchase_price : $dt->pp;
-                    $sell_price = $dt->sell_price > 0 ? $dt->sell_price : $dt->sp;
-                    $row_total = $dt->stock_in * $purchase_price;
-                    $dt->purchase_price = $purchase_price;
-//                    $dt->sell_price = $sell_price;
-                    $dt->row_total = $row_total;
-                    $dt->save();
-                    $saved = true;
-                }
-                if ($dt->stock_out > 0) {
-                    $source_id = $dt->source_id;
-
-                    $purchase_price = $dt->purchase_price > 0 ? $dt->purchase_price : $dt->pp;
-
-                    if ($source_id > 0) {
-                        $sellOrderDetails = SellOrderDetails::model()->findByPk($source_id);
-                        if ($sellOrderDetails) {
-                            $qty = $sellOrderDetails->qty;
-                            $costing = $sellOrderDetails->costing;
-                            $purchase_price = round($costing / $qty, 2);
-                        }
+            $transaction = Yii::app()->db->beginTransaction();
+            try {
+                $total_fix = 0;
+                foreach ($data as $dt) {
+                    $saved = false;
+                    if ($dt->stock_in > 0) {
+                        $purchase_price = $dt->purchase_price > 0 ? $dt->purchase_price : $dt->pp;
+                        $row_total = $dt->stock_in * $purchase_price;
+                        $dt->purchase_price = $purchase_price;
+                        $dt->row_total = $row_total;
+                        $dt->save();
+                        $saved = true;
                     }
+                    if ($dt->stock_out > 0) {
+                        $source_id = $dt->source_id;
 
-                    $sell_price = $dt->sell_price > 0 ? $dt->sell_price : $dt->sp;
-                    $row_total = $dt->stock_out * $purchase_price;
-                    $dt->purchase_price = $purchase_price;
-//                    $dt->sell_price = $sell_price;
-                    $dt->row_total = $row_total;
-                    $dt->save();
-                    $saved = true;
+                        $purchase_price = $dt->purchase_price > 0 ? $dt->purchase_price : $dt->pp;
+
+                        if ($source_id > 0) {
+                            $sellOrderDetails = SellOrderDetails::model()->findByPk($source_id);
+                            if ($sellOrderDetails) {
+                                $qty = $sellOrderDetails->qty;
+                                $costing = $sellOrderDetails->costing;
+                                $purchase_price = round($costing / $qty, 2);
+                            }
+                        }
+
+                        $row_total = $dt->stock_out * $purchase_price;
+                        $dt->purchase_price = $purchase_price;
+                        $dt->row_total = $row_total;
+                        $dt->save();
+                        $saved = true;
+                    }
+                    if ($saved) {
+                        $total_fix++;
+                    }
                 }
-                if ($saved) {
-                    $total_fix++;
-                }
+                $transaction->commit();
+                echo "Total Fixed: $total_fix";
+            } catch (Exception $e) {
+                $transaction->rollback();
+                echo "Error: Failed to fix purchase prices.";
             }
-            echo "Total Fixed: $total_fix";
         }
 
     }
@@ -749,31 +754,42 @@ class InventoryController extends RController
                 HAVING pm.purchase_price != sod_cost ORDER BY `sod`.`sell_order_id` ASC";
         $data = Yii::app()->db->createCommand($sql)->queryAll();
         if ($data) {
-            $total_fix = 0;
-            foreach ($data as $dt) {
-                $sellOrderDetails = SellOrderDetails::model()->findByPk($dt['sell_order_id']);
-                if ($sellOrderDetails) {
-                    $sellOrderDetails->costing = $dt['purchase_price'] * $dt['qty'];
-                    if ($sellOrderDetails->save()) {
-                        // update sell order costing value
-                        $sellOrder = SellOrder::model()->findByPk($dt['sell_order_id']);
-                        if ($sellOrder) {
-                            $sellOrder->costing = SellOrderDetails::model()->getTotalCosting($dt['sell_order_id']);
-                            $sellOrder->save();
-                        }
+            $transaction = Yii::app()->db->beginTransaction();
+            try {
+                $total_fix = 0;
+                foreach ($data as $dt) {
+                    $sellOrderDetails = SellOrderDetails::model()->findByPk($dt['sell_order_id']);
+                    if ($sellOrderDetails) {
+                        $sellOrderDetails->costing = $dt['purchase_price'] * $dt['qty'];
+                        if ($sellOrderDetails->save()) {
+                            // update sell order costing value
+                            $sellOrder = SellOrder::model()->findByPk($dt['sell_order_id']);
+                            if ($sellOrder) {
+                                $sellOrder->costing = SellOrderDetails::model()->getTotalCosting($dt['sell_order_id']);
+                                $sellOrder->save();
+                            }
 
-                        // fix inventory purchase price
-                        $inventory = Inventory::model()->findByAttributes(['source_id' => $dt['id']]);
-                        if ($inventory) {
-                            $inventory->purchase_price = $dt['purchase_price'];
-                            $inventory->save();
+                            // fix inventory purchase price
+                            $inventory = Inventory::model()->findByAttributes(['source_id' => $dt['id']]);
+                            if ($inventory) {
+                                $inventory->purchase_price = $dt['purchase_price'];
+                                $inventory->save();
+                            }
                         }
+                        echo sprintf("Sell Order ID: %s, Model: %s, Old Costing: %s, New Costing: %s <br>",
+                            CHtml::encode($dt['sell_order_id']),
+                            CHtml::encode($dt['model_name']),
+                            CHtml::encode($dt['sod_cost']),
+                            CHtml::encode($dt['purchase_price']));
+                        $total_fix++;
                     }
-                    echo sprintf("Sell Order ID: %s, Model: %s, Old Costing: %s, New Costing: %s <br>", $dt['sell_order_id'], $dt['model_name'], $dt['sod_cost'], $dt['purchase_price']);
-                    $total_fix++;
                 }
+                $transaction->commit();
+                echo "Total Fixed: $total_fix";
+            } catch (Exception $e) {
+                $transaction->rollback();
+                echo "Error: Failed to fix sell order purchase prices.";
             }
-            echo "Total Fixed: $total_fix";
         }
     }
 

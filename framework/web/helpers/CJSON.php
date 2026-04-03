@@ -626,7 +626,7 @@ class CJSON
 		$values = array();
 		$lookingFor = 1;
 
-		for ($i = 0; $i < strlen( $str ); $i++ )
+		for ($i = 0; $i < strlen( (string)$str ); $i++ )
 		{
 			$thisValue = ord( $str[ $i ] );
 			if ( $thisValue < 128 )

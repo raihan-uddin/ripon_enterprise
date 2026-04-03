@@ -2770,11 +2770,11 @@ class CHttpRequest extends CApplicationComponent
 						if($matches[4][$i]==='q')
 						{
 							// sanity check on q value
-							$q=(double)$matches[5][$i];
+							$q=(float)$matches[5][$i];
 							if($q>1)
-								$q=(double)1;
+								$q=(float)1;
 							elseif($q<0)
-								$q=(double)0;
+								$q=(float)0;
 							$accept['params'][$matches[4][$i]]=$q;
 						}
 						else
@@ -2785,7 +2785,7 @@ class CHttpRequest extends CApplicationComponent
 				}
 				// q defaults to 1 if not explicitly given
 				if(!isset($accept['params']['q']))
-					$accept['params']['q']=(double)1;
+					$accept['params']['q']=(float)1;
 				$accepts[] = $accept;
 			}
 		}
@@ -3939,7 +3939,7 @@ class CController extends CBaseController
 			else
 				$viewFile=$moduleViewPath.$viewName;
 		}
-		elseif(strpos($viewName,'.'))
+		elseif(strpos($viewName,'.')!==false)
 			$viewFile=Yii::getPathOfAlias($viewName);
 		else
 			$viewFile=$viewPath.DIRECTORY_SEPARATOR.$viewName;
@@ -6384,7 +6384,7 @@ class CWidget extends CBaseController
 			$extension=$renderer->fileExtension;
 		else
 			$extension='.php';
-		if(strpos($viewName,'.')) // a path alias
+		if(strpos($viewName,'.')!==false) // a path alias
 			$viewFile=Yii::getPathOfAlias($viewName);
 		else
 		{

@@ -106,13 +106,13 @@ class CLogFilter extends CComponent implements ILogFilter
 		{
 			foreach($this->logVars as $name)
 				if(($value=$this->getGlobalsValue($name))!==null)
-					$context[]="\${$name}=".call_user_func($this->dumper,$value,true);
+					$context[]="\$".$name."=".call_user_func($this->dumper,$value,true);
 		}
 		else
 		{
 			foreach($this->logVars as $name)
 				if(($value=$this->getGlobalsValue($name))!==null)
-					$context[]="\${$name}=".call_user_func($this->dumper,$value);
+					$context[]="\$".$name."=".call_user_func($this->dumper,$value);
 		}
 
 		return implode("\n\n",$context);

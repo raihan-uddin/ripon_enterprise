@@ -41,7 +41,7 @@ class CPgsqlColumnSchema extends CDbColumnSchema
 	 */
 	protected function extractLimit($dbType)
 	{
-		if(strpos($dbType,'('))
+		if(strpos($dbType,'(')!==false)
 		{
 			if (preg_match('/^time.*\((.*)\)/',$dbType,$matches))
 			{

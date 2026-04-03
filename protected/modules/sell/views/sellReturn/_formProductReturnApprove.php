@@ -73,7 +73,7 @@ Yii::app()->clientScript->registerCoreScript("jquery.ui");
             <div class="pr-title-row">
                 <div class="pr-icon-box"><i class="fa fa-check-circle"></i></div>
                 <div>
-                    <h3 class="pr-title">Approve Return Request #<?php echo $model->id; ?></h3>
+                    <h3 class="pr-title">Approve Return Request #<?php echo CHtml::encode($model->id); ?></h3>
                     <p class="pr-subtitle">Review and approve product return</p>
                 </div>
                 <button type="button" class="pr-collapse-btn" data-card-widget="collapse"><i class="fa fa-minus"></i></button>
@@ -85,11 +85,11 @@ Yii::app()->clientScript->registerCoreScript("jquery.ui");
                 <div style="padding-right:20px">
                     <div class="pr-info-row">
                         <span class="pr-info-label">Return Date</span>
-                        <span class="pr-info-value"><?php echo $model->return_date; ?></span>
+                        <span class="pr-info-value"><?php echo CHtml::encode($model->return_date); ?></span>
                     </div>
                     <div class="pr-info-row">
                         <span class="pr-info-label">Customer</span>
-                        <span class="pr-info-value"><?php echo $model->customer->company_name; ?></span>
+                        <span class="pr-info-value"><?php echo CHtml::encode($model->customer->company_name); ?></span>
                     </div>
                     <div class="pr-info-row">
                         <span class="pr-info-label">Return Type</span>
@@ -99,15 +99,15 @@ Yii::app()->clientScript->registerCoreScript("jquery.ui");
                 <div style="padding-left:20px">
                     <div class="pr-info-row">
                         <span class="pr-info-label">Return Amount</span>
-                        <span class="pr-info-value"><?php echo $model->return_amount; ?></span>
+                        <span class="pr-info-value"><?php echo CHtml::encode($model->return_amount); ?></span>
                     </div>
                     <div class="pr-info-row">
                         <span class="pr-info-label">Costing</span>
-                        <span class="pr-info-value"><?php echo $model->costing; ?></span>
+                        <span class="pr-info-value"><?php echo CHtml::encode($model->costing); ?></span>
                     </div>
                     <div class="pr-info-row">
                         <span class="pr-info-label">Remarks</span>
-                        <span class="pr-info-value"><?php echo $model->remarks; ?></span>
+                        <span class="pr-info-value"><?php echo CHtml::encode($model->remarks); ?></span>
                     </div>
                 </div>
             </div>
@@ -127,9 +127,9 @@ Yii::app()->clientScript->registerCoreScript("jquery.ui");
                 foreach ($model->sellReturnDetails as $detail) {
                     ?>
                     <tr>
-                        <td><?php echo $detail->model->model_name; ?></td>
-                        <td class="text-center"><?php echo $detail->product_sl_no; ?></td>
-                        <td class="text-center"><?php echo $detail->return_qty; ?></td>
+                        <td><?php echo CHtml::encode($detail->model->model_name); ?></td>
+                        <td class="text-center"><?php echo CHtml::encode($detail->product_sl_no); ?></td>
+                        <td class="text-center"><?php echo CHtml::encode($detail->return_qty); ?></td>
                         <td>
                             <?php
                                 echo $form->hiddenField($detail, "id[]", array(

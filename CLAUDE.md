@@ -31,6 +31,7 @@ This is a PHP/Yii 1.x enterprise ERP system for inventory management with integr
 > - `auth-and-rbac.md` — Authentication flow, RBAC system, permission caching
 > - `views-and-theming.md` — Theme structure, layouts, CSS/JS architecture, report views
 > - `extensions.md` — All extensions, components, helpers, vendor packages
+> - `framework-compat.md` — PHP 8.x compatibility patches applied to Yii 1.x framework files
 
 ### Request Flow
 
