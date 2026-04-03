@@ -159,13 +159,13 @@ echo "</div>";
 </div>
 
 <!--        modal-->
-<div class="modal fade" id="information-modal" tabindex="-1" data-backdrop="static" role="dialog"
+<div class="modal fade" id="information-modal" tabindex="-1" data-bs-backdrop="static" role="dialog"
      aria-labelledby="information-modal" aria-hidden="true">
     <div class="modal-dialog modal-dialog-centered modal-xl" role="document">
         <div class="modal-content">
             <div class="modal-header">
                 <h5 class="modal-title" id="exampleModalLabel">Invoice</h5>
-                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                <button type="button" class="close" data-bs-dismiss="modal" aria-label="Close">
                     <span aria-hidden="true">&times;</span>
                 </button>
             </div>
@@ -173,7 +173,7 @@ echo "</div>";
                 <p>Loading...</p> <!-- this will be replaced by the response from the server -->
             </div>
             <div class="modal-footer">
-                <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
+                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
             </div>
         </div>
     </div>

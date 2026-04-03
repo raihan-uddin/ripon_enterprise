@@ -19,14 +19,14 @@
 
 <!-- Modal -->
 <div class="modal fade" id="profit-loss-summary-modal" tabindex="-1"
-     data-backdrop="static" role="dialog" aria-labelledby="profit-loss-summary-modal" aria-hidden="true">
+     data-bs-backdrop="static" role="dialog" aria-labelledby="profit-loss-summary-modal" aria-hidden="true">
     <div class="modal-dialog modal-dialog-centered modal-lg" role="document">
         <div class="modal-content" style="border-radius:14px; overflow:hidden;">
             <div class="modal-header" style="background:#6366f1; color:#fff; border:none;">
                 <h5 class="modal-title" id="exampleModalLabel" style="font-size:15px; font-weight:600;">
                     <i class="fa fa-line-chart mr-2"></i> Profit &amp; Loss Summary
                 </h5>
-                <button type="button" class="close" data-dismiss="modal" aria-label="Close"
+                <button type="button" class="close" data-bs-dismiss="modal" aria-label="Close"
                         style="color:#fff; opacity:0.8;">
                     <span aria-hidden="true">&times;</span>
                 </button>
@@ -35,7 +35,7 @@
                 <p>Loading...</p>
             </div>
             <div class="modal-footer" style="border:none; padding-top:0;">
-                <button type="button" class="btn btn-secondary btn-sm" data-dismiss="modal"
+                <button type="button" class="btn btn-secondary btn-sm" data-bs-dismiss="modal"
                         style="border-radius:8px;">Close</button>
             </div>
         </div>

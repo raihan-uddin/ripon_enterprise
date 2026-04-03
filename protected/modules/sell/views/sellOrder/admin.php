@@ -354,7 +354,7 @@ $user = Yii::app()->getUser();
 foreach ($user->getFlashKeys() as $key):
     if ($user->hasFlash($key)): ?>
         <div class="alert alert-<?php echo $key; ?> alert-dismissible fade show" role="alert">
-            <button type="button" class="close" data-dismiss="alert" aria-hidden="true">×</button>
+            <button type="button" class="close" data-bs-dismiss="alert" aria-hidden="true">×</button>
             <i class="fa fa-<?php echo ($key === 'success') ? 'check-circle' : 'exclamation-triangle'; ?>" style="margin-right:6px;"></i>
             <?php echo $user->getFlash($key); ?>
         </div>
@@ -651,7 +651,7 @@ if (Yii::app()->user->checkAccess('Sell.Order.VoucherPreview')) {
                                                 'options' => array(
                                                         'class' => 'action-btn btn-preview',
                                                         'rel' => 'tooltip',
-                                                        'data-toggle' => 'tooltip',
+                                                        'data-bs-toggle' => 'tooltip',
                                                         'title' => Yii::t('app', 'Preview Invoice'),
                                                 ),
                                                 'url' => '"#" . $data->id',
@@ -677,7 +677,7 @@ if (Yii::app()->user->checkAccess('Sell.Order.VoucherPreview')) {
                                                 'options' => array(
                                                         'class' => 'action-btn btn-payment',
                                                         'rel' => 'tooltip',
-                                                        'data-toggle' => 'tooltip',
+                                                        'data-bs-toggle' => 'tooltip',
                                                         'title' => Yii::t('app', 'Create MR'),
                                                 ),
                                                 'url' => 'Yii::app()->controller->createUrl("/accounting/moneyReceipt/create",array("id"=>$data->customer_id, "sell_id"=>$data->id))',
@@ -689,7 +689,7 @@ if (Yii::app()->user->checkAccess('Sell.Order.VoucherPreview')) {
                                                 'options' => array(
                                                         'class' => 'action-btn btn-edit',
                                                         'rel' => 'tooltip',
-                                                        'data-toggle' => 'tooltip',
+                                                        'data-bs-toggle' => 'tooltip',
                                                         'title' => Yii::t('app', 'Edit'),
                                                 ),
                                         ),
@@ -699,7 +699,7 @@ if (Yii::app()->user->checkAccess('Sell.Order.VoucherPreview')) {
                                                 'options' => array(
                                                         'class' => 'action-btn btn-delete',
                                                         'rel' => 'tooltip',
-                                                        'data-toggle' => 'tooltip',
+                                                        'data-bs-toggle' => 'tooltip',
                                                         'title' => Yii::t('app', 'Delete'),
                                                 ),
                                                 'url' => 'Yii::app()->controller->createUrl("delete", array("id"=>$data->id))',
@@ -748,13 +748,13 @@ if (Yii::app()->user->checkAccess('Sell.Order.VoucherPreview')) {
     </div>
 </div>
 
-<div class="modal fade" id="information-modal" tabindex="-1" data-backdrop="static" role="dialog"
+<div class="modal fade" id="information-modal" tabindex="-1" data-bs-backdrop="static" role="dialog"
      aria-labelledby="information-modal" aria-hidden="true">
     <div class="modal-dialog modal-dialog-centered modal-xl" role="document">
         <div class="modal-content">
             <div class="modal-header">
                 <h5 class="modal-title">Invoice</h5>
-                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                <button type="button" class="close" data-bs-dismiss="modal" aria-label="Close">
                     <span aria-hidden="true">&times;</span>
                 </button>
             </div>
@@ -762,7 +762,7 @@ if (Yii::app()->user->checkAccess('Sell.Order.VoucherPreview')) {
                 <p>Loading...</p>
             </div>
             <div class="modal-footer">
-                <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
+                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
             </div>
         </div>
     </div>

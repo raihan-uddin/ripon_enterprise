@@ -895,13 +895,13 @@ $this->beginWidget('zii.widgets.jui.CJuiDialog', array(
 
 
 <!--        modal-->
-<div class="modal fade" id="information-modal" tabindex="-1" data-backdrop="static" role="dialog"
+<div class="modal fade" id="information-modal" tabindex="-1" data-bs-backdrop="static" role="dialog"
      aria-labelledby="information-modal" aria-hidden="true">
     <div class="modal-dialog modal-dialog-centered modal-xl" role="document">
         <div class="modal-content">
             <div class="modal-header" style="background:linear-gradient(135deg,#4f46e5,#7c3aed);border:none;">
                 <h5 class="modal-title" style="color:#fff;font-weight:700;font-size:15px;"><i class="fa fa-file-text-o" style="margin-right:6px;"></i> Expense Voucher</h5>
-                <button type="button" class="close" data-dismiss="modal" aria-label="Close" style="color:#fff;opacity:.7;">
+                <button type="button" class="close" data-bs-dismiss="modal" aria-label="Close" style="color:#fff;opacity:.7;">
                     <span aria-hidden="true">&times;</span>
                 </button>
             </div>
@@ -909,7 +909,7 @@ $this->beginWidget('zii.widgets.jui.CJuiDialog', array(
                 <p>Loading...</p> <!-- this will be replaced by the response from the server -->
             </div>
             <div class="modal-footer">
-                <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
+                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
             </div>
         </div>
     </div>

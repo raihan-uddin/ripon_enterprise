@@ -270,7 +270,7 @@ $this->widget('application.components.BreadCrumb', array(
 <div class="db-section db-animate db-animate-d2">
     <div class="db-section-head">
         <h6>Quick Actions &mdash; <?= date('F Y') ?></h6>
-        <button class="db-section-toggle" data-target="sec-actions" title="Collapse"><i class="fa fa-chevron-down"></i></button>
+        <button class="db-section-toggle" data-bs-target="sec-actions" title="Collapse"><i class="fa fa-chevron-down"></i></button>
     </div>
     <div class="db-section-body" id="sec-actions">
         <?php $this->renderPartial('shortcut-link'); ?>
@@ -281,7 +281,7 @@ $this->widget('application.components.BreadCrumb', array(
 <div class="db-section db-animate db-animate-d2" style="animation-delay:.08s">
     <div class="db-section-head">
         <h6>Today's Snapshot &mdash; <?= date('d M Y') ?></h6>
-        <button class="db-section-toggle" data-target="sec-today" title="Collapse"><i class="fa fa-chevron-down"></i></button>
+        <button class="db-section-toggle" data-bs-target="sec-today" title="Collapse"><i class="fa fa-chevron-down"></i></button>
     </div>
     <div class="db-section-body" id="sec-today">
         <div class="db-today-strip" id="db-today-strip">
@@ -313,7 +313,7 @@ $this->widget('application.components.BreadCrumb', array(
 <div class="db-section db-animate db-animate-d1">
     <div class="db-section-head">
         <h6>Overview</h6>
-        <button class="db-section-toggle" data-target="sec-overview" title="Collapse"><i class="fa fa-chevron-down"></i></button>
+        <button class="db-section-toggle" data-bs-target="sec-overview" title="Collapse"><i class="fa fa-chevron-down"></i></button>
     </div>
     <div class="db-section-body" id="sec-overview">
         <?php $this->renderPartial('block-widget'); ?>
@@ -324,7 +324,7 @@ $this->widget('application.components.BreadCrumb', array(
 <div class="db-section db-animate db-animate-d3">
     <div class="db-section-head">
         <h6>Reports</h6>
-        <button class="db-section-toggle" data-target="sec-reports" title="Collapse"><i class="fa fa-chevron-down"></i></button>
+        <button class="db-section-toggle" data-bs-target="sec-reports" title="Collapse"><i class="fa fa-chevron-down"></i></button>
     </div>
     <div class="db-section-body" id="sec-reports">
         <?php $this->renderPartial('report-shortcut'); ?>
@@ -337,7 +337,7 @@ $this->widget('application.components.BreadCrumb', array(
 <div class="db-section db-animate db-animate-d4">
     <div class="db-section-head">
         <h6>Profit &amp; Loss Analysis</h6>
-        <button class="db-section-toggle" data-target="sec-pl" title="Collapse"><i class="fa fa-chevron-down"></i></button>
+        <button class="db-section-toggle" data-bs-target="sec-pl" title="Collapse"><i class="fa fa-chevron-down"></i></button>
     </div>
     <div class="db-section-body" id="sec-pl">
         <?php $this->renderPartial('summary-widget'); ?>
@@ -348,7 +348,7 @@ $this->widget('application.components.BreadCrumb', array(
 <div class="db-section db-animate" style="animation-delay:.26s">
     <div class="db-section-head">
         <h6>Analytics</h6>
-        <button class="db-section-toggle" data-target="sec-analytics" title="Collapse"><i class="fa fa-chevron-down"></i></button>
+        <button class="db-section-toggle" data-bs-target="sec-analytics" title="Collapse"><i class="fa fa-chevron-down"></i></button>
     </div>
     <div class="db-section-body" id="sec-analytics">
         <?php $this->renderPartial('_graph'); ?>
@@ -436,7 +436,7 @@ $this->widget('application.components.BreadCrumb', array(
     var STORE_KEY='db_collapsed';
     var collapsed=JSON.parse(localStorage.getItem(STORE_KEY)||'{}');
     document.querySelectorAll('.db-section-toggle').forEach(function(btn){
-        var id=btn.getAttribute('data-target');
+        var id=btn.getAttribute('data-bs-target');
         var body=document.getElementById(id);
         if(!body) return;
         /* restore state */
@@ -511,7 +511,7 @@ document.querySelectorAll('.db-section.db-animate').forEach(function(el){
         var obs = new MutationObserver(function(){
             if(isMobile()) return;
             var $bg   = $(btnGroup);
-            var $btn  = $bg.find('[data-toggle="dropdown"]');
+            var $btn  = $bg.find('[data-bs-toggle="dropdown"]');
             var $menu = $bg.find('.dropdown-menu');
             if($bg.hasClass('open') || $menu.hasClass('show')){
                 applyFixed($btn, $menu);

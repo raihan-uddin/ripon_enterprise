@@ -202,7 +202,7 @@ $user = Yii::app()->getUser();
 foreach ($user->getFlashKeys() as $key):
     if ($user->hasFlash($key)): ?>
         <div class="alert alert-<?php echo $key; ?> alert-dismissible fade show" role="alert">
-            <button type="button" class="close" data-dismiss="alert" aria-hidden="true">×</button>
+            <button type="button" class="close" data-bs-dismiss="alert" aria-hidden="true">×</button>
             <i class="fa fa-<?php echo ($key === 'success') ? 'check-circle' : 'exclamation-triangle'; ?>" style="margin-right:6px;"></i>
             <?php echo $user->getFlash($key); ?>
         </div>
@@ -312,7 +312,7 @@ endforeach;
                             'options'  => array(
                                 'class'       => 'action-btn btn-edit',
                                 'rel'         => 'tooltip',
-                                'data-toggle' => 'tooltip',
+                                'data-bs-toggle' => 'tooltip',
                                 'title'       => Yii::t('app', 'Edit'),
                             ),
                             'click' => "function(e) {
@@ -328,7 +328,7 @@ endforeach;
                             'options'  => array(
                                 'class'       => 'action-btn btn-delete',
                                 'rel'         => 'tooltip',
-                                'data-toggle' => 'tooltip',
+                                'data-bs-toggle' => 'tooltip',
                                 'title'       => Yii::t('app', 'Delete'),
                             ),
                             'url'   => 'Yii::app()->controller->createUrl("customers/delete", array("id"=>$data->id))',
@@ -428,6 +428,6 @@ $(document).on('keypress', '#goto-page-input', function(e) {
     if (e.which === 13) goToPage();
 });
 $(function() {
-    $('[data-toggle="tooltip"]').tooltip();
+    $('[data-bs-toggle="tooltip"]').tooltip();
 });
 </script>

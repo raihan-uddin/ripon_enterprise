@@ -479,7 +479,7 @@ $user = Yii::app()->getUser();
 foreach ($user->getFlashKeys() as $key):
     if ($user->hasFlash($key)): ?>
         <div class="alert alert-<?php echo $key; ?> alert-dismissible">
-            <button type="button" class="close" data-dismiss="alert" aria-hidden="true">×</button>
+            <button type="button" class="close" data-bs-dismiss="alert" aria-hidden="true">×</button>
             <?php echo $user->getFlash($key); ?>
         </div>
     <?php
@@ -676,13 +676,13 @@ if (Yii::app()->user->checkAccess('Accounting.MoneyReceipt.VoucherPreview')) {
                             'label' => '<i class="fa fa-pencil"></i>',
                             'imageUrl' => false,
                             'url' => 'Yii::app()->createUrl("/accounting/moneyReceipt/update", array("id" => $data->id))',
-                            'options' => array('class' => 'action-btn btn-edit', 'rel' => 'tooltip', 'data-toggle' => 'tooltip', 'title' => 'Edit'),
+                            'options' => array('class' => 'action-btn btn-edit', 'rel' => 'tooltip', 'data-bs-toggle' => 'tooltip', 'title' => 'Edit'),
                         ),
                         'delete' => array(
                             'label' => '<i class="fa fa-trash"></i>',
                             'imageUrl' => false,
                             'url' => 'Yii::app()->controller->createUrl("delete", array("id" => $data->id))',
-                            'options' => array('class' => 'action-btn btn-delete', 'rel' => 'tooltip', 'data-toggle' => 'tooltip', 'title' => Yii::t('app', 'Delete')),
+                            'options' => array('class' => 'action-btn btn-delete', 'rel' => 'tooltip', 'data-bs-toggle' => 'tooltip', 'title' => Yii::t('app', 'Delete')),
                             'click' => 'function(e){
                                 e.preventDefault();
                                 var pin = prompt("Enter PIN to delete:");

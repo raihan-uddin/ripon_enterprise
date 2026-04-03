@@ -68,7 +68,7 @@ $form = $this->beginWidget('CActiveForm', array(
                       title="Click to copy MR#"
                       class="badge badge-dark ml-2"
                       style="font-family:monospace; font-size:12px; cursor:pointer;"
-                      data-toggle="tooltip" data-placement="right">
+                      data-bs-toggle="tooltip" data-placement="right">
                     <?= CHtml::encode($model->mr_no) ?>
                 </span>
             </h5>
@@ -681,6 +681,6 @@ $(document).ready(function() {
     $('#money-receipt-update-form').on('change input', function() { formDirty = true; });
 
     // Tooltip
-    $('[data-toggle="tooltip"]').tooltip();
+    $('[data-bs-toggle="tooltip"]').tooltip();
 });
 </script>

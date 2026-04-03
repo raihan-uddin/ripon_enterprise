@@ -36,7 +36,7 @@ class Navbar extends CWidget{
 
         echo CHtml::openTag('nav', array('class'=>'navbar navbar-static-top', 'role'=>'navigation'));
 
-        echo '<a href="#" class="sidebar-toggle" data-toggle="offcanvas" role="button">
+        echo '<a href="#" class="sidebar-toggle" data-bs-toggle="offcanvas" role="button">
                   <span class="sr-only">Toggle navigation</span>
                   <span class="icon-bar"></span>
                   <span class="icon-bar"></span>

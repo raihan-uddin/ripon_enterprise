@@ -25,7 +25,7 @@ $this->widget('application.components.BreadCrumb', array(
                 <div class="alert alert-success alert-dismissible" role="alert">
                     <i class="fa fa-check-circle mr-1"></i>
                     <?= CHtml::encode(Yii::app()->user->getFlash('profileMessage')) ?>
-                    <button type="button" class="close" data-dismiss="alert">&times;</button>
+                    <button type="button" class="close" data-bs-dismiss="alert">&times;</button>
                 </div>
                 <?php endif; ?>
 
@@ -51,7 +51,7 @@ $this->widget('application.components.BreadCrumb', array(
                             'id'          => 'oldPassword',
                         )); ?>
                         <div class="input-group-append">
-                            <button type="button" class="btn btn-outline-secondary toggle-pw" data-target="oldPassword" tabindex="-1">
+                            <button type="button" class="btn btn-outline-secondary toggle-pw" data-bs-target="oldPassword" tabindex="-1">
                                 <i class="fa fa-eye"></i>
                             </button>
                         </div>
@@ -71,7 +71,7 @@ $this->widget('application.components.BreadCrumb', array(
                             'id'          => 'newPassword',
                         )); ?>
                         <div class="input-group-append">
-                            <button type="button" class="btn btn-outline-secondary toggle-pw" data-target="newPassword" tabindex="-1">
+                            <button type="button" class="btn btn-outline-secondary toggle-pw" data-bs-target="newPassword" tabindex="-1">
                                 <i class="fa fa-eye"></i>
                             </button>
                         </div>
@@ -91,7 +91,7 @@ $this->widget('application.components.BreadCrumb', array(
                             'id'          => 'verifyPassword',
                         )); ?>
                         <div class="input-group-append">
-                            <button type="button" class="btn btn-outline-secondary toggle-pw" data-target="verifyPassword" tabindex="-1">
+                            <button type="button" class="btn btn-outline-secondary toggle-pw" data-bs-target="verifyPassword" tabindex="-1">
                                 <i class="fa fa-eye"></i>
                             </button>
                         </div>

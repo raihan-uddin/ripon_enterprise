@@ -7,7 +7,7 @@
     ?>
     <div class="btn-group">
         <button type="button" class="db-report-btn r-blue dropdown-toggle"
-                data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                data-bs-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
             <i class="fa fa-cubes"></i> Inventory Report
         </button>
         <div class="dropdown-menu" role="menu">
@@ -50,7 +50,7 @@
     ?>
     <div class="btn-group">
         <button type="button" class="db-report-btn r-cyan dropdown-toggle"
-                data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                data-bs-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
             <i class="fa fa-book"></i> Ledger Reports
         </button>
         <div class="dropdown-menu" role="menu">
@@ -103,7 +103,7 @@
         || Yii::app()->user->checkAccess('Report.PurchaseDetailsReport')): ?>
     <div class="btn-group">
         <button type="button" class="db-report-btn r-amber dropdown-toggle"
-                data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                data-bs-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
             <i class="fa fa-shopping-cart"></i> Sales / Purchase
         </button>
         <div class="dropdown-menu" role="menu">
@@ -126,7 +126,7 @@
 
     <div class="btn-group">
         <button type="button" class="db-report-btn r-gray dropdown-toggle"
-                data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                data-bs-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
             <i class="fa fa-handshake-o"></i> Loan Report
         </button>
         <div class="dropdown-menu" role="menu">

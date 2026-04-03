@@ -29,7 +29,7 @@ $user = Yii::app()->getUser();
 foreach ($user->getFlashKeys() as $key):
   if ($user->hasFlash($key)): ?>
     <div class="alert alert-<?php echo $key; ?> alert-dismissible">
-      <button type="button" class="close" data-dismiss="alert" aria-hidden="true">×</button>
+      <button type="button" class="close" data-bs-dismiss="alert" aria-hidden="true">×</button>
       <?php echo $user->getFlash($key); ?>
     </div>
 <?php
@@ -83,7 +83,7 @@ endforeach;
                             'createMr' => array(
                                 'label' => '<i class="fa fa-usd fa-2x" style="color: green;"></i>&nbsp;&nbsp;',
                                 'imageUrl' => false,
-                                'options' => array('rel' => 'tooltip', 'data-toggle' => 'tooltip', 'title' => Yii::t('app', 'Create MR New')),
+                                'options' => array('rel' => 'tooltip', 'data-bs-toggle' => 'tooltip', 'title' => Yii::t('app', 'Create MR New')),
                                 'url' => 'Yii::app()->controller->createUrl("/accounting/moneyReceipt/createNew",array("id"=>$data->id))',
                             ),
                         )
@@ -100,7 +100,7 @@ endforeach;
 							'createMr' => array(
 							'label' => '<i class="fa fa-money fa-2x" style="color: green;"></i>&nbsp;&nbsp;',
 							'imageUrl' => false,
-							'options' => array('rel' => 'tooltip', 'data-toggle' => 'tooltip', 'title' => Yii::t('app', 'Create MR')),
+							'options' => array('rel' => 'tooltip', 'data-bs-toggle' => 'tooltip', 'title' => Yii::t('app', 'Create MR')),
 							'url' => 'Yii::app()->controller->createUrl("/accounting/moneyReceipt/create",array("id"=>$data->id))',
 							),
 						)

@@ -75,7 +75,7 @@ $form = $this->beginWidget('CActiveForm', array(
                       title="Click to copy MR#"
                       class="badge badge-light ml-2"
                       style="font-family:monospace; font-size:12px; cursor:pointer;"
-                      data-toggle="tooltip" data-placement="right">
+                      data-bs-toggle="tooltip" data-placement="right">
                     <?= CHtml::encode($previewMrNo) ?>
                 </span>
             </h5>
@@ -498,12 +498,12 @@ $form = $this->beginWidget('CActiveForm', array(
 
 <!-- Voucher preview modal -->
 <div class="modal fade" id="information-modal-money-receipt" tabindex="-1"
-     data-backdrop="static" role="dialog" aria-hidden="true">
+     data-bs-backdrop="static" role="dialog" aria-hidden="true">
     <div class="modal-dialog modal-dialog-centered modal-xl" role="document">
         <div class="modal-content">
             <div class="modal-header">
                 <h5 class="modal-title">Money Receipt</h5>
-                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                <button type="button" class="close" data-bs-dismiss="modal" aria-label="Close">
                     <span aria-hidden="true">&times;</span>
                 </button>
             </div>
@@ -513,7 +513,7 @@ $form = $this->beginWidget('CActiveForm', array(
                         onclick="window.print()">
                     <i class="fa fa-print"></i> Print
                 </button>
-                <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
+                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
             </div>
         </div>
     </div>
@@ -922,6 +922,6 @@ $(document).ready(function() {
     $('#money-receipt-form').on('change input', function() { formDirty = true; });
 
     // Tooltip on MR badge
-    $('[data-toggle="tooltip"]').tooltip();
+    $('[data-bs-toggle="tooltip"]').tooltip();
 });
 </script>

@@ -323,7 +323,7 @@ nav.erp-nav .navbar-nav>.nav-item.active>.nav-link:focus{
     </a>
 
     <!-- Hamburger -->
-    <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#erpNav"
+    <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#erpNav"
             aria-controls="erpNav" aria-expanded="false" aria-label="Toggle navigation">
         <span class="navbar-toggler-icon"></span>
     </button>
@@ -341,7 +341,7 @@ nav.erp-nav .navbar-nav>.nav-item.active>.nav-link:focus{
             <!-- Common -->
             <?php if ($showCommon): ?>
             <li class="nav-item dropdown<?= $activeCommon ? ' active' : '' ?>">
-                <a class="nav-link dropdown-toggle" href="#" data-toggle="dropdown" role="button">
+                <a class="nav-link dropdown-toggle" href="#" data-bs-toggle="dropdown" role="button">
                     <i class="fa fa-cogs mr-1"></i> Settings
                 </a>
                 <div class="dropdown-menu">
@@ -362,7 +362,7 @@ nav.erp-nav .navbar-nav>.nav-item.active>.nav-link:focus{
             <!-- Inventory -->
             <?php if ($showInventory): ?>
             <li class="nav-item dropdown<?= $activeInventory ? ' active' : '' ?>">
-                <a class="nav-link dropdown-toggle" href="#" data-toggle="dropdown" role="button">
+                <a class="nav-link dropdown-toggle" href="#" data-bs-toggle="dropdown" role="button">
                     <i class="fa fa-cubes mr-1"></i> Inventory
                 </a>
                 <div class="dropdown-menu">
@@ -412,7 +412,7 @@ nav.erp-nav .navbar-nav>.nav-item.active>.nav-link:focus{
             <!-- Sales -->
             <?php if ($showSales): ?>
             <li class="nav-item dropdown<?= $activeSales ? ' active' : '' ?>">
-                <a class="nav-link dropdown-toggle" href="#" data-toggle="dropdown" role="button">
+                <a class="nav-link dropdown-toggle" href="#" data-bs-toggle="dropdown" role="button">
                     <i class="fa fa-shopping-cart mr-1"></i> Sales
                 </a>
                 <div class="dropdown-menu">
@@ -476,7 +476,7 @@ nav.erp-nav .navbar-nav>.nav-item.active>.nav-link:focus{
             <!-- Purchase -->
             <?php if ($showPurchase): ?>
             <li class="nav-item dropdown<?= $activePurchase ? ' active' : '' ?>">
-                <a class="nav-link dropdown-toggle" href="#" data-toggle="dropdown" role="button">
+                <a class="nav-link dropdown-toggle" href="#" data-bs-toggle="dropdown" role="button">
                     <i class="fa fa-truck mr-1"></i> Purchase
                 </a>
                 <div class="dropdown-menu">
@@ -518,7 +518,7 @@ nav.erp-nav .navbar-nav>.nav-item.active>.nav-link:focus{
             <!-- Expense -->
             <?php if ($showExpense): ?>
             <li class="nav-item dropdown<?= $activeExpense ? ' active' : '' ?>">
-                <a class="nav-link dropdown-toggle" href="#" data-toggle="dropdown" role="button">
+                <a class="nav-link dropdown-toggle" href="#" data-bs-toggle="dropdown" role="button">
                     <i class="fa fa-credit-card mr-1"></i> Expense
                 </a>
                 <div class="dropdown-menu">
@@ -539,7 +539,7 @@ nav.erp-nav .navbar-nav>.nav-item.active>.nav-link:focus{
             <!-- Loan -->
             <?php if ($ca('Loan.LoanPersons.Admin') || $ca('Loan.LoanTransactions.Admin') || $isDev): ?>
             <li class="nav-item dropdown<?= $activeLoan ? ' active' : '' ?>">
-                <a class="nav-link dropdown-toggle" href="#" data-toggle="dropdown" role="button">
+                <a class="nav-link dropdown-toggle" href="#" data-bs-toggle="dropdown" role="button">
                     <i class="fa fa-handshake-o mr-1"></i> Loan
                 </a>
                 <div class="dropdown-menu">
@@ -554,7 +554,7 @@ nav.erp-nav .navbar-nav>.nav-item.active>.nav-link:focus{
             <!-- Report -->
             <?php if ($showReports): ?>
             <li class="nav-item dropdown<?= $activeReports ? ' active' : '' ?>">
-                <a class="nav-link dropdown-toggle" href="#" data-toggle="dropdown" role="button">
+                <a class="nav-link dropdown-toggle" href="#" data-bs-toggle="dropdown" role="button">
                     <i class="fa fa-bar-chart mr-1"></i> Reports
                 </a>
                 <div class="dropdown-menu" style="min-width:240px">
@@ -638,7 +638,7 @@ nav.erp-nav .navbar-nav>.nav-item.active>.nav-link:focus{
             <!-- Draft notifications (JS-populated) -->
             <li class="nav-item dropdown" id="draft-notif-item" style="display:none;">
                 <a class="nav-link" href="#" id="draft-notif-toggle"
-                   data-toggle="dropdown" role="button" title="Unsaved Drafts">
+                   data-bs-toggle="dropdown" role="button" title="Unsaved Drafts">
                     <i class="fa fa-pencil-square-o"></i>
                     <span id="draft-notif-count"
                           class="badge badge-danger badge-pill"
@@ -659,7 +659,7 @@ nav.erp-nav .navbar-nav>.nav-item.active>.nav-link:focus{
                 </div>
             </li>
             <li class="nav-item dropdown">
-                <a class="nav-link erp-user-btn dropdown-toggle" href="#" data-toggle="dropdown" role="button">
+                <a class="nav-link erp-user-btn dropdown-toggle" href="#" data-bs-toggle="dropdown" role="button">
                     <span class="erp-avatar"><?= $initials ?></span>
                     <span class="d-none d-lg-inline"><?= CHtml::encode($userName) ?></span>
                 </a>

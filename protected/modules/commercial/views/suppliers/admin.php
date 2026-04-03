@@ -484,7 +484,7 @@ $user = Yii::app()->getUser();
 foreach ($user->getFlashKeys() as $key):
     if ($user->hasFlash($key)): ?>
         <div class="alert alert-<?php echo $key; ?> alert-dismissible">
-            <button type="button" class="close" data-dismiss="alert" aria-hidden="true">×</button>
+            <button type="button" class="close" data-bs-dismiss="alert" aria-hidden="true">×</button>
             <?php echo $user->getFlash($key); ?>
         </div>
     <?php
@@ -564,7 +564,7 @@ endforeach;
                             'customDelete' => array(
                                 'label' => '<i class="fa fa-trash"></i>',
                                 'imageUrl' => false,
-                                'options' => array('class' => 'action-btn btn-delete', 'rel' => 'tooltip', 'data-toggle' => 'tooltip', 'title' => Yii::t('app', 'Delete')),
+                                'options' => array('class' => 'action-btn btn-delete', 'rel' => 'tooltip', 'data-bs-toggle' => 'tooltip', 'title' => Yii::t('app', 'Delete')),
                                 'url' => 'Yii::app()->controller->createUrl("suppliers/delete",array("id"=>$data->id))',
                                 'click' => "function(){
                                     //$('#viewDialog').dialog('open');
@@ -589,7 +589,7 @@ endforeach;
                             'update' => array(
                                 'label' => '<i class="fa fa-pencil-square-o"></i>',
                                 'imageUrl' => false,
-                                'options' => array('class' => 'action-btn btn-edit', 'rel' => 'tooltip', 'data-toggle' => 'tooltip', 'title' => Yii::t('app', 'Edit')),
+                                'options' => array('class' => 'action-btn btn-edit', 'rel' => 'tooltip', 'data-bs-toggle' => 'tooltip', 'title' => Yii::t('app', 'Edit')),
                                 'click' => "function( e ){
                             e.preventDefault();
                             $( '#update-dialog' ).children( ':eq(0)' ).empty(); // Stop auto POST
@@ -601,7 +601,7 @@ endforeach;
                                 'createPr' => array(
                                         'label' => '<i class="fa fa-money"></i>',
                                         'imageUrl' => false,
-                                        'options' => array('class' => 'action-btn btn-payment', 'rel' => 'tooltip', 'data-toggle' => 'tooltip', 'title' => Yii::t('app', 'Create PR')),
+                                        'options' => array('class' => 'action-btn btn-payment', 'rel' => 'tooltip', 'data-bs-toggle' => 'tooltip', 'title' => Yii::t('app', 'Create PR')),
                                         'url' => 'Yii::app()->controller->createUrl("/accounting/paymentReceipt/create",array("id"=>$data->id,))',
                                 ),
                         )

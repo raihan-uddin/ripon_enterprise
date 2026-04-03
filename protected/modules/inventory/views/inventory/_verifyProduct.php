@@ -172,7 +172,7 @@ function verifyProductSlNo(){
             $('#formResultError').html(
                 '<div class="alert alert-danger alert-dismissible" role="alert">' +
                 '<strong>Error!</strong> ' + data.responseText +
-                '<button type="button" class="close" data-dismiss="alert"><span>&times;</span></button>' +
+                '<button type="button" class="close" data-bs-dismiss="alert"><span>&times;</span></button>' +
                 '</div>'
             );
             $('#vfy-overlay').fadeOut(200);

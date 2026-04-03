@@ -29,7 +29,7 @@ $user = Yii::app()->getUser();
 foreach ($user->getFlashKeys() as $key):
     if ($user->hasFlash($key)): ?>
         <div class="alert alert-<?php echo $key; ?> alert-dismissible">
-            <button type="button" class="close" data-dismiss="alert" aria-hidden="true">×</button>
+            <button type="button" class="close" data-bs-dismiss="alert" aria-hidden="true">×</button>
             <?php echo $user->getFlash($key); ?>
         </div>
     <?php
@@ -82,7 +82,7 @@ endforeach;
                     'update' => array(
                         'label' => '<i class="fa fa-pencil-square-o fa-2x" style="color: black;"></i>&nbsp;&nbsp;',
                         'imageUrl' => false,
-                        'options' => array('rel' => 'tooltip', 'data-toggle' => 'tooltip', 'title' => Yii::t('app', 'Edit')),
+                        'options' => array('rel' => 'tooltip', 'data-bs-toggle' => 'tooltip', 'title' => Yii::t('app', 'Edit')),
                         'click' => "function( e ){
                             e.preventDefault();
                             $( '#update-dialog' ).children( ':eq(0)' ).empty(); // Stop auto POST

@@ -479,7 +479,7 @@ $user = Yii::app()->getUser();
 foreach ($user->getFlashKeys() as $key):
     if ($user->hasFlash($key)): ?>
         <div class="alert alert-<?php echo $key; ?> alert-dismissible">
-            <button type="button" class="close" data-dismiss="alert" aria-hidden="true">×</button>
+            <button type="button" class="close" data-bs-dismiss="alert" aria-hidden="true">×</button>
             <?php echo $user->getFlash($key); ?>
         </div>
     <?php
@@ -683,7 +683,7 @@ if (Yii::app()->user->checkAccess('Accounting.PaymentReceipt.VoucherPreview')) {
                         'delete' => array(
                             'label' => '<i class="fa fa-trash"></i>',
                             'imageUrl' => false,
-                            'options' => array('class' => 'action-btn btn-delete', 'rel' => 'tooltip', 'data-toggle' => 'tooltip', 'title' => Yii::t('app', 'Delete')),
+                            'options' => array('class' => 'action-btn btn-delete', 'rel' => 'tooltip', 'data-bs-toggle' => 'tooltip', 'title' => Yii::t('app', 'Delete')),
                         ),
                     )
                 ),

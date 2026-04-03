@@ -305,7 +305,7 @@ $user = Yii::app()->getUser();
 foreach ($user->getFlashKeys() as $key):
     if ($user->hasFlash($key)): ?>
         <div class="alert alert-<?php echo $key; ?> alert-dismissible">
-            <button type="button" class="close" data-dismiss="alert" aria-hidden="true">×</button>
+            <button type="button" class="close" data-bs-dismiss="alert" aria-hidden="true">×</button>
             <?php echo $user->getFlash($key); ?>
         </div>
     <?php
@@ -528,18 +528,18 @@ endforeach;
                                         'createPr' => array(
                                                 'label' => '<i class="fa fa-money"></i>',
                                                 'imageUrl' => false,
-                                                'options' => array('class' => 'action-btn btn-payment', 'rel' => 'tooltip', 'data-toggle' => 'tooltip', 'title' => Yii::t('app', 'Create PR')),
+                                                'options' => array('class' => 'action-btn btn-payment', 'rel' => 'tooltip', 'data-bs-toggle' => 'tooltip', 'title' => Yii::t('app', 'Create PR')),
                                                 'url' => 'Yii::app()->controller->createUrl("/accounting/paymentReceipt/create",array("id"=>$data->supplier_id,))',
                                         ),
                                         'update' => array(
                                                 'label' => '<i class="fa fa-pencil-square-o"></i>',
                                                 'imageUrl' => false,
-                                                'options' => array('class' => 'action-btn btn-edit', 'rel' => 'tooltip', 'data-toggle' => 'tooltip', 'title' => Yii::t('app', 'Edit')),
+                                                'options' => array('class' => 'action-btn btn-edit', 'rel' => 'tooltip', 'data-bs-toggle' => 'tooltip', 'title' => Yii::t('app', 'Edit')),
                                         ),
                                         'delete' => array(
                                                 'label' => '<i class="fa fa-trash"></i>',
                                                 'imageUrl' => false,
-                                                'options' => array('class' => 'action-btn btn-delete', 'rel' => 'tooltip', 'data-toggle' => 'tooltip', 'title' => Yii::t('app', 'Delete')),
+                                                'options' => array('class' => 'action-btn btn-delete', 'rel' => 'tooltip', 'data-bs-toggle' => 'tooltip', 'title' => Yii::t('app', 'Delete')),
                                                 'url' => 'Yii::app()->controller->createUrl("delete", array("id"=>$data->id))',
                                                 'click' => 'function(e){
                                                     e.preventDefault();
@@ -686,13 +686,13 @@ $this->beginWidget('zii.widgets.jui.CJuiDialog', array(
 
 
 <!--        modal-->
-<div class="modal fade" id="information-modal" tabindex="-1" data-backdrop="static" role="dialog"
+<div class="modal fade" id="information-modal" tabindex="-1" data-bs-backdrop="static" role="dialog"
      aria-labelledby="information-modal" aria-hidden="true">
     <div class="modal-dialog modal-dialog-centered modal-xl" role="document">
         <div class="modal-content">
             <div class="modal-header">
                 <h5 class="modal-title" id="exampleModalLabel">Invoice</h5>
-                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                <button type="button" class="close" data-bs-dismiss="modal" aria-label="Close">
                     <span aria-hidden="true">&times;</span>
                 </button>
             </div>
@@ -700,7 +700,7 @@ $this->beginWidget('zii.widgets.jui.CJuiDialog', array(
                 <p>Loading...</p> <!-- this will be replaced by the response from the server -->
             </div>
             <div class="modal-footer">
-                <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
+                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
             </div>
         </div>
     </div>

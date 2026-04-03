@@ -861,7 +861,7 @@ Yii::app()->clientScript->registerCoreScript("jquery.ui");
 
                                     <!-- Company Header -->
                                     <tr class="company-header"
-                                        data-target="company-<?= $groupIndex ?>">
+                                        data-bs-target="company-<?= $groupIndex ?>">
                                         <td colspan="8" class="p-0" style="background:#fff;">
 
                                             <div class="company-bar">
@@ -1365,7 +1365,7 @@ Yii::app()->clientScript->registerCoreScript("jquery.ui");
                 // Show sub-headers and flip toggle icons for restored groups
                 $.each(restoredGroups, function (groupClass) {
                     $('.' + groupClass + '.company-sub-header').removeClass('hidden');
-                    $('[data-target="' + groupClass + '"]').find('.toggle-icon').text('▲');
+                    $('[data-bs-target="' + groupClass + '"]').find('.toggle-icon').text('▲');
                 });
                 // Trigger recalculations after DOM settles
                 setTimeout(function () {
@@ -1608,7 +1608,7 @@ Yii::app()->clientScript->registerCoreScript("jquery.ui");
                 : 0;
 
             const $header = $(
-                    `${CFG.SELECTORS.COMPANY_HEADER}[data-target="${groupClass}"]`
+                    `${CFG.SELECTORS.COMPANY_HEADER}[data-bs-target="${groupClass}"]`
             );
 
             // ===== STATS =====
@@ -1878,13 +1878,13 @@ $this->beginWidget('zii.widgets.jui.CJuiDialog', array(
 
 
 <!--        modal-->
-<div class="modal fade" id="information-modal" tabindex="-1" data-backdrop="static" role="dialog"
+<div class="modal fade" id="information-modal" tabindex="-1" data-bs-backdrop="static" role="dialog"
      aria-labelledby="information-modal" aria-hidden="true">
     <div class="modal-dialog modal-dialog-centered modal-xl" role="document">
         <div class="modal-content">
             <div class="modal-header">
                 <h5 class="modal-title" id="exampleModalLabel">Invoice</h5>
-                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                <button type="button" class="close" data-bs-dismiss="modal" aria-label="Close">
                     <span aria-hidden="true">&times;</span>
                 </button>
             </div>
@@ -1892,7 +1892,7 @@ $this->beginWidget('zii.widgets.jui.CJuiDialog', array(
                 <p>Loading...</p>
             </div>
             <div class="modal-footer">
-                <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
+                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
             </div>
         </div>
     </div>

@@ -483,7 +483,7 @@ $user = Yii::app()->getUser();
 foreach ($user->getFlashKeys() as $key):
     if ($user->hasFlash($key)): ?>
         <div class="alert alert-<?php echo $key; ?> alert-dismissible">
-            <button type="button" class="close" data-dismiss="alert" aria-hidden="true">×</button>
+            <button type="button" class="close" data-bs-dismiss="alert" aria-hidden="true">×</button>
             <?php echo $user->getFlash($key); ?>
         </div>
     <?php
@@ -587,12 +587,12 @@ endforeach;
                                         'update' => array(
                                                 'label' => '<i class="fa fa-pencil-square-o"></i>',
                                                 'imageUrl' => false,
-                                                'options' => array('class' => 'action-btn btn-edit', 'rel' => 'tooltip', 'data-toggle' => 'tooltip', 'title' => Yii::t('app', 'Edit')),
+                                                'options' => array('class' => 'action-btn btn-edit', 'rel' => 'tooltip', 'data-bs-toggle' => 'tooltip', 'title' => Yii::t('app', 'Edit')),
                                         ),
                                         'delete' => array(
                                                 'label' => '<i class="fa fa-trash"></i>',
                                                 'imageUrl' => false,
-                                                'options' => array('class' => 'action-btn btn-delete', 'rel' => 'tooltip', 'data-toggle' => 'tooltip', 'title' => Yii::t('app', 'Delete')),
+                                                'options' => array('class' => 'action-btn btn-delete', 'rel' => 'tooltip', 'data-bs-toggle' => 'tooltip', 'title' => Yii::t('app', 'Delete')),
                                                 'url' => 'Yii::app()->controller->createUrl("delete", array("id"=>$data->id))',
                                                 'click' => 'function(e){
                                                     e.preventDefault();
@@ -620,7 +620,7 @@ endforeach;
                                         'sellPriceHistory' => array(
                                                 'label' => '<i class="fa fa-history"></i>',
                                                 'imageUrl' => false,
-                                                'options' => array('class' => 'action-btn btn-view', 'rel' => 'tooltip', 'data-toggle' => 'tooltip', 'title' => Yii::t('app', 'Sell Price History')),
+                                                'options' => array('class' => 'action-btn btn-view', 'rel' => 'tooltip', 'data-bs-toggle' => 'tooltip', 'title' => Yii::t('app', 'Sell Price History')),
                                                 'url' => 'Yii::app()->controller->createUrl("sellPrice/priceHistory",array("model_id"=>$data->id))',
                                                 'click' => "function(){
                                                     $('#viewDialog').dialog('open');
@@ -656,7 +656,7 @@ endforeach;
                                         'view' => array(
                                                 'label' => '<i class="fa fa-eye"></i>',
                                                 'imageUrl' => false,
-                                                'options' => array('class' => 'action-btn btn-view', 'rel' => 'tooltip', 'data-toggle' => 'tooltip', 'title' => Yii::t('app', 'View')),
+                                                'options' => array('class' => 'action-btn btn-view', 'rel' => 'tooltip', 'data-bs-toggle' => 'tooltip', 'title' => Yii::t('app', 'View')),
                                                 'url' => 'Yii::app()->controller->createUrl("view",array("id"=>$data->id))',
                                                 'click' => "function(){
                                                         $('#viewDialog').dialog('open');

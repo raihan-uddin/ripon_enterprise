@@ -456,13 +456,13 @@ Yii::app()->clientScript->registerCoreScript('jquery.ui');
 </div>
 
 <!-- ── Voucher preview modal ─────────────────────────────────────────────── -->
-<div class="modal fade" id="information-modal" tabindex="-1" data-backdrop="static" role="dialog">
+<div class="modal fade" id="information-modal" tabindex="-1" data-bs-backdrop="static" role="dialog">
     <div class="modal-dialog modal-dialog-centered modal-xl" role="document">
         <div class="modal-content">
             <div class="modal-header"
                  style="background:linear-gradient(135deg,#6366f1,#4f46e5); color:#fff;">
                 <h5 class="modal-title"><i class="fa fa-file-text-o mr-1"></i> Purchase Order Voucher</h5>
-                <button type="button" class="close text-white" data-dismiss="modal">
+                <button type="button" class="close text-white" data-bs-dismiss="modal">
                     <span>&times;</span>
                 </button>
             </div>
@@ -470,7 +470,7 @@ Yii::app()->clientScript->registerCoreScript('jquery.ui');
                 <p class="text-muted">Loading…</p>
             </div>
             <div class="modal-footer">
-                <button type="button" class="btn btn-secondary btn-sm" data-dismiss="modal">
+                <button type="button" class="btn btn-secondary btn-sm" data-bs-dismiss="modal">
                     <i class="fa fa-times mr-1"></i> Close
                 </button>
             </div>

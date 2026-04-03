@@ -482,7 +482,7 @@ $user = Yii::app()->getUser();
 foreach ($user->getFlashKeys() as $key):
     if ($user->hasFlash($key)): ?>
         <div class="alert alert-<?php echo $key; ?> alert-dismissible">
-            <button type="button" class="close" data-dismiss="alert" aria-hidden="true">×</button>
+            <button type="button" class="close" data-bs-dismiss="alert" aria-hidden="true">×</button>
             <?php echo $user->getFlash($key); ?>
         </div>
     <?php
@@ -618,7 +618,7 @@ endforeach;
                                         'update' => [
                                                 'label' => '<i class="fa fa-pencil-square-o"></i>',
                                                 'imageUrl' => false,
-                                                'options' => ['class' => 'action-btn btn-edit', 'rel' => 'tooltip', 'data-toggle' => 'tooltip', 'title' => 'Edit'],
+                                                'options' => ['class' => 'action-btn btn-edit', 'rel' => 'tooltip', 'data-bs-toggle' => 'tooltip', 'title' => 'Edit'],
                                                 'click' => "function(e){
                                         e.preventDefault();
                                         $('#update-dialog').children(':eq(0)').empty();
@@ -629,7 +629,7 @@ endforeach;
                                         'delete' => [
                                                 'label' => '<i class="fa fa-trash"></i>',
                                                 'imageUrl' => false,
-                                                'options' => ['class' => 'action-btn btn-delete', 'rel' => 'tooltip', 'data-toggle' => 'tooltip', 'title' => 'Delete'],
+                                                'options' => ['class' => 'action-btn btn-delete', 'rel' => 'tooltip', 'data-bs-toggle' => 'tooltip', 'title' => 'Delete'],
                                         ],
                                 ]
                         ]

@@ -32,7 +32,7 @@ $user = Yii::app()->getUser();
 foreach ($user->getFlashKeys() as $key):
     if ($user->hasFlash($key)): ?>
         <div class="alert alert-<?php echo $key; ?> alert-dismissible">
-            <button type="button" class="close" data-dismiss="alert" aria-hidden="true">×</button>
+            <button type="button" class="close" data-bs-dismiss="alert" aria-hidden="true">×</button>
             <?php echo $user->getFlash($key); ?>
         </div>
     <?php
@@ -125,7 +125,7 @@ endforeach;
                         'sellPriceHistory' => array(
                             'label' => '<i class="fa fa-history fa-2x" style="color: black;"></i>&nbsp;&nbsp;',
                             'imageUrl' => false,
-                            'options' => array('rel' => 'tooltip', 'data-toggle' => 'tooltip', 'title' => Yii::t('app', 'Sell Price History')),
+                            'options' => array('rel' => 'tooltip', 'data-bs-toggle' => 'tooltip', 'title' => Yii::t('app', 'Sell Price History')),
                             'url' => 'Yii::app()->controller->createUrl("sellPrice/priceHistory",array("model_id"=>$data->id))',
                             'click' => "function(){
                                     $('#viewDialog').dialog('open');
@@ -149,7 +149,7 @@ endforeach;
                         'addSellPrice' => array(
                             'label' => '<i class="fa fa-plus fa-2x" style="color: green;"></i>&nbsp;&nbsp;',
                             'imageUrl' => false,
-                            'options' => array('rel' => 'tooltip', 'data-toggle' => 'tooltip', 'title' => Yii::t('app', 'Add Sell Price')),
+                            'options' => array('rel' => 'tooltip', 'data-bs-toggle' => 'tooltip', 'title' => Yii::t('app', 'Add Sell Price')),
                             'url' => 'Yii::app()->controller->createUrl("sellPrice/addSellPrice",array("model_id"=>$data->id))',
                             'click' => "function( e ){
                                 e.preventDefault();
@@ -162,7 +162,7 @@ endforeach;
                         'view' => array(
                             'label' => '<i class="fa fa-eye fa-2x" style="color: black;"></i>&nbsp;&nbsp;',
                             'imageUrl' => false,
-                            'options' => array('rel' => 'tooltip', 'data-toggle' => 'tooltip', 'title' => Yii::t('app', 'Add Sell Price')),
+                            'options' => array('rel' => 'tooltip', 'data-bs-toggle' => 'tooltip', 'title' => Yii::t('app', 'Add Sell Price')),
                             'url' => 'Yii::app()->controller->createUrl("view",array("id"=>$data->id))',
                             'click' => "function(){
                                     $('#viewDialog').dialog('open');

@@ -489,7 +489,7 @@ $user = Yii::app()->getUser();
 foreach ($user->getFlashKeys() as $key):
     if ($user->hasFlash($key)): ?>
         <div class="alert alert-<?php echo $key; ?> alert-dismissible">
-            <button type="button" class="close" data-dismiss="alert" aria-hidden="true">×</button>
+            <button type="button" class="close" data-bs-dismiss="alert" aria-hidden="true">×</button>
             <?php echo $user->getFlash($key); ?>
         </div>
     <?php
@@ -560,7 +560,7 @@ endforeach;
                             'update' => array(
                                 'label' => '<i class="fa fa-pencil-square-o"></i>',
                                 'imageUrl' => false,
-                                'options' => array('class' => 'action-btn btn-edit', 'rel' => 'tooltip', 'data-toggle' => 'tooltip', 'title' => Yii::t('app', 'Edit')),
+                                'options' => array('class' => 'action-btn btn-edit', 'rel' => 'tooltip', 'data-bs-toggle' => 'tooltip', 'title' => Yii::t('app', 'Edit')),
                                 'click' => "function( e ){
                                 e.preventDefault();
                                 $( '#update-dialog' ).children( ':eq(0)' ).empty(); // Stop auto POST
@@ -573,7 +573,7 @@ endforeach;
                             'delete' => array(
                                 'label' => '<i class="fa fa-trash"></i>',
                                 'imageUrl' => false,
-                                'options' => array('class' => 'action-btn btn-delete', 'rel' => 'tooltip', 'data-toggle' => 'tooltip', 'title' => Yii::t('app', 'Delete')),
+                                'options' => array('class' => 'action-btn btn-delete', 'rel' => 'tooltip', 'data-bs-toggle' => 'tooltip', 'title' => Yii::t('app', 'Delete')),
 //                            'visible' => '$data->account_type=="1"?TRUE:FALSE',
 //                            'visible'=>'$data->account_type=="2"?TRUE:FALSE',
                             ),

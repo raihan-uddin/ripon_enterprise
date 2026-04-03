@@ -45,7 +45,7 @@ class Notifications extends CWidget{
             $contentLink .= CHtml::tag('span', array('class'=>$this->badge['class']),$this->badge['value'],true);
         }
 
-        echo CHtml::link($contentLink, '#', array('class'=>'dropdown-toggle', 'data-toggle'=>'dropdown'));
+        echo CHtml::link($contentLink, '#', array('class'=>'dropdown-toggle', 'data-bs-toggle'=>'dropdown'));
 
         echo CHtml::openTag('ul', array('class'=>$this->itemsCssClass));
 

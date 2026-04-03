@@ -485,7 +485,7 @@ $user = Yii::app()->getUser();
 foreach ($user->getFlashKeys() as $key):
     if ($user->hasFlash($key)): ?>
         <div class="alert alert-<?php echo $key; ?> alert-dismissible">
-            <button type="button" class="close" data-dismiss="alert" aria-hidden="true">×</button>
+            <button type="button" class="close" data-bs-dismiss="alert" aria-hidden="true">×</button>
             <?php echo $user->getFlash($key); ?>
         </div>
     <?php
@@ -583,7 +583,7 @@ endforeach;
                         'makeSuperAdmin' => array(
                             'label' => '<span class="badge badge-danger">Make SuperAdmin</span>&nbsp;&nbsp;',
                             'imageUrl' => false,
-                            'options' => array('class' => 'action-btn btn-create', 'rel' => 'tooltip', 'data-toggle' => 'tooltip', 'title' => Yii::t('app', 'Make Superadmin')),
+                            'options' => array('class' => 'action-btn btn-create', 'rel' => 'tooltip', 'data-bs-toggle' => 'tooltip', 'title' => Yii::t('app', 'Make Superadmin')),
                             'visible' => 'Users::superuserStatus($data->id) == false',
                             'url' => 'Yii::app()->controller->createUrl("makeSuperAdmin",array("id"=>$data->id))',
                             'click' => "function(){
@@ -605,7 +605,7 @@ endforeach;
                         'revokeSuperAdmin' => array(
                             'label' => '<span class="badge badge-success">Revoke SuperAdmin</span>&nbsp;&nbsp;',
                             'imageUrl' => false,
-                            'options' => array('class' => 'action-btn btn-delete', 'rel' => 'tooltip', 'data-toggle' => 'tooltip', 'title' => Yii::t('app', 'Revoke Superadmin')),
+                            'options' => array('class' => 'action-btn btn-delete', 'rel' => 'tooltip', 'data-bs-toggle' => 'tooltip', 'title' => Yii::t('app', 'Revoke Superadmin')),
                             'visible' => 'Users::superuserStatus($data->id) == true',
                             'url' => 'Yii::app()->controller->createUrl("revokeSuperAdmin",array("id"=>$data->id))',
                             'click' => "function(){
@@ -637,7 +637,7 @@ endforeach;
                         'update' => array(
                             'label' => '<i class="fa fa-pencil-square-o"></i>',
                             'imageUrl' => false,
-                            'options' => array('class' => 'action-btn btn-edit', 'rel' => 'tooltip', 'data-toggle' => 'tooltip', 'title' => Yii::t('app', 'Edit')),
+                            'options' => array('class' => 'action-btn btn-edit', 'rel' => 'tooltip', 'data-bs-toggle' => 'tooltip', 'title' => Yii::t('app', 'Edit')),
 //                            'visible' => '$data->id !=1',
                             'click' => "function( e ){
                             e.preventDefault();
