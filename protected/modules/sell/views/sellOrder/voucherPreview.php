@@ -246,20 +246,37 @@
     }
 
     .so-header-logo {
-        width: 20%;
+        width: 28%;
     }
 
     .so-header-logo img {
         display: block;
         width: 100%;
-        height: auto;
+        height: 110px;
         object-fit: contain;
     }
 
     .so-header-company {
-        width: 60%;
+        width: 52%;
         text-align: center;
         font-weight: bold;
+    }
+
+    @media print {
+        .so-header-logo {
+            width: 32%;
+        }
+
+        .so-header-company {
+            width: 48%;
+        }
+
+        .so-header-logo img {
+            width: 100%;
+            height: auto;
+            max-width: 100%;
+            object-fit: contain;
+        }
     }
 
     .so-header-company .co-name {

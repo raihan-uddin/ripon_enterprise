@@ -20,8 +20,9 @@
     }
 
     .invoice-header-logo img {
-        height: 120px;
-        max-width: 220px;
+        width: 240px;
+        max-width: 240px;
+        height: auto;
         object-fit: contain;
     }
 
@@ -65,15 +66,22 @@
             vertical-align: middle;
         }
 
-        .invoice-header-logo { width: 20%; }
+        .invoice-header-logo { width: 32%; }
 
         .invoice-header-company {
-            width: 60%;
+            width: 50%;
             text-align: center;
+            font-size: 11px;
+            line-height: 1.35;
+            white-space: nowrap;
+        }
+
+        .invoice-header-company b {
+            font-size: 18px !important;
         }
 
         .invoice-header-barcode {
-            width: 20%;
+            width: 18%;
             text-align: right;
             max-width: none;
             overflow: visible;
@@ -93,8 +101,10 @@
         }
 
         .invoice-header-logo img {
-            height: 150px;
+            width: 100%;
+            height: auto;
             max-width: 100%;
+            object-fit: contain;
         }
     }
 </style>
