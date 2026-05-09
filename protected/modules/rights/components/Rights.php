@@ -263,7 +263,7 @@ class Rights
 	* meaning that the application will be used.
 	* @return the Rights module.
 	*/
-	private static function findModule(CModule $module=null)
+	private static function findModule(?CModule $module=null)
 	{
 		if( $module===null )
 			$module = Yii::app();
