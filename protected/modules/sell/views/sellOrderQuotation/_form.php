@@ -698,7 +698,25 @@ Yii::app()->clientScript->registerCoreScript("jquery.ui");
                         </div>
                         <div></div>
                         <div class="summary-fields">
-                            <div class="field wide">
+                            <div class="field">
+                                <small>Total Qty</small>
+                                <?php echo $form->textField($model, 'total_qty', [
+                                        'class' => 'form-control text-center',
+                                        'placeholder' => '0',
+                                        'readonly' => true
+                                ]); ?>
+                            </div>
+
+                            <div class="field">
+                                <small>Avg SP</small>
+                                <?php echo $form->textField($model, 'avg_sp', [
+                                        'class' => 'form-control text-center',
+                                        'placeholder' => '0',
+                                        'readonly' => true
+                                ]); ?>
+                            </div>
+
+                            <div class="field">
                                 <small>Total Amount</small>
                                 <?php echo $form->textField($model, 'total_amount', [
                                         'class' => 'form-control text-center',
@@ -766,6 +784,57 @@ Yii::app()->clientScript->registerCoreScript("jquery.ui");
                         <div class="summary-fields">
                             <div class="field wide">
                                 <?php echo $form->textField($model, 'discount_amount', [
+                                        'class' => 'form-control text-center input-deduction',
+                                        'placeholder' => '0.00',
+                                        'value' => '0'
+                                ]); ?>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Road Fee -->
+                    <div class="summary-row">
+                        <div class="summary-label">
+                            <label><?php echo $form->labelEx($model, 'road_fee'); ?> (-)</label>
+                        </div>
+                        <div></div>
+                        <div class="summary-fields">
+                            <div class="field wide">
+                                <?php echo $form->textField($model, 'road_fee', [
+                                        'class' => 'form-control text-center input-deduction',
+                                        'placeholder' => '0.00',
+                                        'value' => '0'
+                                ]); ?>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Damage -->
+                    <div class="summary-row">
+                        <div class="summary-label">
+                            <label><?php echo $form->labelEx($model, 'damage_value'); ?> (-)</label>
+                        </div>
+                        <div></div>
+                        <div class="summary-fields">
+                            <div class="field wide">
+                                <?php echo $form->textField($model, 'damage_value', [
+                                        'class' => 'form-control text-center input-deduction',
+                                        'placeholder' => '0.00',
+                                        'value' => '0'
+                                ]); ?>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- SR Commission -->
+                    <div class="summary-row">
+                        <div class="summary-label">
+                            <label><?php echo $form->labelEx($model, 'sr_commission'); ?> (-)</label>
+                        </div>
+                        <div></div>
+                        <div class="summary-fields">
+                            <div class="field wide">
+                                <?php echo $form->textField($model, 'sr_commission', [
                                         'class' => 'form-control text-center input-deduction',
                                         'placeholder' => '0.00',
                                         'value' => '0'
@@ -922,8 +991,13 @@ Yii::app()->clientScript->registerCoreScript("jquery.ui");
                     VAT_A:        '#SellOrderQuotation_vat_amount',
                     DISCOUNT:     '#SellOrderQuotation_discount_amount',
                     DELIVERY:     '#SellOrderQuotation_delivery_charge',
+                    ROAD:         '#SellOrderQuotation_road_fee',
+                    DAMAGE:       '#SellOrderQuotation_damage_value',
+                    COMMISSION:   '#SellOrderQuotation_sr_commission',
+                    TOTAL_QTY:    '#SellOrderQuotation_total_qty',
                     TOTAL_AMOUNT: '#SellOrderQuotation_total_amount',
                     GRAND_TOTAL:  '#SellOrderQuotation_grand_total',
+                    AVG_SP:       '#SellOrderQuotation_avg_sp',
                 }
             }
         };
@@ -996,6 +1070,7 @@ Yii::app()->clientScript->registerCoreScript("jquery.ui");
                 totalCost += qty * cost;
             });
 
+            $(CFG.SELECTORS.FORM.TOTAL_QTY).val(qtyTotal);
             $(CFG.SELECTORS.FORM.TOTAL_AMOUNT).val(rowTotal.toFixed(CFG.DECIMALS)).trigger('change');
             return { qtyTotal, rowTotal, totalCost };
         }
@@ -1007,12 +1082,22 @@ Yii::app()->clientScript->registerCoreScript("jquery.ui");
         }
 
         function calculateGrandTotal() {
-            const f        = CFG.SELECTORS.FORM;
-            const total    = safeNumber($(f.TOTAL_AMOUNT).val());
-            const vat      = safeNumber($(f.VAT_A).val());
-            const delivery = safeNumber($(f.DELIVERY).val());
-            const discount = safeNumber($(f.DISCOUNT).val());
-            $(f.GRAND_TOTAL).val(((total + vat + delivery) - discount).toFixed(2));
+            const f          = CFG.SELECTORS.FORM;
+            const total      = safeNumber($(f.TOTAL_AMOUNT).val());
+            const vat        = safeNumber($(f.VAT_A).val());
+            const delivery   = safeNumber($(f.DELIVERY).val());
+            const discount   = safeNumber($(f.DISCOUNT).val());
+            const road       = safeNumber($(f.ROAD).val());
+            const damage     = safeNumber($(f.DAMAGE).val());
+            const commission = safeNumber($(f.COMMISSION).val());
+
+            const grand = (total + vat + delivery) - (discount + road + damage + commission);
+            $(f.GRAND_TOTAL).val(grand.toFixed(2));
+        }
+
+        function calculateAvgSP(qtyTotal, totalAmount) {
+            const avg = qtyTotal > 0 ? totalAmount / qtyTotal : 0;
+            $(CFG.SELECTORS.FORM.AVG_SP).val(avg.toFixed(4));
         }
 
         /* ==========================
@@ -1077,7 +1162,8 @@ Yii::app()->clientScript->registerCoreScript("jquery.ui");
 
         $(document).on('input',
             `${CFG.SELECTORS.QTY}, ${CFG.SELECTORS.PRICE}, ${CFG.SELECTORS.ROW_TOTAL},
-             ${CFG.SELECTORS.FORM.VAT_P}, ${CFG.SELECTORS.FORM.DISCOUNT}, ${CFG.SELECTORS.FORM.DELIVERY}`,
+             ${CFG.SELECTORS.FORM.VAT_P}, ${CFG.SELECTORS.FORM.DISCOUNT}, ${CFG.SELECTORS.FORM.DELIVERY},
+             ${CFG.SELECTORS.FORM.ROAD}, ${CFG.SELECTORS.FORM.DAMAGE}, ${CFG.SELECTORS.FORM.COMMISSION}`,
             function () { sanitizeDecimalInput(this); }
         );
 
@@ -1104,8 +1190,9 @@ Yii::app()->clientScript->registerCoreScript("jquery.ui");
             const group = $row.attr('class').split(/\s+/).find(c => c.startsWith('company-'));
             updateRow($row);
             calculateVat();
-            calculateTotals();
+            const totals = calculateTotals();
             calculateGrandTotal();
+            calculateAvgSP(totals.qtyTotal, totals.rowTotal);
             if (group) { updateCompanySummary(group); }
         });
 
@@ -1117,14 +1204,21 @@ Yii::app()->clientScript->registerCoreScript("jquery.ui");
             if (qty > 0) { $row.find(CFG.SELECTORS.PRICE).val((rowTotal / qty).toFixed(CFG.DECIMALS)); }
             const group = $row.attr('class').split(/\s+/).find(c => c.startsWith('company-'));
             calculateVat();
-            calculateTotals();
+            const totals = calculateTotals();
             calculateGrandTotal();
+            calculateAvgSP(totals.qtyTotal, totals.rowTotal);
             if (group) { updateCompanySummary(group); }
         });
 
         $(document).on('input keyup change',
-            `${CFG.SELECTORS.FORM.VAT_P}, ${CFG.SELECTORS.FORM.DISCOUNT}, ${CFG.SELECTORS.FORM.DELIVERY}`,
-            function () { calculateVat(); calculateTotals(); calculateGrandTotal(); }
+            `${CFG.SELECTORS.FORM.VAT_P}, ${CFG.SELECTORS.FORM.DISCOUNT}, ${CFG.SELECTORS.FORM.DELIVERY},
+             ${CFG.SELECTORS.FORM.ROAD}, ${CFG.SELECTORS.FORM.DAMAGE}, ${CFG.SELECTORS.FORM.COMMISSION}`,
+            function () {
+                calculateVat();
+                const totals = calculateTotals();
+                calculateGrandTotal();
+                calculateAvgSP(totals.qtyTotal, totals.rowTotal);
+            }
         );
 
         // Accordion company toggle
@@ -1162,8 +1256,9 @@ Yii::app()->clientScript->registerCoreScript("jquery.ui");
                 if (group) { updateCompanySummary(group); }
             });
             calculateVat();
-            calculateTotals();
+            const totals = calculateTotals();
             calculateGrandTotal();
+            calculateAvgSP(totals.qtyTotal, totals.rowTotal);
             updateGlobalBar();
         }, 100);
 

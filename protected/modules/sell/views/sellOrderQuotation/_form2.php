@@ -824,7 +824,25 @@ Yii::app()->clientScript->registerCoreScript("jquery.ui");
                         </div>
                         <div></div>
                         <div class="summary-fields">
-                            <div class="field wide">
+                            <div class="field">
+                                <small>Total Qty</small>
+                                <?php echo $form->textField($model, 'total_qty', [
+                                        'class' => 'form-control text-center',
+                                        'placeholder' => '0',
+                                        'readonly' => true
+                                ]); ?>
+                            </div>
+
+                            <div class="field">
+                                <small>Avg SP</small>
+                                <?php echo $form->textField($model, 'avg_sp', [
+                                        'class' => 'form-control text-center',
+                                        'placeholder' => '0',
+                                        'readonly' => true
+                                ]); ?>
+                            </div>
+
+                            <div class="field">
                                 <small>Total Amount</small>
                                 <?php echo $form->textField($model, 'total_amount', [
                                         'class' => 'form-control text-center',
@@ -888,6 +906,54 @@ Yii::app()->clientScript->registerCoreScript("jquery.ui");
                         <div class="summary-fields">
                             <div class="field wide" data-tooltip="Discount Amount (Deducted from Grand Total)">
                                 <?php echo $form->textField($model, 'discount_amount', [
+                                        'class' => 'form-control text-center input-deduction tooltip-input',
+                                        'placeholder' => '0.00',
+                                ]); ?>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Road Fee -->
+                    <div class="summary-row">
+                        <div class="summary-label">
+                            <label><?php echo $form->labelEx($model, 'road_fee'); ?> (-)</label>
+                        </div>
+                        <div></div>
+                        <div class="summary-fields">
+                            <div class="field wide" data-tooltip="Road Fee (Deducted from Grand Total)">
+                                <?php echo $form->textField($model, 'road_fee', [
+                                        'class' => 'form-control text-center input-deduction tooltip-input',
+                                        'placeholder' => '0.00',
+                                ]); ?>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Damage -->
+                    <div class="summary-row">
+                        <div class="summary-label">
+                            <label><?php echo $form->labelEx($model, 'damage_value'); ?> (-)</label>
+                        </div>
+                        <div></div>
+                        <div class="summary-fields">
+                            <div class="field wide" data-tooltip="Damage (Deducted from Grand Total)">
+                                <?php echo $form->textField($model, 'damage_value', [
+                                        'class' => 'form-control text-center input-deduction tooltip-input',
+                                        'placeholder' => '0.00',
+                                ]); ?>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- SR Commission -->
+                    <div class="summary-row">
+                        <div class="summary-label">
+                            <label><?php echo $form->labelEx($model, 'sr_commission'); ?> (-)</label>
+                        </div>
+                        <div></div>
+                        <div class="summary-fields">
+                            <div class="field wide" data-tooltip="SR Commission (Deducted from Grand Total)">
+                                <?php echo $form->textField($model, 'sr_commission', [
                                         'class' => 'form-control text-center input-deduction tooltip-input',
                                         'placeholder' => '0.00',
                                 ]); ?>
@@ -1030,8 +1096,13 @@ Yii::app()->clientScript->registerCoreScript("jquery.ui");
                     VAT_A: '#SellOrderQuotation_vat_amount',
                     DISCOUNT: '#SellOrderQuotation_discount_amount',
                     DELIVERY: '#SellOrderQuotation_delivery_charge',
+                    ROAD: '#SellOrderQuotation_road_fee',
+                    DAMAGE: '#SellOrderQuotation_damage_value',
+                    COMMISSION: '#SellOrderQuotation_sr_commission',
+                    TOTAL_QTY: '#SellOrderQuotation_total_qty',
                     TOTAL_AMOUNT: '#SellOrderQuotation_total_amount',
                     GRAND_TOTAL: '#SellOrderQuotation_grand_total',
+                    AVG_SP: '#SellOrderQuotation_avg_sp',
                 }
             }
         };
@@ -1116,6 +1187,7 @@ Yii::app()->clientScript->registerCoreScript("jquery.ui");
                 totalCost += qty * cost;
             });
 
+            $(CFG.SELECTORS.FORM.TOTAL_QTY).val(qtyTotal);
             $(CFG.SELECTORS.FORM.TOTAL_AMOUNT)
                 .val(rowTotal.toFixed(CFG.DECIMALS))
                 .trigger('change');
@@ -1136,8 +1208,17 @@ Yii::app()->clientScript->registerCoreScript("jquery.ui");
             const vat = safeNumber($(f.VAT_A).val());
             const delivery = safeNumber($(f.DELIVERY).val());
             const discount = safeNumber($(f.DISCOUNT).val());
-            const grand = (total + vat + delivery) - discount;
+            const road = safeNumber($(f.ROAD).val());
+            const damage = safeNumber($(f.DAMAGE).val());
+            const commission = safeNumber($(f.COMMISSION).val());
+
+            const grand = (total + vat + delivery) - (discount + road + damage + commission);
             $(f.GRAND_TOTAL).val(grand.toFixed(2));
+        }
+
+        function calculateAvgSP(qtyTotal, totalAmount) {
+            const avg = qtyTotal > 0 ? totalAmount / qtyTotal : 0;
+            $(CFG.SELECTORS.FORM.AVG_SP).val(avg.toFixed(4));
         }
 
         /* ==========================
@@ -1228,7 +1309,10 @@ Yii::app()->clientScript->registerCoreScript("jquery.ui");
              ${CFG.SELECTORS.ROW_TOTAL},
              ${CFG.SELECTORS.FORM.VAT_P},
              ${CFG.SELECTORS.FORM.DISCOUNT},
-             ${CFG.SELECTORS.FORM.DELIVERY}`,
+             ${CFG.SELECTORS.FORM.DELIVERY},
+             ${CFG.SELECTORS.FORM.ROAD},
+             ${CFG.SELECTORS.FORM.DAMAGE},
+             ${CFG.SELECTORS.FORM.COMMISSION}`,
             function () {
                 sanitizeDecimalInput(this);
             }
@@ -1274,6 +1358,7 @@ Yii::app()->clientScript->registerCoreScript("jquery.ui");
 
                 const totals = calculateTotals();
                 calculateGrandTotal();
+                calculateAvgSP(totals.qtyTotal, totals.rowTotal);
 
                 if (group) {
                     updateCompanySummary(group);
@@ -1302,6 +1387,7 @@ Yii::app()->clientScript->registerCoreScript("jquery.ui");
                 calculateVat();
                 const totals = calculateTotals();
                 calculateGrandTotal();
+                calculateAvgSP(totals.qtyTotal, totals.rowTotal);
 
                 if (group) {
                     updateCompanySummary(group);
@@ -1312,11 +1398,15 @@ Yii::app()->clientScript->registerCoreScript("jquery.ui");
         $(document).on('input keyup change',
             `${CFG.SELECTORS.FORM.VAT_P},
              ${CFG.SELECTORS.FORM.DISCOUNT},
-             ${CFG.SELECTORS.FORM.DELIVERY}`,
+             ${CFG.SELECTORS.FORM.DELIVERY},
+             ${CFG.SELECTORS.FORM.ROAD},
+             ${CFG.SELECTORS.FORM.DAMAGE},
+             ${CFG.SELECTORS.FORM.COMMISSION}`,
             function () {
                 calculateVat();
                 const totals = calculateTotals();
                 calculateGrandTotal();
+                calculateAvgSP(totals.qtyTotal, totals.rowTotal);
             }
         );
 
@@ -1373,8 +1463,9 @@ Yii::app()->clientScript->registerCoreScript("jquery.ui");
             });
 
             calculateVat();
-            calculateTotals();
+            const totals = calculateTotals();
             calculateGrandTotal();
+            calculateAvgSP(totals.qtyTotal, totals.rowTotal);
             updateGlobalBar();
 
         }, 100);

@@ -75,6 +75,9 @@ class SellOrderQuotationController extends RController
             $model->attributes = $_POST['SellOrderQuotation'];
             $model->max_sl_no = SellOrderQuotation::maxSlNo();
             $model->discount_percentage = 0;
+            $model->road_fee = $_POST['SellOrderQuotation']['road_fee'] ?? 0;
+            $model->damage_value = $_POST['SellOrderQuotation']['damage_value'] ?? 0;
+            $model->sr_commission = $_POST['SellOrderQuotation']['sr_commission'] ?? 0;
             $model->so_no = date('y') . date('m') . str_pad($model->max_sl_no, 5, "0", STR_PAD_LEFT);
             $transaction = Yii::app()->db->beginTransaction();
 
@@ -194,6 +197,9 @@ class SellOrderQuotationController extends RController
                 $model->attributes = $_POST['SellOrderQuotation'];
                 $model->discount_percentage = 0;
                 $model->discount_amount = $_POST['SellOrderQuotation']['discount_amount'];
+                $model->road_fee = $_POST['SellOrderQuotation']['road_fee'] ?? 0;
+                $model->damage_value = $_POST['SellOrderQuotation']['damage_value'] ?? 0;
+                $model->sr_commission = $_POST['SellOrderQuotation']['sr_commission'] ?? 0;
                 if ($model->save()) {
 
                     $total_item = count($_POST['SellOrderQuotationDetails']['temp_model_id']);
