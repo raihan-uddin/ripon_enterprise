@@ -1,7 +1,8 @@
 <?php
 /** @var SellOrderQuotation[] $data */
 ?>
-<link rel="stylesheet" href="<?php echo Yii::app()->theme->baseUrl; ?>/css/report.css" type="text/css" media="screen"/>
+<link rel="stylesheet" href="<?php echo Yii::app()->theme
+    ->baseUrl; ?>/css/report.css" type="text/css" media="screen"/>
 
 <style>
     @media print {
@@ -89,33 +90,27 @@
         opacity: 0.6;
     }
 
+    .invoice-bill-to .bill-to-line {
+        color: #000;
+        font-size: 14px;
+        line-height: 1.4;
+    }
+
     .invoice-bill-to .customer-name {
-        font-size: 13px;
+        font-size: 16px;
         font-weight: 700;
-        color: #1a2c3d;
-        margin-bottom: 4px;
-        line-height: 1.3;
+        color: #000;
     }
 
-    .invoice-bill-to .customer-detail {
-        font-size: 11px;
+    .invoice-bill-to .bill-to-sep {
+        margin: 0 6px;
         color: #555;
-        line-height: 1.7;
     }
 
-    .invoice-bill-to .customer-detail .detail-row {
-        display: flex;
-        align-items: baseline;
-        gap: 4px;
-    }
-
-    .invoice-bill-to .customer-detail .detail-label {
-        font-size: 9px;
-        font-weight: 700;
-        text-transform: uppercase;
-        color: #888;
-        min-width: 30px;
-        letter-spacing: 0.5px;
+    .invoice-bill-to .customer-addr,
+    .invoice-bill-to .customer-tel {
+        color: #000;
+        font-weight: 500;
     }
 
     .invoice-meta {
@@ -162,18 +157,18 @@
         <h3 class="card-title">
             <?php
             echo "<div class='printBtn' style='float: left; clear:right; width: 10%;'>";
-            $this->widget('ext.mPrint.mPrint', array(
-                'title'      => ' ',
-                'tooltip'    => 'Print',
-                'text'       => '',
-                'element'    => '.printAllTableForThisReport',
-                'exceptions' => array('.summary', '.search-form', '#excludeDiv'),
-                'publishCss' => false,
-                'visible'    => !Yii::app()->user->isGuest,
-                'alt'        => 'print',
-                'debug'      => false,
-                'id'         => 'print-div',
-            ));
+            $this->widget("ext.mPrint.mPrint", [
+                "title" => " ",
+                "tooltip" => "Print",
+                "text" => "",
+                "element" => ".printAllTableForThisReport",
+                "exceptions" => [".summary", ".search-form", "#excludeDiv"],
+                "publishCss" => false,
+                "visible" => !Yii::app()->user->isGuest,
+                "alt" => "print",
+                "debug" => false,
+                "id" => "print-div",
+            ]);
             echo "</div>";
             ?>
         </h3>
@@ -187,45 +182,56 @@
         <div class="print-page-footer"></div>
         <div class="print-date-stamp" id="print-date-stamp"></div>
         <div class="printAllTableForThisReport">
-            <?php
-            foreach ($data as $item) {
+            <?php foreach ($data as $item) {
                 if ($item) {
-                    $customer = Customers::model()->findByPk($item->customer_id);
-                    ?>
+                    $customer = Customers::model()->findByPk(
+                        $item->customer_id,
+                    ); ?>
                     <div style="width: 100%;">
-                        <?php
-                        if (isset($preview_type) && $preview_type == SellOrder::NORMAL_PAD_PRINT) {
-                            $this->renderPartial('application.modules.sell.views.sellOrderQuotation.pad_header');
+                        <?php if (
+                            isset($preview_type) &&
+                            $preview_type == SellOrder::NORMAL_PAD_PRINT
+                        ) {
+                            $this->renderPartial(
+                                "application.modules.sell.views.sellOrderQuotation.pad_header",
+                            );
                         } else {
-                            $this->renderPartial('application.modules.sell.views.sellOrderQuotation.without_pad_header', ['id' => $item->id, 'so_no' => $item->so_no]);
-                        }
-                        ?>
+                            $this->renderPartial(
+                                "application.modules.sell.views.sellOrderQuotation.without_pad_header",
+                                ["id" => $item->id, "so_no" => $item->so_no],
+                            );
+                        } ?>
                         <!-- customer & invoice info -->
-                        <?php $customer_name = $customer ? $customer->company_name : 'N/A'; ?>
+                        <?php $customer_name = $customer
+                            ? $customer->company_name
+                            : "N/A"; ?>
                         <table class="invoice-info-block">
                             <tr>
                                 <td class="invoice-bill-to">
-                                    <div class="section-label">Bill To</div>
                                     <?php if ($customer): ?>
-                                        <div class="customer-name"><?= htmlspecialchars($customer->company_name) ?></div>
-                                        <div class="customer-detail">
-                                            <?php if (!empty($customer->company_address)): ?>
-                                                <div class="detail-row">
-                                                    <span class="detail-label">Addr</span>
-                                                    <span><?= htmlspecialchars($customer->company_address) ?></span>
-                                                </div>
+                                        <div class="bill-to-line">
+                                            <span class="customer-name"><?= htmlspecialchars(
+                                                $customer->company_name,
+                                            ) ?></span>
+                                            <?php if (
+                                                !empty(
+                                                    $customer->company_address
+                                                )
+                                            ): ?>
+                                                <span class="bill-to-sep">·</span>
+                                                <span class="customer-addr"><?= htmlspecialchars(
+                                                    $customer->company_address,
+                                                ) ?></span>
                                             <?php endif; ?>
-                                            <?php if (!empty($customer->owner_mobile_no)): ?>
-                                                <div class="detail-row">
-                                                    <span class="detail-label">Tel</span>
-                                                    <span><?= htmlspecialchars($customer->owner_mobile_no) ?></span>
-                                                </div>
-                                            <?php endif; ?>
-                                            <?php if (!empty($customer->trn_no)): ?>
-                                                <div class="detail-row">
-                                                    <span class="detail-label">TRN</span>
-                                                    <span><?= htmlspecialchars($customer->trn_no) ?></span>
-                                                </div>
+                                            <?php if (
+                                                !empty(
+                                                    $customer->owner_mobile_no
+                                                )
+                                            ): ?>
+                                                <span class="bill-to-sep">·</span>
+                                                <span class="customer-tel"><?= htmlspecialchars(
+                                                    $customer->owner_mobile_no,
+                                                ) ?></span>
                                             <?php endif; ?>
                                         </div>
                                     <?php else: ?>
@@ -236,11 +242,16 @@
                                     <table class="invoice-meta-table">
                                         <tr>
                                             <td>Draft No</td>
-                                            <td>D-<?= htmlspecialchars($item->so_no) ?></td>
+                                            <td>D-<?= htmlspecialchars(
+                                                $item->so_no,
+                                            ) ?></td>
                                         </tr>
                                         <tr>
                                             <td>Date</td>
-                                            <td><?= date('d M Y', strtotime($item->date)) ?></td>
+                                            <td><?= date(
+                                                "d M Y",
+                                                strtotime($item->date),
+                                            ) ?></td>
                                         </tr>
                                     </table>
                                 </td>
@@ -260,54 +271,84 @@
                         </thead>
                         <tbody>
                         <?php
-                        $vat             = $item->vat_amount;
-                        $vat_percentage  = $item->vat_percentage;
+                        $vat = $item->vat_amount;
+                        $vat_percentage = $item->vat_percentage;
                         $delivery_charge = $item->delivery_charge;
                         $discount_amount = $item->discount_amount;
-                        $road_fee        = $item->road_fee;
-                        $damage          = $item->damage_value;
-                        $sr_commission   = $item->sr_commission;
+                        $road_fee = $item->road_fee;
+                        $damage = $item->damage_value;
+                        $sr_commission = $item->sr_commission;
 
                         $criteria = new CDbCriteria();
                         $criteria->select = "pm.model_name, pm.code, pm.image, sum(t.qty) as qty, t.amount, t.discount_amount,
                                             t.note, sum(t.row_total) as row_total, sum(costing) as costing,
                                             companies.name as company_name, pm.description";
-                        $criteria->join  = " INNER JOIN prod_models pm on t.model_id = pm.id ";
-                        $criteria->join .= " INNER JOIN companies on pm.manufacturer_id = companies.id ";
-                        $criteria->addColumnCondition(['t.sell_order_id' => $item->id]);
+                        $criteria->join =
+                            " INNER JOIN prod_models pm on t.model_id = pm.id ";
+                        $criteria->join .=
+                            " INNER JOIN companies on pm.manufacturer_id = companies.id ";
+                        $criteria->addColumnCondition([
+                            "t.sell_order_id" => $item->id,
+                        ]);
                         $criteria->group = "pm.id";
-                        $criteria->order = "companies.name, pm.item_id DESC, pm.model_name ASC";
-                        $data2       = SellOrderQuotationDetails::model()->findAll($criteria);
-                        $row_total   = 0;
-                        $lastCompany = '';
+                        $criteria->order =
+                            "companies.name, pm.item_id DESC, pm.model_name ASC";
+                        $data2 = SellOrderQuotationDetails::model()->findAll(
+                            $criteria,
+                        );
+                        $row_total = 0;
+                        $lastCompany = "";
 
                         if ($data2) {
                             $i = 1;
                             foreach ($data2 as $dt) {
-                                if (!($dt->qty > 0)) continue;
-                                if ($lastCompany !== $dt->company_name) {
-                                    $lastCompany = $dt->company_name;
-                                    ?>
-                                    <tr>
-                                        <td colspan="5" style="background:#f4f6f9; font-weight:600; padding:6px 10px; text-align:left; border:1px solid #ccc;">
-                                            <?= CHtml::encode($dt->company_name) ?>
-                                        </td>
-                                    </tr>
-                                    <?php
-                                }
-                                ?>
+                                if (!($dt->qty > 0)) {
+                                    continue;
+                                } ?>
                                 <tr>
                                     <td style="text-align: center;"><?= $i++ ?></td>
                                     <td style="text-align: left; padding-left: 10px;"><?= $dt->model_name ?></td>
-                                    <td style="text-align: center;"><?= rtrim(rtrim(number_format($dt->qty, 4, '.', ','), '0'), '.') ?></td>
-                                    <td style="text-align: right; padding-right: 5px;"><?= rtrim(rtrim(number_format($dt->amount, 4, '.', ','), '0'), '.') ?></td>
-                                    <td style="text-align: right; padding-right: 5px;"><?= rtrim(rtrim(number_format($dt->row_total, 4, '.', ','), '0'), '.') ?></td>
+                                    <td style="text-align: center;"><?= rtrim(
+                                        rtrim(
+                                            number_format(
+                                                $dt->qty,
+                                                4,
+                                                ".",
+                                                ",",
+                                            ),
+                                            "0",
+                                        ),
+                                        ".",
+                                    ) ?></td>
+                                    <td style="text-align: right; padding-right: 5px;"><?= rtrim(
+                                        rtrim(
+                                            number_format(
+                                                $dt->amount,
+                                                4,
+                                                ".",
+                                                ",",
+                                            ),
+                                            "0",
+                                        ),
+                                        ".",
+                                    ) ?></td>
+                                    <td style="text-align: right; padding-right: 5px;"><?= rtrim(
+                                        rtrim(
+                                            number_format(
+                                                $dt->row_total,
+                                                4,
+                                                ".",
+                                                ",",
+                                            ),
+                                            "0",
+                                        ),
+                                        ".",
+                                    ) ?></td>
                                 </tr>
-                                <?php
-                                $row_total += $dt->row_total;
+                                <?php $row_total += $dt->row_total;
                             }
                         } else {
-                            ?>
+                             ?>
                             <tr>
                                 <td colspan="5">
                                     <div class="alert alert-danger" role="alert">No item found</div>
@@ -315,23 +356,38 @@
                             </tr>
                             <?php
                         }
-
                         ?>
                         <?php
-                        $vatDisplay            = $vat != 0 ? "" : "display: none;";
-                        $deliveryChargeDisplay = $delivery_charge != 0 ? "" : "display: none;";
-                        $discountDisplay       = $discount_amount != 0 ? "" : "display: none;";
-                        $roadFeeDisplay        = $road_fee != 0 ? "" : "display: none;";
-                        $damageDisplay         = $damage != 0 ? "" : "display: none;";
-                        $srCommissionDisplay   = $sr_commission != 0 ? "" : "display: none;";
+                        $vatDisplay = $vat != 0 ? "" : "display: none;";
+                        $deliveryChargeDisplay =
+                            $delivery_charge != 0 ? "" : "display: none;";
+                        $discountDisplay =
+                            $discount_amount != 0 ? "" : "display: none;";
+                        $roadFeeDisplay =
+                            $road_fee != 0 ? "" : "display: none;";
+                        $damageDisplay = $damage != 0 ? "" : "display: none;";
+                        $srCommissionDisplay =
+                            $sr_commission != 0 ? "" : "display: none;";
 
                         $footerRowSpan = 8;
-                        if ((float)$vat == 0) $footerRowSpan--;
-                        if ((float)$delivery_charge == 0) $footerRowSpan--;
-                        if ((float)$discount_amount == 0) $footerRowSpan--;
-                        if ((float)$road_fee == 0) $footerRowSpan--;
-                        if ((float)$damage == 0) $footerRowSpan--;
-                        if ((float)$sr_commission == 0) $footerRowSpan--;
+                        if ((float) $vat == 0) {
+                            $footerRowSpan--;
+                        }
+                        if ((float) $delivery_charge == 0) {
+                            $footerRowSpan--;
+                        }
+                        if ((float) $discount_amount == 0) {
+                            $footerRowSpan--;
+                        }
+                        if ((float) $road_fee == 0) {
+                            $footerRowSpan--;
+                        }
+                        if ((float) $damage == 0) {
+                            $footerRowSpan--;
+                        }
+                        if ((float) $sr_commission == 0) {
+                            $footerRowSpan--;
+                        }
                         ?>
                         <tr>
                             <td rowspan="<?= $footerRowSpan ?>" colspan="2"
@@ -340,12 +396,18 @@
                                     <?php
                                     $amountInWord = new AmountInWord();
                                     $grandTotal = $item->grand_total;
-                                    $inword = $amountInWord->convert(intval($grandTotal)) . ' Taka';
-                                    $paisaPart = $amountInWord->convertFloat($grandTotal);
+                                    $inword =
+                                        $amountInWord->convert(
+                                            intval($grandTotal),
+                                        ) . " Taka";
+                                    $paisaPart = $amountInWord->convertFloat(
+                                        $grandTotal,
+                                    );
                                     if ($paisaPart) {
-                                        $inword .= ' and ' . $paisaPart . ' Paisa';
+                                        $inword .=
+                                            " and " . $paisaPart . " Paisa";
                                     }
-                                    $inword .= ' Only';
+                                    $inword .= " Only";
                                     echo $inword;
                                     ?>
                                 </i></div>
@@ -353,31 +415,80 @@
                                 <div style="font-weight: normal;">Note: <?= $item->order_note ?></div>
                             </td>
                             <td colspan="2" style="border: none; background: white; text-align: right; padding-right: 8px;">Sub Total</td>
-                            <td style="text-align: right; border: none; padding-right: 5px;"><?= rtrim(rtrim(number_format($row_total, 4, '.', ','), '0'), '.') ?></td>
+                            <td style="text-align: right; border: none; padding-right: 5px;"><?= rtrim(
+                                rtrim(
+                                    number_format($row_total, 4, ".", ","),
+                                    "0",
+                                ),
+                                ".",
+                            ) ?></td>
                         </tr>
                         <tr style="<?= $vatDisplay ?>">
-                            <td colspan="2" style="border: none; background: white; text-align: right; padding-right: 8px; <?= $vatDisplay ?>">Vat (<?= number_format($vat_percentage, 2) ?>%) (+)</td>
-                            <td style="text-align: right; border: none; padding-right: 5px; <?= $vatDisplay ?>"><?= rtrim(rtrim(number_format($vat, 4, '.', ','), '0'), '.') ?></td>
+                            <td colspan="2" style="border: none; background: white; text-align: right; padding-right: 8px; <?= $vatDisplay ?>">Vat (<?= number_format(
+    $vat_percentage,
+    2,
+) ?>%) (+)</td>
+                            <td style="text-align: right; border: none; padding-right: 5px; <?= $vatDisplay ?>"><?= rtrim(
+    rtrim(number_format($vat, 4, ".", ","), "0"),
+    ".",
+) ?></td>
                         </tr>
                         <tr style="<?= $deliveryChargeDisplay ?>">
                             <td colspan="2" style="border: none; background: white; text-align: right; padding-right: 8px;">Delivery Charge (+)</td>
-                            <td style="text-align: right; border: none; padding-right: 5px;"><?= rtrim(rtrim(number_format($delivery_charge, 4, '.', ','), '0'), '.') ?></td>
+                            <td style="text-align: right; border: none; padding-right: 5px;"><?= rtrim(
+                                rtrim(
+                                    number_format(
+                                        $delivery_charge,
+                                        4,
+                                        ".",
+                                        ",",
+                                    ),
+                                    "0",
+                                ),
+                                ".",
+                            ) ?></td>
                         </tr>
                         <tr style="<?= $discountDisplay ?>">
                             <td colspan="2" style="border: none; background: white; text-align: right; padding-right: 8px;">Discount (-)</td>
-                            <td style="text-align: right; border: none; padding-right: 5px;">(<?= rtrim(rtrim(number_format($discount_amount, 4, '.', ','), '0'), '.') ?>)</td>
+                            <td style="text-align: right; border: none; padding-right: 5px;">(<?= rtrim(
+                                rtrim(
+                                    number_format(
+                                        $discount_amount,
+                                        4,
+                                        ".",
+                                        ",",
+                                    ),
+                                    "0",
+                                ),
+                                ".",
+                            ) ?>)</td>
                         </tr>
                         <tr style="<?= $roadFeeDisplay ?>">
                             <td colspan="2" style="border: none; background: white; text-align: right; padding-right: 8px;">Road Fee (-)</td>
-                            <td style="text-align: right; border: none; padding-right: 5px;">(<?= rtrim(rtrim(number_format($road_fee, 4, '.', ','), '0'), '.') ?>)</td>
+                            <td style="text-align: right; border: none; padding-right: 5px;">(<?= rtrim(
+                                rtrim(
+                                    number_format($road_fee, 4, ".", ","),
+                                    "0",
+                                ),
+                                ".",
+                            ) ?>)</td>
                         </tr>
                         <tr style="<?= $damageDisplay ?>">
                             <td colspan="2" style="border: none; background: white; text-align: right; padding-right: 8px;">Damage (-)</td>
-                            <td style="text-align: right; border: none; padding-right: 5px;">(<?= rtrim(rtrim(number_format($damage, 4, '.', ','), '0'), '.') ?>)</td>
+                            <td style="text-align: right; border: none; padding-right: 5px;">(<?= rtrim(
+                                rtrim(number_format($damage, 4, ".", ","), "0"),
+                                ".",
+                            ) ?>)</td>
                         </tr>
                         <tr style="<?= $srCommissionDisplay ?>">
                             <td colspan="2" style="border: none; background: white; text-align: right; padding-right: 8px;">SR Commission (-)</td>
-                            <td style="text-align: right; border: none; padding-right: 5px;">(<?= rtrim(rtrim(number_format($sr_commission, 4, '.', ','), '0'), '.') ?>)</td>
+                            <td style="text-align: right; border: none; padding-right: 5px;">(<?= rtrim(
+                                rtrim(
+                                    number_format($sr_commission, 4, ".", ","),
+                                    "0",
+                                ),
+                                ".",
+                            ) ?>)</td>
                         </tr>
                         <tr style="font-weight: bold;">
                             <td colspan="2" style="border: none; background: white; text-align: right; padding-right: 8px;">
@@ -386,22 +497,39 @@
                             </td>
                             <td style="text-align: right; border: none; padding-right: 5px;">
                                 <div style="height: 1px; width: 100%; border: 1px solid black;"></div>
-                                <?= rtrim(rtrim(number_format($item->grand_total, 4, '.', ','), '0'), '.') ?>
+                                <?= rtrim(
+                                    rtrim(
+                                        number_format(
+                                            $item->grand_total,
+                                            4,
+                                            ".",
+                                            ",",
+                                        ),
+                                        "0",
+                                    ),
+                                    ".",
+                                ) ?>
                             </td>
                         </tr>
                         </tbody>
                     </table>
 
                     <div style="width: 100%; font-size: 12px; margin-top: 20px;">
-                        <div style="margin-bottom: 10px; font-style: italic; color: #555;">By signing this document, the customer agrees to the services and conditions described in this document.</div>
+                        <div style="margin-bottom: 10px; font-style: italic; color: #555;">উপরের পণ্যসমূহ ও মূল্য বুঝে নিয়ে গ্রাহক স্বাক্ষর করেছেন।</div>
                         <table style="width: 100%; border-collapse: collapse;">
                             <tr>
                                 <td style="width: 50%; padding: 0 30px 0 0; text-align: center; vertical-align: bottom;">
                                     <div style="height: 70px;"></div>
                                     <div style="border-top: 1px solid #000; padding-top: 6px;">
-                                        <div style="font-weight: bold;"><?= strtoupper(Yii::app()->params['company']['name']) ?></div>
+                                        <div style="font-weight: bold;"><?= strtoupper(
+                                            Yii::app()->params["company"][
+                                                "name"
+                                            ],
+                                        ) ?></div>
                                         <div>Authorized Signatory</div>
-                                        <div style="margin-top: 6px;">Date: <?= date('d/m/Y') ?></div>
+                                        <div style="margin-top: 6px;">Date: <?= date(
+                                            "d/m/Y",
+                                        ) ?></div>
                                     </div>
                                 </td>
                                 <td style="width: 50%; padding: 0 0 0 30px; text-align: center; vertical-align: bottom;">
@@ -420,12 +548,11 @@
 
                     <?php
                 } else {
-                    ?>
+                     ?>
                     <div class="alert alert-danger" role="alert">No result found!</div>
                     <?php
                 }
-            }
-            ?>
+            } ?>
         </div>
     </div>
 </div>
