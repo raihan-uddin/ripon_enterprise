@@ -17,6 +17,9 @@
  * @property double $total_amount
  * @property string $costing
  * @property string $delivery_charge
+ * @property double $road_fee
+ * @property double $damage_value
+ * @property double $sr_commission
  * @property string $order_note
  * @property integer $created_by
  * @property string $created_at
@@ -58,6 +61,8 @@ class SellOrderQuotation extends CActiveRecord
     public $cash_due;
     public $exp_delivery_date;
     public $color;
+    public $total_qty;
+    public $avg_sp;
 
 	const NEW_ORDER = 1;
     const REPAIR_ORDER = 2;
@@ -86,13 +91,13 @@ class SellOrderQuotation extends CActiveRecord
 		return array(
             array('max_sl_no, so_no, date, customer_id, discount_percentage, discount_amount, grand_total', 'required'),
             array('grand_total, discount_amount, discount_percentage, vat_percentage, vat_amount,
-            total_amount, delivery_charge, costing', 'numerical'),
+            total_amount, delivery_charge, costing, road_fee, damage_value, sr_commission', 'numerical'),
             array('max_sl_no, customer_id, created_by, updated_by', 'numerical', 'integerOnly' => true),
             array('created_at, updated_at, date, so_no, order_note', 'safe'),
             // The following rule is used by search().
-            array('id, date, max_sl_no, vat_percentage, so_no, customer_id, discount_percentage, 
+            array('id, date, max_sl_no, vat_percentage, so_no, customer_id, discount_percentage,
             discount_amount, grand_total, created_by, created_at, updated_by, updated_at, total_amount, delivery_charge,
-            order_note, costing', 'safe', 'on' => 'search'),
+            order_note, costing, road_fee, damage_value, sr_commission', 'safe', 'on' => 'search'),
         );
 	}
 
@@ -132,7 +137,12 @@ class SellOrderQuotation extends CActiveRecord
             'delivery_charge' => 'Delivery Charge',
             'costing' => 'Costing',
             'customer_id' => 'Customer',
-            'manufacturer_id' => 'Company'
+            'manufacturer_id' => 'Company',
+            'road_fee' => 'Road Fee',
+            'damage_value' => 'Damage',
+            'sr_commission' => 'SR Commission',
+            'total_qty' => 'Total Qty',
+            'avg_sp' => 'Avg SP',
         );
 	}
 

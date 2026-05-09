@@ -95,7 +95,7 @@ class RAuthorizer extends CApplicationComponent
 	 * @param array $exclude the items to be excluded.
 	 * @return array the authorization items of the specific type.
 	 */
-	public function getAuthItems($types=null, $userId=null, CAuthItem $parent=null, $sort=true, $exclude=array())
+	public function getAuthItems($types=null, $userId=null, ?CAuthItem $parent=null, $sort=true, $exclude=array())
 	{
 		// We have none or a single type.
 		if( $types!==(array)$types )
@@ -144,7 +144,7 @@ class RAuthorizer extends CApplicationComponent
 	* @param array $exclude additional items to be excluded.
 	* @return array valid authorization items.
 	*/
-	protected function excludeInvalidAuthItems($items, CAuthItem $parent=null, $exclude=array())
+	protected function excludeInvalidAuthItems($items, ?CAuthItem $parent=null, $exclude=array())
 	{
 		// We are getting authorization items valid for a certain item
 		// exclude its parents and children aswell.
@@ -259,7 +259,7 @@ class RAuthorizer extends CApplicationComponent
 	* @param CAuthItem $parent the parent of the given item.
 	* @return mixed the item or items with the behavior attached.
 	*/
-	public function attachAuthItemBehavior($items, $userId=null, CAuthItem $parent=null)
+	public function attachAuthItemBehavior($items, $userId=null, ?CAuthItem $parent=null)
 	{
 		// We have a single item.
 		if( $items instanceof CAuthItem )

@@ -26,7 +26,7 @@ class RAuthItemBehavior extends CBehavior
 	* @param integer $userId the id of the user to whom this item is assigned
 	* @param CAuthItem $parent the parent item.
 	*/
-	public function __construct($userId=null, CAuthItem $parent=null)
+	public function __construct($userId=null, ?CAuthItem $parent=null)
 	{
 		$this->userId = $userId;
 		$this->parent = $parent;
