@@ -294,6 +294,7 @@ class ProdModels extends CActiveRecord
         $criteria->compare('min_order_qty', $this->min_order_qty, true);
         $criteria->compare('warranty', $this->warranty);
         $criteria->compare('unit_id', $this->unit_id);
+        $criteria->compare('pcs_per_ctn', $this->pcs_per_ctn);
         $criteria->compare('status', $this->status);
         $criteria->compare('stockable', $this->stockable);
         $criteria->compare('description', $this->description, true);

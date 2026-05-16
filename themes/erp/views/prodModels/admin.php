@@ -564,6 +564,12 @@ endforeach;
                                 'value' => 'Units::model()->unitLabel($data->unit_id)',
                                 'filter' => CHtml::listData(Units::model()->findAll(), 'id', 'label'),
                         ),
+                        array(
+                                'name' => 'pcs_per_ctn',
+                                'header' => 'Pcs/Ctn',
+                                'htmlOptions' => ['style' => 'text-align:center; width:70px;'],
+                                'filterHtmlOptions' => ['style' => 'text-align:center;'],
+                        ),
                         'sell_price',
                         'purchase_price',
                         array(
