@@ -139,8 +139,9 @@ class PurchaseOrderController extends RController
                 ));
                 Yii::app()->end();
             } catch (Exception $e) {
-                // Rollback transaction if an error occurred
-                $transaction->rollback();
+                if ($transaction->active) {
+                    $transaction->rollback();
+                }
 
                 // Return JSON response with error message
                 echo CJSON::encode(array(
@@ -283,9 +284,9 @@ class PurchaseOrderController extends RController
                 Yii::app()->end();
 
             } catch (Exception $e) {
-                // Rollback transaction if an error occurred
-                $transaction->rollback();
-                throw new Exception('fucking Details!' . $e->getMessage());
+                if ($transaction->active) {
+                    $transaction->rollback();
+                }
 
                 // Return JSON response with error message
                 echo CJSON::encode(array(

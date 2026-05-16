@@ -100,7 +100,7 @@ class ProdModels extends CActiveRecord
             array('warranty', 'numerical'),
             array('code', 'unique', 'caseSensitive' => FALSE),
             array('image, thumbnail', 'length', 'max' => 300),
-            array('features, description', 'safe'),
+            array('features, description, image2', 'safe'),
             // The following rule is used by search().
             // Please remove those attributes that should not be searched.
             array('min_order_qty, id, item_id, brand_id, model_name, manufacturer_id, status, features, stockable, warranty, description,  purchase_price, sell_price, pcs_per_ctn', 'safe', 'on' => 'search'),

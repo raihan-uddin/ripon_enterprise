@@ -80,8 +80,8 @@ class PurchaseOrder extends CActiveRecord
         // will receive user inputs.
         return array(
             array('date, max_sl_no, po_no, supplier_id, total_amount, cash_due, order_type', 'required'),
-            array('max_sl_no, supplier_id, is_paid, is_all_received, cash_due, created_by, updated_by, ship_by, order_type, location_id, 
-			store_id', 'numerical', 'integerOnly' => true),
+            array('max_sl_no, supplier_id, is_paid, is_all_received, cash_due, created_by, updated_by, ship_by, order_type, location_id,
+			store_id, manufacturer_id', 'numerical', 'integerOnly' => true),
             array('total_amount, vat_amount, discount_percentage, discount, vat_percentage, grand_total, is_opening', 'numerical'),
             array('po_no, manual_po_no', 'length', 'max' => 255),
             array('created_at, updated_at, bill_to, ship_to, exp_receive_date, order_note', 'safe'),

@@ -87,7 +87,7 @@ class SellOrder extends CActiveRecord
             array('grand_total, discount_amount, discount_percentage, vat_percentage, vat_amount, is_opening, total_return, road_fee, damage_value, sr_commission,
             total_amount, is_paid, total_paid, total_due, delivery_charge, costing', 'numerical'),
             array('max_sl_no, cash_due, customer_id, created_by, updated_by', 'numerical', 'integerOnly' => true),
-            array('created_at, updated_at, date, exp_delivery_date, so_no, order_note', 'safe'),
+            array('created_at, updated_at, date, exp_delivery_date, so_no, order_note, total_qty, avg_sp', 'safe'),
             // The following rule is used by search().
             array('id, date, cash_due, exp_delivery_date, max_sl_no, vat_percentage, so_no, customer_id, discount_percentage, 
             discount_amount, grand_total, created_by, total_return, damage_value, road_fee, sr_commission,

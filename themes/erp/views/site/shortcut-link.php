@@ -93,12 +93,16 @@ $endDate   = date('Y-m-t');
 
     <?php if (Yii::app()->user->checkAccess('Loan.LoanTransactions.Admin')): ?>
     <a class="db-action-card t-rose" href="<?= Yii::app()->createUrl('/loan/loanTransactions/admin') ?>">
-        <span class="db-action-badge"><?=
-            Yii::app()->db->createCommand()
-                ->select('FORMAT(ROUND(SUM(amount)), 0) as amount')
-                ->from('loan_transactions')
-                ->where('transaction_date BETWEEN :s AND :e', [':s' => $startDate, ':e' => $endDate])
-                ->queryScalar();
+        <span class="db-action-badge"><?php
+            try {
+                echo Yii::app()->db->createCommand()
+                    ->select('FORMAT(ROUND(SUM(amount)), 0) as amount')
+                    ->from('loan_transactions')
+                    ->where('transaction_date BETWEEN :s AND :e', [':s' => $startDate, ':e' => $endDate])
+                    ->queryScalar();
+            } catch (CDbException $e) {
+                echo '0';
+            }
         ?></span>
         <div class="db-action-icon"><i class="fa fa-university"></i></div>
         <div class="db-action-label">Loan</div>

@@ -580,7 +580,7 @@ class SiteController extends Controller
 
         try {
             $dues = $db->createCommand("
-                SELECT c.id, c.name,
+                SELECT c.id, c.company_name AS name,
                        COALESCE(s.total,0) - COALESCE(r.collected,0) AS due
                 FROM customers c
                 LEFT JOIN (

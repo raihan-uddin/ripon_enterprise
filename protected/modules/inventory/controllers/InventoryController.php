@@ -82,7 +82,9 @@ class InventoryController extends RController
                             $model2->stock_out = $postData['temp_stock_out'][$key] > 0 ? $postData['temp_stock_out'][$key] : $postData['temp_stock_in'][$key];
                         }
                         $model2->sell_price = $postData['temp_sell_price'][$key];
-                        $model2->row_total = $model2->stock_in > 0 ? round($model2->stock_in * $model2->sell_price, 2) : round($model2->stock_out * $model2->sell_price, 2);
+                        $model2->row_total = $model2->stock_in > 0
+                            ? round((float)$model2->stock_in * (float)$model2->sell_price, 2)
+                            : round((float)$model2->stock_out * (float)$model2->sell_price, 2);
                         $model2->stock_status = Inventory::MANUAL_ENTRY;
                         $model2->source_id = Inventory::SOURCE_DEFAULT;
                         if (!$model2->save()) {
@@ -482,8 +484,8 @@ class InventoryController extends RController
 
         if ($model_id > 0) $criteria->addColumnCondition(['model_id' => $model_id]);
         if ($manufacturer_id > 0) $criteria->addColumnCondition(['pm.manufacturer_id' => $manufacturer_id]);
-        if ($item_id > 0) $criteria->addColumnCondition(['t.item_id' => $item_id]);
-        if ($brand_id > 0) $criteria->addColumnCondition(['t.brand_id' => $brand_id]);
+        if ($item_id > 0) $criteria->addColumnCondition(['pm.item_id' => $item_id]);
+        if ($brand_id > 0) $criteria->addColumnCondition(['pm.brand_id' => $brand_id]);
 
         if ($selectedSupplierId > 0 && count($supplierProducts) > 0) {
             $criteria->addInCondition('t.model_id', $supplierProducts);
