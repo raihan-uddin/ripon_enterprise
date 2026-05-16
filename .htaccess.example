@@ -1,0 +1,21 @@
+# Sample .htaccess — Apache mod_php overrides recommended for this app.
+#
+# .htaccess itself is gitignored (per-environment overrides). On deploy:
+#   cp .htaccess.example .htaccess
+# and adjust as needed.
+#
+# Why max_input_vars = 5000:
+#   The Sales Quotation form renders one row per product. With a wide
+#   catalog the POST exceeds PHP's default 1000 input-var cap and
+#   `grand_total` gets truncated off the body, failing validation with
+#   "Grand Total cannot be blank."
+#
+# On nginx + PHP-FPM, the equivalent setting lives in .user.ini
+# (which IS committed) and applies automatically.
+
+<IfModule mod_php7.c>
+    php_value max_input_vars 5000
+</IfModule>
+<IfModule mod_php.c>
+    php_value max_input_vars 5000
+</IfModule>
