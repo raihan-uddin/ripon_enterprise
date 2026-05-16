@@ -587,6 +587,11 @@ $form = $this->beginWidget('CActiveForm', array(
                             )); ?>
                             <label class="pf-fl-label" for="ProdModels_pcs_per_ctn">Pieces per carton</label>
                         </div>
+                        <small style="display:block; color:#6b7280; font-size:11px; line-height:1.4; margin-top:4px;">
+                            How many individual pieces are inside one carton.<br>
+                            Used on Quotations to split entries into Ctn + Pcs.<br>
+                            Set to <b>1</b> if the product is sold by piece only.
+                        </small>
                         <span class="pf-error"><?php echo $form->error($model, 'pcs_per_ctn'); ?></span>
                     </div>
 
