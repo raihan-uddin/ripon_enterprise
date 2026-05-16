@@ -572,8 +572,10 @@ $form = $this->beginWidget('CActiveForm', array(
                         </div>
                     </div>
 
-                    <div class="col-md-4 pf-field" data-sec="2">
-                        <div class="pf-label"><?php echo $model->getAttributeLabel('pcs_per_ctn'); ?></div>
+                    <div class="col-md-4 pf-field" data-required="1" data-sec="2">
+                        <div class="pf-label">
+                            <?php echo $model->getAttributeLabel('pcs_per_ctn'); ?> <span class="req">*</span>
+                        </div>
                         <div class="pf-fl">
                             <i class="fa fa-cubes pf-fl-icon"></i>
                             <?php echo $form->textField($model, 'pcs_per_ctn', array(
