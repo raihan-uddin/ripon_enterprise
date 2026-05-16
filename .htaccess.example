@@ -1,21 +1,104 @@
-# Sample .htaccess — Apache mod_php overrides recommended for this app.
+# =============================================================================
+# Sample .htaccess for production (Apache mod_php).
 #
 # .htaccess itself is gitignored (per-environment overrides). On deploy:
 #   cp .htaccess.example .htaccess
-# and adjust as needed.
+# and adjust the commented sections (HTTPS forcing, custom error pages) to
+# match the environment.
 #
-# Why max_input_vars = 5000:
-#   The Sales Quotation form renders one row per product. With a wide
-#   catalog the POST exceeds PHP's default 1000 input-var cap and
-#   `grand_total` gets truncated off the body, failing validation with
-#   "Grand Total cannot be blank."
-#
-# On nginx + PHP-FPM, the equivalent setting lives in .user.ini
-# (which IS committed) and applies automatically.
+# nginx + PHP-FPM environments don't read .htaccess — the equivalent PHP
+# settings live in .user.ini (which IS committed) and security headers
+# should be set in the nginx server block.
+# =============================================================================
 
+
+# -----------------------------------------------------------------------------
+# PHP overrides
+# -----------------------------------------------------------------------------
+# The Sales Quotation form posts ~7 input vars per product row. With a wide
+# catalog the POST exceeds PHP's default 1000-var cap and `grand_total` gets
+# truncated off the body, failing validation with "Grand Total cannot be blank."
 <IfModule mod_php7.c>
     php_value max_input_vars 5000
 </IfModule>
 <IfModule mod_php.c>
     php_value max_input_vars 5000
 </IfModule>
+
+
+# -----------------------------------------------------------------------------
+# Server hardening
+# -----------------------------------------------------------------------------
+# Hide Apache version + module list from response headers
+ServerSignature Off
+
+# Disable directory listing — `Indexes` would expose file names if no index.php
+<IfModule mod_autoindex.c>
+    Options -Indexes
+</IfModule>
+
+# Disable HTTP TRACE / TRACK (CVE-2003-1567, mostly historical but free win)
+<IfModule mod_rewrite.c>
+    RewriteEngine On
+    RewriteCond %{REQUEST_METHOD} ^(TRACE|TRACK)
+    RewriteRule .* - [F]
+</IfModule>
+
+
+# -----------------------------------------------------------------------------
+# Block access to sensitive files
+# -----------------------------------------------------------------------------
+# Dotfiles (.git, .env, .htaccess itself, .user.ini, .gitignore, etc.)
+<FilesMatch "^\.">
+    Require all denied
+</FilesMatch>
+
+# Source / config / log files that shouldn't be web-readable even by accident
+<FilesMatch "\.(log|sql|md|yaml|yml|ini|sh|bak|swp|inc|tpl|example|dist|lock|json|xml|conf)$">
+    Require all denied
+</FilesMatch>
+
+# Common one-off files that sometimes get left in webroots
+<FilesMatch "^(composer\.(json|lock)|phpunit\.xml|README|CHANGELOG|LICENSE|Makefile|package\.json|webpack\.config\.js|qodana\.yaml|error_log|searver-htaccess)$">
+    Require all denied
+</FilesMatch>
+
+# Block direct access to Yii framework + protected directory if mod_rewrite is off
+# (protected/.htaccess and framework/.htaccess already do this — belt-and-braces).
+RedirectMatch 403 ^/(protected|framework)(/|$)
+
+
+# -----------------------------------------------------------------------------
+# Security headers
+# -----------------------------------------------------------------------------
+<IfModule mod_headers.c>
+    # Block MIME-type sniffing — browsers must honour the Content-Type we send
+    Header always set X-Content-Type-Options "nosniff"
+
+    # Clickjacking — only allow framing by same-origin pages
+    Header always set X-Frame-Options "SAMEORIGIN"
+
+    # Don't leak full URLs to third parties on outbound clicks
+    Header always set Referrer-Policy "strict-origin-when-cross-origin"
+
+    # Trim default-allowed browser features the app doesn't use
+    Header always set Permissions-Policy "geolocation=(), microphone=(), camera=(), payment=()"
+
+    # Remove the X-Powered-By: PHP/x.y header so the PHP version isn't broadcast
+    Header always unset X-Powered-By
+
+    # HSTS — uncomment ONLY after the site is fully HTTPS and you're sure you
+    # won't go back. Once a browser caches HSTS it will refuse plain HTTP for
+    # `max-age` seconds.
+    # Header always set Strict-Transport-Security "max-age=31536000; includeSubDomains"
+</IfModule>
+
+
+# -----------------------------------------------------------------------------
+# (Optional) Force HTTPS — uncomment once a valid certificate is installed.
+# -----------------------------------------------------------------------------
+# <IfModule mod_rewrite.c>
+#     RewriteEngine On
+#     RewriteCond %{HTTPS} !=on
+#     RewriteRule ^ https://%{HTTP_HOST}%{REQUEST_URI} [L,R=301]
+# </IfModule>
