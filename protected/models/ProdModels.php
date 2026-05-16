@@ -133,7 +133,7 @@ class ProdModels extends CActiveRecord
             'warranty' => 'Warranty (Month)',
             'activePrice' => 'Price (Pictorial)',
             'unit_id' => 'Unit',
-            'pcs_per_ctn' => 'Pcs / Ctn',
+            'pcs_per_ctn' => 'Pieces per Carton',
             'description' => 'Description',
             'image' => 'Image',
             'purchase_price' => 'Purchase Price',
