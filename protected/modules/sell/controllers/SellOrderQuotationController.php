@@ -83,12 +83,12 @@ class SellOrderQuotationController extends RController
 
             try {
                 if ($model->save()) {
-                    $qtyList = $_POST['SellOrderQuotationDetails']['temp_qty'] ?? [];
-                    $total_item = count(array_filter($qtyList, function ($qty) {
-                        return (int)$qty > 0;
-                    }));
-
-                    $qtys = $_POST['SellOrderQuotationDetails']['temp_qty'] ?? [];
+                    $ctnList = $_POST['SellOrderQuotationDetails']['temp_ctn'] ?? [];
+                    $pcsList = $_POST['SellOrderQuotationDetails']['temp_pcs'] ?? [];
+                    $total_item = 0;
+                    foreach ($ctnList as $k => $c) {
+                        if ((int)$c > 0 || (int)($pcsList[$k] ?? 0) > 0) $total_item++;
+                    }
 
                     $per_item_discount = 0;
 
@@ -97,10 +97,15 @@ class SellOrderQuotationController extends RController
                     }
                     foreach ($_POST['SellOrderQuotationDetails']['temp_model_id'] as $key => $model_id) {
 
-                        if (empty($_POST['SellOrderQuotationDetails']['temp_qty'][$key]) ||
-                            (float)$_POST['SellOrderQuotationDetails']['temp_qty'][$key] <= 0) {
+                        $ctn = (int)($ctnList[$key] ?? 0);
+                        $pcs = (int)($pcsList[$key] ?? 0);
+                        if ($ctn <= 0 && $pcs <= 0) {
                             continue;
                         }
+
+                        $prod = ProdModels::model()->findByPk($model_id);
+                        $ppc = max(1, (int)$prod->pcs_per_ctn);
+                        $effectiveQty = $ctn + ($pcs / $ppc);
 
                         $percentage_discount = 0;
                         if ($_POST['SellOrderQuotationDetails']['temp_unit_price'][$key] > 0) {
@@ -110,18 +115,20 @@ class SellOrderQuotationController extends RController
 
                         $purchasePrice = $_POST['SellOrderQuotationDetails']['temp_pp'][$key];
                         if (!$purchasePrice > 0) {
-                            $purchasePrice = ProdModels::model()->findByPk($model_id)->purchase_price;
+                            $purchasePrice = $prod->purchase_price;
                         }
                         $model2 = new SellOrderQuotationDetails();
                         $model2->sell_order_id = $model->id;
                         $model2->model_id = $model_id;
-                        $model2->qty = $_POST['SellOrderQuotationDetails']['temp_qty'][$key];
+                        $model2->ctn_qty = $ctn;
+                        $model2->pcs_qty = $pcs;
+                        $model2->qty = $effectiveQty;
                         $model2->amount = $_POST['SellOrderQuotationDetails']['temp_unit_price'][$key];
                         $model2->row_total = $_POST['SellOrderQuotationDetails']['temp_row_total'][$key];
                         $model2->discount_amount = $per_item_discount;
                         $model2->discount_percentage = $percentage_discount;
                         $model2->pp = $purchasePrice;
-                        $model2->costing = round(((float)$model2->qty * (float)$purchasePrice), 2);
+                        $model2->costing = round(($effectiveQty * (float)$purchasePrice), 2);
                         if (!$model2->save()) {
                             $transaction->rollBack();
                             throw new CHttpException(500, sprintf('Error in saving order details! %s <br>', json_encode($model2->getErrors())));
@@ -202,8 +209,13 @@ class SellOrderQuotationController extends RController
                 $model->sr_commission = $_POST['SellOrderQuotation']['sr_commission'] ?? 0;
                 if ($model->save()) {
 
-                    $total_item = count($_POST['SellOrderQuotationDetails']['temp_model_id']);
-                    $per_item_discount = $model->discount_amount / $total_item;
+                    $ctnList = $_POST['SellOrderQuotationDetails']['temp_ctn'] ?? [];
+                    $pcsList = $_POST['SellOrderQuotationDetails']['temp_pcs'] ?? [];
+                    $total_item = 0;
+                    foreach ($ctnList as $k => $c) {
+                        if ((int)$c > 0 || (int)($pcsList[$k] ?? 0) > 0) $total_item++;
+                    }
+                    $per_item_discount = $total_item > 0 ? $model->discount_amount / $total_item : 0;
 
 
                     $criteriaDel = new CDbCriteria;
@@ -211,9 +223,15 @@ class SellOrderQuotationController extends RController
                     SellOrderQuotationDetails::model()->deleteAll($criteriaDel);
 
                     foreach ($_POST['SellOrderQuotationDetails']['temp_model_id'] as $key => $model_id) {
-                        if ($_POST['SellOrderQuotationDetails']['temp_qty'][$key] <= 0) {
+                        $ctn = (int)($ctnList[$key] ?? 0);
+                        $pcs = (int)($pcsList[$key] ?? 0);
+                        if ($ctn <= 0 && $pcs <= 0) {
                             continue;
                         }
+
+                        $prod = ProdModels::model()->findByPk($model_id);
+                        $ppc = max(1, (int)$prod->pcs_per_ctn);
+                        $effectiveQty = $ctn + ($pcs / $ppc);
 
                         $purchasePrice = $_POST['SellOrderQuotationDetails']['temp_pp'][$key];
                         $percentage_discount =  $per_item_discount != 0 ? ($per_item_discount / $_POST['SellOrderQuotationDetails']['temp_unit_price'][$key]) * 100 : 0;
@@ -221,13 +239,15 @@ class SellOrderQuotationController extends RController
                         $model2 = new SellOrderQuotationDetails();
                         $model2->sell_order_id = $model->id;
                         $model2->model_id = $model_id;
-                        $model2->qty = $_POST['SellOrderQuotationDetails']['temp_qty'][$key];
+                        $model2->ctn_qty = $ctn;
+                        $model2->pcs_qty = $pcs;
+                        $model2->qty = $effectiveQty;
                         $model2->amount = $_POST['SellOrderQuotationDetails']['temp_unit_price'][$key];
                         $model2->row_total = $_POST['SellOrderQuotationDetails']['temp_row_total'][$key];
                         $model2->discount_amount = $per_item_discount;
                         $model2->discount_percentage = $percentage_discount;
                         $model2->pp = $purchasePrice;
-                        $model2->costing = round(($model2->qty * $purchasePrice), 2);
+                        $model2->costing = round(($effectiveQty * (float)$purchasePrice), 2);
                         if (!$model2->save()) {
                             $transaction->rollBack();
                             throw new CHttpException(500, sprintf('Error in saving order details! %s <br>', json_encode($model2->getErrors())));

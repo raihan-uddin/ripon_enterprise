@@ -20,8 +20,49 @@ class ProdModelsController extends RController
             -Jquery_showprodSearch
             -Jquery_showprodCodeSearch
             -Jquery_getCompanyProducts
-            -SubCatOfThisCat',
+            -SubCatOfThisCat
+            -AjaxUpdatePcsPerCtn',
         );
+    }
+
+    /**
+     * AJAX: update pcs_per_ctn for a product. Used from the quotation form.
+     */
+    public function actionAjaxUpdatePcsPerCtn()
+    {
+        header('Content-Type: application/json; charset=utf-8');
+
+        if (!Yii::app()->user->checkAccess('ProdModels.Update')) {
+            http_response_code(403);
+            echo CJSON::encode(['status' => 'error', 'message' => 'You do not have permission to update products.']);
+            Yii::app()->end();
+        }
+
+        $id  = (int)($_POST['id'] ?? 0);
+        $ppc = (int)($_POST['pcs_per_ctn'] ?? 0);
+
+        if ($id <= 0 || $ppc < 1) {
+            http_response_code(400);
+            echo CJSON::encode(['status' => 'error', 'message' => 'Invalid input.']);
+            Yii::app()->end();
+        }
+
+        $model = ProdModels::model()->findByPk($id);
+        if (!$model) {
+            http_response_code(404);
+            echo CJSON::encode(['status' => 'error', 'message' => 'Product not found.']);
+            Yii::app()->end();
+        }
+
+        $model->pcs_per_ctn = $ppc;
+        if (!$model->save(true, ['pcs_per_ctn', 'updated_at', 'updated_by'])) {
+            http_response_code(500);
+            echo CJSON::encode(['status' => 'error', 'message' => 'Save failed.', 'errors' => $model->getErrors()]);
+            Yii::app()->end();
+        }
+
+        echo CJSON::encode(['status' => 'success', 'id' => $id, 'pcs_per_ctn' => $ppc]);
+        Yii::app()->end();
     }
 
     public function allowedActions()

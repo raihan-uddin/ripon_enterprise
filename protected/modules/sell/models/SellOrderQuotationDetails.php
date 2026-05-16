@@ -63,6 +63,7 @@ class SellOrderQuotationDetails extends CActiveRecord
     public $so_no;
     public $customer_id;
     public $company_name;
+    public $pcs_per_ctn;
 
 	/**
 	 * @return string the associated database table name
@@ -81,12 +82,12 @@ class SellOrderQuotationDetails extends CActiveRecord
 		// will receive user inputs.
 		return array(
             array('sell_order_id, model_id', 'required'),
-            array('sell_order_id, model_id,  created_by, updated_by, warranty', 'numerical', 'integerOnly' => true),
+            array('sell_order_id, model_id, ctn_qty, pcs_qty, created_by, updated_by, warranty', 'numerical', 'integerOnly' => true),
             array('discount_amount, discount_percentage, pp', 'numerical'),
             array('qty, amount, row_total, costing', 'numerical'),
             array('created_at, updated_at, color, note, product_sl_no', 'safe'),
             // The following rule is used by search().
-            array('id, sell_order_id, model_id, qty, note, product_sl_no, pp, amount, discount_amount, discount_percentage, row_total, warranty, color, created_by, created_at, updated_by, updated_at, costing', 'safe', 'on' => 'search'),
+            array('id, sell_order_id, model_id, qty, ctn_qty, pcs_qty, note, product_sl_no, pp, amount, discount_amount, discount_percentage, row_total, warranty, color, created_by, created_at, updated_by, updated_at, costing', 'safe', 'on' => 'search'),
         );
 	}
 
@@ -111,6 +112,8 @@ class SellOrderQuotationDetails extends CActiveRecord
             'sell_order_id' => 'Sell Order',
             'model_id' => 'Product',
             'qty' => 'Qty',
+            'ctn_qty' => 'Ctn',
+            'pcs_qty' => 'Pcs',
             'color' => 'Color',
             'note' => 'Product Note',
             'amount' => 'Unit Price',
