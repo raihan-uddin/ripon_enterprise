@@ -366,6 +366,60 @@ Yii::app()->clientScript->registerCoreScript("jquery.ui");
     .has-tooltip:hover::before,
     .has-tooltip:focus-within::after,
     .has-tooltip:focus-within::before { opacity: 1; transform: translateY(0); }
+
+    /* =========================================================
+       PCS-PER-CTN CHIP — sized for touch by default
+       ========================================================= */
+    .ppc-chip {
+        display: inline-flex;
+        align-items: center;
+        gap: 6px;
+        min-height: 32px;
+        padding: 4px 10px !important;
+        font-size: 12px;
+    }
+    .ppc-edit-wrap {
+        display: inline-flex;
+        align-items: center;
+        gap: 6px;
+    }
+    .ppc-edit-btn {
+        display: inline-flex;
+        align-items: center;
+        justify-content: center;
+        width: 36px;
+        height: 36px;
+        border: 1px solid #b7640a;
+        border-radius: 4px;
+        background: #fff;
+        color: #b7640a;
+        cursor: pointer;
+        padding: 0;
+        line-height: 1;
+        font-size: 16px;
+        touch-action: manipulation;
+    }
+    .ppc-edit-btn.save { background: #b7640a; color: #fff; }
+    .ppc-edit-btn:active { transform: translateY(1px); }
+    .ppc-edit {
+        min-height: 36px;
+        width: 64px !important;
+        text-align: center;
+        font-size: 14px !important;
+        border: 1px solid #b7640a;
+        border-radius: 4px;
+        padding: 0 6px !important;
+    }
+
+    /* =========================================================
+       Ctn / Pcs / Unit Price / Row Total — touch-sized by default
+       (this form is regularly used on large touch screens)
+       ========================================================= */
+    .temp_ctn, .temp_pcs, .temp_unit_price, .row-total {
+        min-height: 38px !important;
+        font-size: 15px !important;
+        padding: 6px 8px !important;
+    }
 </style>
 
 <script>
@@ -557,7 +611,7 @@ Yii::app()->clientScript->registerCoreScript("jquery.ui");
                             <?php
                             $criteria = new CDbCriteria();
                             $criteria->select = "
-                                t.id, t.model_name, t.code, t.sell_price, t.purchase_price,
+                                t.id, t.model_name, t.code, t.sell_price, t.purchase_price, t.pcs_per_ctn,
                                 companies.name AS company_name,
                                 (SUM(inventory.stock_in) - SUM(inventory.stock_out)) AS current_stock
                             ";
@@ -583,7 +637,7 @@ Yii::app()->clientScript->registerCoreScript("jquery.ui");
                                     <!-- Company Header -->
                                     <tr class="company-header"
                                         data-target="company-<?= $groupIndex ?>">
-                                        <td colspan="6" class="p-0" style="background:#fff;">
+                                        <td colspan="7" class="p-0" style="background:#fff;">
                                             <div class="company-bar">
                                                 <div class="company-bar-top">
                                                     <span class="company-name">
@@ -613,7 +667,8 @@ Yii::app()->clientScript->registerCoreScript("jquery.ui");
                                         <th style="width:5px; color:#fff; font-size:11px; font-weight:700; text-transform:uppercase; letter-spacing:1px;">#</th>
                                         <th style="max-width:150px; color:#fff; font-size:12px; font-weight:700; text-transform:uppercase; letter-spacing:1px;">Product</th>
                                         <th style="width:10px; color:#fff; font-size:12px; font-weight:700; text-transform:uppercase; letter-spacing:1px;" class="text-center">Stock</th>
-                                        <th style="width:10%; color:#fff; font-size:12px; font-weight:700; text-transform:uppercase; letter-spacing:1px;" class="text-center">Qty</th>
+                                        <th style="width:7%; color:#fff; font-size:12px; font-weight:700; text-transform:uppercase; letter-spacing:1px;" class="text-center">Ctn</th>
+                                        <th style="width:7%; color:#fff; font-size:12px; font-weight:700; text-transform:uppercase; letter-spacing:1px;" class="text-center">Pcs</th>
                                         <th style="width:10%; color:#fff; font-size:12px; font-weight:700; text-transform:uppercase; letter-spacing:1px;" class="text-center">Unit Price</th>
                                         <th style="width:10%; color:#fff; font-size:12px; font-weight:700; text-transform:uppercase; letter-spacing:1px;" class="text-center">Row Total</th>
                                     </tr>
@@ -630,6 +685,11 @@ Yii::app()->clientScript->registerCoreScript("jquery.ui");
                                         <br>
                                         <span style="font-size:11px;">
                                             <span style="background:#e8f4fd; color:#1a6fa3; padding:1px 5px; border-radius:3px; font-family:monospace;"><?php echo $item->code; ?></span>
+                                            <span class="ppc-chip" data-id="<?php echo $item->id; ?>" data-ppc="<?php echo (int)$item->pcs_per_ctn ?: 1; ?>"
+                                                  title="Click to edit pack size"
+                                                  style="background:#fff4e0; color:#b7640a; padding:1px 6px; border-radius:3px; cursor:pointer; margin-left:4px; font-family:monospace; user-select:none;">
+                                                <?php echo (int)$item->pcs_per_ctn ?: 1; ?>/ctn
+                                            </span>
                                         </span>
                                         <input type="hidden" class="form-control temp_model_id"
                                                value="<?php echo $item->id; ?>"
@@ -651,13 +711,30 @@ Yii::app()->clientScript->registerCoreScript("jquery.ui");
                                         </span>
                                         <div class="row-hint text-danger small d-none"></div>
                                     </td>
-                                    <td class="text-center" data-label="Qty">
+                                    <?php $ppc = max(1, (int)$item->pcs_per_ctn); ?>
+                                    <td class="text-center" data-label="Ctn">
                                         <input type="text"
-                                               class="form-control text-center temp_qty"
+                                               class="form-control text-center temp_ctn"
                                                value=""
-                                               name="SellOrderQuotationDetails[temp_qty][]"
+                                               name="SellOrderQuotationDetails[temp_ctn][]"
                                                placeholder="0"
-                                               style="width:70px; margin:0 auto; font-weight:600; font-size:14px; border:2px solid #c8d8e8; border-radius:6px; padding:4px 6px;">
+                                               inputmode="numeric"
+                                               data-pcs-per-ctn="<?php echo $ppc; ?>"
+                                               style="width:60px; margin:0 auto; font-weight:600; font-size:14px; border:2px solid #c8d8e8; border-radius:6px; padding:4px 6px;">
+                                    </td>
+                                    <td class="text-center" data-label="Pcs">
+                                        <input type="text"
+                                               class="form-control text-center temp_pcs"
+                                               value=""
+                                               name="SellOrderQuotationDetails[temp_pcs][]"
+                                               placeholder="0"
+                                               inputmode="numeric"
+                                               data-pcs-per-ctn="<?php echo $ppc; ?>"
+                                               style="width:60px; margin:0 auto; font-weight:600; font-size:14px; border:2px solid #c8d8e8; border-radius:6px; padding:4px 6px;">
+                                        <input type="hidden"
+                                               class="temp_qty"
+                                               value=""
+                                               name="SellOrderQuotationDetails[temp_qty][]">
                                     </td>
                                     <td class="text-center" data-label="Unit Price">
                                         <input type="text"
@@ -700,11 +777,9 @@ Yii::app()->clientScript->registerCoreScript("jquery.ui");
                         <div class="summary-fields">
                             <div class="field">
                                 <small>Total Qty</small>
-                                <?php echo $form->textField($model, 'total_qty', [
-                                        'class' => 'form-control text-center',
-                                        'placeholder' => '0',
-                                        'readonly' => true
-                                ]); ?>
+                                <input type="text" id="SellOrderQuotation_total_qty_display"
+                                       class="form-control text-center" placeholder="0" readonly>
+                                <?php echo $form->hiddenField($model, 'total_qty'); ?>
                             </div>
 
                             <div class="field">
@@ -973,6 +1048,8 @@ Yii::app()->clientScript->registerCoreScript("jquery.ui");
                 COMPANY_HEADER: '.company-header',
                 ROW: '.item',
                 QTY: '.temp_qty',
+                CTN: '.temp_ctn',
+                PCS: '.temp_pcs',
                 PRICE: '.temp_unit_price',
                 ROW_TOTAL: '.row-total',
                 COST: '.temp-costing',
@@ -1022,6 +1099,100 @@ Yii::app()->clientScript->registerCoreScript("jquery.ui");
         };
 
         /* ==========================
+         * PCS-PER-CTN INLINE EDIT
+         * ========================== */
+        function ppcRestore($chip, ppc) {
+            $chip.data('ppc', ppc).attr('data-ppc', ppc).html(ppc + '/ctn');
+        }
+
+        function ppcCommit($chip, oldPpc, newPpc) {
+            if (newPpc === oldPpc) { ppcRestore($chip, oldPpc); return; }
+            const id = parseInt($chip.data('id'), 10);
+            $.post('<?php echo Yii::app()->createUrl('/prodModels/AjaxUpdatePcsPerCtn'); ?>',
+                { id: id, pcs_per_ctn: newPpc },
+                function (resp) {
+                    if (resp && resp.status === 'success') {
+                        ppcRestore($chip, newPpc);
+                        const $row = $chip.closest('tr');
+                        $row.find(CFG.SELECTORS.CTN).attr('data-pcs-per-ctn', newPpc).data('pcsPerCtn', newPpc);
+                        $row.find(CFG.SELECTORS.PCS).attr('data-pcs-per-ctn', newPpc).data('pcsPerCtn', newPpc);
+                        recomputeRowQty($row);
+                        $row.data('lastEdited', 'price_qty');
+                        const group = $row.attr('class').split(/\s+/).find(c => c.startsWith('company-'));
+                        updateRow($row);
+                        calculateVat();
+                        const totals = calculateTotals();
+                        calculateGrandTotal();
+                        calculateAvgSP(totals.qtyTotal, totals.rowTotal);
+                        if (group) { updateCompanySummary(group); }
+                        if (typeof toastr !== 'undefined') toastr.success('Pack size updated.');
+                    } else {
+                        ppcRestore($chip, oldPpc);
+                        if (typeof toastr !== 'undefined') toastr.error((resp && resp.message) || 'Update failed.');
+                    }
+                },
+                'json'
+            ).fail(function (xhr) {
+                ppcRestore($chip, oldPpc);
+                if (typeof toastr !== 'undefined') toastr.error(xhr.responseJSON && xhr.responseJSON.message || 'Update failed.');
+            });
+        }
+
+        $(document).on('click', '.ppc-chip', function (e) {
+            if ($(e.target).closest('.ppc-edit-wrap').length) return;
+            e.stopPropagation();
+            const $chip = $(this);
+            if ($chip.find('.ppc-edit-wrap').length) return;
+            const current = parseInt($chip.data('ppc'), 10) || 1;
+            const html =
+                '<span class="ppc-edit-wrap">' +
+                  '<input type="number" min="1" step="1" class="ppc-edit" value="' + current + '" inputmode="numeric" />' +
+                  '<button type="button" class="ppc-edit-btn save" aria-label="Save">&#10003;</button>' +
+                  '<button type="button" class="ppc-edit-btn cancel" aria-label="Cancel">&#10005;</button>' +
+                '</span>';
+            $chip.html(html);
+            $chip.find('.ppc-edit').focus().select();
+        });
+
+        $(document).on('click', '.ppc-edit-btn.save', function (e) {
+            e.stopPropagation();
+            const $chip = $(this).closest('.ppc-chip');
+            const oldPpc = parseInt($chip.data('ppc'), 10) || 1;
+            const newPpc = Math.max(1, parseInt($chip.find('.ppc-edit').val(), 10) || 1);
+            ppcCommit($chip, oldPpc, newPpc);
+        });
+
+        $(document).on('click', '.ppc-edit-btn.cancel', function (e) {
+            e.stopPropagation();
+            const $chip = $(this).closest('.ppc-chip');
+            ppcRestore($chip, parseInt($chip.data('ppc'), 10) || 1);
+        });
+
+        $(document).on('keydown', '.ppc-edit', function (e) {
+            const $chip = $(this).closest('.ppc-chip');
+            const oldPpc = parseInt($chip.data('ppc'), 10) || 1;
+            if (e.key === 'Enter') {
+                e.preventDefault();
+                ppcCommit($chip, oldPpc, Math.max(1, parseInt($(this).val(), 10) || 1));
+            } else if (e.key === 'Escape') {
+                e.preventDefault();
+                ppcRestore($chip, oldPpc);
+            }
+        });
+
+        /* ==========================
+         * CTN/PCS → QTY
+         * ========================== */
+        function recomputeRowQty($row) {
+            const $ctn = $row.find(CFG.SELECTORS.CTN);
+            const ctn  = safeNumber($ctn.val());
+            const pcs  = safeNumber($row.find(CFG.SELECTORS.PCS).val());
+            const ppc  = Math.max(1, parseInt($ctn.data('pcsPerCtn'), 10) || 1);
+            const qty  = ctn + (pcs / ppc);
+            $row.find(CFG.SELECTORS.QTY).val(qty > 0 ? qty : '');
+        }
+
+        /* ==========================
          * UI HELPERS
          * ========================== */
         function focusRow($row, state) { $row.toggleClass('focused', state); }
@@ -1058,19 +1229,24 @@ Yii::app()->clientScript->registerCoreScript("jquery.ui");
          * TOTALS
          * ========================== */
         function calculateTotals() {
-            let qtyTotal = 0, rowTotal = 0, totalCost = 0;
+            let qtyTotal = 0, ctnTotal = 0, pcsTotal = 0, rowTotal = 0, totalCost = 0;
 
             $(CFG.SELECTORS.ROW).each(function () {
                 const $row = $(this);
                 const qty  = safeNumber($row.find(CFG.SELECTORS.QTY).val());
+                const ctn  = safeNumber($row.find(CFG.SELECTORS.CTN).val());
+                const pcs  = safeNumber($row.find(CFG.SELECTORS.PCS).val());
                 const sell = safeNumber($row.find(CFG.SELECTORS.PRICE).val());
                 const cost = safeNumber($row.find(CFG.SELECTORS.COST).val());
                 qtyTotal  += qty;
+                ctnTotal  += ctn;
+                pcsTotal  += pcs;
                 rowTotal  += qty * sell;
                 totalCost += qty * cost;
             });
 
             $(CFG.SELECTORS.FORM.TOTAL_QTY).val(qtyTotal);
+            $('#SellOrderQuotation_total_qty_display').val(formatCtnPcs(ctnTotal, pcsTotal));
             $(CFG.SELECTORS.FORM.TOTAL_AMOUNT).val(rowTotal.toFixed(CFG.DECIMALS)).trigger('change');
             return { qtyTotal, rowTotal, totalCost };
         }
@@ -1103,17 +1279,26 @@ Yii::app()->clientScript->registerCoreScript("jquery.ui");
         /* ==========================
          * COMPANY SUMMARY
          * ========================== */
+        function formatCtnPcs(ctn, pcs) {
+            if (ctn === 0 && pcs === 0) return '0';
+            if (pcs === 0) return ctn + ' ctn';
+            if (ctn === 0) return pcs + ' pcs';
+            return ctn + ' ctn + ' + pcs + ' pcs';
+        }
+
         function updateCompanySummary(groupClass) {
-            let sku = 0, qty = 0, amount = 0, cost = 0, filled = 0;
+            let sku = 0, qty = 0, ctnSum = 0, pcsSum = 0, amount = 0, cost = 0, filled = 0;
             const $rows = $('.' + groupClass + '.item');
             const rows  = $rows.length;
 
             $rows.each(function () {
                 const $row = $(this);
                 const q  = safeNumber($row.find(CFG.SELECTORS.QTY).val());
+                const c  = safeNumber($row.find(CFG.SELECTORS.CTN).val());
+                const p  = safeNumber($row.find(CFG.SELECTORS.PCS).val());
                 const sp = safeNumber($row.find(CFG.SELECTORS.PRICE).val());
                 const cp = safeNumber($row.find(CFG.SELECTORS.COST).val());
-                if (q > 0) { sku++; filled++; qty += q; amount += q * sp; cost += q * cp; }
+                if (q > 0) { sku++; filled++; qty += q; ctnSum += c; pcsSum += p; amount += q * sp; cost += q * cp; }
                 updateRow($row);
             });
 
@@ -1122,8 +1307,9 @@ Yii::app()->clientScript->registerCoreScript("jquery.ui");
             const progress = rows > 0 ? (filled / rows) * 100 : 0;
 
             const $header = $(`${CFG.SELECTORS.COMPANY_HEADER}[data-target="${groupClass}"]`);
+            $header.attr('data-ctn', ctnSum).attr('data-pcs', pcsSum);
             $header.find('.sku-count b').text(sku);
-            $header.find('.qty-total b').text(qty);
+            $header.find('.qty-total b').text(formatCtnPcs(ctnSum, pcsSum));
             $header.find('.amount-total b').text('৳ ' + amount.toFixed(2));
             $header.find('.avg-price b').text('৳ ' + avg.toFixed(2));
             $header.find('.cost-total b').text('৳ ' + cost.toFixed(2));
@@ -1138,17 +1324,18 @@ Yii::app()->clientScript->registerCoreScript("jquery.ui");
         }
 
         function updateGlobalBar() {
-            let gSku = 0, gQty = 0, gTotal = 0, gCost = 0;
+            let gSku = 0, gCtn = 0, gPcs = 0, gTotal = 0, gCost = 0;
             $(CFG.SELECTORS.COMPANY_HEADER).each(function () {
                 gSku   += safeNumber($(this).find('.sku-count b').text());
-                gQty   += safeNumber($(this).find('.qty-total b').text());
+                gCtn   += safeNumber($(this).attr('data-ctn'));
+                gPcs   += safeNumber($(this).attr('data-pcs'));
                 gTotal += safeNumber($(this).find('.amount-total b').text().replace(/[^\d.]/g, ''));
                 gCost  += safeNumber($(this).find('.cost-total b').text().replace(/[^\d.]/g, ''));
             });
 
             const margin = gTotal > 0 ? ((gTotal - gCost) / gTotal) * 100 : 0;
             $(CFG.SELECTORS.GLOBAL.SKU).text(gSku);
-            $(CFG.SELECTORS.GLOBAL.QTY).text(gQty);
+            $(CFG.SELECTORS.GLOBAL.QTY).text(formatCtnPcs(gCtn, gPcs));
             $(CFG.SELECTORS.GLOBAL.TOTAL).text('৳ ' + gTotal.toFixed(2));
             $(CFG.SELECTORS.GLOBAL.COST).text('৳ ' + gCost.toFixed(2));
             $(CFG.SELECTORS.GLOBAL.MARGIN).text(margin.toFixed(1) + '%')
@@ -1161,31 +1348,38 @@ Yii::app()->clientScript->registerCoreScript("jquery.ui");
         $(document).on('click', 'input', function () { this.select(); });
 
         $(document).on('input',
-            `${CFG.SELECTORS.QTY}, ${CFG.SELECTORS.PRICE}, ${CFG.SELECTORS.ROW_TOTAL},
+            `${CFG.SELECTORS.PRICE}, ${CFG.SELECTORS.ROW_TOTAL},
              ${CFG.SELECTORS.FORM.VAT_P}, ${CFG.SELECTORS.FORM.DISCOUNT}, ${CFG.SELECTORS.FORM.DELIVERY},
              ${CFG.SELECTORS.FORM.ROAD}, ${CFG.SELECTORS.FORM.DAMAGE}, ${CFG.SELECTORS.FORM.COMMISSION}`,
             function () { sanitizeDecimalInput(this); }
         );
 
+        $(document).on('input', `${CFG.SELECTORS.CTN}, ${CFG.SELECTORS.PCS}`, function () {
+            this.value = (this.value || '').replace(/[^0-9]/g, '');
+        });
+
         $(document)
-            .on('focus', `${CFG.SELECTORS.QTY}, ${CFG.SELECTORS.PRICE}`, function () {
+            .on('focus', `${CFG.SELECTORS.CTN}, ${CFG.SELECTORS.PCS}, ${CFG.SELECTORS.PRICE}`, function () {
                 focusRow($(this).closest('tr'), true);
             })
-            .on('blur', `${CFG.SELECTORS.QTY}, ${CFG.SELECTORS.PRICE}`, function () {
+            .on('blur', `${CFG.SELECTORS.CTN}, ${CFG.SELECTORS.PCS}, ${CFG.SELECTORS.PRICE}`, function () {
                 focusRow($(this).closest('tr'), false);
             });
 
-        $(document).on('keydown', `${CFG.SELECTORS.QTY}, ${CFG.SELECTORS.PRICE}`, function (e) {
+        $(document).on('keydown', `${CFG.SELECTORS.CTN}, ${CFG.SELECTORS.PCS}, ${CFG.SELECTORS.PRICE}`, function (e) {
             if (e.key === 'Enter') {
                 e.preventDefault();
-                const $inputs = $(`${CFG.SELECTORS.QTY}:visible, ${CFG.SELECTORS.PRICE}:visible`);
+                const $inputs = $(`${CFG.SELECTORS.CTN}:visible, ${CFG.SELECTORS.PCS}:visible, ${CFG.SELECTORS.PRICE}:visible`);
                 const idx = $inputs.index(this);
                 if (idx > -1 && idx < $inputs.length - 1) { $inputs.eq(idx + 1).focus(); }
             }
         });
 
-        $(document).on('input', `${CFG.SELECTORS.QTY}, ${CFG.SELECTORS.PRICE}`, function () {
+        $(document).on('input', `${CFG.SELECTORS.CTN}, ${CFG.SELECTORS.PCS}, ${CFG.SELECTORS.PRICE}`, function () {
             const $row = $(this).closest('tr');
+            if ($(this).is(CFG.SELECTORS.CTN) || $(this).is(CFG.SELECTORS.PCS)) {
+                recomputeRowQty($row);
+            }
             $row.data('lastEdited', 'price_qty');
             const group = $row.attr('class').split(/\s+/).find(c => c.startsWith('company-'));
             updateRow($row);

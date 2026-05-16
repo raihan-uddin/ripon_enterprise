@@ -262,11 +262,15 @@
                     <table style="width: 100%; border-collapse: collapse; font-size: 15px;" class="item-list">
                         <thead>
                         <tr>
-                            <td style="text-align: center; width: 2%; border: 1px solid black;">#</td>
-                            <td style="text-align: center; border: 1px solid black;">Description</td>
-                            <td style="text-align: center; width: 15%; border: 1px solid black;">Qty</td>
-                            <td style="text-align: center; width: 15%; border: 1px solid black;">Price</td>
-                            <td style="text-align: center; width: 15%; border: 1px solid black;">Total</td>
+                            <td rowspan="2" style="text-align: center; width: 2%; border: 1px solid black;">#</td>
+                            <td rowspan="2" style="text-align: center; border: 1px solid black;">Description</td>
+                            <td rowspan="2" style="text-align: center; width: 15%; border: 1px solid black;">Qty</td>
+                            <td colspan="2" style="text-align: center; width: 18%; border: 1px solid black;">Price</td>
+                            <td rowspan="2" style="text-align: center; width: 15%; border: 1px solid black;">Total</td>
+                        </tr>
+                        <tr>
+                            <td style="text-align: center; width: 9%; border: 1px solid black;">Ctn</td>
+                            <td style="text-align: center; width: 9%; border: 1px solid black;">Pcs</td>
                         </tr>
                         </thead>
                         <tbody>
@@ -280,7 +284,10 @@
                         $sr_commission = $item->sr_commission;
 
                         $criteria = new CDbCriteria();
-                        $criteria->select = "pm.model_name, pm.code, pm.image, sum(t.qty) as qty, t.amount, t.discount_amount,
+                        $criteria->select = "pm.model_name, pm.code, pm.image, sum(t.qty) as qty,
+                                            sum(t.ctn_qty) as ctn_qty, sum(t.pcs_qty) as pcs_qty,
+                                            pm.pcs_per_ctn as pcs_per_ctn,
+                                            t.amount, t.discount_amount,
                                             t.note, sum(t.row_total) as row_total, sum(costing) as costing,
                                             companies.name as company_name, pm.description";
                         $criteria->join =
@@ -308,30 +315,29 @@
                                 <tr>
                                     <td style="text-align: center;"><?= $i++ ?></td>
                                     <td style="text-align: left; padding-left: 10px;"><?= $dt->model_name ?></td>
-                                    <td style="text-align: center;"><?= rtrim(
-                                        rtrim(
-                                            number_format(
-                                                $dt->qty,
-                                                4,
-                                                ".",
-                                                ",",
-                                            ),
-                                            "0",
-                                        ),
-                                        ".",
-                                    ) ?></td>
-                                    <td style="text-align: right; padding-right: 5px;"><?= rtrim(
-                                        rtrim(
-                                            number_format(
-                                                $dt->amount,
-                                                4,
-                                                ".",
-                                                ",",
-                                            ),
-                                            "0",
-                                        ),
-                                        ".",
-                                    ) ?></td>
+                                    <td style="text-align: center;"><?php
+                                        $c = (int)$dt->ctn_qty;
+                                        $p = (int)$dt->pcs_qty;
+                                        if ($c === 0 && $p === 0) {
+                                            echo rtrim(rtrim(number_format($dt->qty, 4, '.', ','), '0'), '.');
+                                        } elseif ($c > 0 && $p > 0) {
+                                            echo '<b>' . $c . '</b> ctn + <b>' . $p . '</b> pcs';
+                                        } elseif ($c > 0) {
+                                            echo '<b>' . $c . '</b> ctn';
+                                        } else {
+                                            echo '<b>' . $p . '</b> pcs';
+                                        }
+                                    ?></td>
+                                    <?php
+                                        $ppc = max(1, (int)$dt->pcs_per_ctn);
+                                        $perCtn = (float)$dt->amount;
+                                        $perPcs = $perCtn / $ppc;
+                                        $fmt = function($n) {
+                                            return rtrim(rtrim(number_format($n, 4, '.', ','), '0'), '.');
+                                        };
+                                    ?>
+                                    <td style="text-align: right; padding-right: 5px;"><?= $fmt($perCtn) ?></td>
+                                    <td style="text-align: right; padding-right: 5px;"><?= $ppc > 1 ? $fmt($perPcs) : '-' ?></td>
                                     <td style="text-align: right; padding-right: 5px;"><?= rtrim(
                                         rtrim(
                                             number_format(
@@ -350,7 +356,7 @@
                         } else {
                              ?>
                             <tr>
-                                <td colspan="5">
+                                <td colspan="6">
                                     <div class="alert alert-danger" role="alert">No item found</div>
                                 </td>
                             </tr>
@@ -414,7 +420,7 @@
                                 <br><br>
                                 <div style="font-weight: normal;">Note: <?= $item->order_note ?></div>
                             </td>
-                            <td colspan="2" style="border: none; background: white; text-align: right; padding-right: 8px;">Sub Total</td>
+                            <td colspan="3" style="border: none; background: white; text-align: right; padding-right: 8px;">Sub Total</td>
                             <td style="text-align: right; border: none; padding-right: 5px;"><?= rtrim(
                                 rtrim(
                                     number_format($row_total, 4, ".", ","),
@@ -424,7 +430,7 @@
                             ) ?></td>
                         </tr>
                         <tr style="<?= $vatDisplay ?>">
-                            <td colspan="2" style="border: none; background: white; text-align: right; padding-right: 8px; <?= $vatDisplay ?>">Vat (<?= number_format(
+                            <td colspan="3" style="border: none; background: white; text-align: right; padding-right: 8px; <?= $vatDisplay ?>">Vat (<?= number_format(
     $vat_percentage,
     2,
 ) ?>%) (+)</td>
@@ -434,7 +440,7 @@
 ) ?></td>
                         </tr>
                         <tr style="<?= $deliveryChargeDisplay ?>">
-                            <td colspan="2" style="border: none; background: white; text-align: right; padding-right: 8px;">Delivery Charge (+)</td>
+                            <td colspan="3" style="border: none; background: white; text-align: right; padding-right: 8px;">Delivery Charge (+)</td>
                             <td style="text-align: right; border: none; padding-right: 5px;"><?= rtrim(
                                 rtrim(
                                     number_format(
@@ -449,7 +455,7 @@
                             ) ?></td>
                         </tr>
                         <tr style="<?= $discountDisplay ?>">
-                            <td colspan="2" style="border: none; background: white; text-align: right; padding-right: 8px;">Discount (-)</td>
+                            <td colspan="3" style="border: none; background: white; text-align: right; padding-right: 8px;">Discount (-)</td>
                             <td style="text-align: right; border: none; padding-right: 5px;">(<?= rtrim(
                                 rtrim(
                                     number_format(
@@ -464,7 +470,7 @@
                             ) ?>)</td>
                         </tr>
                         <tr style="<?= $roadFeeDisplay ?>">
-                            <td colspan="2" style="border: none; background: white; text-align: right; padding-right: 8px;">Road Fee (-)</td>
+                            <td colspan="3" style="border: none; background: white; text-align: right; padding-right: 8px;">Road Fee (-)</td>
                             <td style="text-align: right; border: none; padding-right: 5px;">(<?= rtrim(
                                 rtrim(
                                     number_format($road_fee, 4, ".", ","),
@@ -474,14 +480,14 @@
                             ) ?>)</td>
                         </tr>
                         <tr style="<?= $damageDisplay ?>">
-                            <td colspan="2" style="border: none; background: white; text-align: right; padding-right: 8px;">Damage (-)</td>
+                            <td colspan="3" style="border: none; background: white; text-align: right; padding-right: 8px;">Damage (-)</td>
                             <td style="text-align: right; border: none; padding-right: 5px;">(<?= rtrim(
                                 rtrim(number_format($damage, 4, ".", ","), "0"),
                                 ".",
                             ) ?>)</td>
                         </tr>
                         <tr style="<?= $srCommissionDisplay ?>">
-                            <td colspan="2" style="border: none; background: white; text-align: right; padding-right: 8px;">SR Commission (-)</td>
+                            <td colspan="3" style="border: none; background: white; text-align: right; padding-right: 8px;">SR Commission (-)</td>
                             <td style="text-align: right; border: none; padding-right: 5px;">(<?= rtrim(
                                 rtrim(
                                     number_format($sr_commission, 4, ".", ","),
@@ -491,7 +497,7 @@
                             ) ?>)</td>
                         </tr>
                         <tr style="font-weight: bold;">
-                            <td colspan="2" style="border: none; background: white; text-align: right; padding-right: 8px;">
+                            <td colspan="3" style="border: none; background: white; text-align: right; padding-right: 8px;">
                                 <div style="height: 1px; width: 100%; border: 1px solid black;"></div>
                                 Net Payable Amount
                             </td>

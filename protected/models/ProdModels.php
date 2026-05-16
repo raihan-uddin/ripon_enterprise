@@ -94,6 +94,7 @@ class ProdModels extends CActiveRecord
         return array(
             array('item_id, brand_id, model_name, code, unit_id', 'required'),
             array('item_id, brand_id, unit_id, stockable, manufacturer_id, status', 'numerical', 'integerOnly' => true),
+            array('pcs_per_ctn', 'numerical', 'integerOnly' => true, 'min' => 1),
             array('sell_price, purchase_price', 'numerical'),
             array('model_name, code, min_order_qty', 'length', 'max' => 255),
             array('warranty', 'numerical'),
@@ -102,7 +103,7 @@ class ProdModels extends CActiveRecord
             array('features, description', 'safe'),
             // The following rule is used by search().
             // Please remove those attributes that should not be searched.
-            array('min_order_qty, id, item_id, brand_id, model_name, manufacturer_id, status, features, stockable, warranty, description,  purchase_price, sell_price', 'safe', 'on' => 'search'),
+            array('min_order_qty, id, item_id, brand_id, model_name, manufacturer_id, status, features, stockable, warranty, description,  purchase_price, sell_price, pcs_per_ctn', 'safe', 'on' => 'search'),
         );
     }
 
@@ -132,6 +133,7 @@ class ProdModels extends CActiveRecord
             'warranty' => 'Warranty (Month)',
             'activePrice' => 'Price (Pictorial)',
             'unit_id' => 'Unit',
+            'pcs_per_ctn' => 'Pcs / Ctn',
             'description' => 'Description',
             'image' => 'Image',
             'purchase_price' => 'Purchase Price',
