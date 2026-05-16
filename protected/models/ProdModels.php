@@ -92,7 +92,7 @@ class ProdModels extends CActiveRecord
         // NOTE: you should only define rules for those attributes that
         // will receive user inputs.
         return array(
-            array('item_id, brand_id, model_name, code, unit_id', 'required'),
+            array('item_id, brand_id, model_name, code, unit_id, pcs_per_ctn', 'required'),
             array('item_id, brand_id, unit_id, stockable, manufacturer_id, status', 'numerical', 'integerOnly' => true),
             array('pcs_per_ctn', 'numerical', 'integerOnly' => true, 'min' => 1),
             array('sell_price, purchase_price', 'numerical'),
@@ -133,7 +133,7 @@ class ProdModels extends CActiveRecord
             'warranty' => 'Warranty (Month)',
             'activePrice' => 'Price (Pictorial)',
             'unit_id' => 'Unit',
-            'pcs_per_ctn' => 'Pcs / Ctn',
+            'pcs_per_ctn' => 'Pieces per Carton',
             'description' => 'Description',
             'image' => 'Image',
             'purchase_price' => 'Purchase Price',
