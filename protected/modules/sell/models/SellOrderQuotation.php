@@ -93,7 +93,7 @@ class SellOrderQuotation extends CActiveRecord
             array('grand_total, discount_amount, discount_percentage, vat_percentage, vat_amount,
             total_amount, delivery_charge, costing, road_fee, damage_value, sr_commission', 'numerical'),
             array('max_sl_no, customer_id, created_by, updated_by', 'numerical', 'integerOnly' => true),
-            array('created_at, updated_at, date, so_no, order_note', 'safe'),
+            array('created_at, updated_at, date, so_no, order_note, total_qty, avg_sp', 'safe'),
             // The following rule is used by search().
             array('id, date, max_sl_no, vat_percentage, so_no, customer_id, discount_percentage,
             discount_amount, grand_total, created_by, created_at, updated_by, updated_at, total_amount, delivery_charge,
