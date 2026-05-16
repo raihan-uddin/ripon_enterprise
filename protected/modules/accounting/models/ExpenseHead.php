@@ -34,6 +34,8 @@ class ExpenseHead extends CActiveRecord
         // will receive user inputs.
         return array(
             array('title', 'required'),
+            array('title', 'filter', 'filter' => 'trim'),
+            array('title', 'unique', 'caseSensitive' => false, 'message' => 'An expense head with this title already exists.'),
             array('status, created_by, updated_by', 'numerical', 'integerOnly' => true),
             array('title', 'length', 'max' => 255),
             array('created_at, updated_at', 'safe'),

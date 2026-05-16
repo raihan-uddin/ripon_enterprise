@@ -27,6 +27,8 @@ class Company extends CActiveRecord
 		// will receive user inputs.
 		return array(
 			array('name', 'required'),
+			array('name', 'filter', 'filter' => 'trim'),
+			array('name', 'unique', 'caseSensitive' => false, 'message' => 'A company with this name already exists.'),
 			array('status', 'numerical', 'integerOnly'=>true),
 			array('name', 'length', 'max'=>255),
 			// The following rule is used by search().

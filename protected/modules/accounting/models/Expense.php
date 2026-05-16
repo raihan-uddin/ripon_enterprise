@@ -70,7 +70,7 @@ class Expense extends CActiveRecord
             array('max_sl_no, is_approved, created_by, updated_by', 'numerical', 'integerOnly' => true),
             array('amount', 'numerical'),
             array('entry_no', 'length', 'max' => 255),
-            array('remarks, created_at, updated_at', 'safe'),
+            array('remarks, created_at, updated_at, created_by_text', 'safe'),
             // The following rule is used by search().
             array('id, max_sl_no, entry_no, date, amount, remarks, is_approved, created_by, created_at, updated_by, updated_at', 'safe', 'on' => 'search'),
         );

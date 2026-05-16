@@ -85,7 +85,7 @@ class MoneyReceipt extends CActiveRecord
             array('customer_id, invoice_id, max_sl_no, payment_type, bank_id, is_approved, created_by, updated_by', 'numerical', 'integerOnly' => true),
             array('amount, discount', 'numerical'),
             array('mr_no, cheque_no', 'length', 'max' => 255),
-            array('cheque_date, remarks, created_at, updated_at', 'safe'),
+            array('cheque_date, remarks, created_at, updated_at, customer_name', 'safe'),
             // The following rule is used by search().
             array('id, date, customer_id, invoice_id, max_sl_no, mr_no, payment_type, bank_id, cheque_no, cheque_date, amount, discount, is_approved, remarks, created_by, created_at, updated_by, updated_at', 'safe', 'on' => 'search'),
         );
