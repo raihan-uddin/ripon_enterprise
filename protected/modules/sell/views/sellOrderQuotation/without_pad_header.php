@@ -6,39 +6,39 @@
     }
 
     .invoice-header-inner {
-        display: flex;
+        display: grid;
+        grid-template-columns: 1fr 2fr 1fr;
         align-items: center;
-        justify-content: space-between;
         gap: 8px;
         padding-bottom: 4px;
     }
 
     .invoice-header-logo {
-        flex: 0 0 auto;
         display: flex;
         align-items: center;
+        justify-content: flex-start;
+        min-width: 0;
     }
 
     .invoice-header-logo img {
         width: 240px;
-        max-width: 240px;
+        max-width: 100%;
         height: auto;
         object-fit: contain;
     }
 
     .invoice-header-company {
-        flex: 1 1 auto;
         text-align: center;
         font-weight: bold;
     }
 
     .invoice-header-barcode {
-        flex: 0 0 auto;
         display: flex;
         flex-direction: column;
         align-items: flex-end;
         justify-content: center;
         overflow: visible;
+        min-width: 0;
     }
 
     .invoice-header-barcode svg {
@@ -66,7 +66,7 @@
             vertical-align: middle;
         }
 
-        .invoice-header-logo { width: 32%; }
+        .invoice-header-logo { width: 25%; }
 
         .invoice-header-company {
             width: 50%;
@@ -81,7 +81,7 @@
         }
 
         .invoice-header-barcode {
-            width: 18%;
+            width: 25%;
             text-align: right;
             max-width: none;
             overflow: visible;
