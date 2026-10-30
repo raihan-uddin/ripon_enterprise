@@ -160,6 +160,23 @@
         .report-header-logo  { width: 20%; }
         .report-header-company { width: 50%; text-align: center; }
         .report-header-meta  { width: 30%; text-align: right; }
+
+        /* Fit all 11 columns on the page instead of clipping the right side */
+        .stock-table-wrapper { overflow: visible !important; }
+        .final-result { width: 100% !important; float: none; }
+        .final-result thead tr.titlesTr th {
+            white-space: normal;
+            letter-spacing: 0;
+            font-size: 9px;
+            padding: 4px 3px;
+        }
+        .final-result thead tr.titlesTr th[style] { min-width: 0 !important; width: auto !important; }
+        .summaryTab tr td,
+        .summaryTab tr th {
+            font-size: 10px;
+            padding: 3px;
+        }
+        .final-result td a { text-decoration: none; color: inherit; }
     }
 </style>
 
