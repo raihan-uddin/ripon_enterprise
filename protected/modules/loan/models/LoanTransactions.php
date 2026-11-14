@@ -105,7 +105,7 @@ class LoanTransactions extends CActiveRecord
 		return new CActiveDataProvider($this, array(
 			'criteria'=>$criteria,
 			'sort'=>array(
-				'defaultOrder'=>'t.transaction_date ASC, t.id ASC',
+				'defaultOrder'=>'t.transaction_date DESC, t.id DESC',
 			),
 		));
 	}
