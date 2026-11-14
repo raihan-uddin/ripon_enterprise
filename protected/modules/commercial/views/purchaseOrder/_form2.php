@@ -43,9 +43,8 @@ Yii::app()->clientScript->registerCoreScript('jquery.ui');
 
     <!-- Col 1 — Order Details -->
     <div class="col-12 col-md-4 mb-4">
-        <div class="card shadow-sm h-100">
-            <div class="card-header text-white"
-                 style="background:linear-gradient(135deg,#6366f1,#4f46e5); padding:10px 16px;">
+        <div class="card card-primary shadow-sm h-100">
+            <div class="card-header">
                 <i class="fa fa-file-text-o mr-1"></i> Order Details
             </div>
             <div class="card-body">
@@ -91,9 +90,8 @@ Yii::app()->clientScript->registerCoreScript('jquery.ui');
 
     <!-- Col 2 — Supplier -->
     <div class="col-12 col-md-4 mb-4">
-        <div class="card shadow-sm h-100">
-            <div class="card-header text-white"
-                 style="background:linear-gradient(135deg,#6366f1,#4f46e5); padding:10px 16px;">
+        <div class="card card-primary shadow-sm h-100">
+            <div class="card-header">
                 <i class="fa fa-truck mr-1"></i> Supplier
             </div>
             <div class="card-body">
@@ -189,9 +187,8 @@ Yii::app()->clientScript->registerCoreScript('jquery.ui');
 
     <!-- Col 3 — Financials -->
     <div class="col-12 col-md-4 mb-4">
-        <div class="card shadow-sm h-100">
-            <div class="card-header text-white"
-                 style="background:linear-gradient(135deg,#6366f1,#4f46e5); padding:10px 16px;">
+        <div class="card card-primary shadow-sm h-100">
+            <div class="card-header">
                 <i class="fa fa-calculator mr-1"></i> Financials
             </div>
             <div class="card-body">
@@ -296,28 +293,123 @@ Yii::app()->clientScript->registerCoreScript('jquery.ui');
 
 </div>
 
+<!-- ── Items table styles (matches sell order entry) ──────────────────────── -->
+<style>
+    #po-global-bar {
+        background: #212529; color: #fff; padding: 6px 12px; font-size: 12px;
+        display: flex; align-items: center; flex-wrap: wrap; border-bottom: 2px solid #17a2b8;
+    }
+    #po-global-bar .g-stat { margin-left: 12px; }
+    #po-global-bar b { font-weight: 600; }
+
+    .po-sub-header th {
+        background: #1a2c3d; color: #fff; border-bottom: 3px solid #17a2b8; border-top: none;
+        font-size: 12px; font-weight: 700; padding: 8px 10px; white-space: nowrap;
+        text-transform: uppercase; letter-spacing: 1px;
+    }
+    .po-sub-header th:first-child { border-left: 4px solid #17a2b8; }
+
+    .po-items #list td { padding: 4px 6px; font-size: 13px; vertical-align: middle; }
+    .po-items .serial { color: #aaa; font-size: 11px; font-weight: 600; letter-spacing: 1px; }
+    .po-items .p-name { font-weight: 600; font-size: 13px; }
+    .po-items .p-meta { font-size: 11px; }
+    .po-items .p-code {
+        background: #e8f4fd; color: #1a6fa3; padding: 1px 5px; border-radius: 3px; font-family: monospace;
+    }
+    .po-items .p-dot  { color: #888; margin: 0 4px; }
+    .po-items .p-cat  { color: #444; }
+
+    .po-items .stock-badge {
+        font-weight: 600; font-size: 13px; padding: 2px 10px; border-radius: 12px;
+        display: inline-block; min-width: 36px;
+    }
+    .po-items .stock-out { background: #fdecea; color: #c0392b; border: 1px solid #e74c3c; }
+    .po-items .stock-low { background: #fff4e0; color: #b7640a; border: 1px solid #f0a500; }
+    .po-items .stock-ok  { background: #e6f9ee; color: #1a7a40; border: 1px solid #2ecc71; }
+
+    .po-items #list input.form-control {
+        margin: 0 auto; font-weight: 600; font-size: 14px; height: auto;
+        border: 2px solid #c8d8e8; border-radius: 6px; padding: 4px 6px;
+        transition: border-color .2s ease, box-shadow .2s ease;
+    }
+    .po-items #list input.form-control:focus {
+        border-color: #236280; box-shadow: 0 0 0 .15rem rgba(35, 98, 128, .25); outline: none;
+    }
+    .po-items #list .temp_qty        { width: 70px; text-align: center; }
+    .po-items #list .temp_unit_price { width: 90px; text-align: right; }
+    .po-items #list .row-total       { width: 100px; text-align: right; font-weight: 700; background: #f8fafc; }
+
+    .po-items tr.item { transition: background .15s ease; }
+    .po-items tr.item.focused { background: #eaf4ff; outline: 1.5px solid #90c8f0; outline-offset: -1px; }
+    .po-items tr.item.error   { background: #fff0f0; outline: 1.5px solid #f5a0a0; outline-offset: -1px; }
+    .po-items tr.item.ok      { background: #f0faf2; outline: 1.5px solid #6dbb85; outline-offset: -1px; }
+</style>
+
+<?php
+$baseCompany = $baseCompanyId ? Company::model()->findByPk($baseCompanyId) : null;
+
+// One product row — same markup for ordered items and the rest of the company's products
+$renderRow = function ($modelId, $modelName, $code, $itemName, $stock, $qty, $unitPrice, $rowTotal) {
+    $stock    = (float)$stock;
+    $stockCls = $stock <= 0 ? 'stock-out' : ($stock <= 5 ? 'stock-low' : 'stock-ok');
+    ?>
+    <tr class="item">
+        <td class="serial text-center"></td>
+        <td>
+            <span class="p-name"><?= CHtml::encode($modelName) ?></span><br>
+            <span class="p-meta">
+                <span class="p-code"><?= CHtml::encode($code ?: '—') ?></span><span class="p-dot">&bull;</span><span class="p-cat"><?= CHtml::encode($itemName ?: '—') ?></span>
+            </span>
+            <input type="hidden" class="tmep_model_id"
+                   value="<?= $modelId ?>"
+                   name="PurchaseOrderDetails[temp_model_id][]">
+        </td>
+        <td class="text-center"><span class="stock-badge <?= $stockCls ?>"><?= $stock + 0 ?></span></td>
+        <td class="text-center">
+            <input type="text" class="form-control temp_qty" placeholder="0" inputmode="decimal"
+                   value="<?= $qty ?>"
+                   name="PurchaseOrderDetails[temp_qty][]">
+        </td>
+        <td class="text-center">
+            <input type="text" class="form-control temp_unit_price" autocomplete="off" inputmode="decimal"
+                   value="<?= $unitPrice ?>"
+                   name="PurchaseOrderDetails[temp_unit_price][]">
+        </td>
+        <td class="text-center">
+            <input type="text" readonly class="form-control row-total"
+                   value="<?= $rowTotal ?>"
+                   name="PurchaseOrderDetails[temp_row_total][]">
+        </td>
+    </tr>
+    <?php
+};
+?>
+
 <!-- ── Items card ──────────────────────────────────────────────────────────── -->
-<div class="card shadow-sm mb-4">
-    <div class="card-header d-flex align-items-center justify-content-between"
-         style="background:linear-gradient(135deg,#6366f1,#4f46e5); color:#fff; padding:10px 16px;">
+<div class="card card-info shadow-sm mb-4">
+    <div class="card-header d-flex align-items-center justify-content-between">
         <span><i class="fa fa-th-list mr-1"></i> Items</span>
         <span id="item-count-badge"
               style="background:rgba(255,255,255,.2); font-size:11px; padding:2px 10px;
                      border-radius:20px; font-weight:600;">0 items</span>
     </div>
     <div class="card-body">
-        <div class="table-responsive">
-            <table class="table table-bordered table-sm table-hover mb-0" id="list"
-                   style="font-size:13px;">
-                <thead style="background:#f1f5f9; color:#374151;">
-                <tr>
-                    <th style="width:40px;" class="text-center">#</th>
-                    <th>Category</th>
+        <div class="table-responsive po-items">
+            <div id="po-global-bar">
+                <b>🏭 <?= CHtml::encode($baseCompany ? $baseCompany->name : '—') ?></b>
+                <span class="g-stat">SKU <b id="po-g-sku">0</b></span>
+                <span class="g-stat">QTY <b id="po-g-qty">0</b></span>
+                <span class="g-stat">TOTAL <b id="po-g-total">৳ 0.00</b></span>
+            </div>
+            <table class="table table-bordered table-sm table-valign-middle mb-0" id="list">
+                <thead>
+                <tr class="po-sub-header">
+                    <th style="width:50px;" class="text-center">#</th>
                     <th>Product</th>
-                    <th>Code</th>
-                    <th class="text-center" style="width:100px;">Qty</th>
-                    <th class="text-center" style="width:120px;">Unit Price</th>
-                    <th class="text-center" style="width:120px;">Row Total</th>
+                    <th class="text-center" style="width:90px;">Stock</th>
+                    <th class="text-center" style="width:10%;">Qty</th>
+                    <th class="text-center" style="width:10%;">Unit Price</th>
+                    <th class="text-center" style="width:10%;">Row Total</th>
                 </tr>
                 </thead>
                 <tbody>
@@ -325,43 +417,14 @@ Yii::app()->clientScript->registerCoreScript('jquery.ui');
                 $currentProduct = array();
                 foreach ($model3 as $key => $m3) {
                     $currentProduct[] = $m3->model_id;
-                    ?>
-                    <tr class="item">
-                        <td class="serial text-center"></td>
-                        <td><?= CHtml::encode($m3->item_name) ?></td>
-                        <td>
-                            <?= CHtml::encode($m3->model_name) ?>
-                            <input type="hidden" class="tmep_model_id"
-                                   value="<?= $m3->model_id ?>"
-                                   name="PurchaseOrderDetails[temp_model_id][]">
-                        </td>
-                        <td><?= CHtml::encode($m3->code) ?></td>
-                        <td class="text-center">
-                            <input type="text" class="form-control form-control-sm text-center temp_qty"
-                                   value="<?= $m3->qty ?>"
-                                   name="PurchaseOrderDetails[temp_qty][]"
-                                   style="width:70px;margin:auto;">
-                        </td>
-                        <td class="text-center">
-                            <input type="text" class="form-control form-control-sm temp_unit_price"
-                                   value="<?= $m3->unit_price ?>"
-                                   name="PurchaseOrderDetails[temp_unit_price][]"
-                                   style="width:90px;margin:auto;">
-                        </td>
-                        <td class="text-center">
-                            <input type="text" readonly class="form-control form-control-sm row-total"
-                                   value="<?= $m3->row_total ?>"
-                                   name="PurchaseOrderDetails[temp_row_total][]"
-                                   style="width:90px;margin:auto;background:#f8fafc;">
-                        </td>
-                    </tr>
-                    <?php
+                    $renderRow($m3->model_id, $m3->model_name, $m3->code, $m3->item_name,
+                        $m3->closing_stock, $m3->qty, $m3->unit_price, $m3->row_total);
                 }
                 if (count($currentProduct) > 0) {
                     $criteraia = new CDbCriteria();
                     $criteraia->addNotInCondition('t.id', $currentProduct);
                     $criteraia->addCondition('manufacturer_id=' . $baseCompanyId);
-                    $criteraia->order = "t.item_id, t.brand_id, t.model_name asc";
+                    $criteraia->order = "pi.item_name ASC, t.brand_id ASC, t.model_name ASC"; // same order as sell order entry
                     $criteraia->join  = " INNER JOIN prod_items pi ON pi.id = t.item_id ";
                     $criteraia->join .= " INNER JOIN prod_brands pb ON pb.id = t.brand_id ";
                     $criteraia->join .= "  LEFT JOIN (
@@ -375,36 +438,9 @@ Yii::app()->clientScript->registerCoreScript('jquery.ui');
 
                     $newProducts = ProdModels::model()->findAll($criteraia);
                     foreach ($newProducts as $singleProduct) {
-                        ?>
-                        <tr class="item">
-                            <td class="serial text-center"></td>
-                            <td><?= CHtml::encode($singleProduct->item_name) ?></td>
-                            <td>
-                                <?= CHtml::encode($singleProduct->model_name) ?>
-                                <input type="hidden" class="tmep_model_id"
-                                       value="<?= $singleProduct->id ?>"
-                                       name="PurchaseOrderDetails[temp_model_id][]">
-                            </td>
-                            <td><?= CHtml::encode($singleProduct->code) ?></td>
-                            <td class="text-center">
-                                <input type="text" class="form-control form-control-sm text-center temp_qty"
-                                       name="PurchaseOrderDetails[temp_qty][]"
-                                       style="width:70px;margin:auto;">
-                            </td>
-                            <td class="text-center">
-                                <input type="text" class="form-control form-control-sm temp_unit_price"
-                                       value="<?= $singleProduct->purchase_price ?>"
-                                       name="PurchaseOrderDetails[temp_unit_price][]"
-                                       style="width:90px;margin:auto;">
-                            </td>
-                            <td class="text-center">
-                                <input type="text" readonly class="form-control form-control-sm row-total"
-                                       value="0.00"
-                                       name="PurchaseOrderDetails[temp_row_total][]"
-                                       style="width:90px;margin:auto;background:#f8fafc;">
-                            </td>
-                        </tr>
-                        <?php
+                        $renderRow($singleProduct->id, $singleProduct->model_name, $singleProduct->code,
+                            $singleProduct->item_name, $singleProduct->closing_stock,
+                            '', $singleProduct->purchase_price, '0.00');
                     }
                 }
                 ?>
@@ -599,6 +635,20 @@ function calculateTotal(){
     calculateVat();
     updateItemBadge();
     tableSerial();
+    updateGlobalBar(total);
+}
+function updateGlobalBar(total){
+    var sku = 0, qty = 0;
+    $('#list tbody tr.item').each(function(){
+        var q     = safeNumber($(this).find('.temp_qty').val());
+        var price = safeNumber($(this).find('.temp_unit_price').val());
+        if(q > 0){ sku++; qty += q; }
+        $(this).toggleClass('ok', q > 0 && price > 0)
+               .toggleClass('error', q > 0 && price <= 0);
+    });
+    $('#po-g-sku').text(sku);
+    $('#po-g-qty').text(qty);
+    $('#po-g-total').text('৳ ' + total.toLocaleString('en-IN', {minimumFractionDigits: 2, maximumFractionDigits: 2}));
 }
 function updateItemBadge(){
     var n = $('.item').length;
@@ -606,8 +656,15 @@ function updateItemBadge(){
 }
 function tableSerial(){
     var i = 1;
-    $('#list tbody tr.item').each(function(){ $(this).find('.serial').text(i++); });
+    $('#list tbody tr.item').each(function(){ $(this).find('.serial').text('#' + i++); });
 }
+
+/* ── Row focus highlight ──────────────────────────────────────────────────── */
+$(document).on('focus', '#list .temp_qty, #list .temp_unit_price', function(){
+    $(this).closest('tr').addClass('focused');
+}).on('blur', '#list .temp_qty, #list .temp_unit_price', function(){
+    $(this).closest('tr').removeClass('focused');
+});
 
 /* ── Supplier autocomplete ─────────────────────────────────────────────────── */
 $(document).ready(function(){

@@ -75,7 +75,7 @@ class ProdModelsController extends RController
         $company_id = isset($_REQUEST['company_id']) ? trim($_REQUEST['company_id']) : '';
         $criteria = new CDbCriteria();
         $criteria->addCondition("t.manufacturer_id = $company_id"); // 'status' => ProdModels::ACTIVE
-        $criteria->order = "t.item_id, t.brand_id, t.model_name asc";
+        $criteria->order = "pi.item_name ASC, t.brand_id ASC, t.model_name ASC"; // same order as sell order entry
         $criteria->join = " INNER JOIN prod_items pi ON pi.id = t.item_id ";
         $criteria->join .= " INNER JOIN prod_brands pb ON pb.id = t.brand_id ";
         $criteria->join .= "  LEFT JOIN (
