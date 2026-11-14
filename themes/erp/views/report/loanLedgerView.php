@@ -163,24 +163,38 @@
         border-radius: 3px;
     }
 
+    .card-suffix { font-size: 11px; font-weight: 600; margin-left: 4px; }
+    .bal-suffix  { font-size: 10px; font-weight: 400; }
+    .col-sl      { text-align: center; color: #aaa; font-size: 11px; }
+
     @media print {
-        @page { size: A4; margin: 8mm 8mm 8mm 8mm; }
+        @page { size: A4; margin: 10mm 8mm; }
         * { -webkit-print-color-adjust: exact !important; print-color-adjust: exact !important; }
+        html, body { width: 100%; margin: 0; padding: 0; }
+        .loan-ledger-print-area { font-family: Arial, 'Noto Sans Bengali', 'SolaimanLipi', sans-serif; }
 
-        /* Compact summary cards */
-        .loan-summary-cards { display: table; width: 100%; margin-bottom: 8px; }
-        .loan-summary-card  { display: table-cell; padding: 6px 10px; }
-        .loan-summary-card .card-label { font-size: 8px; margin-bottom: 2px; }
-        .loan-summary-card .card-value { font-size: 14px; }
+        /* Summary cards */
+        .loan-summary-cards { display: table; width: 100%; margin-bottom: 12px; border-spacing: 6px 0; }
+        .loan-summary-card  { display: table-cell; padding: 8px 12px; }
+        .loan-summary-card .card-label { font-size: 13px; margin-bottom: 4px; }
+        .loan-summary-card .card-value { font-size: 22px; }
+        .card-suffix { font-size: 14px; }
 
-        /* Compact report message */
-        .report-message { padding: 4px 10px; margin-bottom: 8px; font-size: 11px; }
+        /* Report message */
+        .report-message { padding: 6px 12px; margin-bottom: 12px !important; font-size: 16px; }
 
-        /* Compact table */
-        .loan-ledger-table { font-size: 10px; }
-        .loan-ledger-table thead th { padding: 5px 7px; font-size: 9px; background: #1a2c3d !important; color: #fff !important; }
-        .loan-ledger-table tbody td { padding: 4px 7px; }
-        .loan-ledger-table tfoot td  { padding: 5px 7px; font-size: 10px; }
+        /* Table */
+        div[style*="overflow-x"] { overflow: visible !important; }
+        .loan-ledger-table { width: 100% !important; font-size: 15px; table-layout: auto; }
+        .loan-ledger-table td, .loan-ledger-table th { word-wrap: break-word; }
+        .loan-ledger-table thead th { padding: 7px 6px; font-size: 13px; background: #1a2c3d !important; color: #fff !important; white-space: normal; }
+        .loan-ledger-table tbody td { padding: 6px; }
+        .loan-ledger-table tfoot td  { padding: 6px 8px; font-size: 14px; }
+        .loan-ledger-table tr { page-break-inside: avoid; }
+        .loan-ledger-table thead { display: table-header-group; }
+        .bal-suffix { font-size: 13px; }
+        .col-sl     { font-size: 13px; color: #666; }
+        .badge-lend, .badge-borrow { font-size: 13px; padding: 2px 6px; white-space: normal; }
 
         /* Row colors */
         .row-lend  td { background: #fff5f5 !important; }
@@ -225,7 +239,7 @@
             <div class="card-label">Opening Balance</div>
             <div class="card-value">
                 <?= number_format(abs($opening), 2) ?>
-                <span style="font-size:11px; font-weight:600; margin-left:4px;">
+                <span class="card-suffix">
                     <?= $opening > 0 ? 'পাওনা' : ($opening < 0 ? 'দেনা' : 'শূন্য') ?>
                 </span>
             </div>
@@ -267,7 +281,7 @@
                 <td></td>
                 <td class="<?= $opening > 0 ? 'bal-paona' : ($opening < 0 ? 'bal-dena' : 'bal-zero') ?>">
                     <?= number_format(abs($opening), 2) ?>
-                    <span style="font-size:10px; font-weight:400;">
+                    <span class="bal-suffix">
                         <?= $opening > 0 ? ' পাওনা' : ($opening < 0 ? ' দেনা' : '') ?>
                     </span>
                 </td>
@@ -282,7 +296,7 @@
                 $rowClass = $isLend ? 'row-lend' : 'row-borrow';
             ?>
             <tr class="<?= $rowClass ?>">
-                <td style="text-align:center; color:#aaa; font-size:11px;"><?= $sl++ ?></td>
+                <td class="col-sl"><?= $sl++ ?></td>
                 <td style="white-space:nowrap;"><?= date('d M Y', strtotime($row['transaction_date'])) ?></td>
                 <?php if (!$personId): ?>
                 <td style="font-weight:600;"><?= htmlspecialchars($row['person_name']) ?></td>
@@ -303,7 +317,7 @@
                 </td>
                 <td class="<?= $balance > 0 ? 'bal-paona' : ($balance < 0 ? 'bal-dena' : 'bal-zero') ?>">
                     <?= number_format(abs($balance), 2) ?>
-                    <span style="font-size:10px; font-weight:400;">
+                    <span class="bal-suffix">
                         <?= $balance > 0 ? ' পাওনা' : ($balance < 0 ? ' দেনা' : ' ✓') ?>
                     </span>
                 </td>
@@ -317,7 +331,7 @@
                 <td class="amt-cr"><?= number_format($totalCr, 2) ?></td>
                 <td class="<?= $closing > 0 ? 'bal-paona' : ($closing < 0 ? 'bal-dena' : 'bal-zero') ?>">
                     <?= number_format(abs($closing), 2) ?>
-                    <span style="font-size:10px; font-weight:400;">
+                    <span class="bal-suffix">
                         <?= $closing > 0 ? ' পাওনা' : ($closing < 0 ? ' দেনা' : ' ✓') ?>
                     </span>
                 </td>

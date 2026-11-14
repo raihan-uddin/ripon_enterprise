@@ -17,9 +17,20 @@ $this->widget('application.components.BreadCrumb', array(
         margin-bottom: 4px;
         display: block;
     }
+
+    /* Printing straight from the browser tab (mobile has no scale option):
+       print only the report, full width, so the browser never shrinks it */
+    @media print {
+        .mainWrapperMenu, .erp-footer, .bc-nav, #loanFilterCard, .toast-container { display: none !important; }
+        html, body { width: 100% !important; min-width: 0 !important; margin: 0 !important; padding: 0 !important; background: #fff !important; }
+        .wrapper, .container-fluid, #loanResultCard, #loanResultCard .card-body {
+            width: 100% !important; min-width: 0 !important; min-height: 0 !important;
+            margin: 0 !important; padding: 0 !important; border: 0 !important; box-shadow: none !important;
+        }
+    }
 </style>
 
-<div class="card card-primary">
+<div class="card card-primary" id="loanFilterCard">
     <div class="card-header">
         <h3 class="card-title"><i class="fa fa-book" style="margin-right:6px;"></i>Loan Person Ledger</h3>
         <div class="card-tools">
@@ -87,7 +98,7 @@ $this->widget('application.components.BreadCrumb', array(
     </div>
 </div>
 
-<div class="card">
+<div class="card" id="loanResultCard">
     <div class="card-body">
         <div id="loanLedgerResult">
             <div class="text-center text-muted" style="padding:40px 0; font-size:13px;">
