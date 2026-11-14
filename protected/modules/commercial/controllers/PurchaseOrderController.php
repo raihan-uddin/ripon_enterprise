@@ -298,12 +298,17 @@ class PurchaseOrderController extends RController
 
 
         $criteria = new CDbCriteria();
-        $criteria->select = "t.*, pm.model_name, pm.code,  pb.brand_name, pi.item_name, pm.manufacturer_id";
+        $criteria->select = "t.*, pm.model_name, pm.code,  pb.brand_name, pi.item_name, pm.manufacturer_id, IFNULL(inv.closing_stock, 0) AS closing_stock";
         $criteria->addColumnCondition(['order_id' => $id]);
         $criteria->join = " INNER JOIN prod_models pm on t.model_id = pm.id ";
         $criteria->join .= " INNER JOIN prod_brands pb on pm.brand_id = pb.id ";
         $criteria->join .= " INNER JOIN prod_items pi on pb.item_id = pi.id ";
-        $criteria->order = "pm.model_name ASC";
+        $criteria->join .= " LEFT JOIN (
+                                SELECT model_id, SUM(stock_in) - SUM(stock_out) AS closing_stock
+                                FROM inventory
+                                GROUP BY model_id
+                            ) inv ON inv.model_id = t.model_id ";
+        $criteria->order = "pi.item_name ASC, pm.brand_id ASC, pm.model_name ASC"; // same order as sell order entry
         $data = PurchaseOrderDetails::model()->findAll($criteria);
 
         $baseCompanyId = $data ? $data[0]->manufacturer_id : 0;
