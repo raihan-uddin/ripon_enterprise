@@ -22,7 +22,7 @@ Yii::app()->clientScript->registerCoreScript('jquery.ui');
 ?>
 
 <!-- ── Action bar ──────────────────────────────────────────────────────────── -->
-<div class="d-flex align-items-center gap-2 mb-3 flex-wrap">
+<div class="d-flex align-items-center mb-3 flex-wrap" style="gap:8px;">
     <a class="btn btn-sm btn-outline-secondary" href="<?= Yii::app()->request->requestUri ?>">
         <i class="fa fa-refresh"></i> Reload
     </a>
