@@ -424,6 +424,7 @@ $renderRow = function ($modelId, $modelName, $code, $itemName, $stock, $qty, $un
                     $criteraia = new CDbCriteria();
                     $criteraia->addNotInCondition('t.id', $currentProduct);
                     $criteraia->addCondition('manufacturer_id=' . $baseCompanyId);
+                    $criteraia->addColumnCondition(['t.status' => ProdModels::ACTIVE]); // items already on the order are listed above regardless of status
                     $criteraia->order = "pi.item_name ASC, t.brand_id ASC, t.model_name ASC"; // same order as sell order entry
                     $criteraia->join  = " INNER JOIN prod_items pi ON pi.id = t.item_id ";
                     $criteraia->join .= " INNER JOIN prod_brands pb ON pb.id = t.brand_id ";
